@@ -1,0 +1,890 @@
+{% extends "procesos/plantilla_procesos.html" %}
+
+{% block title %} Proyecto {% endblock %}
+
+
+{% block content %}
+
+
+
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <div class="container">
+    <section class="content-header">
+      <h1>
+        Proyecto
+        <small>Panel de Control</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Inicio</a></li>
+        <li class="active">Proyecto</li>
+      </ol>
+      {% if mensaje %}
+    <div class="callout callout-info">
+      <h4>Registro Exitoso</h4>
+      {{mensaje}}      
+    </div>
+    {% endif %}
+    {% if mensaje_eliminar %}
+    <div class="callout callout-danger">
+      <h4>Borrado Exitoso</h4>
+      {{mensaje_eliminar}}      
+    </div>
+    {% endif %}
+
+    {% if mensaje_editar %}
+    <div class="callout callout-warning">
+      <h4>Actualización Exitosa</h4>
+      {{mensaje_editar}}      
+    </div>
+    {% endif %}
+    </section>
+
+    <section class="content">
+     <div class="box box-default">
+      <div class="box-header with-border">
+        <h3 class="box-title">Nombre Proyecto</h3>
+      </div>
+      <div class="box-body">
+        Aqui deberia ir la información del proyecto.
+      </div>
+      <!-- /.box-body -->
+    </div>
+
+
+
+    <!-- Identificar riesgos -->
+      <div class="box box-default">
+    <div class="nav-tabs-custom" style="cursor: move;">
+      <!-- Tabs within a box -->
+      <ul class="nav nav-tabs pull-right ui-sortable-handle">
+        <li class="active"><a href="#revenue-chart" data-toggle="tab" aria-expanded="false">Propios</a></li>
+        <li class=""><a href="#sales-chart" data-toggle="tab" aria-expanded="true">Sugeridos</a></li>
+        <li class="pull-left header"><i class="fa fa-inbox"></i>Riesgos</li>
+      </ul>            
+      <div class="tab-content no-padding">
+        <!-- Morris chart - Sales -->
+        <div class="chart tab-pane active" id="revenue-chart" style="height: 300px; overflow:auto;">
+          <div class="col-md-4">
+          <div class="form-group">
+            <select class="form-control select2" id="riesgo_id" name="categorias" onchange="set_riesgo(this);">              
+           </select>
+          </div>           
+          </div>
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default"><i class="fa fa-plus"></i> Nuevo Riesgo</button>
+          <div class="box-body">
+            <div class="box-body">
+
+              <table id="example1" class="table table-bordered table-striped">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>Nombre</th>
+                    <th>Causa</th>
+                    <th>Evento</th>
+                    <th>Efecto</th>
+                  </tr>
+                </thead>
+                <tbody id="body_riesgos">
+                  <tr>
+                    <td>Selecciona una subcategoria para cargar los riesgos.</td>
+                    <td></td> 
+                    <td></td>
+                    <td></td>
+                    <td></td>                
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <th></th>
+                    <th>Nombre</th>
+                    <th>Causa</th>
+                    <th>Evento</th>
+                    <th>Efecto</th>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>                
+          </div>
+          <div class="chart tab-pane " id="sales-chart" style="position: relative; height: 300px;"></div>
+        </div>
+        <div class="form-group">
+        <div class="row no-print">
+          <div class="col-md-11">   
+                <button type="button" onclick="asosiar_riesgos('{{ proyecto.proyecto_id }}');" class="btn btn-success pull-right"><i class="fa fa-plus"></i> Agregar
+            </button>   
+          </div>
+        </div>
+        <br>
+        </div>
+
+      </div>
+
+    </div>
+    </div>
+    <!-- Cerrar Identificar riesgos-->
+
+
+
+    <div class="box box-default">
+      <div class="box-header with-border">
+        <h3 class="box-title">Riesgos del proyecto</h3>
+      </div>
+      <div class="box-body">
+
+        <div class="box-body">
+
+          <table id="example1" class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>Riesgo</th>
+                <th>Respuestas</th>
+                <th>Actividades</th>
+                <th>Responsables</th>
+                <th>Acciones</th>                    
+              </tr>
+            </thead>
+            <tbody>
+             {% if lista_riesgos %}
+             {% for riesgo in lista_riesgos %}
+             <tr>
+              <td>{{ riesgo.riesgo_nombre }}</td>
+              <td> 
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-respuestas" onclick="abrir_modal_respuestas('{{ riesgo.riesgo_id }}')"><i   class="fa fa-edit"></i></button>
+              </td>
+              <td>
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modal-actividades"  onclick="abrir_modal_actividades()"><i   class="fa fa-edit"></i></button>
+
+              </td>
+              <td>
+                <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#modal-responsables" onclick="abrir_modal_responsables()"><i   class="fa fa-edit"></i></button>
+              </td>                  
+              <td>
+                <button type="button" class="btn btn-default" data-toggle="modal" onclick="abrir_modal_editar()" data-target="#modal-editar"><i   class="fa fa-edit"></i>
+                </button>
+
+
+                <button type="button" class="btn btn-danger" data-toggle="#modal" onclick="abrir_modal_eliminar('{{ riesgo.riesgo_id }}',' {{ riesgo.riesgo_nombre }}')" data-target="#modal_eliminar"><i class="fa fa-trash-o danger"></i>
+                </button>
+              </td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr>
+              <td>No cuentas con riesgos registrados.</td>
+              <td></td> 
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            {% endif %} 
+          </tbody>
+          <tfoot>
+            <tr>
+              <th>Riesgo</th>
+              <th>Respuestas</th>
+              <th>Actividades</th>
+              <th>Responsables</th>
+              <th>Acciones</th> 
+            </tr>
+          </tfoot>
+        </table>
+      </div>    
+
+    </div>
+    <!-- /.box-body -->
+  </div>
+
+</section>
+</div>
+</div>
+<div class="modal fade" id="modal-default" style="display: none;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span></button>
+        <h4 class="modal-title">Riesgo</h4>
+      </div>
+      <div class="modal-body">
+        <div class="box-body">
+        <form id="nuevo_riesgo">
+          {% csrf_token %}
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <div class="form-group">
+                  <label >Nombre Riesgo</label>
+                  <input type="text" class="form-control" id="nombre" placeholder="Ingrese Nombre del riesgo" name="riesgo_nombre">
+                </div>
+                <div class="form-group">
+                  <label>Subcategoría a la que pertence</label>              
+                  <select class="form-control" name="sub_categoria_id" id="sub_categoria_id">    
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Causa</label>
+                  <textarea class="form-control" rows="3" placeholder="Descripción de la causa..." name="riesgo_causa"></textarea>
+                </div>
+                <div class="form-group">
+                  <label>Evento</label>
+                  <textarea class="form-control" rows="3" placeholder="Descripción del evento..." name="riesgo_evento"></textarea>
+                </div>
+              </div>
+            </div>
+            <!-- /.col -->
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Tipo</label>
+                <select class="form-control select2" style="width: 100%;" name="riesgo_tipo">
+                  <option selected="selected" value="0">Riesgo</option>
+                  <option value="1">Oportunidad</option>
+
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Privacidad</label>
+                <select class="form-control select2" style="width: 100%;" name="riesgo_privacidad">
+                  <option selected="selected" value="0">Publico</option>
+                  <option value="1">Privado</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Efecto</label>
+                <textarea class="form-control" rows="3" placeholder="Descripción del efecto..." name="riesgo_efecto"></textarea>
+              </div>
+              {% if proyecto %}
+                <input type="text" name="proyecto_id" value="{{ proyecto.proyecto_id }}" hidden>
+              {% endif %}
+              <div class="box-footer">
+                <button type="submit" class="btn btn-danger pull-right">Registrar</button>
+              </div>
+            </div>
+            <!-- /.col -->
+          </div>
+          <!-- /.row -->
+        </form>
+      </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cerrar</button>
+        <!--<button type="submit" class="btn btn-primary">Registrar</button>-->
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- /modal respuestas -->
+<div class="modal fade" id="modal_respuestas">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title"><i class="fa fa-edit"></i> Respuestas preliminares</h4>
+        </div>
+        <div class="modal-body">
+
+         <div class="nav-tabs-custom">
+          <!-- Tabs within a box -->
+          <ul class="nav nav-tabs pull-right">
+            <li class="active"><a href="#listado-respuestas" data-toggle="tab"> Listado</a></li>
+            <li ><a href="#nueva-respuesta" data-toggle="tab">Nueva Respuesta</a></li>            
+
+          </ul>
+          <div class="tab-content no-padding">
+            <!-- Morris chart - Sales -->
+            <div class="chart tab-pane active" id="listado-respuestas" style="position: relative; height: 300px;">
+
+             <div class="box-body">
+
+              <table id="tabla2" class="table table-bordered table-striped">
+                <thead>
+                  <tr>
+                    <th>Respuesta</th>
+                    <th>Descripción</th>                  
+                    <th>Acciones</th>                    
+                  </tr>
+                </thead>
+                <tbody>
+                 {% if lista_respuestas %}
+                 {% for respuesta in lista_respuestas %}
+                 <tr>
+                  <td>{{ respuesta.respuesta_nombre }}</td>
+                  <td>{{ respuesta.respuesta_descripcion }}</td>                                  
+                  <td>
+                    <button type="button" class="btn btn-default" data-toggle="modal-editar" onclick="abrir_modal_editar('{{ riesgo.riesgo_id }}','{{ riesgo.riesgo_nombre }}', '{{ riesgo.riesgo_causa }}', '{{ riesgo.riesgo_evento }}', '{{ riesgo.riesgo_efecto }}')" data-target="#modal-editar"><i   class="fa fa-edit"></i>
+                    </button>
+
+
+                    <button type="button" class="btn btn-danger" data-toggle="#modal_eliminar" onclick="abrir_modal_eliminar('{{ riesgo.riesgo_nombre }}', '{{ riesgo.riesgo_id }}')" data-target="#modal_eliminar"><i class="fa fa-trash-o danger"></i>
+                    </button>
+                  </td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                  <td>No cuentas con respuestas asociadas a este riesgo.</td>
+                  <td></td> 
+                  <td></td>                
+                </tr>
+                {% endif %} 
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Respuesta</th>
+                  <th>Descripción</th>                  
+                  <th>Acciones</th>      
+                </tr>
+              </tfoot>
+            </table>
+          </div>  
+
+        </div>
+        <div class="chart tab-pane" id="nueva-respuesta" style="position: relative; height: 300px;">
+         <div class="box-body">
+          <form action="/proyecto/{{ proyecto.proyecto_id }}/nueva_respuesta/" method="post">
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <div class="form-group">
+                    <label >Nombre</label>
+                    <input type="text" class="form-control" id="respuesta_nombre" placeholder="Nombre respuesta" name="respuesta_nombre">
+                  </div>
+                </div>
+                <!-- / input para pasar el id del riesgo al asociarle la respuesta -->
+                <input type="text" class="form-control" id="riesgo_id_r" name="riesgo_id" style="visibility:hidden">
+              </div>           
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>Descripción</label>
+                  <textarea class="form-control" rows="3" placeholder="Descripción de la respuesta preliminar" name="respuesta_descripcion"></textarea>
+                </div>
+                <div class="box-footer">
+                  <button type="submit" class="btn btn-default">Cancelar</button>
+                  <button type="submit" class="btn btn-primary pull-right">Registrar</button>
+                </div>
+              </div>
+              <!-- /.col -->
+            </div>
+            <!-- /.row -->
+          </form>
+        </div><!-- /.box-body -->
+      </div>     
+    </div>
+  </div>
+</div>
+</div>
+<!-- /.modal-content -->
+</div>
+<!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+
+<!-- /.modal actividades -->
+<div class="modal fade" id="modal_actividades">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title"><i class="fa fa-edit"></i> Actividades</h4>
+        </div>
+        <div class="modal-body">
+
+         <div class="nav-tabs-custom">
+          <!-- Tabs within a box -->
+          <ul class="nav nav-tabs pull-right">
+            <li class="active"><a href="#listado-actividades" data-toggle="tab"> Listado</a></li>
+            <li ><a href="#nueva-actividad" data-toggle="tab">Nueva Actividad</a></li>            
+
+          </ul>
+          <div class="tab-content no-padding">
+            <!-- Morris chart - Sales -->
+            <div class="chart tab-pane active" id="listado-actividades" style="position: relative; height: 300px;">
+
+             <div class="box-body">
+
+              <table id="tabla2" class="table table-bordered table-striped">
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Acciones</th>                                      
+                  </tr>
+                </thead>
+                <tbody>
+                 {% if lista_actividades %}
+                 {% for actividad in lista_actividades %}
+                 <tr>
+                  <td>{{ actividad.actividad_nombre }}</td>                                       
+                  <td>
+                    <button type="button" class="btn btn-default" data-toggle="modal-editar" onclick="abrir_modal_editar('{{ riesgo.riesgo_id }}','{{ riesgo.riesgo_nombre }}', '{{ riesgo.riesgo_causa }}', '{{ riesgo.riesgo_evento }}', '{{ riesgo.riesgo_efecto }}')" data-target="#modal-editar"><i   class="fa fa-edit"></i>
+                    </button>
+
+
+                    <button type="button" class="btn btn-danger" data-toggle="#modal_eliminar" onclick="abrir_modal_eliminar('{{ riesgo.riesgo_nombre }}', '{{ riesgo.riesgo_id }}')" data-target="#modal_eliminar"><i class="fa fa-trash-o danger"></i>
+                    </button>
+                  </td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                  <td>No cuentas con actividades asociadas a este riesgo.</td>
+                  <td></td>                                 
+                </tr>
+                {% endif %} 
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Acciones</th>      
+                </tr>
+              </tfoot>
+            </table>
+          </div>  
+
+        </div>
+        <div class="chart tab-pane" id="nueva-actividad" style="position: relative; height: 300px;">
+         <div class="box-body">
+          <form action="{% url 'nueva_respuesta' %}" method="post">
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <div id="bloq_subcategorias" class="form-group">
+                    <label>Actividades</label>                    
+                    <select class="form-control select2" id="riesgo_id" name="riesgo_id">
+                      <option value="{{ actividad.actividad_id }}">
+                       Actividades del proyecto
+                     </option>
+                   </select>
+                 </div>
+               </div>
+               <!-- / input para pasar el id del riesgo al asociarle la actividad -->
+               <input type="text" class="form-control" id="riesgo_id" name="riesgo_id" style="visibility:hidden">
+               <button type="submit" class="btn btn-primary pull-right">Agregar</button>
+             </div>
+             <!-- /.col -->
+           </div>
+           <!-- /.row -->
+         </form>
+       </div><!-- /.box-body -->
+     </div>     
+    </div>
+  </div>
+</div>
+</div>
+<!-- /.modal-content -->
+</div>
+<!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<!-- /.modal responsables -->
+<div class="modal fade" id="modal_responsables">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title"><i class="fa fa-edit"></i> Responsables</h4>
+        </div>
+        <div class="modal-body">
+
+         <div class="nav-tabs-custom">
+          <!-- Tabs within a box -->
+          <ul class="nav nav-tabs pull-right">
+            <li class="active"><a href="#listado-responsables" data-toggle="tab"> Listado</a></li>
+            <li ><a href="#nuevo-responsable" data-toggle="tab">Nuevo Responsable</a></li>            
+
+          </ul>
+          <div class="tab-content no-padding">
+            <!-- Morris chart - Sales -->
+            <div class="chart tab-pane active" id="listado-responsables" style="position: relative; height: 300px;">
+
+             <div class="box-body">
+
+               <table id="tabla2" class="table table-bordered table-striped">
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Acciones</th>                                      
+                  </tr>
+                </thead>
+                <tbody>
+                 {% if lista_responsables %}
+                 {% for responsable in lista_responsables %}
+                 <tr>
+                  <td>{{ responsable.responsable_nombre }}</td>                                       
+                  <td>
+                    <button type="button" class="btn btn-danger" data-toggle="#modal_eliminar" onclick="abrir_modal_eliminar('{{ riesgo.riesgo_nombre }}', '{{ riesgo.riesgo_id }}')" data-target="#modal_eliminar"><i class="fa fa-trash-o danger"></i>
+                    </button>
+                  </td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                  <td>No cuentas con responsables asociadas a este riesgo.</td>
+                  <td></td>                                 
+                </tr>
+                {% endif %} 
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Acciones</th>      
+                </tr>
+              </tfoot>
+            </table>
+          </div>  
+
+        </div>
+        <div class="chart tab-pane" id="nuevo-responsable" style="position: relative; height: 300px;">
+         <div class="box-body">
+          <form action="{% url 'nueva_respuesta' %}" method="post">
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <div id="bloq_subcategorias" class="form-group">
+                    <label>Responsables</label>                    
+                    <select class="form-control select2" id="riesgo_id" name="riesgo_id">
+                      <option value="{{ actividad.actividad_id }}">
+                       Responsables del proyecto
+                     </option>
+                   </select>
+                 </div>
+               </div>
+               <!-- / input para pasar el id del riesgo al asociarle la actividad -->
+               <input type="text" class="form-control" id="riesgo_id" name="riesgo_id" style="visibility:hidden">
+               <button type="submit" class="btn btn-primary pull-right">Agregar</button>
+             </div>
+             <!-- /.col -->
+           </div>
+           <!-- /.row -->
+         </form>
+       </div><!-- /.box-body -->
+     </div>     
+   </div>
+ </div>
+</div>
+</div>
+<!-- /.modal-content -->
+</div>
+<!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+  <!-- /.modal-editar -->
+ <div class="modal fade" id="modal-editar">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Editar Riesgo</h4>
+          </div>
+          <div class="box-body">
+           <form  action="/editar_riesgo/" method="post">
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                <label >Nombre </label>
+                <input type="text" class="form-control" id="riesgo_nombre" name="riesgo_nombre">
+                </div>
+               
+                <div class="form-group">
+                  <label>Causa</label>
+                  <textarea class="form-control" rows="3" id="riesgo_causa" name="riesgo_causa"></textarea>
+                </div>
+                <div class="form-group">
+                  <label>Evento</label>
+                  <textarea class="form-control" rows="5" id="riesgo_evento" name="riesgo_evento"></textarea>
+                </div>
+              </div>
+              <!-- /.col -->
+              <div class="col-md-6">
+                 <div class="form-group">
+                <label >Subcategoría</label>
+                {% if lista_subcategorias %}
+                  <select class="form-control"  name="sub_categoria_id" id="sub_categoria_id">
+                    {% for subcategoria in lista_subcategorias %}
+                    <option value="{{subcategoria.sub_categoria_id}}">
+                      {{ subcategoria.sub_categoria_nombre }}
+                    </option>
+                    {% endfor %}
+                  </select>
+                {% endif %} 
+                </div>
+                <div class="form-group">
+                <label >Privacidad</label>
+                  <select class="form-control"  name="riesgo_privacidad" id="riesgo_privacidad"> 
+                    <option value="0">Publico</option>
+                    <option value="1">Privado</option>
+                  </select>                
+                </div>
+                <div class="form-group">
+                <label >Tipo Riesgo</label>
+                  <select class="form-control"  name="riesgo_tipo" id="riesgo_tipo"> 
+                    <option value="0">Riesgo</option>
+                    <option value="1">Oportunidad</option>
+                  </select>                
+                </div>
+                <div class="form-group">
+                  <label>Efecto</label>
+                  <textarea class="form-control" rows="3"  id="riesgo_efecto" name="riesgo_efecto"></textarea>
+                </div>
+                <input type="text" class="form-control" id="riesgo_id" name="riesgo_id" style="visibility:hidden">
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary pull-left" data-dismiss="modal">Cerrar</button>
+              <button type="submit" class="btn btn-primary pull-right">Actualizar</button>
+            </div>
+            <!-- /.row -->
+          </form>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+
+
+   <!-- /.modal-eliminar -->
+
+  <div class="modal modal-danger fade" id="modal_eliminar" >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title"> Eliminar </h4>
+          </div>
+          <form  action="/proyecto/{{ proyecto.proyecto_id }}/eliminar_riesgo/" method="post">
+            {% csrf_token %}
+          <div class="modal-body">
+            <p id="contenido_modal">&hellip;</p>
+            <h2 id="nombre_riesgo_me"></h2>
+            <input type="text" class="form-control" id="riesgo_id_e" name="riesgo_id" style="visibility:hidden">            
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Cerrar</button>
+            <button type="submit" class="btn btn-outline">Eliminar</button>
+          </div>
+          </form>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+    </div>
+
+  </div>
+
+
+
+
+
+
+{% endblock %}
+
+{% block mis_scrtips_riesgos %}
+
+{% load static %}
+<!-- DataTables -->
+<script src="{% static 'risk_project/bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+
+
+<script src="{% static 'risk_project/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+
+
+
+
+<!-- AdminLTE for demo purposes -->
+<script src="{% static 'risk_project/dist/js/demo.js' %}"></script>
+
+{% endblock %}
+
+
+{% block organigrama_down %}
+{% load static %}
+<script src="{% static 'risk_project/dist/js/risk_ufps/risk_config.js' %}"></script>
+
+
+
+  <script type="text/javascript">
+  var data = JSON.parse("{{rbs|escapejs}}"); 
+console.log(data);
+var diccionario = {};
+
+function formatear_data(){  
+  data.forEach(function(element){
+    diccionario[element["categoria"]["categoria_id"]] = element["subcategorias"];
+  });
+}
+
+function cargarCategorias() {
+    addOptions("categorias", data);
+    addOptions("sub_categoria_id", data);
+}
+
+
+//Función para agregar opciones a un <select>.
+function addOptions(domElement, mi_array) {
+    var selector = document.getElementsByName(domElement)[0];
+    selector.innerHTML = '<option value="-1">Seleccione una Categoria...</option>'
+    for (var i = 0; i < mi_array.length; i++) {
+        var optgroup = document.createElement("optgroup");
+        optgroup.setAttribute("label", mi_array[i]["categoria"]["categoria_nombre"]);
+        for (var j = 0; j < mi_array[i]["subcategorias"].length; j++) {
+          var opcion = document.createElement("option");
+          opcion.text = mi_array[i]["subcategorias"][j]["subcategoria"]["sub_categoria_nombre"];        
+          opcion.value = mi_array[i]["subcategorias"][j]["subcategoria"]["sub_categoria_id"];
+          optgroup.appendChild(opcion);
+        }                 
+        selector.add(optgroup);
+    }
+}
+cargarCategorias();
+
+function set_riesgo(subcategoria){
+  let body_riesgos = document.getElementById('body_riesgos');
+  body_riesgos.innerHTML = "";
+  let riesgos = get_riesgos_by_sub_categoria_id(subcategoria.value);
+  let flag = false;
+  for (var i = 0; i < riesgos.length; i++) {     
+    if(!riesgos[i]["is_assigned"]){
+      let tr = document.createElement("tr");   
+      let input = document.createElement("input");
+      input.setAttribute("type", "checkbox");
+      input.setAttribute("value", riesgos[i]["riesgo_id"]);
+      let td_nombre = document.createElement("td");
+      td_nombre.appendChild(document.createTextNode(riesgos[i]["riesgo_nombre"]));
+      let td_causa = document.createElement("td");
+      td_causa.appendChild(document.createTextNode(riesgos[i]["riesgo_causa"]));
+      let td_evento = document.createElement("td");
+      td_evento.appendChild(document.createTextNode(riesgos[i]["riesgo_evento"]));
+      let td_efecto = document.createElement("td");
+      td_efecto.appendChild(document.createTextNode(riesgos[i]["riesgo_efecto"]));
+      tr.appendChild(input);
+      tr.appendChild(td_nombre);
+      tr.appendChild(td_causa);
+      tr.appendChild(td_evento);
+      tr.appendChild(td_efecto);
+      body_riesgos.appendChild(tr);
+    }       
+  }
+}
+
+function get_riesgos_by_sub_categoria_id(sub_categoria_id) {
+  for (var i = 0; i < data.length; i++) {                  
+    for (var j = 0; j < data[i]["subcategorias"].length; j++) {
+      if(data[i]["subcategorias"][j]["subcategoria"]["sub_categoria_id"] == sub_categoria_id){
+        return data[i]["subcategorias"][j]["riesgos"];
+      }      
+    }                       
+  }
+}
+
+function asosiar_riesgos(proyecto_id){
+  let riesgos_seleccionados = $("input[type = 'checkbox']:checked");
+  let aux = [];
+  for (var i = 0; i < riesgos_seleccionados.length; i++) {
+    aux.push(riesgos_seleccionados[i].value);
+  }
+  $.ajax({
+    type: 'POST',
+    url: "/mi_proyecto/"+proyecto_id+"/identificar/asociar_riesgo/",    
+    headers: {'X-CSRFToken': csrftoken},      
+    data: {"riesgos_seleccionados":JSON.stringify(aux)},
+    success: function(data, status, xhr) {
+      alert("Asignados correctamente");
+      location.reload();
+       console.log(xhr);
+    },
+    error: function(jqXhr, textStatus, errorMessage) {
+      alert("ha ocurrido un error");
+      location.reload();
+      console.log(errorMessage);
+    }
+  });
+}
+</script>
+<script >
+  function abrir_modal_respuestas(id_riesgo) {        
+
+        $("#modal_respuestas").modal('show');
+        var input_id = document.getElementById("riesgo_id_r");
+        input_id.value = id_riesgo;
+        
+        return false;
+    };
+  function abrir_modal_actividades() {        
+
+        $("#modal_actividades").modal('show');
+        
+        return false;
+    };
+
+  function abrir_modal_responsables(id_riesgo) {        
+
+        $("#modal_responsables").modal('show');
+        
+        return false;
+    };
+
+  function abrir_modal_editar() {        
+
+        $("#modal_editar").modal('show');
+        
+        return false;
+    };
+
+    function abrir_modal_eliminar(id, nombre) {        
+
+        $("#modal_eliminar").modal('show');
+        document.getElementById("contenido_modal").innerHTML = "Estas seguro que desea eliminar el riesgo del proyecto? Esta acción no se podra reversar.";
+        document.getElementById("nombre_riesgo_me").innerHTML = " "+nombre;
+        var input_id = document.getElementById("riesgo_id_e");
+        input_id.value = id;
+        
+        
+        return false;
+    };
+
+</script>
+<script type="text/javascript">
+  //////////////////////////////////////
+  // Funciones que capturan los forms
+  /////////////////////////////////////
+  $(function() { //shorthand document.ready function
+    $('#nuevo_riesgo').on('submit', function(e) { //use on if jQuery 1.7+
+        e.preventDefault();  //prevent form from submitting
+        var riesgo_content = $("#nuevo_riesgo :input").serializeArray();
+        console.log(riesgo_content);
+       $.ajax({
+          type: 'POST',
+          url: "/proyecto/riesgo/insertar/",    
+          headers: {'X-CSRFToken': csrftoken},      
+          data: riesgo_content,
+          success: function(data, status, xhr) {
+            //alert("Asignados correctamente");
+            location.reload();
+             console.log(xhr);
+          },
+          error: function(jqXhr, textStatus, errorMessage) {
+            alert("ha ocurrido un error");
+            location.reload();
+            console.log(errorMessage);
+          }
+  });
+    });
+});
+
+
+</script>
+{% endblock %}

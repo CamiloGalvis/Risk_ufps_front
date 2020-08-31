@@ -1,0 +1,480 @@
+{% extends "procesos/plantilla_procesos.html" %}
+
+{% block title %} Proyecto {% endblock %}
+
+
+{% block content %}
+
+{% load static %}
+
+{% block organigrama_up %}
+
+<link rel="stylesheet" href="{% static 'risk_project/plugins/org-chart/css/jquery.orgchart.css' %}">
+
+<link rel="stylesheet" href="{% static 'risk_project/plugins/org-chart/css/style.css' %}">
+
+
+<style type="text/css">
+  #chart-container {
+    background-color: #ffffff;
+    height: auto;
+    border: none;
+  }
+
+  .orgchart {
+    background: #ffffff;
+  }
+</style>
+
+{% endblock %}
+
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <div class="container">
+    <section class="content-header">
+      <h1>
+        {% if proyecto %}
+        {{ proyecto.proyecto_nombre }}
+        {% endif %}
+        <small>Planificar la gestión de riesgos </small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Proyecto</a></li>
+        <li class="active">Planificar la Gestión de Riesgos</li>
+      </ol>
+      {% if mensaje %}
+    <div class="callout callout-info">
+      <h4>Registro Exitoso</h4>
+      {{mensaje}}      
+    </div>
+    {% endif %}
+    {% if mensaje_eliminar %}
+    <div class="callout callout-danger">
+      <h4>Borrado Exitoso</h4>
+      {{mensaje_eliminar}}      
+    </div>
+    {% endif %}
+
+    {% if mensaje_editar %}
+    <div class="callout callout-warning">
+      <h4>Actualización Exitosa</h4>
+      {{mensaje_editar}}      
+    </div>
+    {% endif %}
+    </section>
+
+    <section class="content">
+     <div class="box box-primary">
+      <div class="box-header with-border">
+        <h3 class="box-title">{{ proyecto.proyecto_nombre }}</h3>
+      </div>
+      <div class="box-body">
+        Aqui deberia ir la información del proceso general.
+      </div>
+      <!-- /.box-body -->
+    </div>
+    <div class="box box-primary">
+<div class="box-header">
+  <h3 class="box-title">
+    Estructura desglosada de riesgos
+  </h3>         
+</div>
+      {% if rbs %}
+                  
+      {% else %}  
+        <div class="pad margin no-print">
+      <div class="callout callout-info" style="margin-bottom: 0!important;">
+        <h4>Nota:</h4>
+        Hasta el momento no cuenta con una EDR (Estructura desglozada de riesgos) definida para este proyecto. 
+      </div>
+    </div>
+      {% endif %}
+    
+
+<!-- Main content -->
+    <section class="invoice">
+      <div class="nav-tabs-custom" style="cursor: move;">
+        <!-- Tabs within a box -->
+        <ul class="nav nav-tabs pull-right ui-sortable-handle">
+          <li class="active"><a href="#revenue-chart" data-toggle="tab" aria-expanded="false">Propia</a></li>
+          <li class=""><a href="#sales-chart" data-toggle="tab" aria-expanded="true">Sugerida</a></li>
+          <li class=""><a href="#sales" data-toggle="tab" aria-expanded="true">PMBOK® 6th</a></li>
+          <li class="pull-left header"><i class="fa fa-inbox"></i>EDR</li>
+        </ul>            
+        <div class="tab-content no-padding">
+          <!-- Morris chart - Sales -->
+          <div class="chart tab-pane active" id="revenue-chart" style="height: 300px;">
+             <div id="chart-container_1"></div>            
+            
+          </div>
+          <div class="chart tab-pane " id="sales-chart" style="position: relative; height: 300px;">
+             <div id="chart-container_2"></div>
+          </div>
+          <div class="chart tab-pane " id="sales" style="position: relative; height: 300px;">
+             <div id="chart-container_3"></div>
+          </div>
+          </div>
+          
+      </div>
+     
+
+      <!-- this row will not appear when printing -->
+      <div class="row no-print">
+        <div class="col-xs-12">    
+          <button type="button" onclick="configurar_edr();" class="btn btn-success pull-right"><i class="fa fa-credit-card"></i> Configurar EDR
+          </button>        
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+    <div class="clearfix"></div>
+
+
+    </div>
+
+    <div class="box box-primary">
+      <div class="box-header">
+        <h3 class="box-title">Equipo de gestión de riesgos &nbsp  &nbsp</h3>
+
+        <button type="button" class="btn btn-primary" data-toggle="modal"  data-target="#modal-agregar" >Nuevo Miembro</i>
+        </button>
+
+
+        <!-- tools box -->
+        <div class="pull-right box-tools">
+          <button type="button" class="btn btn-default btn-sm" data-widget="collapse" data-toggle="tooltip"
+          title="Collapse">
+          <i class="fa fa-minus"></i></button>
+          <button type="button" class="btn btn-default btn-sm" data-widget="remove" data-toggle="tooltip"
+          title="Remove">
+          <i class="fa fa-times"></i></button>
+        </div>
+        <!-- /. tools -->
+      </div>      
+      <!-- /.box-header -->
+      <div class="box-body">
+       <table id="example1" class="table table-bordered table-striped">
+        <thead>
+          <tr>                    
+            <th>Miembro</th>
+            <th>Descripción</th>
+            <th>Acciones</th>                                       
+          </tr>
+        </thead>
+        <tbody>
+         {% if lista_responsables %}
+         {% for responsable in lista_responsables %}
+         <tr>                  
+          <td>{{ responsable.responsble_nombre }}</td>
+          <td>{{ responsable.responsble_descripcion }}</td>
+
+
+          <td>
+            <button type="button" class="btn btn-default" data-toggle="modal-editar" onclick="abrir_modal_editar('{{ responsable.responsable_id }}','{{ responsable.responsble_nombre }}', '{{ responsable.responsble_descripcion }}')" data-target="#modal-editar"><i   class="fa fa-edit"></i>
+            </button>
+
+
+            <button type="button" class="btn btn-danger" data-toggle="#modal_eliminar" onclick="abrir_modal_eliminar('{{ responsable.responsble_nombre }}', '{{ responsable.responsable_id }}')" data-target="#modal_eliminar"><i class="fa fa-trash-o danger"></i>
+            </button>
+
+          </td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+          <td>Aun no cuentas con un equipo de gestión de riesgos.</td>
+          <td></td>
+          <td></td>                  
+        </tr>
+        {% endif %} 
+      </tbody>
+      <tfoot>
+        <tr>                 
+          <th>Miembro</th>
+          <th>Descripción</th>
+          <th>Acciones</th>    
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+  <!-- /.box-body -->     
+
+  
+</div>
+</div>
+</section>
+
+<!-- /.modal-agregar -->
+<div class="modal fade" id="modal-agregar">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Agregar Miembro del equipo de gestión de riesgos</h4>
+        </div>
+        <div class="box-body">
+         <form  action="/mi_proyecto/registrar_responsable/" method="post">
+          {% csrf_token %}
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label >Nombre </label>
+                <input type="text" class="form-control" id="nombre_responsable" name="nombre_responsable">
+              </div>               
+            </div>
+            <!-- /.col -->
+            <div class="col-md-6">             
+              <div class="form-group">
+                <label>Descripción</label>
+                <textarea class="form-control" rows="3"  id="descripcion_responsable" name="descripcion_responsable"></textarea>
+              </div> 
+              <input type="text" class="form-control" id="proyecto_id" name="proyecto_id" value="{{ proyecto.proyecto_id }}" style="visibility:hidden">               
+            </div>
+          </div>          
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary pull-left" data-dismiss="modal">Cerrar</button>
+            <button type="submit" class="btn btn-primary pull-right">Agregar</button>
+          </div>
+          <!-- /.row -->
+        </form>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+
+<!-- /.modal-editar -->
+<div class="modal fade" id="modal-editar">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Editar Miembro del equipo</h4>
+        </div>
+        <div class="box-body">
+         <form  action="/mi_proyecto/editar_responsable/" method="post">
+          {% csrf_token %}
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label >Nombre </label>
+                <input type="text" class="form-control" id="responsable_nombre" name="responsable_nombre" required>
+              </div>               
+            </div>
+            <!-- /.col -->
+            <div class="col-md-6">             
+              <div class="form-group">
+                <label>Descripción</label>
+                <textarea class="form-control" rows="3"  id="responsable_descripcion" name="responsable_descripcion"></textarea>
+              </div>
+              <input type="text" class="form-control" id="responsable_id" name="responsable_id" style="visibility:hidden">                
+            </div>            
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary pull-left" data-dismiss="modal">Cerrar</button>
+            <button type="submit" class="btn btn-primary pull-right">Actualizar</button>
+          </div>
+          <!-- /.row -->
+        </form>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+
+<!-- /.modal-eliminar -->
+
+<div class="modal modal-danger fade" id="modal_eliminar" >
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title"> Eliminar </h4>
+        </div>
+        <form  action="/mi_proyecto/eliminar_responsable/" method="post">
+          {% csrf_token %}
+          <div class="modal-body">
+
+            <p id="contenido_modal">&hellip;</p>
+            <h2 id="responsable"></h2>           
+            <input type="text" class="form-control" id="responsable_id_e" name="responsable_id" style="visibility:hidden">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Cerrar</button>
+            <button type="submit" class="btn btn-outline">Eliminar</button>
+          </div>
+        </form>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+</div>
+</div>
+
+{% endblock %}
+
+{% block organigrama_down %}
+
+ 
+<script type="text/javascript" src="{% static 'risk_project/plugins/org-chart/js/jquery.mockjax.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'risk_project/plugins/org-chart/js/jquery.orgchart.js' %}"></script>
+<script type="text/javascript">
+
+
+  /* ############################
+      Variables globales
+    ###########################
+  */
+  // los datos de la rbs personal
+  var edr_pmbok_static = {"name":"RBS","title":"Estructura desglosada de riesgos","mi_id":"RBS_1","mi_tipo":0,"children":[{"name":"1.1","title":"Riesgo técnico","mi_id":15,"mi_tipo":1,"children":[{"name":"1.1.1","title":"Definición del alcance","mi_id":74,"mi_tipo":2},{"name":"1.1.2","title":"Definición de los requisitos","mi_id":75,"mi_tipo":2},{"name":"1.1.3","title":"Estimaciones, supuestos y restricciones","mi_id":76,"mi_tipo":2},{"name":"1.1.4","title":"Procesos técnicos","mi_id":77,"mi_tipo":2},{"name":"1.1.5","title":"Tecnología","mi_id":78,"mi_tipo":2},{"name":"1.1.6","title":"Interfaces técnicas","mi_id":79,"mi_tipo":2}]},{"name":"1.2","title":"Riesgo de gestión","mi_id":16,"mi_tipo":1,"children":[{"name":"1.2.1","title":"Dirección de proyectos","mi_id":80,"mi_tipo":2},{"name":"1.2.2","title":"Dirección del programa/portafolio","mi_id":81,"mi_tipo":2},{"name":"1.2.3","title":"Gestión de las operaciones","mi_id":82,"mi_tipo":2},{"name":"1.2.4","title":"Organización","mi_id":83,"mi_tipo":2},{"name":"1.2.5","title":"Dotación de recursos","mi_id":84,"mi_tipo":2},{"name":"1.2.6","title":"Comunicación","mi_id":85,"mi_tipo":2}]},{"name":"1.3","title":"Riesgo comercial","mi_id":17,"mi_tipo":1,"children":[{"name":"1.3.1","title":"Términos y condiciones contractuales","mi_id":86,"mi_tipo":2},{"name":"1.3.2","title":"Contratación interna","mi_id":87,"mi_tipo":2},{"name":"1.3.3","title":"Proveedores y vendedores","mi_id":88,"mi_tipo":2},{"name":"1.3.4","title":"Subcontratos","mi_id":89,"mi_tipo":2},{"name":"1.3.5","title":"Estabilidad de los clientes","mi_id":90,"mi_tipo":2},{"name":"1.3.6","title":"Asociaciones y empresas conjuntas","mi_id":91,"mi_tipo":2}]},{"name":"1.4","title":"Riesgo externo","mi_id":18,"mi_tipo":1,"children":[{"name":"1.4.1","title":"Legislación","mi_id":92,"mi_tipo":2},{"name":"1.4.2","title":"Tasas de cambio","mi_id":93,"mi_tipo":2},{"name":"1.4.3","title":"Sitios/Instalaciones","mi_id":94,"mi_tipo":2},{"name":"1.4.4","title":"Ambiental/clima","mi_id":95,"mi_tipo":2},{"name":"1.4.5","title":"Competencia","mi_id":96,"mi_tipo":2},{"name":"1.4.6","title":"Normativo","mi_id":97,"mi_tipo":2}]}]};
+
+  var rbs_proyecto = JSON.parse("{{rbs_proyecto|escapejs}}"); 
+  console.log(rbs_proyecto);
+
+  var rbs_sugerida = JSON.parse("{{rbs_sugerida|escapejs}}"); 
+  console.log(rbs_sugerida);
+
+  $(function() {
+    pintar_edr_propio();
+    pintar_edr_sugerida();
+    pintar_edr_pmbok();    
+  });
+
+  function pintar_edr_pmbok() {
+    $('#chart-container_3').orgchart({
+      'data': edr_pmbok_static,
+      'nodeContent': 'title',
+      'nodeID': 'mi_id',
+      'verticalLevel': 3,
+      'pan': true,
+      'zoom': true,          
+    });
+  }
+
+  function pintar_edr_propio() {
+    $('#chart-container_1').orgchart({
+      'data': traducir_rbs(rbs_proyecto),
+      'nodeContent': 'title',
+      'nodeID': 'mi_id',
+      'verticalLevel': 3,
+      'pan': true,
+      'zoom': true,          
+    });
+  }
+
+function pintar_edr_sugerida() {
+    $('#chart-container_2').orgchart({
+      'data': traducir_rbs(rbs_sugerida),
+      'nodeContent': 'title',
+      'nodeID': 'mi_id',
+      'verticalLevel': 3,
+      'pan': true,
+      'zoom': true,          
+    });
+  }
+ function traducir_rbs(rbs) {
+    contenido = [];
+    let i = 1;
+    rbs.forEach((item) => {
+      let ii = "1." + i;
+      let categoria = {
+        'name': ii,
+        'title': item['categoria']['categoria_nombre'],
+        'mi_id': item['categoria']['categoria_id'],
+        'mi_tipo': 1,
+      };
+      children = [];
+      let j = 1;
+      if (item['subcategorias']) {
+        item['subcategorias'].forEach((sub_item) => {
+          children.push({
+            'name': ii + "." + j,
+            'title': sub_item["sub_categoria_nombre"],
+            'mi_id': sub_item["sub_categoria_id"],
+            'mi_tipo': 2,
+          });
+          j = j + 1;
+        });
+      }
+      categoria["children"] = children;
+      contenido.push(categoria);
+      i = i + 1;
+    });
+
+    return {
+      'name': 'RBS',
+      'title': 'Estructura desglosada de riesgos',
+      'mi_id': "RBS_1",
+      'mi_tipo': 0,
+      'children': contenido
+    }
+  }
+</script>
+
+{% endblock %}
+
+
+{% block mis_scrtips_riesgos %}
+{% load static %}
+<script src="{% static 'risk_project/bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+
+
+<script src="{% static 'risk_project/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+
+
+
+
+<!-- AdminLTE for demo purposes -->
+<script src="{% static 'risk_project/dist/js/demo.js' %}"></script>
+
+  <script>
+  $(function () {
+    $('#example1').DataTable()
+    $('#example2').DataTable({
+      'paging'      : true,
+      'lengthChange': false,
+      'searching'   : false,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : false
+    })
+  })
+</script>
+
+ <script>
+function abrir_modal_eliminar(nombre, id) {
+
+        $("#modal_eliminar").modal('show');
+
+        document.getElementById("contenido_modal").innerHTML = "Estas seguro que desea eliminar este miembro del equipo de gestión de riesgos.";
+        document.getElementById("responsable").innerHTML = " "+nombre;
+        var input_id = document.getElementById("responsable_id_e");       
+        input_id.value = id;
+        
+        return false;
+    };
+
+function abrir_modal_editar(id, nombre, descripcion) {
+            
+        $("#modal-editar").modal('show');
+        var input_id = document.getElementById("responsable_id");
+        var input_nombre = document.getElementById("responsable_nombre");
+        document.getElementById("responsable_descripcion").innerHTML = ""+descripcion;
+        input_id.value = id;
+        input_nombre.value = nombre;
+        
+        return false;
+    };
+
+
+
+
+</script>
+
+{% endblock %}

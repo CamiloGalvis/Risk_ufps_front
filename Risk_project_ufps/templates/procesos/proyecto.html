@@ -1,0 +1,193 @@
+{% extends "procesos/plantilla_procesos.html" %}
+
+{% block title %} RiskProject UFPS | {{ proyecto.proyecto_nombre }} {% endblock %}
+
+
+{% block content %}
+
+
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <div class="container">
+    <section class="content-header">
+      <h1>
+        {{ proyecto.proyecto_nombre }}
+        <small>Panel de Control</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Inicio</a></li>
+        <li class="active">{{ proyecto.proyecto_nombre }}</li>
+      </ol>
+      {% if mensaje %}
+    <div class="callout callout-warning">
+      <h4>Registro Exitoso</h4>
+      {{mensaje}}      
+    </div>
+    {% endif %}
+    </section>
+    </section>
+
+    <section class="content">
+      <div class="col-md-12">
+       <div class="box box-default">
+
+
+        <div class="nav-tabs-custom">
+          <ul class="nav nav-tabs">
+            <li class="active"><a href="#perfil" data-toggle="tab">Información</a></li>
+
+            <li><a href="#editar_perfil" data-toggle="tab">Editar</a></li>
+          </ul>
+          <div class="tab-content">
+            <div class="active tab-pane" id="perfil">
+
+             <form class="form-horizontal">
+
+              <div class="form-group">
+                <label for="inputName" class="col-sm-2 control-label">Nombre</label>
+
+                <div class="col-sm-10">
+                  <h5>{{ proyecto.proyecto_nombre }}</h5>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="inputEmail" class="col-sm-2 control-label">Objetivo</label>
+
+                <div class="col-sm-10">
+                  <h5>{{ proyecto.proyecto_objetivo }}</h5>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="inputName" class="col-sm-2 control-label">Descripción</label>
+
+                <div class="col-sm-10">
+                  <h5>{{ proyecto.proyecto_descripcion }}</h5>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="inputExperience" class="col-sm-2 control-label">Alcance</label>
+
+                <div class="col-sm-10">
+                  <h5>{{ proyecto.proyecto_alcance }}</h5>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="inputSkills" class="col-sm-2 control-label">Presupuesto</label>
+
+                <div class="col-sm-10">
+                  <h5>{{ proyecto.proyecto_presupuesto }}</h5>
+                </div>
+              </div> 
+              <div class="form-group">
+                <label for="inputSkills" class="col-sm-2 control-label">Sector</label>
+
+                <div class="col-sm-10">
+                  <h5>{{ proyecto.sector.sector_nombre }}</h5>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="inputSkills" class="col-sm-2 control-label">Fecha de inicio</label>
+
+                <div class="col-sm-10">
+                  <h5>{{ proyecto.proyecto_fecha_inicio }}</h5>
+                </div>
+              </div>                 
+            </form>
+
+
+          </div>
+          <div class="tab-pane" id="editar_perfil">
+            <form class="form-horizontal" action="/mi_proyecto/{{ proyecto.proyecto_id }}/" method="post">
+              {% csrf_token %}
+              <div class="form-group">
+                <label for="inputName" class="col-sm-2 control-label">Nombre</label>
+
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="proyecto_nombre" name="proyecto_nombre" value="{{ proyecto.proyecto_nombre }}" required>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="inputEmail" class="col-sm-2 control-label">Objetivo</label>
+
+                <div class="col-sm-10">
+                  <textarea class="form-control" rows="2" name="proyecto_objetivo" required>{{ proyecto.proyecto_objetivo }}</textarea>
+                                     
+                </div>
+              </div>                  
+              <div class="form-group">
+                <label for="inputExperience" class="col-sm-2 control-label">Descripción</label>
+
+                <div class="col-sm-10">
+                   <textarea class="form-control" rows="2" name="proyecto_descripcion" required>{{ proyecto.proyecto_descripcion }}</textarea>                                        
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="inputSkills" class="col-sm-2 control-label">Alcance</label>
+
+                <div class="col-sm-10">
+                  <textarea class="form-control" rows="2" name="proyecto_alcance" required>{{ proyecto.proyecto_alcance }}</textarea>                     
+                </div>
+              </div> 
+              <div class="form-group">
+                <label for="inputSkills" class="col-sm-2 control-label">Presupuesto</label>
+
+                <div class="col-sm-10">
+                  <input type="number" class="form-control" id="proyecto_presupuesto" name="proyecto_presupuesto" value='{{ proyecto.proyecto_presupuesto }}' required> 
+                  <h5></h5>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="inputSkills" class="col-sm-2 control-label">Fecha de Inicio</label>
+
+                <div class="col-sm-10">
+                  <div class="input-group date">
+                <div class="input-group-addon">
+                  <i class="fa fa-calendar"></i>
+                </div>
+                <input type="date" class="form-control pull-right" name="proyecto_fecha_inicio" value="{{ proyecto.proyecto_fecha_inicio }}" required>
+              </div>
+                </div>
+              </div>  
+              <div class="form-group">
+                <label for="inputSkills" class="col-sm-2 control-label">Sector</label>
+                <div class="col-sm-10">
+                 {% if lista_sectores %}
+                 <select class="form-control select2" style="width: 100%;" name="proyecto_sector" id="proyecto_sector" required>
+                  <option value="{{ proyecto.sector.sector_id }}">{{ proyecto.sector.sector_nombre }}</option>
+                  {% for sector in lista_sectores %}                      
+                  <option value="{{ sector.sector_id }}">{{ sector.sector_nombre }}</option>                      
+                  {% endfor %} 
+                </select>
+                {% endif %}
+              </div>
+            </div>                
+            <div class="form-group">
+              <div class="col-sm-offset-2 col-sm-10">
+
+                <label>
+                  <p>Las operaciones realizadas no se podran reversar.</p>
+                </label>
+
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-warning">Actualizar</button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <!-- /.tab-pane -->
+      </div>
+      <!-- /.tab-content -->
+    </div>
+    <!-- /.nav-tabs-custom -->
+  </div>
+  <!-- /.col -->
+</div>
+
+</div>
+</div>
+
+{% endblock %}
+

@@ -1,0 +1,302 @@
+{% extends "procesos/plantilla_procesos.html" %}
+
+{% block title %} RiskProject UFPS | {{ proyecto.proyecto_nombre }} {% endblock %}
+
+
+{% block content %}
+
+
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <div class="container">
+    <section class="content-header">
+      <h1>
+        {{ proyecto.proyecto_nombre }}
+        <small>Recursos</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> {{ proyecto.proyecto_nombre }}</a></li>
+        <li class="active">Recursos</li>
+      </ol>
+      {% if mensaje %}
+      <div class="callout callout-info">
+        <h4>Registro Exitoso</h4>
+        {{mensaje}}      
+      </div>
+      {% endif %}
+      {% if mensaje_eliminar %}
+    <div class="callout callout-danger">
+      <h4>Borrado Exitoso</h4>
+      {{mensaje_eliminar}}      
+    </div>
+    {% endif %}
+
+    {% if mensaje_editar %}
+    <div class="callout callout-warning">
+      <h4>Actualización Exitosa</h4>
+      {{mensaje_editar}}      
+    </div>
+    {% endif %}
+    </section>
+  </section>
+
+  <section class="content">
+  
+  <div class="box box-warning">
+    <div class="box-header with-border">
+      <h3 class="box-title">Registrar Recurso</h3>
+
+      <div class="box-tools pull-right">
+        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>
+      </div>
+    </div>
+
+    <!-- /.box-header -->
+
+    <div class="box-body">
+      <form role="form" action="/recursos/{{ proyecto.proyecto_id }}/" method="post">
+        {% csrf_token %}
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+
+              <div class="form-group">
+                <label >Nombre Recurso</label>
+                <input type="text" class="form-control" id="sub_categoria_nombre" placeholder="Ingrese Nombre del recurso" name="recurso_nombre">
+              </div>
+
+            </div>
+            <div class="form-group">
+              <label>Tipo de recurso al que pertenece</label>
+              {% if tipos_recursos %}
+              <select class="form-control select2" id="tipo_recurso_id" name="tipo_recurso_id" style="width: 100%;">
+                {% for tipo_recurso in tipos_recursos %}
+                <option value="{{tipo_recurso.tipo_recurso_id}}">
+                  {{tipo_recurso.tipo_recurso_nombre}}
+                </option>
+                {% endfor %}
+              </select>
+              {% endif %} 
+
+            </div>
+          </div>
+          <!-- /.col -->
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Costo</label>
+              <input type="number" class="form-control" id="recurso_costo" placeholder="Ingrese Costo del recurso" name="recurso_costo">
+            </div>
+            <div class="box-footer">
+              <button type="submit" class="btn btn-default">Cancelar</button>
+              <button type="submit" class="btn btn-warning pull-right">Registrar</button>
+            </div>
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </form>
+    </div>
+
+  </div>
+
+    <div class="box box-danger">
+    <div class="box-header with-border">
+      <h3 class="box-title">Mis Recursos</h3>
+
+      <div class="box-tools pull-right">
+        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>
+      </div>
+    </div>
+
+    <!-- /.box-header -->
+
+    
+          <div class="box-body">
+            <div   class="box-body no-padding">
+
+
+              <table id="example1"class="table table-bordered table-striped">
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Costo</th> 
+                    <th>Tipo</th>                   
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% if lista_recursos %}
+                  {% for recurso in lista_recursos %}
+                  <tr>
+                    <td class="mailbox-name" >{{ recurso.recurso_nombre }}</td>
+                    <td class="mailbox-subject">{{ recurso.recurso_costo }}</td>  
+                    <td class="mailbox-subject">{{ recurso.tipo_recurso.tipo_recurso_nombre }}</td>                    
+                    <td>
+
+                     <button type="button" class="btn btn-default" data-toggle="modal-editar" onclick="abrir_modal_editar('{{ recurso.recurso_nombre }}', '{{ recurso.recurso_id }}')" data-target="#modal-editar"><i   class="fa fa-edit"></i>
+                     </button>
+
+
+                     <button type="button" class="btn btn-danger" data-toggle="#modal_eliminar" onclick="abrir_modal_eliminar('{{ recurso.recurso_nombre }}', '{{ recurso.recurso_id }}')" data-target="#modal_eliminar"><i class="fa fa-trash-o danger"></i>
+                     </button>
+
+                   </td>
+                 </tr>
+                  {% endfor %}
+                  {% else %}
+                  <tr>
+                    <td class="mailbox-name" >Aun no tienes recursos asignados al proyecto</td>
+                    <td class="mailbox-subject"></td>
+                    <td class="mailbox-subject"></td>
+                    <td class="mailbox-subject"></td>
+                  </tr> 
+                   {% endif %} 
+                </tbody>
+              </table>
+              
+            </div>
+           
+          </div>
+  
+    
+  </div>
+</div>
+
+<div class="modal fade" id="modal-editar">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Editar Tipo de Recurso</h4>
+          </div>
+          <div class="box-body">
+           <form  action="/editar_recurso/{{ proyecto.proyecto_id }}/" method="post">
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                <label >Nombre </label>
+                <input type="text" class="form-control" id="recurso_nombre" name="recurso_nombre" required>
+                </div>               
+              </div>
+              <!-- /.col -->
+              <div class="col-md-6">             
+                <div class="form-group">
+                <label >Costo </label>
+                <input type="number" class="form-control" id="recurso_costo" name="recurso_costo" required>
+                </div>
+                <input type="text" class="form-control" id="recurso_id" name="recurso_id" style="visibility:hidden">
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary pull-left" data-dismiss="modal">Cerrar</button>
+              <button type="submit" class="btn btn-primary pull-right">Actualizar</button>
+            </div>
+            <!-- /.row -->
+          </form>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+
+  <!-- /.modal-eliminar -->
+
+  <div class="modal modal-danger fade" id="modal_eliminar" >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title"> Eliminar </h4>
+          </div>
+          <form  action="/eliminar_recurso/{{ proyecto.proyecto_id }}/" method="post">
+            {% csrf_token %}
+          <div class="modal-body">
+            
+            <p id="contenido_modal">&hellip;</p>
+            <h2 id="recurso"></h2>           
+            <input type="text" class="form-control" id="recurso_id_e" name="recurso_id" style="visibility:hidden" >
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Cerrar</button>
+            <button type="submit" class="btn btn-outline">Eliminar</button>
+          </div>
+          </form>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+    </div>
+
+
+
+
+</div>
+
+
+
+{% endblock %}
+
+{% block mis_scrtips_riesgos %}
+{% load static %}
+<!-- DataTables -->
+<script src="{% static 'risk_project/bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+
+
+<script src="{% static 'risk_project/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+
+
+
+
+<!-- AdminLTE for demo purposes -->
+<script src="{% static 'risk_project/dist/js/demo.js' %}"></script>
+
+  <script>
+  $(function () {
+    $('#example1').DataTable()
+    $('#example2').DataTable({
+      'paging'      : true,
+      'lengthChange': false,
+      'searching'   : false,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : false
+    })
+  })
+</script>
+
+ <script>
+function abrir_modal_eliminar(nombre, id) {
+
+        
+
+        $("#modal_eliminar").modal('show');
+        document.getElementById("contenido_modal").innerHTML = "Estas seguro que desea eliminar el recurso del proyecto.";
+        document.getElementById("recurso").innerHTML = " "+nombre;
+        var input_id = document.getElementById("recurso_id_e");
+        
+        input_id.value = id;
+        
+        return false;
+    };
+
+function abrir_modal_editar(nombre, id) {
+            
+        $("#modal-editar").modal('show');
+        var input_id = document.getElementById("recurso_id");
+        var input_nombre = document.getElementById("recurso_nombre");        
+        input_id.value = id;
+        input_nombre.value = nombre;
+        
+        return false;
+    };
+
+
+</script>
+
+{% endblock %}
