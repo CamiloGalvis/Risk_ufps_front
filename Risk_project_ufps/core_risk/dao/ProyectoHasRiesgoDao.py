@@ -6,6 +6,19 @@ from Risk_project_ufps.core_risk.dto.models import *
 
 class ProyectoHasRiesgoDao():
 
+    """def registrar_proyecto_riesgo(self, proyecto, riesgo):
+        proyecto_riesgo = None
+        try:
+            proyecto_riesgo = ProyectoHasRiesgo(
+                proyecto = proyecto,
+                riesgo = riesgo             
+            )
+            proyecto_riesgo.save()      
+        except Error as e:
+            print(e)
+        finally:
+            return proyecto_riesgo"""
+
     def registrar_proyecto_riesgo(self, proyecto, riesgo):
         with closing(connection.cursor()) as cursor:        
             cursor.execute(
@@ -14,7 +27,7 @@ class ProyectoHasRiesgoDao():
                 (proyecto.proyecto_id, riesgo.riesgo_id),
             )
 
-    def get_by_riesgo_and_proyecto(self, proyecto, riesgo):        
+    def get_by_riesgo_and_proyecto(self, proyecto, riesgo):         
         proyecto_riesgo = None
         try:        
             proyecto_riesgo = ProyectoHasRiesgo.objects.get(riesgo_id = riesgo, proyecto_id = proyecto)            
@@ -22,6 +35,7 @@ class ProyectoHasRiesgoDao():
             proyecto_riesgo = None
         finally:
             return proyecto_riesgo
+
 
     def eliminar_by_riesgo_and_proyecto(self, proyecto_riesgo):        
         proyecto_riesgo = proyecto_riesgo
@@ -31,8 +45,6 @@ class ProyectoHasRiesgoDao():
             proyecto_riesgo = None
         finally:
             return "Se eliminó riesgo del proyecto de forma exitosa."
-
-
 
 
 

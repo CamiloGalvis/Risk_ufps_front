@@ -54,6 +54,7 @@ class SubcategoriaDao():
             return sub_categorias       
 
     def duplicar_sub_categoria(self, categoria, subcategoria):
+        """En el primer metodo por alguna razon la subcategoria llega una lista y no un modelo"""
         sub_categoria = None        
         #try:
         sub_categoria = SubCategoria(
@@ -68,6 +69,26 @@ class SubcategoriaDao():
             #print(e)        
         #finally:
         return sub_categoria
+
+    def duplicar_sub_categoria_2(self, categoria, subcategoria):
+        """Aqui la subcategoria es un Models"""
+        sub_categoria = None        
+        try:
+            sub_categoria_aux = SubCategoria.objects.get(sub_categoria_nombre = subcategoria.sub_categoria_nombre, categoria = categoria)
+            if(sub_categoria_aux):
+                sub_categoria = sub_categoria_aux
+            else:
+                sub_categoria = SubCategoria.objects.create(
+                    sub_categoria_nombre = subcategoria.sub_categoria_nombre,
+                    sub_categoria_descripcion = subcategoria.sub_categoria_descripcion,
+                    sub_categoria_default = 2,
+                    sub_categoria_uid = subcategoria.sub_categoria_uid,
+                    categoria = categoria
+                )
+        except Exception as e:
+            raise e        
+        finally:
+            return sub_categoria
 
 
 

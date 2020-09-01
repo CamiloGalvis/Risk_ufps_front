@@ -53,7 +53,7 @@
       <!-- /.box-header -->
 
       <div class="box-body">
-
+        {% if rbs %}
         <form role="form" id="form_proyecto" action="{% url 'nuevo_proyecto' %}" method="post">
           {% csrf_token %}
           <div class="row">
@@ -122,6 +122,14 @@
           </div>
           <!-- /.row -->
         </form>
+        {% else %}
+        <div class="pad margin no-print">
+          <div class="callout callout-info" style="margin-bottom: 0!important;">
+            <h4>Nota:</h4>
+            Hasta el momento no puede agregar proyectos porque no cuenta con una EDR definida. Por favor, configure su EDR <a href="/mi_rbs/">aquí.</a>
+          </div>
+        </div>
+        {% endif %} 
       </div>
 
       <!-- /.box-body -->

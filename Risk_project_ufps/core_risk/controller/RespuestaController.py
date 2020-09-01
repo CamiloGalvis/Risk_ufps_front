@@ -21,6 +21,7 @@ class RespuestaController():
 		respuesta_dao = RespuestaDao()
 		return respuesta_dao.editar_respuesta(respuesta, nombre, descripcion)
 
+
 	def registrar_respuesta_riesgo(self, respuesta, riesgo):
 		respuesta_riesgo_dao = RiesgoHasRespuestaDao()
 		return respuesta_riesgo_dao.registrar_respuesta_riesgo(respuesta, riesgo)
@@ -29,6 +30,7 @@ class RespuestaController():
 		respuesta_riesgo_dao = RiesgoHasRespuestaDao()
 		return respuesta_riesgo_dao.listar_respuesta_riesgo(id)
 
+	
 	def obtener_respuesta_riesgo(self, riesgo, respuesta):
 		respuesta_riesgo_dao = RiesgoHasRespuestaDao()
 		return respuesta_riesgo_dao.obtener_respuesta_riesgo(riesgo, respuesta)
@@ -38,6 +40,8 @@ class RespuestaController():
 		return p_r_r.registrar_respuesta_proyecto(proyecto_riesgo, riesgo_respuesta)
 
 
+
 	def listar_riesgos_respuesta(self, proyecto_id):
 		p_r_r= ProyectoHasRiesgo_RespuestaDao()
 		return p_r_r.listar_riesgos_respuesta(proyecto_id)
+

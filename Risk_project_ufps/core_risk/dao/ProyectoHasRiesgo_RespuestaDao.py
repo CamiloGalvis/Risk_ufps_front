@@ -28,4 +28,3 @@ class ProyectoHasRiesgo_RespuestaDao():
 
 		finally:
 			return respuestas 
-

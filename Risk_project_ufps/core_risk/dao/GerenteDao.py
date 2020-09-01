@@ -34,7 +34,8 @@ class GerenteDao():
 
 
   def obtener_gerente(self, id):
-   	gerente = None
+   	gerente = {}
+
    	try:
    		gerente = Gerente.objects.get(gerente_id=id)
    	except Error as e:

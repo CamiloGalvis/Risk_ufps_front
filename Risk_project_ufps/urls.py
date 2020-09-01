@@ -44,13 +44,16 @@ urlpatterns = [
     path('mi_proyecto/editar_responsable/', editar_responsable, name='editar_responsable'),
     path('mi_proyecto/eliminar_responsable/', eliminar_responsable, name='eliminar_responsable'),
     
-    path('mi_proyecto/<int:proyecto_id>/identificar/', identificar_proyecto, name='mi_proyecto'),        
+    path('mi_proyecto/<int:proyecto_id>/identificar/', identificar_proyecto, name='mi_proyecto'),
     path('proyecto/riesgo/insertar/', registrar_riesgo_proyecto, name='mi_proyecto'),
     path('proyecto/<int:proyecto_id>/eliminar_riesgo/', eliminar_riesgo_proyecto, name='eliminar_riesgo_proyecto'),
     path('proyecto/<int:proyecto_id>/nueva_respuesta/', proyecto_nueva_respuesta, name='proyecto_nueva_respuesta'),
 
+    
+
     path('mi_proyecto/<int:proyecto_id>/identificar/asociar_riesgo/', asociar_riesgo, name='asociar_riesgo'),
     path('mi_proyecto/<int:proyecto_id>/generar_informe/', generar_informe_identificar, name='generar_informe_identificar'),
+    path('mi_proyecto/<int:proyecto_id>/generar_informe_planificar/', generar_informe_planificar, name='generar_informe_planificar'),
 
 
     #url de recursos
