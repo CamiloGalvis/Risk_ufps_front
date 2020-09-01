@@ -418,10 +418,10 @@
                   </tr>
                 </thead>
                 <tbody>
-                 {% if lista_actividades %}
-                 {% for actividad in lista_actividades %}
+                 {% if respuestas_riesgo %}
+                 {% for respuesta in respuestas_riesgo %}
                  <tr>
-                  <td>{{ actividad.actividad_nombre }}</td>                                       
+                  <td>{{ respuesta.respuesta.respuesta_nombre }}</td>                                       
                   <td>
                     <button type="button" class="btn btn-default" data-toggle="modal-editar" onclick="abrir_modal_editar('{{ riesgo.riesgo_id }}','{{ riesgo.riesgo_nombre }}', '{{ riesgo.riesgo_causa }}', '{{ riesgo.riesgo_evento }}', '{{ riesgo.riesgo_efecto }}')" data-target="#modal-editar"><i   class="fa fa-edit"></i>
                     </button>
@@ -457,11 +457,17 @@
               <div class="col-md-12">
                 <div class="form-group">
                   <div id="bloq_subcategorias" class="form-group">
-                    <label>Actividades</label>                    
+                    <label>Actividades</label>
+                    {% if lista_actividades %}                    
                     <select class="form-control select2" id="riesgo_id" name="riesgo_id">
+                      {% for actividad in lista_actividades %}
                       <option value="{{ actividad.actividad_id }}">
-                       Actividades del proyecto
+                       {{ actividad.actividad_nombre }}
                      </option>
+                     {% endfor %}
+                     {% else %}
+                     <p>No cuentas con actividades asociadas al proyecto.</p>
+                     {% endif %} 
                    </select>
                  </div>
                </div>
@@ -516,7 +522,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                 {% if lista_responsables %}
+                 {% if lista_responsables_r %}
                  {% for responsable in lista_responsables %}
                  <tr>
                   <td>{{ responsable.responsable_nombre }}</td>                                       
@@ -551,11 +557,17 @@
               <div class="col-md-12">
                 <div class="form-group">
                   <div id="bloq_subcategorias" class="form-group">
-                    <label>Responsables</label>                    
+                    <label>Responsables</label>
+                    {% if lista_responsables %}                    
                     <select class="form-control select2" id="riesgo_id" name="riesgo_id">
-                      <option value="{{ actividad.actividad_id }}">
-                       Responsables del proyecto
+                      {% for responsable in lista_responsables %}
+                      <option value="{{ responsable.responsable_id }}">
+                       {{ responsable.responsble_nombre }}
                      </option>
+                     {% endfor %}
+                     {% else %}
+                     <p>No cuentas con responsables asociados al proyecto.</p>
+                     {% endif %} 
                    </select>
                  </div>
                </div>

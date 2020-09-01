@@ -17,3 +17,15 @@ class ProyectoHasRiesgo_RespuestaDao():
 
 			return "Se registro respuesta exitosamente."
 
+	def listar_riesgos_respuesta(self, proyecto_id):
+		respuestas = {}
+		try:
+			#Revisar esta consulta
+			respuestas = ProyectoHasRiesgoRespuesta.objects.raw("SELECT * FROM riesgo_has_respuesta re INNER JOIN proyecto_has riesgo_respuesta pr ON re.riesgo_has_respuesta_id=pr.respuesa_has_id INNER JOIN proyecto_has_riesgo tr ON pr.proyecto_has_id=tr.proyecto_has_riesgo_id WHERE tr.proyecto_id = %s", [proyecto_id])
+		
+		except Error as e:
+			print(e)
+
+		finally:
+			return respuestas 
+

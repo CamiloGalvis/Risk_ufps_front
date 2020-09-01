@@ -36,3 +36,8 @@ class RespuestaController():
 	def registrar_respuesta_proyecto(self, proyecto_riesgo, riesgo_respuesta):
 		p_r_r= ProyectoHasRiesgo_RespuestaDao()
 		return p_r_r.registrar_respuesta_proyecto(proyecto_riesgo, riesgo_respuesta)
+
+
+	def listar_riesgos_respuesta(self, proyecto_id):
+		p_r_r= ProyectoHasRiesgo_RespuestaDao()
+		return p_r_r.listar_riesgos_respuesta(proyecto_id)

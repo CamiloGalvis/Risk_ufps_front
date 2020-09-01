@@ -19,6 +19,7 @@ from Risk_project_ufps.core_risk.controller.RespuestaController import *
 from Risk_project_ufps.core_risk.controller.TipoRecursoController import *
 from Risk_project_ufps.core_risk.controller.RecursoController import *
 from Risk_project_ufps.core_risk.controller.ResponsableController import *
+from Risk_project_ufps.core_risk.controller.ActividadController import *
 from Risk_project_ufps.core_risk.controller.ReporteController import *
 """
 ////////////////////////////////////////////////////////////////////////////
@@ -675,7 +676,14 @@ def identificar_proyecto(request, proyecto_id):
     rbsJSON = dumps(rbs)
     riesgo_controller = RiesgoController()    
     lista_riesgos = riesgo_controller.get_riesgos_by_proyecto(proyecto)
-    return render(request, "procesos/identificar_riesgos.html", {'proyecto':proyecto, 'rbs':rbsJSON, 'lista_riesgos':lista_riesgos})
+    responsable_controller = ResponsableController()
+    lista_responsables = responsable_controller.listar_responsables(proyecto.proyecto_id)
+    actividad_controller = ActividadController()
+    lista_actividades = actividad_controller.listar_actividades_proyecto(proyecto_id)
+    #respuesta_controller = RespuestaController()
+    #respuestas_riesgo = respuesta_controller.listar_riesgos_respuesta(proyecto_id)
+    
+    return render(request, "procesos/identificar_riesgos.html", {'proyecto':proyecto, 'rbs':rbsJSON, 'lista_riesgos':lista_riesgos, 'lista_responsables':lista_responsables, 'lista_actividades':lista_actividades})
 
 
 
