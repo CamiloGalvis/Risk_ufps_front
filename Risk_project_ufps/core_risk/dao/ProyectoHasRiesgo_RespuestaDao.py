@@ -16,4 +16,3 @@ class ProyectoHasRiesgo_RespuestaDao():
             )
 
 			return "Se registro respuesta exitosamente."
-

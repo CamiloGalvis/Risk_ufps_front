@@ -3,6 +3,7 @@ from Risk_project_ufps.core_risk.dto.models import *
 class CategoriaDao():
   
   def duplicar_categoria(self, categoria, rbs):
+    """Aqui llega es una lista categoria"""
     categ = None
     try:  
         categ = Categoria.objects.create(         
@@ -12,10 +13,31 @@ class CategoriaDao():
             categoria_uid = categoria["categoria_uid"],
             rbs = rbs
         )
-    except Error as e:
-      print(e)
+    except Exception as e:
+      raise e
     finally:      
         return categ
+
+  def duplicar_categoria_2(self, categoria, rbs):
+    """ Aqui llega un model"""
+    categ = None
+    try: 
+      aux_categoria = Categoria.objects.get(categoria_nombre = categoria.categoria_nombre, rbs = rbs)
+      
+      if(aux_categoria):
+        categ = aux_categoria
+      else:   
+        categ = Categoria.objects.create(         
+            categoria_nombre = categoria.categoria_nombre,
+            categoria_descripcion = categoria.categoria_descripcion,
+            categoria_default = 2,
+            categoria_uid = categoria.categoria_uid,
+            rbs = rbs
+        )
+    except Exception as e:
+      raise e
+    finally:      
+      return categ
       
 
   def get_categorias_by_gerente(self, gerente):

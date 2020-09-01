@@ -47,6 +47,7 @@
       </div>
       <div class="box-body">
         Aqui deberia ir la información del proyecto.
+        <a href="/mi_proyecto/{{ proyecto.proyecto_id }}/generar_informe/">Generar informe</a>
       </div>
       <!-- /.box-body -->
     </div>
@@ -105,9 +106,81 @@
                 </tfoot>
               </table>
             </div>                
-          </div>
-          <div class="chart tab-pane " id="sales-chart" style="position: relative; height: 300px;"></div>
+          </div>          
         </div>
+        <div class="chart tab-pane " id="sales-chart" style="position: relative; height: 300px; overflow:auto;">
+                {% if lista_riesgos_sugeridos %}
+              
+                <table class="table table-bordered table-striped">
+                    <thead>
+                      <tr>
+                        <th></th>
+                        <th>Nombre</th>
+                        <th>Causa</th>
+                        <th>Evento</th>
+                        <th>Efecto</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    {% for riesgo in lista_riesgos_sugeridos %}
+                      <tr>
+                        <td><input type="checkbox" value="{{riesgo.riesgo_id}}" name="riesgo_sugerido"></td>
+                        <td>{{riesgo.riesgo_nombre}}</td> 
+                        <td>{{riesgo.riesgo_causa}}</td>
+                        <td>{{riesgo.riesgo_evento}}</td>
+                        <td>{{riesgo.riesgo_efecto}}</td>                
+                      </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <th></th>
+                          <th>Nombre</th>
+                          <th>Causa</th>
+                          <th>Evento</th>
+                          <th>Efecto</th>
+                      </tr>
+                    </tfoot>
+                </table>
+
+                {% else %}
+                <div class="pad margin no-print">
+                  <div class="callout callout-info" style="margin-bottom: 0!important;">
+                    <h4>Nota:</h4>
+                    Hasta el momento no existen proyectos que se relacionen con el sector del suyo. 
+                  </div>
+                </div>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                      <tr>
+                        <th></th>
+                        <th>Nombre</th>
+                        <th>Causa</th>
+                        <th>Evento</th>
+                        <th>Efecto</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td></td>
+                        <td>No existen riesgos para sugerir</td>              
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                      </tr>
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <th></th>
+                          <th>Nombre</th>
+                          <th>Causa</th>
+                          <th>Evento</th>
+                          <th>Efecto</th>
+                      </tr>
+                    </tfoot>
+                </table>
+                {% endif %} 
+              </div>
         <div class="form-group">
         <div class="row no-print">
           <div class="col-md-11">   
@@ -123,10 +196,8 @@
     </div>
     </div>
     <!-- Cerrar Identificar riesgos-->
-
-
-
-    <div class="box box-default">
+        
+  <div class="box box-default">
       <div class="box-header with-border">
         <h3 class="box-title">Riesgos del proyecto</h3>
       </div>
@@ -717,9 +788,15 @@
 
 
   <script type="text/javascript">
-  var data = JSON.parse("{{rbs|escapejs}}"); 
-console.log(data);
-var diccionario = {};
+  
+  //////////////////////////////////////////
+  // Variables globales
+  /////////////////////////////////////////
+
+  var data = JSON.parse("{{rbs|escapejs}}");   
+
+  var diccionario = {};
+
 
 function formatear_data(){  
   data.forEach(function(element){
@@ -756,12 +833,14 @@ function set_riesgo(subcategoria){
   body_riesgos.innerHTML = "";
   let riesgos = get_riesgos_by_sub_categoria_id(subcategoria.value);
   let flag = false;
+  let construidos = 0;
   for (var i = 0; i < riesgos.length; i++) {     
     if(!riesgos[i]["is_assigned"]){
       let tr = document.createElement("tr");   
       let input = document.createElement("input");
       input.setAttribute("type", "checkbox");
       input.setAttribute("value", riesgos[i]["riesgo_id"]);
+      input.setAttribute("name", "riesgo_propio");
       let td_nombre = document.createElement("td");
       td_nombre.appendChild(document.createTextNode(riesgos[i]["riesgo_nombre"]));
       let td_causa = document.createElement("td");
@@ -776,7 +855,16 @@ function set_riesgo(subcategoria){
       tr.appendChild(td_evento);
       tr.appendChild(td_efecto);
       body_riesgos.appendChild(tr);
+      construidos = construidos + 1;
     }       
+  }
+  if(construidos == 0){
+    let tr = document.createElement("tr");   
+    let td_nombre = document.createElement("td");
+    td_nombre.appendChild(document.createTextNode("No existen riesgos para agregar para esta sección."));
+    tr.appendChild(document.createElement("td"));
+    tr.appendChild(td_nombre);
+    body_riesgos.appendChild(tr);
   }
 }
 
@@ -791,16 +879,23 @@ function get_riesgos_by_sub_categoria_id(sub_categoria_id) {
 }
 
 function asosiar_riesgos(proyecto_id){
-  let riesgos_seleccionados = $("input[type = 'checkbox']:checked");
+  let riesgos_seleccionados = $("input[type = 'checkbox'][name = 'riesgo_propio']:checked");
+  let riesgos_sugeridos = $("input[type = 'checkbox'][name = 'riesgo_sugerido']:checked");
+  console.log(riesgos_sugeridos);
   let aux = [];
+  let aux_sugeridos = [];
   for (var i = 0; i < riesgos_seleccionados.length; i++) {
     aux.push(riesgos_seleccionados[i].value);
   }
+  for (var i = 0; i < riesgos_sugeridos.length; i++) {
+    aux_sugeridos.push(riesgos_sugeridos[i].value);
+  }
   $.ajax({
     type: 'POST',
-    url: "/mi_proyecto/"+proyecto_id+"/identificar/asociar_riesgo/",    
-    headers: {'X-CSRFToken': csrftoken},      
-    data: {"riesgos_seleccionados":JSON.stringify(aux)},
+    url: "/mi_proyecto/"+proyecto_id+"/identificar/asociar_riesgo/",   
+    headers: {'X-CSRFToken': csrftoken},   
+    //contentType:'json',   
+    data: {"riesgos_seleccionados":JSON.stringify(aux), "riesgos_sugeridos": JSON.stringify(aux_sugeridos)},
     success: function(data, status, xhr) {
       alert("Asignados correctamente");
       location.reload();

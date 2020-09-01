@@ -1,8 +1,13 @@
 from Risk_project_ufps.core_risk.dao.RiesgoDao import *
+from Risk_project_ufps.core_risk.dao.ResponsableDao import *
 
 from Risk_project_ufps.core_risk.dto.models import *
 
+from Risk_project_ufps.core_risk.util.reporteEXCEL import *
 
+from datetime import datetime
+
+from django.forms.models import model_to_dict
 
 class ReporteController():
     
@@ -25,6 +30,26 @@ class ReporteController():
         return nombreEXCEL+".xlsx"
         
 
+    def generar_reporte_planificar(self, proyecto):
+        """Llamar la función Exportar, la cuál esta en la clase reporteEXCEL,
+       a esta clase le pasamos el título de la tabla, la cabecera, los
+       registros y el nombre del archivo xlsx (EXCEL)."""
+        propietario = proyecto.gerente.gerente_nombre
+        titulo = "REPORTE PROYECTO " + proyecto.proyecto_nombre
+        cabecera = ("RESPONSABLE", "DESCRIPCION")
+        responsable_dao = ResponsableDao()
+        responsables = responsable_dao.listar_responsables(proyecto.proyecto_id)
+        registros = self.tamizar_responsables(responsables)        
+        """registros = [(1110800310, "Andres", "Niño", "06/06/2019", "we", 43),
+             (1110800311, "Andres", "Niño", "06/06/2019",  "we", 43),
+             (1110800312, "Andres", "Niño", "06/06/2019",  "we", 43),
+             ]"""
+        nombreEXCEL = "reporte_"+self.get_datetime()
+        reporte = reporteEXCEL(titulo, cabecera, registros, nombreEXCEL, propietario).Exportar_planificar(proyecto.proyecto_objetivo, proyecto.proyecto_alcance)
+        return nombreEXCEL+".xlsx"
+
+
+
     def get_datetime(self):
         now = datetime.now()
         date_time = now.strftime("%m_%d_%Y")
@@ -41,5 +66,15 @@ class ReporteController():
                 riesgo['riesgo_causa'],
                 riesgo['riesgo_evento'],
                 riesgo['riesgo_efecto']
+            ])
+        return aux
+
+    def tamizar_responsables(self, raw_qs):
+        aux = []
+        for row in raw_qs:
+            responsable = model_to_dict(row)
+            aux.append([                
+                responsable['responsble_nombre'],
+                responsable['responsble_descripcion']
             ])
         return aux

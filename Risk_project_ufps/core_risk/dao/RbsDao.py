@@ -7,7 +7,7 @@ class RbsDao():
     try:            
       rbs = Rbs.objects.get(gerente = gerente)      
     except Exception as inst:
-      print(inst)
+      raise inst
     finally:      
       return rbs     
 

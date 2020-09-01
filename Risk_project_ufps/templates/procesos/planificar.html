@@ -2,7 +2,7 @@
 
 {% block title %} Proyecto {% endblock %}
 
-
+ 
 {% block content %}
 
 {% load static %}
@@ -70,6 +70,7 @@
       </div>
       <div class="box-body">
         Aqui deberia ir la información del proceso general.
+         <a href="/mi_proyecto/{{ proyecto.proyecto_id }}/generar_informe_planificar/">Generar informe</a>
       </div>
       <!-- /.box-body -->
     </div>
@@ -136,7 +137,7 @@
       <div class="box-header">
         <h3 class="box-title">Equipo de gestión de riesgos &nbsp  &nbsp</h3>
 
-        <button type="button" class="btn btn-primary" data-toggle="modal"  data-target="#modal-agregar" >Nuevo Miembro</i>
+        <button type="button" class="btn btn-info" data-toggle="modal"  data-target="#modal-agregar" >Nuevo Miembro</i>
         </button>
 
 
@@ -321,8 +322,10 @@
 
 {% block organigrama_down %}
 
- 
+   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/es6-promise/4.1.1/es6-promise.auto.min.js"></script>
 <script type="text/javascript" src="{% static 'risk_project/plugins/org-chart/js/jquery.mockjax.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'risk_project/plugins/org-chart/js/html2canvas.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'risk_project/plugins/org-chart/js/jspdf.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'risk_project/plugins/org-chart/js/jquery.orgchart.js' %}"></script>
 <script type="text/javascript">
 
@@ -364,7 +367,10 @@
       'nodeID': 'mi_id',
       'verticalLevel': 3,
       'pan': true,
-      'zoom': true,          
+      'zoom': true,      
+      //'exportButton': true,
+      //'exportFileextension': 'png',
+      //'exportFilename': 'MyOrgChart',
     });
   }
 

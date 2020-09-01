@@ -24,7 +24,7 @@ class Categoria(models.Model):
     categoria_id = models.AutoField(primary_key=True)
     categoria_nombre = models.CharField(max_length=45, blank=True, null=True)
     categoria_descripcion = models.TextField(blank=True, null=True)
-    categoria_default = models.IntegerField()
+    categoria_default = models.IntegerField(default = 1)
     categoria_uid = models.BigIntegerField(unique=True, blank=True, null=True)
     rbs = models.ForeignKey('Rbs', models.DO_NOTHING)
 
@@ -90,7 +90,7 @@ class ProyectoHasRiesgo(models.Model):
     proyecto_has_riesgo_id = models.AutoField(primary_key=True)
     proyecto = models.ForeignKey(Proyecto, models.DO_NOTHING)
     riesgo = models.ForeignKey('Riesgo', models.DO_NOTHING)
-    responsable = models.ForeignKey('Responsble', models.DO_NOTHING, blank=True, null=True)
+    responsable = models.ForeignKey('Responsble', models.DO_NOTHING)
 
     class Meta:
         managed = False
@@ -193,7 +193,7 @@ class SubCategoria(models.Model):
     sub_categoria_id = models.AutoField(primary_key=True)
     sub_categoria_nombre = models.CharField(max_length=45, blank=True, null=True)
     sub_categoria_descripcion = models.TextField(blank=True, null=True)
-    sub_categoria_default = models.IntegerField()
+    sub_categoria_default = models.IntegerField(default = 1)
     sub_categoria_uid = models.BigIntegerField(unique=True, blank=True, null=True)
     categoria = models.ForeignKey(Categoria, models.DO_NOTHING)
 
@@ -212,14 +212,6 @@ class TipoRecurso(models.Model):
         managed = False
         db_table = 'tipo_recurso'
 
-class ProyectoHasRiesgoRespuesta(models.Model):
-    proyecto_has = models.OneToOneField('ProyectoHasRiesgo', models.DO_NOTHING, primary_key=True)
-    respuesta_has = models.ForeignKey('RiesgoHasRespuesta', models.DO_NOTHING)
-
-    class Meta:
-        managed = False
-        db_table = 'proyecto_has riesgo_respuesta'
-        unique_together = (('proyecto_has', 'respuesta_has'),)
 
 
 
