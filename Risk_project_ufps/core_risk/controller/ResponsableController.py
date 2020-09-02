@@ -22,3 +22,5 @@ class ResponsableController():
 	def eliminar_responsable(self, responsable):
 		responsable_dao = ResponsableDao()
 		return responsable_dao.eliminar_responsable(responsable)
+
+	

@@ -48,6 +48,9 @@ urlpatterns = [
     path('proyecto/riesgo/insertar/', registrar_riesgo_proyecto, name='mi_proyecto'),
     path('proyecto/<int:proyecto_id>/eliminar_riesgo/', eliminar_riesgo_proyecto, name='eliminar_riesgo_proyecto'),
     path('proyecto/<int:proyecto_id>/nueva_respuesta/', proyecto_nueva_respuesta, name='proyecto_nueva_respuesta'),
+    path('proyecto/<int:proyecto_id>/responsable_riesgo/', nuevo_responsable_riesgo, name='nuevo_responsable_riesgo'),
+    path('proyecto/<int:proyecto_id>/actividad_riesgo/', nueva_actividad_riesgo, name='nueva_actividad_riesgo'),
+    
 
     
 
