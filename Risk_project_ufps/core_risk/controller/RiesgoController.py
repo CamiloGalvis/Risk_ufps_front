@@ -109,14 +109,14 @@ class RiesgoController():
 
         riesgos_sugeridos = riesgo_dao.get_riesgos_by_sector_distinct_gerente(sector, gerente)
 
-        print(riesgos_propios)
+        riesgos_sugeridos_aux = []
 
-        for riesgo_s in riesgos_sugeridos:
-            aux = riesgos_propios.get(riesgo_s.riesgo_nombre)
-            if (aux):
-                del riesgo_s
+        for aux in riesgos_sugeridos:
+            key = riesgos_propios.get(aux.riesgo_nombre)
+            if(key == None):
+                riesgos_sugeridos_aux.append(aux)
 
-        return riesgos_sugeridos
+        return riesgos_sugeridos_aux
  
 
     def raw_queryset_as_dictionary(self, raw_qs):
@@ -124,6 +124,35 @@ class RiesgoController():
         for row in raw_qs:           
             aux[row.riesgo_nombre] = row
         return aux
+
+
+    def editar_riesgo_proyecto(self, proyecto_id, riesgo_id, nombre, causa, evento, efecto, privacidad, tipo):
+        
+        riesgo_dao = RiesgoDao()
+        proyecto_dao = ProyectoDao()
+        proyecto_has_riesgo_dao = ProyectoHasRiesgoDao()
+
+        riesgo = riesgo_dao.obtener_riesgo(riesgo_id)
+        proyecto = proyecto_dao.obtener_proyecto(proyecto_id)
+        proyecto_has_riesgo = proyecto_has_riesgo_dao.get_riesgo_by_proyecto(proyecto.proyecto_id, riesgo.riesgo_id)
+
+        if( proyecto_has_riesgo.is_editado == 1 ):             
+            return riesgo_dao.editar_riesgo(riesgo, nombre, causa, evento, efecto, privacidad, tipo, subcategoria)
+        else:
+            self.eliminar_riesgo_by_proyecto(proyecto_has_riesgo)
+            riesgo_nuevo = riesgo_dao.registrar_riesgo(nombre, causa, evento, efecto, privacidad, tipo, subcategoria)
+            proyecto_has_riesgo = proyecto_has_riesgo_dao.registrar_proyecto_riesgo_editado(proyecto, riesgo) 
+            return riesgo_nuevo         
+
+
+
+
+
+
+
+
+
+
 
 
 

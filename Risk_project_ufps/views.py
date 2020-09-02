@@ -478,6 +478,33 @@ def eliminar_riesgo_proyecto(request, proyecto_id):
         return render(request, "procesos/identificar_riesgos.html", {'proyecto':proyecto, 'rbs':rbsJSON, 'lista_riesgos':lista_riesgos, 'mensaje_eliminar':mensaje_eliminar})
 
 
+def editar_riesgo_proyecto(request, proyecto_id):
+    if request.method == 'POST':        
+        riesgo_controller = RiesgoController()        
+
+        riesgo_editado = riesgo_controller.editar_riesgo_proyecto(
+            proyecto_id, 
+            request.POST["riesgo_id"],
+            request.POST["riesgo_nombre"],
+            request.POST["riesgo_causa"], 
+            request.POST["riesgo_evento"], 
+            request.POST["riesgo_efecto"],             
+            request.POST["riesgo_privacidad"], 
+            request.POST["riesgo_tipo"]
+            )
+
+        data = get_data_render_identificar_riesgo(request.user.id, proyecto_id)
+        
+        return render(request, "procesos/identificar_riesgos.html", data)
+
+def get_data_render_identificar_riesgo(gerente_id, proyecto_id):
+    rbs_controller = RbsController()               
+    rbs = rbs_controller.obtener_rbs_completa_by_proyecto(gerente_id, proyecto_id)     
+    rbsJSON = dumps(rbs)
+    riesgo_controller = RiesgoController()    
+    lista_riesgos = riesgo_controller.get_riesgos_by_proyecto(proyecto)
+    return {'proyecto':proyecto, 'rbs':rbsJSON, 'lista_riesgos':lista_riesgos, 'mensaje_eliminar':mensaje_eliminar}
+
 def proyecto_nueva_respuesta(request, proyecto_id):
 
     riesgo_controller = RiesgoController()
@@ -704,12 +731,14 @@ def identificar_proyecto(request, proyecto_id):
     #data = {'proyecto':proyecto, 'rbs':rbsJSON, 'lista_riesgos':lista_riesgos, 'lista_responsables':lista_responsables, 'lista_actividades':lista_actividades}
 
     lista_riesgos_sugeridos = riesgo_controller.get_riesgos_sugeridos(proyecto.sector, request.user.id);
+    print("VIEW", lista_riesgos_sugeridos)
     if(len(lista_riesgos_sugeridos) > 0):
+        
         return render(request, "procesos/identificar_riesgos.html", {'proyecto':proyecto, 'rbs':rbsJSON, 'lista_riesgos':lista_riesgos, 'lista_responsables':lista_responsables, 'lista_actividades':lista_actividades, 'lista_riesgos_sugeridos':lista_riesgos_sugeridos})
+    else:
+        return render(request, "procesos/identificar_riesgos.html", {'proyecto':proyecto, 'rbs':rbsJSON, 'lista_riesgos':lista_riesgos, 'lista_responsables':lista_responsables, 'lista_actividades':lista_actividades})
 
-    return render(request, "procesos/identificar_riesgos.html", {'proyecto':proyecto, 'rbs':rbsJSON, 'lista_riesgos':lista_riesgos, 'lista_responsables':lista_responsables, 'lista_actividades':lista_actividades})
-
-
+ 
 
 
 

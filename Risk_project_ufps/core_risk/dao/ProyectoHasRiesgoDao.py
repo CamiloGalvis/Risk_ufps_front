@@ -27,6 +27,14 @@ class ProyectoHasRiesgoDao():
                 (proyecto.proyecto_id, riesgo.riesgo_id),
             )
 
+    def registrar_proyecto_riesgo_editado(self, proyecto, riesgo):
+        with closing(connection.cursor()) as cursor:        
+            cursor.execute(
+                'INSERT INTO riesgos_bd.`proyecto_has_riesgo`(`proyecto_id`, `riesgo_id`, `is_editado`)'
+                'VALUES (%s, %s, 1)',
+                (proyecto.proyecto_id, riesgo.riesgo_id),
+            )
+
     def get_by_riesgo_and_proyecto(self, proyecto, riesgo):         
         proyecto_riesgo = None
         try:        

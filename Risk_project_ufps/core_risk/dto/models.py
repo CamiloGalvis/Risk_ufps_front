@@ -90,11 +90,14 @@ class ProyectoHasRiesgo(models.Model):
     proyecto_has_riesgo_id = models.AutoField(primary_key=True)
     proyecto = models.ForeignKey(Proyecto, models.DO_NOTHING)
     riesgo = models.ForeignKey('Riesgo', models.DO_NOTHING)
-    responsable = models.ForeignKey('Responsble', models.DO_NOTHING)
+    is_editado = models.IntegerField(default = 0)
+    responsable = models.ForeignKey('Responsble', models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
         managed = False
         db_table = 'proyecto_has_riesgo'
+        unique_together = (('proyecto', 'riesgo'),)
+
 
 
 class ProyectoHasRiesgoActividad(models.Model):
