@@ -30,11 +30,11 @@ class RiesgoController():
         riesgo_dao = RiesgoDao()
         return riesgo_dao.eliminar_riesgo(riesgo)
 
-    def registrar_riesgo_proyecto(self, nombre, causa, evento, efecto, privacidad, tipo, subcategoria_id, proyecto_id):
+    def registrar_riesgo_proyecto(self, nombre, causa, evento, efecto, tipo, subcategoria_id, proyecto_id):
         riesgo_dao = RiesgoDao()
         subcategoria_dao = SubcategoriaDao()
         proyecto_dao = ProyectoDao()
-        return riesgo_dao.registrar_riesgo_proyecto(nombre, causa, evento, efecto, privacidad, tipo, subcategoria_dao.obtener_subcategoria(subcategoria_id), proyecto_dao.obtener_proyecto(proyecto_id))
+        return riesgo_dao.registrar_riesgo_proyecto(nombre, causa, evento, efecto, tipo, subcategoria_dao.obtener_subcategoria(subcategoria_id), proyecto_dao.obtener_proyecto(proyecto_id))
 
     def asosiar_riesgos_proyecto(self, riesgos, proyecto):
         p_h_r = ProyectoHasRiesgoDao()
@@ -132,23 +132,29 @@ class RiesgoController():
         return aux
 
 
-    def editar_riesgo_proyecto(self, proyecto_id, riesgo_id, nombre, causa, evento, efecto, privacidad, tipo):
+    def editar_riesgo_proyecto(self, proyecto_id, riesgo_id, nombre, causa, evento, efecto, tipo):
         
         riesgo_dao = RiesgoDao()
         proyecto_dao = ProyectoDao()
         proyecto_has_riesgo_dao = ProyectoHasRiesgoDao()
-
+      
         riesgo = riesgo_dao.obtener_riesgo(riesgo_id)
         proyecto = proyecto_dao.obtener_proyecto(proyecto_id)
-        proyecto_has_riesgo = proyecto_has_riesgo_dao.get_riesgo_by_proyecto(proyecto.proyecto_id, riesgo.riesgo_id)
+        proyecto_has_riesgo = proyecto_has_riesgo_dao.get_by_riesgo_and_proyecto_2(riesgo, proyecto)
+
+        print(riesgo)
+        
+        print(proyecto_has_riesgo)
 
         if( proyecto_has_riesgo.is_editado == 1 ):             
-            return riesgo_dao.editar_riesgo(riesgo, nombre, causa, evento, efecto, privacidad, tipo, subcategoria)
+            print("uno")
+            return riesgo_dao.editar_riesgo(riesgo, nombre, causa, evento, efecto, tipo, riesgo.sub_categoria)
         else:
-            self.eliminar_riesgo_by_proyecto(proyecto_has_riesgo)
-            riesgo_nuevo = riesgo_dao.registrar_riesgo(nombre, causa, evento, efecto, privacidad, tipo, subcategoria)
-            proyecto_has_riesgo = proyecto_has_riesgo_dao.registrar_proyecto_riesgo_editado(proyecto, riesgo) 
-            return riesgo_nuevo         
+            print("cero")
+            proyecto_has_riesgo.delete()                        
+            riesgo_nuevo = riesgo_dao.registrar_riesgo_2(nombre, causa, evento, efecto, tipo, riesgo.sub_categoria)
+            proyecto_has_riesgo_dao.registrar_proyecto_riesgo_editado(proyecto, riesgo_nuevo) 
+            return riesgo_nuevo
 
 
 

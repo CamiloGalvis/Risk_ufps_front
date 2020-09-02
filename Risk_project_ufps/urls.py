@@ -4,7 +4,7 @@ from Risk_project_ufps.views import *
 
 urlpatterns = [
 
-    # urls metodos generales de usuario
+    # urls metodos generales de usuario 
 
     # urls para el manejo de sesiones
     path('accounts/', include('django.contrib.auth.urls')),
@@ -50,8 +50,9 @@ urlpatterns = [
     path('proyecto/<int:proyecto_id>/nueva_respuesta/', proyecto_nueva_respuesta, name='proyecto_nueva_respuesta'),
     path('proyecto/<int:proyecto_id>/responsable_riesgo/', nuevo_responsable_riesgo, name='nuevo_responsable_riesgo'),
     path('proyecto/<int:proyecto_id>/actividad_riesgo/', nueva_actividad_riesgo, name='nueva_actividad_riesgo'),
+    path('proyecto/<int:proyecto_id>/editar_riesgo/', editar_riesgo_proyecto, name='editar_riesgo_proyecto'),
     
-
+ 
     
 
     path('mi_proyecto/<int:proyecto_id>/identificar/asociar_riesgo/', asociar_riesgo, name='asociar_riesgo'),

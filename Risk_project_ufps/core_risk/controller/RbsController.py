@@ -147,7 +147,7 @@ class RbsController():
                         "riesgos" : []
                     })
                 else: 
-                    riesgos = list(riesgos.values())
+                    riesgos = list(riesgos.values()) 
                     if(len(riesgos) > 0):                                                
                         for riesgo in riesgos:
                             e = riesgo_dao.riesgo_is_proyecto(Riesgo(riesgo_id=riesgo["riesgo_id"]), proyecto)                            

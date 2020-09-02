@@ -231,7 +231,7 @@
                 <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#modal-responsables" onclick="abrir_modal_responsables('{{ riesgo.riesgo_id }}')"><i   class="fa fa-edit"></i></button>
               </td>                  
               <td>
-                <button type="button" class="btn btn-default" data-toggle="modal" onclick="abrir_modal_editar()" data-target="#modal-editar"><i   class="fa fa-edit"></i>
+                <button type="button" class="btn btn-default" data-toggle="modal" onclick="abrir_modal_editar_riesgo('{{ riesgo.riesgo_id }}',' {{ riesgo.riesgo_nombre }}', '{{ riesgo.riesgo_causa }}',' {{ riesgo.riesgo_evento }}', ' {{ riesgo.riesgo_efecto }}',   '{{ riesgo.riesgo_tipo }}')"><i   class="fa fa-edit"></i>
                 </button>
 
 
@@ -314,14 +314,7 @@
                   <option value="1">Oportunidad</option>
 
                 </select>
-              </div>
-              <div class="form-group">
-                <label>Privacidad</label>
-                <select class="form-control select2" style="width: 100%;" name="riesgo_privacidad">
-                  <option selected="selected" value="0">Publico</option>
-                  <option value="1">Privado</option>
-                </select>
-              </div>
+              </div> 
               <div class="form-group">
                 <label>Efecto</label>
                 <textarea class="form-control" rows="3" placeholder="Descripción del efecto..." name="riesgo_efecto"></textarea>
@@ -380,26 +373,13 @@
                     <th>Acciones</th>                    
                   </tr>
                 </thead>
-                <tbody>
-                 {% if respuestas_riesgo %}
-                 {% for respuesta in respuestas_riesgo %}
-                 <tr>
-                  <td>{{ respuesta.riesgo_nombre }}</td>
-                  <td>{{ respuesta.respuesta_descripcion }}</td>                                  
-                  <td>
-                    <button type="button" class="btn btn-danger" data-toggle="#modal_eliminar" onclick="abrir_modal_eliminar('{{ riesgo.riesgo_nombre }}', '{{ riesgo.riesgo_id }}')" data-target="#modal_eliminar"><i class="fa fa-trash-o danger"></i>
-                    </button>
-                  </td>
-                </tr>
-                {% endfor %}
-                {% else %}
-                <tr>
-                  <td>No cuentas con respuestas asociadas a este riesgo.</td>
-                  <td></td> 
-                  <td></td>                
-                </tr>
-                {% endif %} 
-              </tbody>
+                <tbody id="respuestas_body">                 
+                  <tr>
+                    <td>No cuentas con respuestas asociadas a este riesgo.</td>
+                    <td></td> 
+                    <td></td>                
+                  </tr>
+                </tbody>
               <tfoot>
                 <tr>
                   <th>Respuesta</th>
@@ -655,7 +635,7 @@
 </div>
 <!-- /.modal -->
   <!-- /.modal-editar -->
- <div class="modal fade" id="modal-editar">
+ <div class="modal fade" id="modal-editar"> 
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -664,7 +644,12 @@
             <h4 class="modal-title">Editar Riesgo</h4>
           </div>
           <div class="box-body">
-           <form  action="/editar_riesgo/" method="post"> 
+          {% if proyecto %}
+          <form action="/proyecto/{{ proyecto.proyecto_id }}/editar_riesgo/" method="post">
+          {% else %}  
+          <form action="#" method="post">
+          {% endif %}
+
             {% csrf_token %}
             <div class="row">
               <div class="col-md-6">
@@ -695,7 +680,8 @@
                   <label>Efecto</label>
                   <textarea class="form-control" rows="3"  id="riesgo_efecto" name="riesgo_efecto"></textarea>
                 </div>
-                <input type="text" class="form-control" id="riesgo_id" name="riesgo_id" style="visibility:hidden">
+                <input type="text" class="form-control" id="riesgo_id_editar" name="riesgo_id_editar" style="visibility:hidden">
+
               </div>
             </div>
             <div class="modal-footer">
@@ -780,6 +766,10 @@
   /////////////////////////////////////////
 
   var data = JSON.parse("{{rbs|escapejs}}");   
+
+  var respuestas_riesgo = JSON.parse("{{respuestas_riesgo|escapejs}}");   
+
+  console.log(respuestas_riesgo);
 
   var diccionario = {};
 
@@ -897,14 +887,54 @@ function asosiar_riesgos(proyecto_id){
 </script>
 <script >
   function abrir_modal_respuestas(id_riesgo) {
+    let respuestas_body = document.getElementById('respuestas_body');
+    respuestas_body.innerHTML = "";
+    let key = 'riesgo_'+id_riesgo;
+   
+    if(respuestas_riesgo.hasOwnProperty(key)){   
+      let respuestas = respuestas_riesgo[key];
+      for (var i = 0; i < respuestas.length; i++) {
+        let tr = document.createElement("tr");   
+        let td_nombre = document.createElement("td");
+        let td_descripcion = document.createElement("td");
+        let td_acciones = document.createElement("td");
+        td_nombre.appendChild(document.createTextNode(respuestas[i]["respuesta_nombre"]));
+        td_descripcion.appendChild(document.createTextNode(respuestas[i]["respuesta_descripcion"]));
+        let boton = document.createElement("button");
+        boton.setAttribute("type", "button");
+        boton.setAttribute("class", "btn btn-danger");
+        boton.setAttribute("data-toggle", "#modal_eliminar");//NO SE LE OLVIDE CAMBIAR EL MODAL
+        boton.setAttribute("onclick", "abrir_modal_eliminar('"+respuestas[i]["respuesta_nombre"]+"', '"+respuestas[i]["respuesta_id"]+"')" );
+        boton.setAttribute("data-target", "#modal_eliminar");//NO SE LE OLVIDE CAMBIAR EL MODAL
+        let mi_icon = document.createElement("i");
+        mi_icon.setAttribute("class", "fa fa-trash-o danger")
+        boton.appendChild(mi_icon);
+        td_acciones.appendChild(boton);
+        tr.appendChild(td_nombre);
+        tr.appendChild(td_descripcion);
+        tr.appendChild(td_acciones);  
+        respuestas_body.appendChild(tr);
+      }
+    }else{
+      let tr = document.createElement("tr");   
+      let td_nombre = document.createElement("td");
+      let td_descripcion = document.createElement("td");
+      let td_acciones = document.createElement("td");
+      td_nombre.appendChild(document.createTextNode("No cuentas con respuestas asociadas a este riesgo."));
+      tr.appendChild(td_nombre);
+      tr.appendChild(td_descripcion);
+      tr.appendChild(td_acciones);    
+      respuestas_body.appendChild(tr);  
+    }
+    
+    $("#modal_respuestas").modal('show');
+    var input_id = document.getElementById("riesgo_id_r");
+    input_id.value = id_riesgo;  
+  };
 
 
-        $("#modal_respuestas").modal('show');
-        var input_id = document.getElementById("riesgo_id_r");
-        input_id.value = id_riesgo;        
-        
-        return false;
-    };
+
+
   function abrir_modal_actividades(id_riesgo) {        
 
         $("#modal_actividades").modal('show');
@@ -934,6 +964,21 @@ function asosiar_riesgos(proyecto_id){
         
         return false;
     };
+
+
+
+  function abrir_modal_editar_riesgo(riesgo_id, riesgo_nombre, riesgo_causa, riesgo_evento, riesgo_efecto, riesgo_tipo){
+    
+    $("#riesgo_id_editar").val(riesgo_id);
+     $("#riesgo_nombre").val(riesgo_nombre);
+      $("#riesgo_causa").val(riesgo_causa);
+       $("#riesgo_evento").val(riesgo_evento);
+        $("#riesgo_efecto").val(riesgo_efecto);
+         $("#riesgo_tipo").val(riesgo_tipo);
+
+    $("#modal-editar").modal('show');
+        
+  }
 
     function abrir_modal_eliminar(id, nombre) {        
 

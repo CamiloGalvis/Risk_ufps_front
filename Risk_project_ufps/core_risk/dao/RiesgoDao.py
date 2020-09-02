@@ -4,7 +4,7 @@ from Risk_project_ufps.core_risk.dto.models import *
 
 class RiesgoDao():
 
-    def registrar_riesgo(self, nombre, causa, evento, efecto, privacidad, tipo, subcategoria):
+    def registrar_riesgo(self, nombre, causa, evento, efecto, tipo, subcategoria):
         """ Yo no se porque devuelve una cadena, lo mejor que se me ocurrio fue hacer otro metodo"""
         try:
             riesgo = Riesgo(
@@ -12,7 +12,6 @@ class RiesgoDao():
                 riesgo_causa = causa,
                 riesgo_evento = evento,
                 riesgo_efecto = efecto,
-                riesgo_privacidad = privacidad,
                 riesgo_tipo = tipo,             
                 sub_categoria = subcategoria)
             riesgo.save()       
@@ -20,6 +19,21 @@ class RiesgoDao():
             print(e)
         finally:
             return "Se registró un riesgo exitosamente."
+
+    def registrar_riesgo_2(self, nombre, causa, evento, efecto, tipo, subcategoria):
+        riesgo = None
+        try:
+            riesgo = Riesgo.objects.create(
+                riesgo_nombre = nombre,
+                riesgo_causa = causa,
+                riesgo_evento = evento,
+                riesgo_efecto = efecto,
+                riesgo_tipo = tipo,             
+                sub_categoria = subcategoria)            
+        except Error as e:
+            print(e)
+        finally:
+            return riesgo
 
     def listar_riesgos(self, id):
         riesgos = {}
@@ -33,15 +47,13 @@ class RiesgoDao():
             return riesgos
 
 
-    def editar_riesgo(self, riesgo, nombre, causa, evento, efecto, privacidad, tipo, subcategoria):
+    def editar_riesgo(self, riesgo, nombre, causa, evento, efecto, tipo, subcategoria):
         riesgo = riesgo
         try:
-
             riesgo.riesgo_nombre = nombre
             riesgo.riesgo_causa = causa
             riesgo.riesgo_evento = evento
             riesgo.riesgo_efecto = efecto
-            riesgo.riesgo_privacidad = privacidad
             riesgo.riesgo_tipo = tipo               
             riesgo.sub_categoria = subcategoria
             riesgo.save()       
@@ -82,8 +94,8 @@ class RiesgoDao():
         finally:
             return riesgos
 
-    def registrar_riesgo_proyecto(self, nombre, causa, evento, efecto, privacidad, tipo, subcategoria, proyecto):
-        riesgo = Riesgo(riesgo_nombre = nombre, riesgo_causa = causa, riesgo_evento = evento, riesgo_efecto = efecto, riesgo_privacidad = privacidad,   riesgo_tipo = tipo, sub_categoria = subcategoria)
+    def registrar_riesgo_proyecto(self, nombre, causa, evento, efecto, tipo, subcategoria, proyecto):
+        riesgo = Riesgo(riesgo_nombre = nombre, riesgo_causa = causa, riesgo_evento = evento, riesgo_efecto = efecto, riesgo_tipo = tipo, sub_categoria = subcategoria)
         riesgo.save()   
         p_h_r_dao = ProyectoHasRiesgoDao()
         return p_h_r_dao.registrar_proyecto_riesgo(proyecto, riesgo)
@@ -91,13 +103,13 @@ class RiesgoDao():
 
     def riesgo_is_proyecto(self, riesgo, proyecto): 
         p_h_r_dao = ProyectoHasRiesgoDao()
-        return p_h_r_dao.get_by_riesgo_and_proyecto(riesgo, proyecto)
+        return p_h_r_dao.get_by_riesgo_and_proyecto_2(riesgo, proyecto)
 
 
     def get_riesgos_by_proyecto(self, proyecto):
         riesgos = []
         try:
-            sql = "SELECT r.`riesgo_id`, r.`riesgo_nombre`, r.`riesgo_causa`, r.`riesgo_evento`, r.`riesgo_efecto`,r.`riesgo_tipo`,r.`riesgo_prom_evaluacion`,r.`riesgo_privacidad`,r.`riesgo_uid`,r.`sub_categoria_id` FROM `riesgo` r INNER JOIN proyecto_has_riesgo p_h_r ON r.`riesgo_id` = p_h_r.riesgo_id WHERE p_h_r.proyecto_id = %s"
+            sql = "SELECT r.`riesgo_id`, r.`riesgo_nombre`, r.`riesgo_causa`, r.`riesgo_evento`, r.`riesgo_efecto`,r.`riesgo_tipo`,r.`riesgo_prom_evaluacion`, r.`riesgo_uid`,r.`sub_categoria_id` FROM `riesgo` r INNER JOIN proyecto_has_riesgo p_h_r ON r.`riesgo_id` = p_h_r.riesgo_id WHERE p_h_r.proyecto_id = %s"
             riesgos = Riesgo.objects.raw(sql, [proyecto.proyecto_id,])
         except Exception as e:
             print(e)
@@ -118,7 +130,7 @@ class RiesgoDao():
         """
         riesgos = []
         try:
-            sql = "SELECT DISTINCT r.`riesgo_id`, r.`riesgo_nombre`, r.`riesgo_causa`, r.`riesgo_evento`, r.`riesgo_efecto`,r.`riesgo_tipo`,r.`riesgo_prom_evaluacion`,r.`riesgo_privacidad`,r.`riesgo_uid`,r.`sub_categoria_id` FROM `riesgo` r INNER JOIN proyecto_has_riesgo p_h_r ON r.`riesgo_id` = p_h_r.riesgo_id INNER JOIN proyecto p ON p_h_r.proyecto_id = p.proyecto_id WHERE p.sector_id = %s AND p.gerente_id <> %s GROUP BY r.`riesgo_nombre`"
+            sql = "SELECT DISTINCT r.`riesgo_id`, r.`riesgo_nombre`, r.`riesgo_causa`, r.`riesgo_evento`, r.`riesgo_efecto`,r.`riesgo_tipo`,r.`riesgo_prom_evaluacion`, r.`riesgo_uid`,r.`sub_categoria_id` FROM `riesgo` r INNER JOIN proyecto_has_riesgo p_h_r ON r.`riesgo_id` = p_h_r.riesgo_id INNER JOIN proyecto p ON p_h_r.proyecto_id = p.proyecto_id WHERE p.sector_id = %s AND p.gerente_id <> %s GROUP BY r.`riesgo_nombre`"
             riesgos = Riesgo.objects.raw(sql, [sector.sector_id, gerente.gerente_id,])
         except Exception as e:
             print(e)
@@ -134,7 +146,6 @@ class RiesgoDao():
                 riesgo_causa = "",
                 riesgo_evento = "",
                 riesgo_efecto = "",
-                riesgo_privacidad = 0,
                 riesgo_tipo = 0,    
                 riesgo_uid = riesgo_uid,         
                 sub_categoria = subcategoria)           

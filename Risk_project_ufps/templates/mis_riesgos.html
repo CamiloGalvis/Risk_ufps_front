@@ -169,14 +169,7 @@
                     {% endfor %}
                   </select>
                 {% endif %} 
-                </div>
-                <div class="form-group">
-                <label >Privacidad</label>
-                  <select class="form-control"  name="riesgo_privacidad" id="riesgo_privacidad"> 
-                    <option value="0">Publico</option>
-                    <option value="1">Privado</option>
-                  </select>                
-                </div>
+                </div>          
                 <div class="form-group">
                 <label >Tipo Riesgo</label>
                   <select class="form-control"  name="riesgo_tipo" id="riesgo_tipo"> 
@@ -335,9 +328,7 @@ function set_riesgo(subcategoria){
       let td_efecto = document.createElement("td");
       td_efecto.appendChild(document.createTextNode(riesgos[i]["riesgo_efecto"]));
       let td_tipo = document.createElement("td");
-      td_tipo.appendChild(document.createTextNode(riesgos[i]["riesgo_tipo"]));
-      let td_privacidad = document.createElement("td");
-      td_privacidad.appendChild(document.createTextNode(riesgos[i]["riesgo_privacidad"]));
+      td_tipo.appendChild(document.createTextNode(riesgos[i]["riesgo_tipo"]));      
       let td_botones = document.createElement("td");
       td_botones.appendChild(construir_btn_editar(riesgos[i]["riesgo_id"],riesgos[i]["riesgo_nombre"],riesgos[i]["riesgo_causa"],riesgos[i]["riesgo_evento"], riesgos[i]["riesgo_efecto"]));
       td_botones.appendChild(construir_btn_eliminar(riesgos[i]["riesgo_id"],riesgos[i]["riesgo_nombre"],riesgos[i]["riesgo_causa"],riesgos[i]["riesgo_evento"], riesgos[i]["riesgo_efecto"]));
@@ -346,7 +337,6 @@ function set_riesgo(subcategoria){
       tr.appendChild(td_evento);
       tr.appendChild(td_efecto);
       tr.appendChild(td_tipo);
-      tr.appendChild(td_privacidad);
       tr.appendChild(td_botones);
       body_riesgos.appendChild(tr);
     }       

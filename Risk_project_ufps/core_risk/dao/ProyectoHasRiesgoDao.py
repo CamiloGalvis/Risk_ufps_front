@@ -61,13 +61,20 @@ class ProyectoHasRiesgoDao():
     def get_by_riesgo_and_proyecto(self, proyecto, riesgo):         
         proyecto_riesgo = None
         try:        
-            proyecto_riesgo = ProyectoHasRiesgo.objects.get(riesgo_id = riesgo, proyecto_id = proyecto)            
+            proyecto_riesgo = ProyectoHasRiesgo.objects.get( proyecto_id = proyecto, riesgo_id = riesgo)            
         except ProyectoHasRiesgo.DoesNotExist:
             proyecto_riesgo = None
         finally:
             return proyecto_riesgo
 
-
+    def get_by_riesgo_and_proyecto_2(self, riesgo, proyecto):         
+        proyecto_riesgo = None
+        try:        
+            proyecto_riesgo = ProyectoHasRiesgo.objects.get( riesgo = riesgo, proyecto = proyecto )            
+        except Exception as e:
+            print(e)
+        finally:
+            return proyecto_riesgo
 
     def eliminar_by_riesgo_and_proyecto(self, proyecto_riesgo):        
         proyecto_riesgo = proyecto_riesgo
@@ -78,6 +85,7 @@ class ProyectoHasRiesgoDao():
         finally:
             return "Se eliminó riesgo del proyecto de forma exitosa."
 
+   
 
 
 
