@@ -94,7 +94,13 @@ class RiesgoController():
         p_h_r = ProyectoHasRiesgoDao()
         return p_h_r.eliminar_by_riesgo_and_proyecto(riesgo_proyecto)
 
+    def agregar_responsable_riesgo(self, riesgo_proyecto, responsable):
+        p_h_r = ProyectoHasRiesgoDao()
+        return p_h_r.agregar_responsable_riesgo(riesgo_proyecto,  responsable)
 
+    def listar_responsables_riesgo(self, proyecto_id):
+        p_h_r = ProyectoHasRiesgoDao()
+        return p_h_r.listar_responsables_riesgo(proyecto_id)
 
     def get_riesgos_sugeridos(self, sector, gerente_id):
         """ Busca todos los riesgos dentro de todos los proyectos

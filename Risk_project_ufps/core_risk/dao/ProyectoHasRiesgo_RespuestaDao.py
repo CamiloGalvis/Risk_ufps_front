@@ -20,11 +20,13 @@ class ProyectoHasRiesgo_RespuestaDao():
 	def listar_riesgos_respuesta(self, proyecto_id):
 		respuestas = {}
 		try:
-			#Revisar esta consulta
-			respuestas = ProyectoHasRiesgoRespuesta.objects.raw("SELECT * FROM riesgo_has_respuesta re INNER JOIN proyecto_has riesgo_respuesta pr ON re.riesgo_has_respuesta_id=pr.respuesa_has_id INNER JOIN proyecto_has_riesgo tr ON pr.proyecto_has_id=tr.proyecto_has_riesgo_id WHERE tr.proyecto_id = %s", [proyecto_id])
+			
+			respuestas = Respuesta.objects.raw("SELECT * FROM respuesta re INNER JOIN riesgo_has_respuesta ri ON re.respuesta_id=ri.respuesta_id INNER JOIN proyecto_has riesgo_respuesta tr ON ri.riesgo_has_respuesta_id=tr.respuesta_has_id INNER JOIN proyecto_has_riesgo qr ON tr.proyecto_has_id=qr.proyecto_has_riesgo_id WHERE qr.proyecto_id = %s", [proyecto_id])
 		
 		except Error as e:
 			print(e)
 
 		finally:
-			return respuestas 
+			return respuestas
+
+	

@@ -10,3 +10,12 @@ class ActividadDao():
       print(e)
     finally:      
       return actividades
+
+  def obtener_actividad(self, actividad_id):
+    actividad = None
+    try:
+    	actividad = Actividad.objects.get(actividad_id=actividad_id)
+    except Error as e:
+      print(e)
+    finally:      
+      return actividad
