@@ -9,6 +9,7 @@ from django.db import models
 
 class Actividad(models.Model):
     actividad_id = models.CharField(primary_key=True, max_length=45)
+    actividad_orden = models.IntegerField()
     actividad_uuid = models.IntegerField()
     actividad_nombre = models.CharField(max_length=100)
     actividad_level = models.IntegerField(blank=True, null=True)

@@ -119,12 +119,25 @@ def nuevo_proyecto(request):
             gerente = gerente_controller.obtener_gerente(request.user.id)
             print(gerente)
             proyecto_controller = ProyectoController()
-            mensaje = ProyectoController.registrar_proyecto(request.POST["proyecto_nombre"], request.POST["proyecto_objetivo"], request.POST["proyecto_alcance"], request.POST["proyecto_descripcion"], request.POST["proyecto_presupuesto"], request.POST["proyecto_fecha_inicio"], gerente, sector) 
+            proyecto = ProyectoController.registrar_proyecto(request.POST["proyecto_nombre"], request.POST["proyecto_objetivo"], request.POST["proyecto_alcance"], request.POST["proyecto_descripcion"], request.POST["proyecto_presupuesto"], request.POST["proyecto_fecha_inicio"], gerente, sector)             
+            if(proyecto):
+                mensaje = "Se registro un proyecto exitosamente."
+            else:
+                mensaje = "No se pudo registrar exitosamente."
             if(request.POST["actividades"] == '1'):
                 actividades = json.loads(request.POST["actividades_data"])["tasks"]
+                orden = 0
                 for actividad in actividades:
-                    act = Actividad(actividad_uuid = actividad["uid"],actividad_nombre = actividad["name"],actividad_level = actividad["level"],actividad_wbs = actividad["WBS"],proyecto = proyecto)
+                    act = Actividad(
+                        actividad_id = "p_"+str(proyecto.proyecto_id)+"_a_"+str(actividad["uid"]),
+                        actividad_orden = orden, 
+                        actividad_uuid = actividad["uid"],
+                        actividad_nombre = actividad["name"],
+                        actividad_level = actividad["level"],
+                        actividad_wbs = actividad["WBS"],
+                        proyecto = proyecto)
                     act.save()
+                    orden = orden + 1
             return HttpResponse(status=200)
         except Exception as inst:
             print(inst)

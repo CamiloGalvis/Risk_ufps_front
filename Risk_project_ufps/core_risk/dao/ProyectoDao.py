@@ -3,8 +3,10 @@ from Risk_project_ufps.core_risk.dto.models import *
 class ProyectoDao():
     
   def registrar_proyecto(self, nombre, objetivo, alcance, descripcion, presupuesto, fecha_inicio, gerente, sector):
-  	proyecto = Proyecto(
-  		proyecto_nombre = nombre,
+    proyecto = None    
+    try:
+      proyecto = Proyecto.objects.create(
+        proyecto_nombre = nombre,
         proyecto_objetivo = objetivo,
         proyecto_alcance = alcance,
         proyecto_descripcion = descripcion,
@@ -12,13 +14,11 @@ class ProyectoDao():
         proyecto_fecha_inicio = fecha_inicio,
         gerente = gerente,
         sector = sector,
-        proyecto_rbs_status = 0)
-  	try:
-  		proyecto.save()
-  	except Error as e:
-  		print(e)
-  	finally:
-  		return "Se registro un proyecto exitosamente."
+        proyecto_rbs_status = 0)      
+    except Error as e:
+      print(e)
+    finally:
+      return proyecto
 
   def obtener_proyecto(self, id):
     proyecto = None
