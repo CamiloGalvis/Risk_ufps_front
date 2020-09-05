@@ -463,16 +463,35 @@ def editar_tipo_recurso(request):
 #Carga la vista de un proyecto y permite editarlo
 def mi_proyecto(request, id):
     proyecto_controller = ProyectoController()
-    proyecto = proyecto_controller.obtener_proyecto(id)
+    proyecto = proyecto_controller.obtener_proyecto(id)    
     sector_controller = SectorController()
     lista_sectores = sector_controller.listar_sectores()
-    
+    data = {"proyecto":proyecto, "lista_sectores": lista_sectores} 
+
+    if(proyecto_controller.has_actividades(id)):
+        data["actividades"] = True
+
     if request.method == 'POST':
         sector = sector_controller.obtener_sector(request.POST["proyecto_sector"])
-        mensaje = proyecto_controller.editar_proyecto(proyecto, request.POST["proyecto_nombre"], request.POST["proyecto_objetivo"], request.POST["proyecto_alcance"], request.POST["proyecto_descripcion"], request.POST["proyecto_presupuesto"], request.POST["proyecto_fecha_inicio"], sector)
-        return render(request, "procesos/proyecto.html", {"proyecto":proyecto, "lista_sectores": lista_sectores, "mensaje": mensaje} )
+        mensaje = proyecto_controller.editar_proyecto(proyecto, request.POST["proyecto_nombre"], request.POST["proyecto_objetivo"], request.POST["proyecto_alcance"], request.POST["proyecto_descripcion"], request.POST["proyecto_presupuesto"], request.POST["proyecto_fecha_inicio"], sector)        
+        data["mensaje"] = mensaje
+        if(request.POST["actividades"] == '1'):
+            actividades = json.loads(request.POST["actividades_data"])["tasks"]
+            orden = 0
+            for actividad in actividades:
+                act = Actividad(
+                    actividad_id = "p_"+str(proyecto.proyecto_id)+"_a_"+str(actividad["uid"]),
+                    actividad_orden = orden, 
+                    actividad_uuid = actividad["uid"],
+                    actividad_nombre = actividad["name"],
+                    actividad_level = actividad["level"],
+                    actividad_wbs = actividad["WBS"],
+                    proyecto = proyecto)
+                act.save()
+                orden = orden + 1
+        return render(request, "procesos/proyecto.html", data)
 
-    return render(request, "procesos/proyecto.html", {"proyecto":proyecto, "lista_sectores":lista_sectores})
+    return render(request, "procesos/proyecto.html", data)
 
 
 
@@ -845,12 +864,12 @@ def identificar_proyecto(request, proyecto_id):
     responsable_controller = ResponsableController()
     lista_responsables = responsable_controller.listar_responsables(proyecto.proyecto_id)
     actividad_controller = ActividadController()
-    lista_actividades = actividad_controller.listar_actividades_proyecto(proyecto_id)
+    lista_actividades = dumps(actividad_controller.listar_actividades_proyecto(proyecto_id))
     
     #Retorna responsables por riesgo de un proyecto
     responsables_riesgo = riesgo_controller.listar_responsables_riesgo(proyecto_id)
     #Retorna actividades por riesgo de un proyecto
-    actividades_riesgo = actividad_controller.listar_actividades_riesgo(proyecto_id)
+    actividades_riesgo = dumps(actividad_controller.listar_actividades_riesgo(proyecto_id))
     
     #(Funcion que retorna respuestas por riesgo de un proyecto (Revisar)!!!)
     respuesta_controller = RespuestaController()

@@ -18,3 +18,8 @@ class ProyectoController():
 	def editar_proyecto(self, proyecto, nombre, objetivo, alcance, descripcion, presupuesto, fecha_inicio, sector):
 		proyecto_dao = ProyectoDao()
 		return proyecto_dao.editar_proyecto(proyecto, nombre, objetivo, alcance, descripcion, presupuesto, fecha_inicio, sector)
+
+	def has_actividades(self, proyecto_id):
+		proyecto_dao = ProyectoDao()
+		proyecto = Proyecto(proyecto_id = proyecto_id)
+		return proyecto_dao.has_actividades(proyecto)

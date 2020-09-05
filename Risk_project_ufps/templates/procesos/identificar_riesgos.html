@@ -464,24 +464,8 @@
                     <th>Acciones</th>                                      
                   </tr>
                 </thead>
-                <tbody>
-                 {% if actividades_riesgo %}
-                 {% for actividad in actividades_riesgo %}
-                 <tr>
-                  <td>{{ actividad.actividad_nombre }}</td>                                       
-                  <td>
-                   
-                    <button type="button" class="btn btn-danger" data-toggle="#modal_eliminar" onclick="abrir_modal_eliminar('{{ riesgo.riesgo_nombre }}', '{{ riesgo.riesgo_id }}')" data-target="#modal_eliminar"><i class="fa fa-trash-o danger"></i>
-                    </button>
-                  </td>
-                </tr>
-                {% endfor %}
-                {% else %}
-                <tr>
-                  <td>No cuentas con actividades asociadas a este riesgo.</td>
-                  <td></td>                                 
-                </tr>
-                {% endif %} 
+                <tbody id="cuerpo_actividades_riesgos">
+                 
               </tbody>
               <tfoot>
                 <tr>
@@ -502,17 +486,7 @@
                 <div class="form-group">
                   <div id="bloq_subcategorias" class="form-group">
                     <label>Actividades</label>
-                    {% if lista_actividades %}                    
-                    <select class="form-control select2" id="actividad_id" name="actividad_id">
-                      {% for actividad in lista_actividades %}
-                      <option value="{{ actividad.actividad_id }}">
-                       {{ actividad.actividad_nombre }}
-                     </option>
-                     {% endfor %}
-                     {% else %}
-                     <p>No cuentas con actividades asociadas al proyecto.</p>
-                     {% endif %} 
-                   </select>
+                    
                  </div>
                </div>
                <!-- / input para pasar el id del riesgo al asociarle la actividad -->
@@ -769,7 +743,13 @@
 
   var respuestas_riesgo = JSON.parse("{{respuestas_riesgo|escapejs}}");   
 
+  var actividades = JSON.parse("{{lista_actividades|escapejs}}");   
+
+  var actividades_riesgo = JSON.parse("{{actividades_riesgo|escapejs}}")
+
   console.log(respuestas_riesgo);
+
+  console.log(actividades_riesgo);
 
   var diccionario = {};
 
@@ -940,7 +920,7 @@ function asosiar_riesgos(proyecto_id){
         $("#modal_actividades").modal('show');
         var input_id = document.getElementById("riesgo_id_ac");
         input_id.value = id_riesgo;
-        
+        construir_listado_actividades_riesgos(id_riesgo);
         return false;
     };
 
@@ -1019,8 +999,76 @@ function asosiar_riesgos(proyecto_id){
           }
   });
     });
+
+  construir_listado_actividades();
+    
 });
 
+function construir_listado_actividades() {
+  let div_actividades = document.getElementById("bloq_subcategorias");
+  let select_actividades = document.createElement("select");
+  select_actividades.setAttribute("class", "form-control select2");
+  select_actividades.setAttribute("id", "actividad_id");
+  select_actividades.setAttribute("name", "actividad_id");
+  if(actividades.length > 0){
+    for (var i = 0; i < actividades.length; i++) {
+      let tabs = "";
+      let opcion = document.createElement("option");
+      opcion.setAttribute("value",actividades[i]["actividad_id"]);
+      for (var j = 0; j < actividades[i]["actividad_level"]; j++) {
+        opcion.appendChild(document.createTextNode("\u00a0"));
+        opcion.appendChild(document.createTextNode("\u00a0"));
+      }
+      opcion.appendChild(document.createTextNode(actividades[i]["actividad_nombre"]));
+      select_actividades.appendChild(opcion);
+    }
+  }else{
+    let p = document.createElement("p");
+    p.appendChild(document.createTextNode("No cuentas con actividades asociadas al proyecto."));
+    select_actividades.appendChild(p);     
+  }
+  div_actividades.appendChild(select_actividades);
+}
+
+function construir_listado_actividades_riesgos(riesgo_id) {  
+  key = "riesgo_"+riesgo_id;
+  let div_actividades = document.getElementById("cuerpo_actividades_riesgos");
+  div_actividades.innerHTML ="";
+
+  if(actividades_riesgo.hasOwnProperty(key)){
+    let mis_actividades = actividades_riesgo[key];
+    for (var i = 0; i < mis_actividades.length; i++) {
+      let tr = document.createElement("tr");
+      let td_1 = document.createElement("td");
+      let td_2 = document.createElement("td");
+      td_1.appendChild(document.createTextNode(mis_actividades[i]["actividad_nombre"]));
+      let but = document.createElement("button");
+      but.setAttribute("type","button");
+      but.setAttribute("class","btn btn-danger");
+      but.setAttribute("data-toggle","#modal_eliminar");
+      but.setAttribute("onclick","alert("+riesgo_id+", "+mis_actividades[i]["actividad_id"]+");");
+      but.setAttribute("data-target","#modal_eliminar");
+      let ii = document.createElement("i");    
+      ii.setAttribute("class","fa fa-trash-o danger");         
+      but.appendChild(ii);
+      td_2.appendChild(but);
+      tr.appendChild(td_1);
+      tr.appendChild(td_2);
+      div_actividades.appendChild(tr);
+    }
+
+
+  }else{
+    let tr = document.createElement("tr");
+    let td_1 = document.createElement("td");
+    let td_2 = document.createElement("td");
+    td_1.appendChild(document.createTextNode("No cuentas con actividades asociadas a este riesgo."));
+    tr.appendChild(td_1);
+    tr.appendChild(td_2);
+    div_actividades.appendChild(tr);
+  }
+  
+}
 
 </script>
 {% endblock %}

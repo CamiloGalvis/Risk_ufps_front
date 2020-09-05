@@ -2,11 +2,17 @@ from Risk_project_ufps.core_risk.dao.ActividadDao import *
 from Risk_project_ufps.core_risk.dao.ProyectoHasRiesgo_ActividadDao import *
 from Risk_project_ufps.core_risk.dto.models import *
 
+from django.forms.models import model_to_dict
+
 class ActividadController(): 
 
 	def listar_actividades_proyecto(self, proyecto_id):
 		actividad_dao = ActividadDao()
-		return actividad_dao.listar_actividades_proyecto(proyecto_id)
+		actividades = actividad_dao.listar_actividades_proyecto(proyecto_id)
+		aux = []
+		for actividad in actividades:
+			aux.append(model_to_dict(actividad))
+		return aux
 
 	def obtener_actividad(self, actividad_id):
 		actividad_dao = ActividadDao()
@@ -18,7 +24,25 @@ class ActividadController():
 
 	def listar_actividades_riesgo(self, proyecto_id):
 		actividad_dao = ProyectoHasRiesgo_ActividadDao()
-		return actividad_dao.listar_actividades_riesgo(proyecto_id)
+		actividades = actividad_dao.listar_actividades_riesgo(proyecto_id)
+		aux = {}
+		for actividad in actividades:
+			key = "riesgo_" + str(actividad.riesgo_id)
+			riesgo_aux = aux.get(key)
+			if(riesgo_aux == None):
+				aux[key] = []
+
+			aux[key].append({
+				"actividad_id" : actividad.actividad_id,
+				"actividad_nombre" : actividad.actividad_nombre,
+				"actividad_level" : actividad.actividad_level
+			})
+		return aux
+			
+
+
+
+
 
 	def validar_actividad(self, proyecto_riesgo, actividad_id):
 		actividad_dao = ProyectoHasRiesgo_ActividadDao()

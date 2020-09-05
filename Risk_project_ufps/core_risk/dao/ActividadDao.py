@@ -5,7 +5,8 @@ class ActividadDao():
   def listar_actividades_proyecto(self, proyecto_id):
     actividades = {}
     try:
-    	actividades= Actividad.objects.filter(proyecto_id=proyecto_id)
+      sql = "SELECT * FROM `actividad` WHERE `proyecto_id` = %s ORDER BY `actividad_orden`"
+      actividades= Actividad.objects.raw(sql, [proyecto_id,])
     except Error as e:
       print(e)
     finally:      

@@ -5,6 +5,13 @@
 
 {% block content %}
 
+{% load static %}
+
+{% block scripts_actividades_xml %}
+<script type="text/javascript" src="{% static 'risk_project/dist/js/risk_ufps/actividades/risk.js' %}"></script>
+<script type="text/javascript" src="{% static 'risk_project/dist/js/risk_ufps/actividades/util_risk.js' %}"></script>
+<script type="text/javascript" src="{% static 'risk_project/dist/js/risk_ufps/actividades/xml2json.js' %}"></script>
+{% endblock %}
 
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
@@ -75,7 +82,7 @@
                 <label for="inputSkills" class="col-sm-2 control-label">Presupuesto</label>
 
                 <div class="col-sm-10">
-                  <h5>{{ proyecto.proyecto_presupuesto }}</h5>
+                  <h5>{{ proyecto.proyecto_presupuesto|floatformat }}</h5>
                 </div>
               </div> 
               <div class="form-group">
@@ -97,7 +104,7 @@
 
           </div>
           <div class="tab-pane" id="editar_perfil">
-            <form class="form-horizontal" action="/mi_proyecto/{{ proyecto.proyecto_id }}/" method="post">
+            <form class="form-horizontal" id="form_proyecto">
               {% csrf_token %}
               <div class="form-group">
                 <label for="inputName" class="col-sm-2 control-label">Nombre</label>
@@ -132,7 +139,7 @@
                 <label for="inputSkills" class="col-sm-2 control-label">Presupuesto</label>
 
                 <div class="col-sm-10">
-                  <input type="number" class="form-control" id="proyecto_presupuesto" name="proyecto_presupuesto" value='{{ proyecto.proyecto_presupuesto }}' required> 
+                  <input type="number" class="form-control" id="proyecto_presupuesto" name="proyecto_presupuesto" value='{{ proyecto.proyecto_presupuesto|floatformat }}' required> 
                   <h5></h5>
                 </div>
               </div>
@@ -144,7 +151,8 @@
                 <div class="input-group-addon">
                   <i class="fa fa-calendar"></i>
                 </div>
-                <input type="date" class="form-control pull-right" name="proyecto_fecha_inicio" value="{{ proyecto.proyecto_fecha_inicio }}" required>
+                <input type="date" class="form-control pull-right" name="proyecto_fecha_inicio" 
+                 value="{{proyecto.proyecto_fecha_inicio|date:'Y-m-d'}}" required>
               </div>
                 </div>
               </div>  
@@ -160,16 +168,15 @@
                 </select>
                 {% endif %}
               </div>
-            </div>                
+            </div>  
+            {% if actividades %}
+            
+            {% else %}
             <div class="form-group">
-              <div class="col-sm-offset-2 col-sm-10">
-
-                <label>
-                  <p>Las operaciones realizadas no se podran reversar.</p>
-                </label>
-
-              </div>
-            </div>
+              <label class="col-sm-2 control-label">Cronograma del proyecto</label>
+              <input type="file" id="fileForUpload" accept="text/xml" />
+            </div> 
+            {% endif %}
             <div class="form-group">
               <div class="col-sm-offset-2 col-sm-10">
                 <button type="submit" class="btn btn-warning">Actualizar</button>
@@ -191,3 +198,59 @@
 
 {% endblock %}
 
+
+{% block mis_scrtips_riesgos %}
+
+
+<script type="text/javascript">
+
+$(function() {
+$("#form_proyecto").submit(function(e) {
+    e.preventDefault();
+    var actionurl = "/mi_proyecto/{{ proyecto.proyecto_id }}/";
+    var file = document.getElementById("fileForUpload").files[0];
+    if(file){
+      obtenerJson(file, function(myJson){
+        setJsonMpp(myJson);
+      });
+    }else{
+      console.log("no hay");
+      $.ajax({
+            url: actionurl ,
+            type: 'POST',
+            headers: {'X-CSRFToken': csrftoken},
+            data: $("#form_proyecto").serialize()+"&actividades=False",
+            success: function(data) {
+              alert("Registro exitoso");
+              location.reload();
+            }, error: function (jqXhr, textStatus, errorMessage) {
+              console.log(errorMessage);
+              alert("Fallo Registro");
+              location.reload();
+            }
+        });
+    }
+
+});
+
+});
+
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          // Does this cookie string begin with the name we want?
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+              break;
+          }
+      }
+  }
+  return cookieValue;
+}
+const csrftoken = getCookie('csrftoken');
+</script>
+
+{% endblock %}
