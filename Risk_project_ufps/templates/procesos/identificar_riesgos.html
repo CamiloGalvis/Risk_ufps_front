@@ -10,10 +10,12 @@
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <div class="container">
-    <section class="content-header">
+    <section class="content-header"  style="margin-top: 70px;">
       <h1>
-        Proyecto
-        <small>Panel de Control</small>
+        {% if proyecto %}
+        {{ proyecto.proyecto_nombre }}
+        {% endif %}
+        <small>Identificar riesgos</small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Inicio</a></li>
@@ -672,7 +674,7 @@
   </div>
 
 
-   <!-- /.modal-eliminar -->
+<!-- /.modal-eliminar -->
 
   <div class="modal modal-danger fade" id="modal_eliminar" >
     <div class="modal-dialog">
@@ -699,8 +701,37 @@
       </div>
       <!-- /.modal-dialog -->
     </div>
+<!-- /.modal-eliminar -->
 
-  </div>
+<!-- modal eliminar actividad -->
+  <div class="modal modal-danger fade" id="modal_eliminar_actividad" >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title"> Eliminar </h4>
+        </div>
+        <form  action="/proyecto/{{ proyecto.proyecto_id }}/eliminar_actividad_proyecto/" method="post">
+          {% csrf_token %}
+          <div class="modal-body">
+            <p id="contenido_modal_actividad">&hellip;</p>
+            <h2 id="nombre_actividad_me"></h2>
+            <input type="text" class="form-control" id="riesgo_id_actividad" name="riesgo_id_actividad" style="visibility:hidden">
+            <input type="text" class="form-control" id="actividad_id_riesgo" name="actividad_id_riesgo" style="visibility:hidden">              
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Cerrar</button>
+            <button type="submit" class="btn btn-outline">Eliminar</button>
+          </div>
+        </form>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+    </div>
+<!-- modal eliminar actividad -->
+</div>
 
 
 
@@ -961,17 +992,21 @@ function asosiar_riesgos(proyecto_id){
   }
 
     function abrir_modal_eliminar(id, nombre) {        
-
         $("#modal_eliminar").modal('show');
         document.getElementById("contenido_modal").innerHTML = "Estas seguro que desea eliminar el riesgo del proyecto? Esta acción no se podra reversar.";
         document.getElementById("nombre_riesgo_me").innerHTML = " "+nombre;
         var input_id = document.getElementById("riesgo_id_e");
-        input_id.value = id;
-        
-        
+        input_id.value = id;        
         return false;
     };
 
+  function abrir_modal_eliminar_actividad(riesgo_id, actividad_id, actividad_nombre) {        
+    $("#modal_eliminar_actividad").modal('show');
+    document.getElementById("contenido_modal_actividad").innerHTML = "¿Estas seguro que desea desasociar esta actividad del riesgo?";
+    document.getElementById("nombre_actividad_me").innerHTML = " "+actividad_nombre;
+    document.getElementById("riesgo_id_actividad").value = riesgo_id;        
+    document.getElementById("actividad_id_riesgo").value = actividad_id;
+  };
 </script>
 <script type="text/javascript">
   //////////////////////////////////////
@@ -1046,7 +1081,8 @@ function construir_listado_actividades_riesgos(riesgo_id) {
       but.setAttribute("type","button");
       but.setAttribute("class","btn btn-danger");
       but.setAttribute("data-toggle","#modal_eliminar");
-      but.setAttribute("onclick","alert("+riesgo_id+", "+mis_actividades[i]["actividad_id"]+");");
+      but.setAttribute("onclick",
+        "abrir_modal_eliminar_actividad("+riesgo_id+",'"+mis_actividades[i]["actividad_id"]+"', '"+mis_actividades[i]["actividad_nombre"]+"');");
       but.setAttribute("data-target","#modal_eliminar");
       let ii = document.createElement("i");    
       ii.setAttribute("class","fa fa-trash-o danger");         

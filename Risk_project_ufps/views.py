@@ -883,7 +883,15 @@ def identificar_proyecto(request, proyecto_id):
     return render(request, "procesos/identificar_riesgos.html", {'proyecto':proyecto, 'rbs':rbsJSON, 'lista_riesgos':lista_riesgos, 'lista_responsables':lista_responsables, 'lista_actividades':lista_actividades, "responsables_riesgo":responsables_riesgo, 'actividades_riesgo':actividades_riesgo, 'respuestas_riesgo':respuestas_riesgo})
 
 
+def eliminar_actividad_proyecto(self, proyecto_id):
+    if request.method == 'POST':
+        proyecto_controller = ProyectoController()
+        #actividad = proyecto_controller.desasociar_actividad_riesgo(proyecto_id, request.POST['riesgo_id'], request.POST['actividad_id'])    
 
+        #mensaje_eliminar = recurso_controller.eliminar_recurso(recurso)
+        #return render(request, "procesos/mis_recursos.html", {"proyecto":proyecto, "lista_recursos":lista_recursos, "mensaje_eliminar":mensaje_eliminar, "tipos_recursos":tipos_recursos})
+    
+    return render(request, "procesos/mis_recursos.html", {"proyecto":proyecto, "lista_recursos":lista_recursos, "tipos_recursos":tipos_recursos})
 
 
 """

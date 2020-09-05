@@ -63,22 +63,17 @@ class RiesgoController():
                 sub_aux = rbs.get(key)
                 if (sub_aux):       
                     riesgo_nuevo = riesgo_dao.registrar_riesgo(aux.riesgo_nombre, "", "", "", 0, 0, rbs[key])
-                else:
-                    print("gerene", proyecto.gerente)
-                    rbs_model = rbs_dao.get_rbs_gerente_id(proyecto.gerente)
-                    print("rbs_model", rbs_model)                
-                    categoria_aux = categoria_dao.duplicar_categoria_2(sub_categoria_aux.categoria, rbs_model)
-                    print("categoria_aux", categoria_aux)
-                    sub_categoria_aux = subcategoria_dao.duplicar_sub_categoria_2(categoria_aux, sub_categoria_aux)                
-                    print("sub_categoria_aux", sub_categoria_aux)
+                else:                    
+                    rbs_model = rbs_dao.get_rbs_gerente_id(proyecto.gerente)                    
+                    categoria_aux = categoria_dao.duplicar_categoria_2(sub_categoria_aux.categoria, rbs_model)                    
+                    sub_categoria_aux = subcategoria_dao.duplicar_sub_categoria_2(categoria_aux, sub_categoria_aux)                                    
                     rbs[key] = sub_categoria_aux
-                    riesgo_nuevo = riesgo_dao.clonar_riesgo(aux.riesgo_nombre, aux.riesgo_uid, sub_categoria_aux)  
-                    print("riesgo_nuevo", riesgo_nuevo)
-                p_h_r.registrar_proyecto_riesgo(proyecto, riesgo_nuevo)
+                    riesgo_nuevo = riesgo_dao.clonar_riesgo(aux.riesgo_nombre, aux.riesgo_uid, sub_categoria_aux)                      
+                p_h_r.registrar_proyecto_riesgo_editado(proyecto, riesgo_nuevo)
             except Exception as e:
                 raise e
             finally:
-                pass
+                pass 
             
         return True 
 
