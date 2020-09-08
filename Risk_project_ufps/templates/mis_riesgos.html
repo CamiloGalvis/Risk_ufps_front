@@ -46,26 +46,11 @@
               </div>
             </div>
             <div class="box-body no-padding">
-             <select class="js-example-basic-single" name="categorias" onchange="set_riesgo(this);"></select>
-            </div>
-          </div>
-          <div class="box box-primary">
-            <div class="box-header with-border">
-              <h3 class="box-title">Subcategorías</h3>
-
-              <div class="box-tools">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                </button>
-              </div>
-            </div>
-            <div class="box-body no-padding">
               <ul class="nav nav-pills nav-stacked">
-                <select class="form-control select2" id="sub_categoria_id" onchange="construir_riesgos(this)" name="sub_categoria" style="width: 100%; border: none !important;">
-
-                </select>
-              </ul>
+             <select class="form-control select2" name="categorias" onchange="set_riesgo(this);"></select>
+             </ul>
             </div>
-          </div>
+          </div>          
         </div>
 
          <!-- /.Tabla -->
@@ -88,7 +73,7 @@
                     <th>Evento</th>
                     <th>Efecto</th>
                     <th>Tipo</th>
-                    <th>Privacidad</th>
+                    
                     <th>Acciones</th>
                   </tr>
                 </thead>
@@ -110,7 +95,7 @@
                   <th>Evento</th>
                   <th>Efecto</th>
                   <th>Tipo</th>
-                  <th>Privacidad</th>
+                  
                 </tr>
               </tfoot>
             </table>
@@ -249,7 +234,7 @@
 <script src="{% static 'risk_project/dist/js/demo.js' %}"></script>
 
  <script>
-function abrir_modal_eliminar(nombre, id) {
+function abrir_modal_eliminar(id, nombre) {
 
         
 

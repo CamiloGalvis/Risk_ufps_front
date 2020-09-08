@@ -50,14 +50,15 @@ urlpatterns = [
     path('proyecto/<int:proyecto_id>/nueva_respuesta/', proyecto_nueva_respuesta, name='proyecto_nueva_respuesta'),
     path('proyecto/<int:proyecto_id>/responsable_riesgo/', nuevo_responsable_riesgo, name='nuevo_responsable_riesgo'),
     path('proyecto/<int:proyecto_id>/actividad_riesgo/', nueva_actividad_riesgo, name='nueva_actividad_riesgo'),
+    path('proyecto/<int:proyecto_id>/eliminar_actividad_proyecto/', eliminar_actividad_proyecto, name='eliminar_actividad_proyecto'),
     path('proyecto/<int:proyecto_id>/editar_riesgo/', editar_riesgo_proyecto, name='editar_riesgo_proyecto'),
-    
- 
     
 
     path('mi_proyecto/<int:proyecto_id>/identificar/asociar_riesgo/', asociar_riesgo, name='asociar_riesgo'),
     path('mi_proyecto/<int:proyecto_id>/generar_informe/', generar_informe_identificar, name='generar_informe_identificar'),
     path('mi_proyecto/<int:proyecto_id>/generar_informe_planificar/', generar_informe_planificar, name='generar_informe_planificar'),
+
+    path('mi_proyecto/<int:proyecto_id>/evaluar/', evaluar_proyecto, name='evaluar_proyecto'),
 
 
     #url de recursos

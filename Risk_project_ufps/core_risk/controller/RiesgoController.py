@@ -7,20 +7,22 @@ from Risk_project_ufps.core_risk.dao.RbsDao import *
 
 from Risk_project_ufps.core_risk.dto.models import *
 
+from django.forms.models import model_to_dict
+
 class RiesgoController():
 
-    def registrar_riesgo(self, nombre, causa, evento, efecto, privacidad, tipo, subcategoria):
+    def registrar_riesgo(self, nombre, causa, evento, efecto, tipo, subcategoria):
         riesgo_dao = RiesgoDao()
-        return riesgo_dao.registrar_riesgo(nombre, causa, evento, efecto, privacidad, tipo, subcategoria)
+        return riesgo_dao.registrar_riesgo(nombre, causa, evento, efecto, tipo, subcategoria)
 
 
     def listar_riesgos(self, id):
         riesgo_dao = RiesgoDao()
         return riesgo_dao.listar_riesgos(id)
 
-    def editar_riesgo(self, riesgo, nombre, causa, evento, efecto, privacidad, tipo, subcategoria):
+    def editar_riesgo(self, riesgo, nombre, causa, evento, efecto, tipo, subcategoria):
         riesgo_dao = RiesgoDao()
-        return riesgo_dao.editar_riesgo(riesgo, nombre, causa, evento, efecto, privacidad, tipo, subcategoria)
+        return riesgo_dao.editar_riesgo(riesgo, nombre, causa, evento, efecto, tipo, subcategoria)
 
     def obtener_riesgo(self, id):
         riesgo_dao = RiesgoDao()
@@ -63,32 +65,39 @@ class RiesgoController():
                 sub_aux = rbs.get(key)
                 if (sub_aux):       
                     riesgo_nuevo = riesgo_dao.registrar_riesgo(aux.riesgo_nombre, "", "", "", 0, 0, rbs[key])
-                else:
-                    print("gerene", proyecto.gerente)
-                    rbs_model = rbs_dao.get_rbs_gerente_id(proyecto.gerente)
-                    print("rbs_model", rbs_model)                
-                    categoria_aux = categoria_dao.duplicar_categoria_2(sub_categoria_aux.categoria, rbs_model)
-                    print("categoria_aux", categoria_aux)
-                    sub_categoria_aux = subcategoria_dao.duplicar_sub_categoria_2(categoria_aux, sub_categoria_aux)                
-                    print("sub_categoria_aux", sub_categoria_aux)
+                else:                    
+                    rbs_model = rbs_dao.get_rbs_gerente_id(proyecto.gerente)                    
+                    categoria_aux = categoria_dao.duplicar_categoria_2(sub_categoria_aux.categoria, rbs_model)                    
+                    sub_categoria_aux = subcategoria_dao.duplicar_sub_categoria_2(categoria_aux, sub_categoria_aux)                                    
                     rbs[key] = sub_categoria_aux
-                    riesgo_nuevo = riesgo_dao.clonar_riesgo(aux.riesgo_nombre, aux.riesgo_uid, sub_categoria_aux)  
-                    print("riesgo_nuevo", riesgo_nuevo)
-                p_h_r.registrar_proyecto_riesgo(proyecto, riesgo_nuevo)
+                    riesgo_nuevo = riesgo_dao.clonar_riesgo(aux.riesgo_nombre, aux.riesgo_uid, sub_categoria_aux)                      
+                p_h_r.registrar_proyecto_riesgo_editado(proyecto, riesgo_nuevo)
             except Exception as e:
                 raise e
             finally:
-                pass
+                pass 
             
-        return True 
+        return True  
 
     def get_riesgo_by_proyecto(self, proyecto, riesgo): 
         p_h_r = ProyectoHasRiesgoDao()
         return p_h_r.get_by_riesgo_and_proyecto(proyecto, riesgo)
 
     def get_riesgos_by_proyecto(self, proyecto):
+        """Devuelve todos los riesgos que esten asociados a un riesgo,
+        devuleve como un objeto raw query
+        """
         riesgo_dao = RiesgoDao()
         return riesgo_dao.get_riesgos_by_proyecto(proyecto)
+
+    def get_riesgos_by_proyecto_2(self, proyecto):
+        """Devuelve todos los riesgos que esten asociados a un riesgo,
+        devuelve como un array de diccionarios
+        """
+        riesgo_dao = RiesgoDao()
+        riesgos = riesgo_dao.get_riesgos_by_proyecto(proyecto)
+        return self.raw_queryset_as_values_list(riesgos)
+            
 
     def eliminar_riesgo_by_proyecto(self, riesgo_proyecto):
         p_h_r = ProyectoHasRiesgoDao()
@@ -156,6 +165,11 @@ class RiesgoController():
             proyecto_has_riesgo_dao.registrar_proyecto_riesgo_editado(proyecto, riesgo_nuevo) 
             return riesgo_nuevo
 
+    def raw_queryset_as_values_list(self, raw_qs):
+        aux = []
+        for row in raw_qs:
+            aux.append(model_to_dict(row))
+        return aux
 
 
 

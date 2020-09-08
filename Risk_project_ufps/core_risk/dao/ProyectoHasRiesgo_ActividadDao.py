@@ -32,9 +32,18 @@ class ProyectoHasRiesgo_ActividadDao():
 		actividad = None
 		try:
 			actividad = ProyectoHasRiesgoActividad.objects.get(proyecto_has_riesgo_id = proyecto_riesgo_id, actividad_id=actividad_id)
-
 		except Error as e:
 			print(e)
 
 		finally:
 			return actividad
+
+	def desasociar_actividad_riesgo(self, proyecto_has_riesgo, actividad):
+		actividad_riesgo = None
+		try:
+			actividad_riesgo = ProyectoHasRiesgoActividad.objects.get(proyecto_has_riesgo = proyecto_has_riesgo, actividad=actividad)
+			actividad_riesgo.delete()
+		except Exception as e:
+			raise e
+		finally:
+			return actividad_riesgo

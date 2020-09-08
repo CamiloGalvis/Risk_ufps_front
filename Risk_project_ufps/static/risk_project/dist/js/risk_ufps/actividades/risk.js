@@ -21,11 +21,11 @@ function setJsonMpp(data, actionurl) {
           data: $("#form_proyecto").serialize()+"&actividades=1&actividades_data="+JSON.stringify(my_json_ge),
 					success: function(data) {
 							alert("Registro exitoso");
-							window.location.href = "/nuevoproyecto/";
+							location.reload();
 					}, error: function (jqXhr, textStatus, errorMessage) {
 						console.log(errorMessage);
 						alert("Fallo Registro");
-						window.location.href = "/nuevoproyecto/";
+						 location.reload();
 					}
       });
 	});

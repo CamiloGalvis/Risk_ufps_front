@@ -283,7 +283,7 @@ def mis_riesgos(request):
     rbs_controller = RbsController()               
     rbs = rbs_controller.obtener_rbs_completa(request.user.id)     
     rbsJSON = dumps(rbs)
-    return render(request, "mis_riesgos.html", {'rbs':rbsJSON})
+    return render(request, "mis_riesgos.html", {'rbs':rbsJSON, "lista_subcategorias": lista_subcategorias})
 
 
 
@@ -295,7 +295,10 @@ def editar_riesgo(request):
 
     riesgo_controller = RiesgoController()
     lista_riesgos = riesgo_controller.listar_riesgos(request.user.id)
-    
+
+    rbs_controller = RbsController()               
+    rbs = rbs_controller.obtener_rbs_completa(request.user.id) 
+    rbsJSON = dumps(rbs)
     if request.method == 'POST':
         riesgo = riesgo_controller.obtener_riesgo(request.POST["riesgo_id"])
         
@@ -303,9 +306,9 @@ def editar_riesgo(request):
         
         mensaje_editar = riesgo_controller.editar_riesgo(riesgo, request.POST["riesgo_nombre"], request.POST["riesgo_evento"], request.POST["riesgo_efecto"], request.POST["riesgo_causa"], request.POST["riesgo_tipo"], subcategoria)
 
-        return render(request, "mis_riesgos.html", {"lista_riesgos": lista_riesgos, "mensaje_editar": mensaje_editar, "lista_subcategorias": lista_subcategorias})
+        return render(request, "mis_riesgos.html", {'rbs':rbsJSON, "lista_riesgos": lista_riesgos, "mensaje_editar": mensaje_editar, "lista_subcategorias": lista_subcategorias})
 
-    return render(request, "mis_riesgos.html", {"lista_riesgos": lista_riesgos, "lista_subcategorias": lista_subcategorias})
+    return render(request, "mis_riesgos.html", {'rbs':rbsJSON, "lista_riesgos": lista_riesgos, "lista_subcategorias": lista_subcategorias})
 
 
 
@@ -314,19 +317,20 @@ def eliminar_riesgo(request):
 
     subcategoria_controller = SubcategoriaController()
     lista_subcategorias = subcategoria_controller.listar_subcategorias(request.user.id)
-
     riesgo_controller = RiesgoController()
     lista_riesgos = riesgo_controller.listar_riesgos(request.user.id)
+    riesgo = riesgo_controller.obtener_riesgo(request.POST["riesgo_id"])
+    mensaje_eliminar = riesgo_controller.eliminar_riesgo(riesgo)
+    rbs_controller = RbsController()               
+    rbs = rbs_controller.obtener_rbs_completa(request.user.id) 
+    rbsJSON = dumps(rbs)
 
     if request.method == 'POST':
-        riesgo = riesgo_controller.obtener_riesgo(request.POST["riesgo_id"])
         
-        
-        mensaje_eliminar = riesgo_controller.eliminar_riesgo(riesgo)
 
-        return render(request, "mis_riesgos.html", {"lista_riesgos": lista_riesgos, "mensaje_eliminar": mensaje_eliminar, "lista_subcategorias": lista_subcategorias})
+        return render(request, "mis_riesgos.html", {'rbs':rbsJSON, "lista_riesgos": lista_riesgos, "mensaje_eliminar": mensaje_eliminar, "lista_subcategorias": lista_subcategorias})
 
-    return render(request, "mis_riesgos.html", {"lista_riesgos": lista_riesgos, "lista_subcategorias": lista_subcategorias})
+    return render(request, "mis_riesgos.html", {'rbs':rbsJSON, "lista_riesgos": lista_riesgos, "lista_subcategorias": lista_subcategorias})
            
 
 def asociar_riesgo(request, proyecto_id):
@@ -463,16 +467,35 @@ def editar_tipo_recurso(request):
 #Carga la vista de un proyecto y permite editarlo
 def mi_proyecto(request, id):
     proyecto_controller = ProyectoController()
-    proyecto = proyecto_controller.obtener_proyecto(id)
+    proyecto = proyecto_controller.obtener_proyecto(id)    
     sector_controller = SectorController()
     lista_sectores = sector_controller.listar_sectores()
-    
+    data = {"proyecto":proyecto, "lista_sectores": lista_sectores} 
+
+    if(proyecto_controller.has_actividades(id)):
+        data["actividades"] = True
+
     if request.method == 'POST':
         sector = sector_controller.obtener_sector(request.POST["proyecto_sector"])
-        mensaje = proyecto_controller.editar_proyecto(proyecto, request.POST["proyecto_nombre"], request.POST["proyecto_objetivo"], request.POST["proyecto_alcance"], request.POST["proyecto_descripcion"], request.POST["proyecto_presupuesto"], request.POST["proyecto_fecha_inicio"], sector)
-        return render(request, "procesos/proyecto.html", {"proyecto":proyecto, "lista_sectores": lista_sectores, "mensaje": mensaje} )
+        mensaje = proyecto_controller.editar_proyecto(proyecto, request.POST["proyecto_nombre"], request.POST["proyecto_objetivo"], request.POST["proyecto_alcance"], request.POST["proyecto_descripcion"], request.POST["proyecto_presupuesto"], request.POST["proyecto_fecha_inicio"], sector)        
+        data["mensaje"] = mensaje
+        if(request.POST["actividades"] == '1'):
+            actividades = json.loads(request.POST["actividades_data"])["tasks"]
+            orden = 0
+            for actividad in actividades:
+                act = Actividad(
+                    actividad_id = "p_"+str(proyecto.proyecto_id)+"_a_"+str(actividad["uid"]),
+                    actividad_orden = orden, 
+                    actividad_uuid = actividad["uid"],
+                    actividad_nombre = actividad["name"],
+                    actividad_level = actividad["level"],
+                    actividad_wbs = actividad["WBS"],
+                    proyecto = proyecto)
+                act.save()
+                orden = orden + 1
+        return render(request, "procesos/proyecto.html", data)
 
-    return render(request, "procesos/proyecto.html", {"proyecto":proyecto, "lista_sectores":lista_sectores})
+    return render(request, "procesos/proyecto.html", data)
 
 
 
@@ -845,12 +868,12 @@ def identificar_proyecto(request, proyecto_id):
     responsable_controller = ResponsableController()
     lista_responsables = responsable_controller.listar_responsables(proyecto.proyecto_id)
     actividad_controller = ActividadController()
-    lista_actividades = actividad_controller.listar_actividades_proyecto(proyecto_id)
+    lista_actividades = dumps(actividad_controller.listar_actividades_proyecto(proyecto_id))
     
     #Retorna responsables por riesgo de un proyecto
     responsables_riesgo = riesgo_controller.listar_responsables_riesgo(proyecto_id)
     #Retorna actividades por riesgo de un proyecto
-    actividades_riesgo = actividad_controller.listar_actividades_riesgo(proyecto_id)
+    actividades_riesgo = dumps(actividad_controller.listar_actividades_riesgo(proyecto_id))
     
     #(Funcion que retorna respuestas por riesgo de un proyecto (Revisar)!!!)
     respuesta_controller = RespuestaController()
@@ -864,7 +887,30 @@ def identificar_proyecto(request, proyecto_id):
     return render(request, "procesos/identificar_riesgos.html", {'proyecto':proyecto, 'rbs':rbsJSON, 'lista_riesgos':lista_riesgos, 'lista_responsables':lista_responsables, 'lista_actividades':lista_actividades, "responsables_riesgo":responsables_riesgo, 'actividades_riesgo':actividades_riesgo, 'respuestas_riesgo':respuestas_riesgo})
 
 
+def eliminar_actividad_proyecto(request, proyecto_id):
+    if request.method == 'POST':                  
+        actividad_controller = ActividadController()
+        actividad = actividad_controller.desasociar_actividad_riesgo(proyecto_id, request.POST['riesgo_id_actividad'], request.POST['actividad_id_riesgo'])         
+        data = get_data_render_identificar_riesgo(request.user.id, proyecto_id)        
+        if (actividad):
+            data["mensaje_eliminar"] = "Eliminado"
+        return render(request, "procesos/identificar_riesgos.html", data)
+    return render(request, "procesos/identificar_riesgos.html", data)
 
+
+
+"""
+////////////////////////////////////////////////////////////////////////////
+    METODOS DE EVALUAR RIESGOS
+/////////////////////////////////////////////////////////////////////////////
+"""
+def evaluar_proyecto(request, proyecto_id):
+    proyecto_controller = ProyectoController()
+    riesgo_controller = RiesgoController()
+
+    proyecto = proyecto_controller.obtener_proyecto(proyecto_id)
+    lista_riesgos = dumps(riesgo_controller.get_riesgos_by_proyecto_2(proyecto))
+    return render(request, "procesos/evaluar.html", {'proyecto':proyecto, 'lista_riesgos':lista_riesgos})
 
 
 """

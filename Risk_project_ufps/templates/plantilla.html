@@ -40,7 +40,8 @@
    <!-- bootstrap wysihtml5 - text editor -->
    <link rel="stylesheet" href="{% static 'risk_project/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css' %}">
 
-    
+  <script src="https://cdn.jsdelivr.net/npm/jdenticon@3.0.1" async></script>
+
    {% block organigrama_up %}{% endblock %}
 
 
@@ -61,6 +62,7 @@
 
 <!-- Google Font -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
   <div class="wrapper">
@@ -93,7 +95,10 @@
           <ul class="nav navbar-nav">
             <li class="dropdown user user-menu">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <img src="{% static 'risk_project/dist/img/user2-160x160.jpg' %}" class="user-image" alt="User Image">
+                <!--<img src="{% static 'risk_project/dist/img/user2-160x160.jpg' %}"  alt="User Image">-->
+                <svg data-jdenticon-value="{{ user.first_name }}" width="160" height="160" class="user-image">
+                  {{ user.first_name }}
+                </svg>
                 <span class="hidden-xs">
                   {{ user.first_name }}
                 </span>
@@ -101,7 +106,10 @@
               <ul class="dropdown-menu">
                 <!-- User image -->
                 <li class="user-header">
-                  <img src="{% static 'risk_project/dist/img/user2-160x160.jpg' %}" class="img-circle" alt="User Image">
+                  <!-- <img src="{% static 'risk_project/dist/img/user2-160x160.jpg' %}" class="img-circle" alt="User Image"> -->
+                  <svg data-jdenticon-value="{{ user.first_name }}" width="100" height="100" class="img-circle">
+                  {{ user.first_name }}
+                </svg>
 
                   <p>
                    {{ user.first_name }}
@@ -143,9 +151,13 @@
       <!-- Sidebar user panel -->
       <div class="user-panel">
         <div class="pull-left image">
-          <img src="{% static 'risk_project/dist/img/user2-160x160.jpg' %}" class="img-circle" alt="User Image">
+          <!-- <img src="{% static 'risk_project/dist/img/user2-160x160.jpg' %}" class="img-circle" alt="User Image">-->
+          <svg data-jdenticon-value="{{ user.first_name }}" width="39" height="39" class="img-circle">
+          {{ user.first_name }}
+        </svg>      
         </div>
         <div class="pull-left info">
+          <br>
           <p>{{ user.first_name }}</p>
           <a ><i ></i></a>
         </div>

@@ -55,3 +55,15 @@ class ProyectoDao():
       print(e)
     finally:      
       return proyectos
+
+  def has_actividades(self, proyecto):
+    flag = False
+    try:
+      sql = "SELECT * FROM `actividad` WHERE `proyecto_id` = %s LIMIT 1"
+      actividad = Actividad.objects.raw(sql, [proyecto.proyecto_id,])
+      if (actividad):
+        flag = True
+    except Exception as e:
+      raise e
+    finally:      
+      return flag
