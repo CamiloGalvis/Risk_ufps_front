@@ -1,4 +1,6 @@
 from Risk_project_ufps.core_risk.dao.ActividadDao import *
+from Risk_project_ufps.core_risk.dao.RiesgoDao import *
+from Risk_project_ufps.core_risk.dao.ProyectoDao import *
 from Risk_project_ufps.core_risk.dao.ProyectoHasRiesgo_ActividadDao import *
 from Risk_project_ufps.core_risk.dto.models import *
 
@@ -37,13 +39,20 @@ class ActividadController():
 				"actividad_nombre" : actividad.actividad_nombre,
 				"actividad_level" : actividad.actividad_level
 			})
-		return aux
-			
-
-
-
-
+		return aux	
 
 	def validar_actividad(self, proyecto_riesgo, actividad_id):
 		actividad_dao = ProyectoHasRiesgo_ActividadDao()
 		return actividad_dao.validar_actividad(proyecto_riesgo, actividad_id)
+
+	def desasociar_actividad_riesgo(self, proyecto_id, riesgo_id, actividad_id): 
+		p_h_r_a = ProyectoHasRiesgo_ActividadDao()
+		p_h_r = ProyectoHasRiesgoDao()
+
+		proyecto = Proyecto(proyecto_id = proyecto_id)
+		riesgo = Riesgo(riesgo_id = riesgo_id)
+		actividad = Actividad(actividad_id = actividad_id)
+
+		proyecto_has_riesgo = p_h_r.get_by_riesgo_and_proyecto_2(riesgo, proyecto)
+
+		return p_h_r_a.desasociar_actividad_riesgo(proyecto_has_riesgo, actividad)

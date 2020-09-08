@@ -7,6 +7,8 @@ from Risk_project_ufps.core_risk.dao.RbsDao import *
 
 from Risk_project_ufps.core_risk.dto.models import *
 
+from django.forms.models import model_to_dict
+
 class RiesgoController():
 
     def registrar_riesgo(self, nombre, causa, evento, efecto, privacidad, tipo, subcategoria):
@@ -75,15 +77,27 @@ class RiesgoController():
             finally:
                 pass 
             
-        return True 
+        return True  
 
     def get_riesgo_by_proyecto(self, proyecto, riesgo): 
         p_h_r = ProyectoHasRiesgoDao()
         return p_h_r.get_by_riesgo_and_proyecto(proyecto, riesgo)
 
     def get_riesgos_by_proyecto(self, proyecto):
+        """Devuelve todos los riesgos que esten asociados a un riesgo,
+        devuleve como un objeto raw query
+        """
         riesgo_dao = RiesgoDao()
         return riesgo_dao.get_riesgos_by_proyecto(proyecto)
+
+    def get_riesgos_by_proyecto_2(self, proyecto):
+        """Devuelve todos los riesgos que esten asociados a un riesgo,
+        devuelve como un array de diccionarios
+        """
+        riesgo_dao = RiesgoDao()
+        riesgos = riesgo_dao.get_riesgos_by_proyecto(proyecto)
+        return self.raw_queryset_as_values_list(riesgos)
+            
 
     def eliminar_riesgo_by_proyecto(self, riesgo_proyecto):
         p_h_r = ProyectoHasRiesgoDao()
@@ -151,6 +165,11 @@ class RiesgoController():
             proyecto_has_riesgo_dao.registrar_proyecto_riesgo_editado(proyecto, riesgo_nuevo) 
             return riesgo_nuevo
 
+    def raw_queryset_as_values_list(self, raw_qs):
+        aux = []
+        for row in raw_qs:
+            aux.append(model_to_dict(row))
+        return aux
 
 
 

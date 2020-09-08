@@ -1,0 +1,360 @@
+{% extends "procesos/plantilla_procesos.html" %}
+
+{% block title %} Proyecto {% endblock %}
+
+
+
+
+{% load static %}
+{% block organigrama_up %}
+<style type="text/css">
+  table, th, td {
+    border-top: 1px solid black !important;
+    border: 1px solid black;
+  }
+  td {
+    width: 50px !important;
+    height: 50px !important;   
+  }
+
+  .bajo {
+    background-color: #138D75; 
+  }
+
+  .medio {
+    background-color: #D68910; 
+  }
+
+  .alto {
+    background-color: #CD5C5C; 
+  }
+
+</style>
+{% endblock %}
+{% block content %}
+<div class="content-wrapper">
+  <div class="container">
+    <section class="content-header"  style="margin-top: 70px;">
+      <h1>
+        {% if proyecto %}
+        {{ proyecto.proyecto_nombre }}
+        {% endif %}
+        <small>Identificar riesgos</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Inicio</a></li>
+        <li class="active">Proyecto</li>
+      </ol>
+      {% if mensaje %}
+      <div class="callout callout-info">
+        <h4>Registro Exitoso</h4>
+        {{mensaje}}      
+      </div>
+      {% endif %}
+      {% if mensaje_eliminar %}
+      <div class="callout callout-danger">
+        <h4>Borrado Exitoso</h4>
+          {{mensaje_eliminar}}      
+      </div>
+      {% endif %}
+      {% if mensaje_editar %}
+      <div class="callout callout-warning">
+        <h4>Actualización Exitosa</h4>
+        {{mensaje_editar}}      
+      </div>
+      {% endif %}
+    </section>
+    <section class="content">
+      <div class="box box-default">
+        <div class="box-header with-border">
+          <h3 class="box-title">Nombre Proyecto</h3>
+        </div>
+        <div class="box-body">
+          Aqui deberia ir la información del proyecto.
+          <a href="/mi_proyecto/{{ proyecto.proyecto_id }}/generar_informe/">Generar informe</a>
+        </div>
+      </div>
+      <div class="box box-default">
+        <div class="box-body">
+          <div class="row">
+            <div class="col-md-2">
+              
+            </div>
+            <div class="col-md-10">
+              <table class="table">
+                <tbody id="matriz_calor">                 
+                </tbody>
+              </table>
+            </div>
+            <div class="col-md-2">
+              
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="box box-default">
+        <div class="box-header with-border">
+          <h3 class="box-title">Nombre Proyecto</h3>
+        </div>
+        <div class="box-body">
+          <table id="example" class="table table-bordered table-striped dataTable" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Impacto</th>
+                    <th>Probabilidad</th>
+                    <th>Nivel</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody id="tabla_riesgos">
+                
+               
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Impacto</th>
+                    <th>Probabilidad</th>
+                    <th>Nivel</th>
+                    <th>Total</th>
+                </tr>
+            </tfoot>
+        </table>
+        </div>
+      </div>
+  </div>
+</div>
+{% endblock %}
+{% block organigrama_down %}
+<!-- DataTables -->
+<script src="{% static 'risk_project/bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'risk_project/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+
+<script type="text/javascript">
+  var riesgos = JSON.parse("{{lista_riesgos|escapejs}}");   
+  console.log(riesgos);
+
+  var rangos_riesgos = {
+    "riesgo_bajo" : [1,4],
+    "riesgo_moderado" : [5,11],
+    "riesgo_alto" : [12,25]
+  }  
+
+  var valores = {
+    "impactos" : [
+      {
+        "nombre" : "Insignificante",
+        "escala" : 1
+      },
+      {
+        "nombre" : "Menor",
+        "escala" : 2
+      },
+      {
+        "nombre" : "Moderado",
+        "escala" : 3
+      },
+      {
+        "nombre" : "Mayor",
+        "escala" : 4
+      },
+      {
+        "nombre" : "Catastrófico",
+        "escala" : 5
+      }
+    ],
+    "impactos_valores" : [1,2,3,4,5],
+    "probabilidades":[
+      {
+        "nombre" : "Raro",
+        "escala" : 1
+      },
+      {
+        "nombre" : "Improbable",
+        "escala" : 2
+      },
+      {
+        "nombre" : "Moderada",
+        "escala" : 3
+      },
+      {
+        "nombre" : "Probable",
+        "escala" : 4
+      },
+      {
+        "nombre" : "Casi certeza",
+        "escala" : 5
+      }
+    ],
+    "probabilidades_valores" : [1,2,3,4,5],      
+  }
+
+
+  function construir_matriz_calor() {
+    let matriz_calor = document.getElementById('matriz_calor');
+    let anchura = 6;
+    let altura = 6;
+    for (let i = 0; i < altura ; i++) {
+      let tr = document.createElement("tr");
+      for (let j = 0; j < anchura; j++) {
+        tr.appendChild(document.createElement("td"));        
+      }
+      matriz_calor.appendChild(tr);
+    }
+  }
+
+  function llenar_matriz_calor(impactos, probabilidades) {
+    let matriz_calor = document.getElementById('matriz_calor');
+    let anchura = 6;
+    let altura = 6;
+    impactos = ordenarMenoraMayor(impactos);
+    probabilidades = ordenarMayoraMenor(probabilidades);
+
+    let filas = matriz_calor.getElementsByTagName("tr");    
+    console.log(filas);
+    for (let i = 1; i < filas.length; i++) {
+      let columnas = filas[i].getElementsByTagName("td");
+      for (let j = 1; j < columnas.length; j++) {
+        let p = probabilidades[i-1];
+        let ii = impactos[j-1];
+        columnas[j].appendChild(document.createTextNode("p_"+p));
+        columnas[j].appendChild(document.createTextNode("i_"+ii));
+        columnas[j].setAttribute("class", get_rango(p*ii));
+      }
+    }   
+  }
+
+  function ordenarMenoraMayor(mi_array) {      
+    return mi_array.sort(function(a, b){return a-b});
+  }
+
+  function ordenarMayoraMenor(mi_array) {      
+    return mi_array.sort(function(a, b){return b-a});
+  }
+
+  function get_rango(valor){
+    if(valor <= 4 ){
+      return "bajo";
+    }if(valor > 4 && valor <= 11){
+      return "medio"
+    }else{
+      return "alto";
+    }
+  }
+
+  function construir_select_escalas(valores){
+    let select = document.createElement("select");
+    for (let i = 0; i < valores.length; i++) {
+      let option = document.createElement("option");      
+      option.setAttribute("value", valores[i]["escala"]);
+      option.appendChild(document.createTextNode(valores[i]["nombre"]));
+      select.appendChild(option);
+    }
+    return select;
+  }
+
+  function get_porcentaje(valor) {    
+    return ((valor * 100)/25);
+  }
+
+  function construir_pogress_bar(valor) {
+    let mi_class = "";
+    if(get_rango(valor) == "alto"){
+      mi_class = "danger";
+    }else if(get_rango(valor) == "medio"){
+      mi_class = "yellow";
+    }else{
+      mi_class = "success";
+    }
+    let div_1 = document.createElement("div");
+    let div_1_1 = document.createElement("div"); 
+    div_1.setAttribute("class", "progress progress-xs");
+    div_1_1.setAttribute("class", "progress-bar progress-bar-"+mi_class);
+    div_1_1.setAttribute("style", "width:"+get_porcentaje(valor)+"%;");
+    div_1.appendChild(div_1_1);
+    return div_1;                        
+  }
+
+  function construir_letrero(valor){
+    let mi_class = "";
+    if(get_rango(valor) == "alto"){
+      mi_class = "red";
+    }else if(get_rango(valor) == "medio"){
+      mi_class = "yellow";
+    }else{
+      mi_class = "green";
+    }
+    let span = document.createElement("span");
+    span.appendChild(document.createTextNode(valor));
+    span.setAttribute("class", "badge bg-"+mi_class);
+    return span;
+  }
+
+  function construir_tabla_riesgos(){
+    let tabla_riesgos = document.getElementById("tabla_riesgos")
+    for (let i = 0; i < riesgos.length; i++) {
+      let tr = document.createElement("tr");
+      
+      let td_1 = document.createElement("td");
+      let td_2 = document.createElement("td");
+      let td_3 = document.createElement("td");
+      let td_4 = document.createElement("td");
+      let td_5 = document.createElement("td");
+      
+
+      td_1.appendChild(document.createTextNode(riesgos[i]["riesgo_nombre"]));
+      td_2.appendChild(construir_select_escalas(valores["impactos"]));
+      td_3.appendChild(construir_select_escalas(valores["probabilidades"]));
+      td_4.appendChild(construir_pogress_bar(5));
+      td_5.appendChild(construir_letrero(5));
+
+      tr.appendChild(td_1);
+      tr.appendChild(td_2);
+      tr.appendChild(td_3);
+      tr.appendChild(td_4);
+      tr.appendChild(td_5);
+
+      tabla_riesgos.appendChild(tr);
+
+    }
+    
+  }
+
+
+
+  $(function() {
+    construir_matriz_calor();
+    llenar_matriz_calor([1,2,3,4,5], [1,2,3,4,5]);
+    construir_tabla_riesgos(riesgos);
+    $("#example").DataTable({
+     "language": {
+         "sProcessing":    "Procesando...",
+         "sLengthMenu":    "Mostrar _MENU_ registros",
+         "sZeroRecords":   "No se encontraron resultados",
+         "sEmptyTable":    "Ningún dato disponible en esta tabla",
+         "sInfo":          "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+         "sInfoEmpty":     "Mostrando registros del 0 al 0 de un total de 0 registros",
+         "sInfoFiltered":  "(filtrado de un total de _MAX_ registros)",
+         "sInfoPostFix":   "",
+         "sSearch":        "Buscar:",
+         "sUrl":           "",
+         "sInfoThousands":  ",",
+         "sLoadingRecords": "Cargando...",
+         "oPaginate": {
+             "sFirst":    "Primero",
+             "sLast":    "Último",
+             "sNext":    "Siguiente",
+             "sPrevious": "Anterior"
+         },
+         "oAria": {
+             "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+             "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+         }
+     }
+    });    
+  });
+</script>
+
+
+{% endblock %}

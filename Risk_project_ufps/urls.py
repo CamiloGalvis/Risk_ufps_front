@@ -58,6 +58,8 @@ urlpatterns = [
     path('mi_proyecto/<int:proyecto_id>/generar_informe/', generar_informe_identificar, name='generar_informe_identificar'),
     path('mi_proyecto/<int:proyecto_id>/generar_informe_planificar/', generar_informe_planificar, name='generar_informe_planificar'),
 
+    path('mi_proyecto/<int:proyecto_id>/evaluar/', evaluar_proyecto, name='evaluar_proyecto'),
+
 
     #url de recursos
     path('recursos/<int:id>/', recursos, name='recursos'),

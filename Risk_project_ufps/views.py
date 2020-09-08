@@ -883,15 +883,30 @@ def identificar_proyecto(request, proyecto_id):
     return render(request, "procesos/identificar_riesgos.html", {'proyecto':proyecto, 'rbs':rbsJSON, 'lista_riesgos':lista_riesgos, 'lista_responsables':lista_responsables, 'lista_actividades':lista_actividades, "responsables_riesgo":responsables_riesgo, 'actividades_riesgo':actividades_riesgo, 'respuestas_riesgo':respuestas_riesgo})
 
 
-def eliminar_actividad_proyecto(self, proyecto_id):
-    if request.method == 'POST':
-        proyecto_controller = ProyectoController()
-        #actividad = proyecto_controller.desasociar_actividad_riesgo(proyecto_id, request.POST['riesgo_id'], request.POST['actividad_id'])    
+def eliminar_actividad_proyecto(request, proyecto_id):
+    if request.method == 'POST':                  
+        actividad_controller = ActividadController()
+        actividad = actividad_controller.desasociar_actividad_riesgo(proyecto_id, request.POST['riesgo_id_actividad'], request.POST['actividad_id_riesgo'])         
+        data = get_data_render_identificar_riesgo(request.user.id, proyecto_id)        
+        if (actividad):
+            data["mensaje_eliminar"] = "Eliminado"
+        return render(request, "procesos/identificar_riesgos.html", data)
+    return render(request, "procesos/identificar_riesgos.html", data)
 
-        #mensaje_eliminar = recurso_controller.eliminar_recurso(recurso)
-        #return render(request, "procesos/mis_recursos.html", {"proyecto":proyecto, "lista_recursos":lista_recursos, "mensaje_eliminar":mensaje_eliminar, "tipos_recursos":tipos_recursos})
-    
-    return render(request, "procesos/mis_recursos.html", {"proyecto":proyecto, "lista_recursos":lista_recursos, "tipos_recursos":tipos_recursos})
+
+
+"""
+////////////////////////////////////////////////////////////////////////////
+    METODOS DE EVALUAR RIESGOS
+/////////////////////////////////////////////////////////////////////////////
+"""
+def evaluar_proyecto(request, proyecto_id):
+    proyecto_controller = ProyectoController()
+    riesgo_controller = RiesgoController()
+
+    proyecto = proyecto_controller.obtener_proyecto(proyecto_id)
+    lista_riesgos = dumps(riesgo_controller.get_riesgos_by_proyecto_2(proyecto))
+    return render(request, "procesos/evaluar.html", {'proyecto':proyecto, 'lista_riesgos':lista_riesgos})
 
 
 """
