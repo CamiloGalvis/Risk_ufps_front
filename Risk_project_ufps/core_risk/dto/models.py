@@ -34,6 +34,20 @@ class Categoria(models.Model):
         db_table = 'categoria'
 
 
+class ClasificacionRiesgo(models.Model):
+    clasificacion_riesgo_id = models.AutoField(primary_key=True)
+    clasificacion_riesgo_nombre = models.CharField(max_length=70)
+    clasificacion_riesgo_min = models.IntegerField()
+    clasificacion_riesgo_max = models.IntegerField()
+    clasificacion_color = models.CharField(max_length=45)
+    proyecto = models.ForeignKey('Proyecto', models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'clasificacion_riesgo'
+
+
+
 class Gerente(models.Model):
     gerente_id = models.AutoField(primary_key=True)
     gerente_nombre = models.CharField(max_length=100, blank=True, null=True)
@@ -215,7 +229,37 @@ class TipoRecurso(models.Model):
     class Meta:
         managed = False
         db_table = 'tipo_recurso'
+        
 
+class Rol(models.Model):
+    rol_id = models.AutoField(primary_key=True)
+    rol_nombre = models.CharField(max_length=60)
+    rol_descripcion = models.TextField(blank=True, null=True)
+    gerente = models.ForeignKey(Gerente, models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'rol'
+
+class Impacto(models.Model):
+    impacto_id = models.AutoField(primary_key=True)
+    impacto_categoria = models.CharField(max_length=70)
+    impacto_valor = models.IntegerField()
+    proyecto = models.ForeignKey('Proyecto', models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'impacto'
+
+class Propabilidad(models.Model):
+    propabilidad_id = models.AutoField(primary_key=True)
+    propabilidad_categoria = models.CharField(max_length=70)
+    propabilidad_valor = models.IntegerField()
+    proyecto = models.ForeignKey('Proyecto', models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'propabilidad'
 
 
 
