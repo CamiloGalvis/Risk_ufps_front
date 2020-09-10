@@ -70,6 +70,8 @@ urlpatterns = [
     path('rbs/listar/', profile, name='listarrbs'),
     path('rbs/confirmar_cambios/', confirmar_cambios_rbs, name='confirmar_cambios_rbs'),
 
-
-
+    #####################################################
+    ## Planificar respuestas
+    #####################################################
+    path('mi_proyecto/<int:proyecto_id>/planificar_respuestas/', planificar_respuestas, name='planificar_respuestas'),
 ]

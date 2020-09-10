@@ -265,14 +265,16 @@ def confirmar_cambios_rbs(request):
 def nuevo_riesgo(request):
     subcategoria_controller = SubcategoriaController()
     lista_subcategorias = subcategoria_controller.listar_subcategorias(request.user.id)
+    rbs_controller = RbsController()               
+    rbs = rbs_controller.obtener_rbs_completa(request.user.id)     
+    rbsJSON = dumps(rbs)
     if request.method == 'POST':
-        subcategoria = subcategoria_controller.obtener_subcategoria(request.POST["sub_categoria_id"])
-        print(subcategoria) 
-        riesgo_controller = RiesgoController()
+        subcategoria = subcategoria_controller.obtener_subcategoria(request.POST["sub_categoria_id"])        
+        riesgo_controller = RiesgoController()        
         mensaje = riesgo_controller.registrar_riesgo(request.POST["riesgo_nombre"], request.POST["riesgo_causa"], request.POST["riesgo_evento"], request.POST["riesgo_efecto"], request.POST["riesgo_tipo"], subcategoria)
-        return render(request, "nuevo_riesgo.html", {"lista_subcategorias": lista_subcategorias, "mensaje": mensaje} )
+        return render(request, "nuevo_riesgo.html", {"lista_subcategorias": lista_subcategorias, "rbs":rbsJSON, "mensaje": mensaje} )
 
-    return render(request, "nuevo_riesgo.html" , {"lista_subcategorias": lista_subcategorias})
+    return render(request, "nuevo_riesgo.html" , {"lista_subcategorias": lista_subcategorias,"rbs":rbsJSON})
 
 
 
@@ -908,6 +910,20 @@ def evaluar_proyecto(request, proyecto_id):
     lista_riesgos = dumps(riesgo_controller.get_riesgos_by_proyecto_2(proyecto))
     return render(request, "procesos/evaluar.html", {'proyecto':proyecto, 'lista_riesgos':lista_riesgos})
 
+
+"""
+////////////////////////////////////////////////////////////////////////////
+    METODOS DE PLANIFICAR RESPUESTAS
+/////////////////////////////////////////////////////////////////////////////
+"""
+def planificar_respuestas(request, proyecto_id):
+    proyecto_controller = ProyectoController()
+    riesgo_controller = RiesgoController()
+
+    proyecto = proyecto_controller.obtener_proyecto(proyecto_id)
+    lista_riesgos = riesgo_controller.get_riesgos_by_proyecto(proyecto)
+    
+    return render(request, "procesos/planificar_respuestas.html", {'proyecto':proyecto, 'lista_riesgos':lista_riesgos})
 
 """
 ////////////////////////////////////////////////////////////////////////////

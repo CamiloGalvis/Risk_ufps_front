@@ -16,6 +16,17 @@
         <li><a href="#"><i class="fa fa-dashboard"></i> Inicio</a></li>
         <li class="active">Proyectos</li>
       </ol>
+      <br>
+      <ul class="chart-legend clearfix">
+        <div class="row">
+          <div class="col-xs-2">
+            <li><i class="fa fa-circle-o text-blue"> &nbsp Proyectos en ejecución</i></li>
+          </div>
+          <div class="col-xs-2">
+            <li><i class="fa fa-circle-o text-red"> &nbsp Proyectos finalizados</i></li> 
+          </div>
+        </div>                                                      
+      </ul>
     </section>
 
    
@@ -29,15 +40,26 @@
       {% if lista_proyectos %}
       {% for proyecto in lista_proyectos %}
       <div class="col-lg-3 col-xs-6">
+        {% if proyecto.proyecto_fin_status %}
+        <div class="small-box bg-red">
+        {% else %}
         <div class="small-box bg-aqua">
+        {% endif %}  
           <div class="inner">
             <h1>{{ proyecto.proyecto_nombre}}</h1>
           </div>
           <div class="icon">
             <i class="ion ion-document"></i>
           </div>
-          <button type="button"  class="btn btn-block btn-info btn-xs"><a href="/mi_proyecto/{{ proyecto.proyecto_id }}/" style="color:#FEFEFE">Gestionar Proyecto<i class="fa fa-arrow-circle-right"></i></a></button>
-
+            {% if proyecto.proyecto_fin_status %}
+            <button type="button"  class="btn btn-block btn-info btn-xs bg-red" style="border-color: #BE4C4C;">
+            {% else %}
+            <button type="button"  class="btn btn-block btn-info btn-xs">
+            {% endif %}  
+            <a href="/mi_proyecto/{{ proyecto.proyecto_id }}/" style="color:#FEFEFE">Gestionar Proyecto
+              <i class="fa fa-arrow-circle-right"></i>
+            </a>
+          </button>
         </div>
       </div>
       {% endfor %} 

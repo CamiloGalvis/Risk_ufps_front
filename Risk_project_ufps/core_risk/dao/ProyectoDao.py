@@ -50,7 +50,7 @@ class ProyectoDao():
   def listar_proyectos(self, id):
     proyectos = {}
     try:
-      proyectos = Proyecto.objects.filter(gerente_id=id)
+      proyectos = Proyecto.objects.filter(gerente_id=id).order_by('-proyecto_fecha_inicio')
     except Error as e:
       print(e)
     finally:      

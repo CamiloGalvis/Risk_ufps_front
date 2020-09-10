@@ -90,8 +90,8 @@
                 </thead>
                 <tbody id="body_riesgos">
                   <tr>
-                    <td>Selecciona una subcategoria para cargar los riesgos.</td>
-                    <td></td> 
+                    <td></td>
+                    <td>Selecciona una subcategoria para cargar los riesgos.</td> 
                     <td></td>
                     <td></td>
                     <td></td>                
@@ -207,7 +207,7 @@
 
         <div class="box-body">
 
-          <table id="example1" class="table table-bordered table-striped">
+          <table id="tabla_riesgos" class="table table-bordered table-striped">
             <thead>
               <tr>
                 <th>Riesgo</th>
@@ -244,10 +244,8 @@
             {% endfor %}
             {% else %}
             <tr>
-              <td>No cuentas con riesgos registrados.</td>
-              <td></td> 
               <td></td>
-              <td></td>
+              <td>No cuentas con riesgos registrados.</td> 
               <td></td>
               <td></td>
               <td></td>
@@ -300,7 +298,7 @@
                 <div class="form-group">
                   <label>Causa</label>
                   <textarea class="form-control" rows="3" placeholder="Descripción de la causa..." name="riesgo_causa"></textarea>
-                </div>
+                </div> 
                 <div class="form-group">
                   <label>Evento</label>
                   <textarea class="form-control" rows="3" placeholder="Descripción del evento..." name="riesgo_evento"></textarea>
@@ -1036,6 +1034,7 @@ function asosiar_riesgos(proyecto_id){
     });
 
   construir_listado_actividades();
+  trasnformar_tabla("tabla_riesgos"); 
     
 });
 
@@ -1104,6 +1103,34 @@ function construir_listado_actividades_riesgos(riesgo_id) {
     div_actividades.appendChild(tr);
   }
   
+}
+function trasnformar_tabla(id_tabla) {
+  $("#"+id_tabla).DataTable({
+     "language": {
+         "sProcessing":    "Procesando...",
+         "sLengthMenu":    "Mostrar _MENU_ registros",
+         "sZeroRecords":   "No se encontraron resultados",
+         "sEmptyTable":    "Ningún dato disponible en esta tabla",
+         "sInfo":          "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+         "sInfoEmpty":     "Mostrando registros del 0 al 0 de un total de 0 registros",
+         "sInfoFiltered":  "(filtrado de un total de _MAX_ registros)",
+         "sInfoPostFix":   "",
+         "sSearch":        "Buscar:",
+         "sUrl":           "",
+         "sInfoThousands":  ",",
+         "sLoadingRecords": "Cargando...",
+         "oPaginate": {
+             "sFirst":    "Primero",
+             "sLast":    "Último",
+             "sNext":    "Siguiente",
+             "sPrevious": "Anterior"
+         },
+         "oAria": {
+             "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+             "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+         }
+     }
+    }); 
 }
 
 </script>

@@ -178,25 +178,37 @@ class RbsController():
         Excepciones:
         ValueError -- Si gerente no existe      
         """        
-        categoria_dao = CategoriaDao()
+        categoria_dao = CategoriaDao() 
         sector_dao = SectorDao()
         sector = sector_dao.obtener_sector(sector_id)
         categorias = categoria_dao.get_categorias_by_sector(sector)
         rbs = []
+        indice = {}
+        cont = 0
         sub_categoria_dao = SubcategoriaDao()        
-        for categoria in categorias:            
-            subcategorias = sub_categoria_dao.get_sub_categorias_by_categoria_and_sector(categoria, sector)          
+        for categoria_aux in categorias:
+            categoria_nombre = indice.get(categoria_aux.categoria_nombre)                
+            subcategorias = sub_categoria_dao.get_sub_categorias_by_categoria_and_sector(categoria_aux, sector)          
             if subcategorias == None:
-                rbs.append({
-                    "categoria" : model_to_dict(categoria)                    
-                })
+                if(categoria_nombre == None):
+                    rbs.append({"categoria" : model_to_dict(categoria_aux)})
+                    indice[categoria_aux.categoria_nombre] = cont
+                    cont = cont + 1
             else:
-                rbs.append({
-                    "categoria" : model_to_dict(categoria),
-                    "subcategorias": self.raw_queryset_as_values_list(subcategorias)
-                })
+                if(categoria_nombre == None):
+                    rbs.append({
+                        "categoria" : model_to_dict(categoria_aux),
+                        "subcategorias": self.raw_queryset_as_values_list(subcategorias)
+                    })
+                    indice[categoria_aux.categoria_nombre] = cont
+                    cont = cont + 1
+                else:
+                    subcategoria_aux = rbs[indice[categoria_aux.categoria_nombre]].get("subcategorias")
+                    if(subcategoria_aux == None):
+                        rbs[indice]["subcategorias"] = self.raw_queryset_as_values_list(subcategorias)
+                    else:
+                        subcategoria_aux = subcategoria_aux + self.raw_queryset_as_values_list(subcategorias)
         return rbs        
-
 
     def obtener_rbs_proyecto(self, proyecto_id):
         """Construye una rbs de acuerdo al sector.

@@ -11,9 +11,9 @@ from django.forms.models import model_to_dict
 
 class RiesgoController():
 
-    def registrar_riesgo(self, nombre, causa, evento, efecto, privacidad, tipo, subcategoria):
+    def registrar_riesgo(self, nombre, causa, evento, efecto, tipo, subcategoria):
         riesgo_dao = RiesgoDao()
-        return riesgo_dao.registrar_riesgo(nombre, causa, evento, efecto, privacidad, tipo, subcategoria)
+        return riesgo_dao.registrar_riesgo(nombre, causa, evento, efecto, tipo, subcategoria)
 
 
     def listar_riesgos(self, id):

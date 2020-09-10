@@ -25,6 +25,12 @@
   .orgchart {
     background: #ffffff;
   }
+
+  .orgchart .middle-level .title { background-color: #117A65; }
+  .orgchart .middle-level .content { border-color: #117A65; }
+  .orgchart .low-level .title { background-color: #CA6F1E; }
+  .orgchart .low-level .content { border-color: #CA6F1E; }
+
 </style>
 
 {% endblock %}
@@ -106,14 +112,46 @@
         <div class="tab-content no-padding">
           <!-- Morris chart - Sales -->
           <div class="chart tab-pane active" id="revenue-chart" style="height: 500px;">
-             <div id="chart-container_1" ></div>            
-            
+            <div class="row">
+              <div class="col-md-1">
+                <ul class="chart-legend clearfix">
+                  <li><i class="fa fa-circle-o text-light-blue"></i><br>EDR propia</li>
+                  <li><i class="fa fa-circle-o text-green"></i>Categorías</li>
+                  <li><i class="fa fa-circle-o text-yellow"></i>Subcatorías</li>                    
+                  </ul>
+              </div>
+              <div class="col-md-11">
+                <div id="chart-container_1" ></div>
+              </div>
+            </div>                         
           </div>
           <div class="chart tab-pane " id="sales-chart" style="position: relative; height: 500px;">
-             <div id="chart-container_2"></div>
+            <div class="row">
+              <div class="col-md-1">
+                <ul class="chart-legend clearfix">
+                  <li><i class="fa fa-circle-o text-light-blue"></i><br>EDR propia</li>
+                  <li><i class="fa fa-circle-o text-green"></i>Categorías</li>
+                  <li><i class="fa fa-circle-o text-yellow"></i>Subcatorías</li>                    
+                  </ul>
+              </div>
+              <div class="col-md-11">
+                <div id="chart-container_2"></div>
+              </div>
+            </div>               
           </div>
           <div class="chart tab-pane " id="sales" style="position: relative; height: 500px;">
-             <div id="chart-container_3"></div>
+            <div class="row">
+              <div class="col-md-1">
+                <ul class="chart-legend clearfix">
+                  <li><i class="fa fa-circle-o text-light-blue"></i><br>EDR propia</li>
+                  <li><i class="fa fa-circle-o text-green"></i>Categorías</li>
+                  <li><i class="fa fa-circle-o text-yellow"></i>Subcatorías</li>                    
+                  </ul>
+              </div>
+              <div class="col-md-11">
+                <div id="chart-container_3"></div>
+              </div>
+            </div>               
           </div>
           </div>
       </div>
@@ -139,18 +177,6 @@
 
         <button type="button" class="btn btn-info" data-toggle="modal"  data-target="#modal-agregar" >Nuevo Miembro</i>
         </button>
-
-
-        <!-- tools box -->
-        <div class="pull-right box-tools">
-          <button type="button" class="btn btn-default btn-sm" data-widget="collapse" data-toggle="tooltip"
-          title="Collapse">
-          <i class="fa fa-minus"></i></button>
-          <button type="button" class="btn btn-default btn-sm" data-widget="remove" data-toggle="tooltip"
-          title="Remove">
-          <i class="fa fa-times"></i></button>
-        </div>
-        <!-- /. tools -->
       </div>      
       <!-- /.box-header -->
       <div class="box-body">
@@ -335,7 +361,7 @@
     ###########################
   */
   // los datos de la rbs personal
-  var edr_pmbok_static = {"name":"RBS","title":"Estructura desglosada de riesgos","mi_id":"RBS_1","mi_tipo":0,"children":[{"name":"1.1","title":"Riesgo técnico","mi_id":15,"mi_tipo":1,"children":[{"name":"1.1.1","title":"Definición del alcance","mi_id":74,"mi_tipo":2},{"name":"1.1.2","title":"Definición de los requisitos","mi_id":75,"mi_tipo":2},{"name":"1.1.3","title":"Estimaciones, supuestos y restricciones","mi_id":76,"mi_tipo":2},{"name":"1.1.4","title":"Procesos técnicos","mi_id":77,"mi_tipo":2},{"name":"1.1.5","title":"Tecnología","mi_id":78,"mi_tipo":2},{"name":"1.1.6","title":"Interfaces técnicas","mi_id":79,"mi_tipo":2}]},{"name":"1.2","title":"Riesgo de gestión","mi_id":16,"mi_tipo":1,"children":[{"name":"1.2.1","title":"Dirección de proyectos","mi_id":80,"mi_tipo":2},{"name":"1.2.2","title":"Dirección del programa/portafolio","mi_id":81,"mi_tipo":2},{"name":"1.2.3","title":"Gestión de las operaciones","mi_id":82,"mi_tipo":2},{"name":"1.2.4","title":"Organización","mi_id":83,"mi_tipo":2},{"name":"1.2.5","title":"Dotación de recursos","mi_id":84,"mi_tipo":2},{"name":"1.2.6","title":"Comunicación","mi_id":85,"mi_tipo":2}]},{"name":"1.3","title":"Riesgo comercial","mi_id":17,"mi_tipo":1,"children":[{"name":"1.3.1","title":"Términos y condiciones contractuales","mi_id":86,"mi_tipo":2},{"name":"1.3.2","title":"Contratación interna","mi_id":87,"mi_tipo":2},{"name":"1.3.3","title":"Proveedores y vendedores","mi_id":88,"mi_tipo":2},{"name":"1.3.4","title":"Subcontratos","mi_id":89,"mi_tipo":2},{"name":"1.3.5","title":"Estabilidad de los clientes","mi_id":90,"mi_tipo":2},{"name":"1.3.6","title":"Asociaciones y empresas conjuntas","mi_id":91,"mi_tipo":2}]},{"name":"1.4","title":"Riesgo externo","mi_id":18,"mi_tipo":1,"children":[{"name":"1.4.1","title":"Legislación","mi_id":92,"mi_tipo":2},{"name":"1.4.2","title":"Tasas de cambio","mi_id":93,"mi_tipo":2},{"name":"1.4.3","title":"Sitios/Instalaciones","mi_id":94,"mi_tipo":2},{"name":"1.4.4","title":"Ambiental/clima","mi_id":95,"mi_tipo":2},{"name":"1.4.5","title":"Competencia","mi_id":96,"mi_tipo":2},{"name":"1.4.6","title":"Normativo","mi_id":97,"mi_tipo":2}]}]};
+  var edr_pmbok_static = {"name":"EDR","title":"Estructura desglosada de riesgos","mi_id":"RBS_1","mi_tipo":0,"children":[{"name":"1.1","title":"Riesgo técnico","mi_id":38,"mi_tipo":1,"className":"middle-level","children":[{"name":"1.1.1","title":"Definición del alcance","mi_id":181,"mi_tipo":2,"className":"low-level"},{"name":"1.1.2","title":"Definición de los requisitos","mi_id":182,"mi_tipo":2,"className":"low-level"},{"name":"1.1.3","title":"Estimaciones, supuestos y restricciones","mi_id":183,"mi_tipo":2,"className":"low-level"},{"name":"1.1.4","title":"Procesos técnicos","mi_id":184,"mi_tipo":2,"className":"low-level"},{"name":"1.1.5","title":"Tecnología","mi_id":185,"mi_tipo":2,"className":"low-level"},{"name":"1.1.6","title":"Interfaces técnicas","mi_id":186,"mi_tipo":2,"className":"low-level"}]},{"name":"1.2","title":"Riesgo de gestión","mi_id":39,"mi_tipo":1,"className":"middle-level","children":[{"name":"1.2.1","title":"Dirección de proyectos","mi_id":187,"mi_tipo":2,"className":"low-level"},{"name":"1.2.2","title":"Dirección del programa/portafolio","mi_id":188,"mi_tipo":2,"className":"low-level"},{"name":"1.2.3","title":"Gestión de las operaciones","mi_id":189,"mi_tipo":2,"className":"low-level"},{"name":"1.2.4","title":"Organización","mi_id":190,"mi_tipo":2,"className":"low-level"},{"name":"1.2.5","title":"Dotación de recursos","mi_id":191,"mi_tipo":2,"className":"low-level"},{"name":"1.2.6","title":"Comunicación","mi_id":192,"mi_tipo":2,"className":"low-level"}]},{"name":"1.3","title":"Riesgo comercial","mi_id":40,"mi_tipo":1,"className":"middle-level","children":[{"name":"1.3.1","title":"Términos y condiciones contractuales","mi_id":193,"mi_tipo":2,"className":"low-level"},{"name":"1.3.2","title":"Contratación interna","mi_id":194,"mi_tipo":2,"className":"low-level"},{"name":"1.3.3","title":"Proveedores y vendedores","mi_id":195,"mi_tipo":2,"className":"low-level"},{"name":"1.3.4","title":"Subcontratos","mi_id":196,"mi_tipo":2,"className":"low-level"},{"name":"1.3.5","title":"Estabilidad de los clientes","mi_id":197,"mi_tipo":2,"className":"low-level"},{"name":"1.3.6","title":"Asociaciones y empresas conjuntas","mi_id":198,"mi_tipo":2,"className":"low-level"}]},{"name":"1.4","title":"Riesgo externo","mi_id":41,"mi_tipo":1,"className":"middle-level","children":[{"name":"1.4.1","title":"Legislación","mi_id":199,"mi_tipo":2,"className":"low-level"},{"name":"1.4.2","title":"Tasas de cambio","mi_id":200,"mi_tipo":2,"className":"low-level"},{"name":"1.4.3","title":"Sitios/Instalaciones","mi_id":201,"mi_tipo":2,"className":"low-level"},{"name":"1.4.4","title":"Ambiental/clima","mi_id":202,"mi_tipo":2,"className":"low-level"},{"name":"1.4.5","title":"Competencia","mi_id":203,"mi_tipo":2,"className":"low-level"},{"name":"1.4.6","title":"Normativo","mi_id":204,"mi_tipo":2,"className":"low-level"}]}]};
 
   var rbs_proyecto = JSON.parse("{{rbs_proyecto|escapejs}}"); 
   console.log(rbs_proyecto);
@@ -394,6 +420,7 @@ function pintar_edr_sugerida() {
         'title': item['categoria']['categoria_nombre'],
         'mi_id': item['categoria']['categoria_id'],
         'mi_tipo': 1,
+        "className":'middle-level'
       };
       children = [];
       let j = 1;
@@ -404,6 +431,7 @@ function pintar_edr_sugerida() {
             'title': sub_item["sub_categoria_nombre"],
             'mi_id': sub_item["sub_categoria_id"],
             'mi_tipo': 2,
+            'className':'low-level'
           });
           j = j + 1;
         });
@@ -441,15 +469,33 @@ function pintar_edr_sugerida() {
 
   <script>
   $(function () {
-    $('#example1').DataTable()
-    $('#example2').DataTable({
-      'paging'      : true,
-      'lengthChange': false,
-      'searching'   : false,
-      'ordering'    : true,
-      'info'        : true,
-      'autoWidth'   : false
-    })
+    $('#example1').DataTable(
+      {
+     "language": {
+         "sProcessing":    "Procesando...",
+         "sLengthMenu":    "Mostrar _MENU_ registros",
+         "sZeroRecords":   "No se encontraron resultados",
+         "sEmptyTable":    "Ningún dato disponible en esta tabla",
+         "sInfo":          "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+         "sInfoEmpty":     "Mostrando registros del 0 al 0 de un total de 0 registros",
+         "sInfoFiltered":  "(filtrado de un total de _MAX_ registros)",
+         "sInfoPostFix":   "",
+         "sSearch":        "Buscar:",
+         "sUrl":           "",
+         "sInfoThousands":  ",",
+         "sLoadingRecords": "Cargando...",
+         "oPaginate": {
+             "sFirst":    "Primero",
+             "sLast":    "Último",
+             "sNext":    "Siguiente",
+             "sPrevious": "Anterior"
+         },
+         "oAria": {
+             "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+             "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+         }
+     }
+    }); 
   })
 </script>
 

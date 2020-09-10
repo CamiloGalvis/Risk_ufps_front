@@ -79,6 +79,7 @@ class Proyecto(models.Model):
     proyecto_evaluacion_general = models.TextField(blank=True, null=True)
     proyecto_evaluacion = models.IntegerField(blank=True, null=True)
     proyecto_rbs_status = models.IntegerField()
+    proyecto_fin_status = models.IntegerField(default = 0)
     gerente = models.ForeignKey(Gerente, models.DO_NOTHING)
     sector = models.ForeignKey('Sector', models.DO_NOTHING)
 

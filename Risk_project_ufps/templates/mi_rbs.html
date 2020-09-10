@@ -92,6 +92,11 @@
   .orgchart .node:hover .second-menu-add {
     opacity: 1;
   }
+
+  .orgchart .middle-level .title { background-color: #117A65; }
+  .orgchart .middle-level .content { border-color: #117A65; }
+  .orgchart .low-level .title { background-color: #CA6F1E; }
+  .orgchart .low-level .content { border-color: #CA6F1E; }
 </style>
 {% endblock %}
 
@@ -117,7 +122,19 @@
         <div class="box box-primary">
          
           <div class="box-body pad">
-            <div id="chart-container"></div>
+            <div class="row">
+              <div class="col-md-1">
+                <ul class="chart-legend clearfix">
+                  <li><i class="fa fa-circle-o text-light-blue"></i><br>EDR general</li>
+                  <li><i class="fa fa-circle-o text-green"></i>Categorías</li>
+                  <li><i class="fa fa-circle-o text-yellow"></i>Subcatorías</li>                    
+                  </ul>
+              </div>
+              <div class="col-md-11">
+                <div id="chart-container"></div>
+              </div>
+            </div> 
+         
                                  
           </div>
           <button type="button" name="button" class="btn btn-primary pull-right" onclick="confirmar_cambios();">confirmar cambios</button> 
@@ -351,6 +368,7 @@
         'title': item['categoria']['categoria_nombre'],
         'mi_id': item['categoria']['categoria_id'],
         'mi_tipo': 1,
+        "className":'middle-level'
       };
       children = [];
       let j = 1;
@@ -361,6 +379,7 @@
             'title': sub_item["sub_categoria_nombre"],
             'mi_id': sub_item["sub_categoria_id"],
             'mi_tipo': 2,
+            'className':'low-level'
           });
           j = j + 1;
         });
@@ -371,7 +390,7 @@
     });
 
     return {
-      'name': 'RBS',
+      'name': 'EDR',
       'title': 'Estructura desglosada de riesgos',
       'mi_id': "RBS_1",
       'mi_tipo': 0,
