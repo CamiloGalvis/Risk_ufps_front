@@ -1,0 +1,91 @@
+[33mcommit fb053ac3622f34f4b2b95f2e541ca1b2f811246c[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m)[m
+Author: Diego Carrascal <skdiegomxtr@gmail.com>
+Date:   Wed Sep 9 19:18:31 2020 -0500
+
+    correciones color edr
+
+[33mcommit a5ea67e6b3a8a6f88f9f1882dc2541ba21def103[m
+Author: Diego Carrascal <skdiegomxtr@gmail.com>
+Date:   Tue Sep 8 16:32:57 2020 -0500
+
+    avances evaluar
+
+[33mcommit 0292b035cd76331fd345c5a28a0e60f78972c0d7[m
+Author: Diego Carrascal <skdiegomxtr@gmail.com>
+Date:   Sat Sep 5 17:58:17 2020 -0500
+
+    arreglado bug de riesgos sugeridos
+
+[33mcommit f71c5dd2eff8a05674f0718823d03c9ab922e331[m
+Author: Diego Carrascal <skdiegomxtr@gmail.com>
+Date:   Fri Sep 4 20:10:48 2020 -0500
+
+    Agregado la funcionalidad de actividades
+
+[33mcommit d858a9b9c7096fff806b53dde61c17f68c0c8cb8[m
+Author: Diego Carrascal <skdiegomxtr@gmail.com>
+Date:   Wed Sep 2 19:09:29 2020 -0500
+
+    arreglado agregar actividades
+
+[33mcommit 86468efe3e4352be41e90492aed7f79ab0b78f7d[m
+Author: Diego Carrascal <skdiegomxtr@gmail.com>
+Date:   Wed Sep 2 18:34:17 2020 -0500
+
+    agregado listar respuesta por riesgo
+
+[33mcommit b77270abd3994c51730c536ffc8a4b286d9906ca[m
+Merge: 9c35316 b1ff7bc
+Author: Diego Carrascal <skdiegomxtr@gmail.com>
+Date:   Wed Sep 2 11:53:50 2020 -0500
+
+    primera parte editar riesgo proyecto
+
+[33mcommit 9c35316854b65141581daa74f7aea716408a89fe[m
+Author: Diego Carrascal <skdiegomxtr@gmail.com>
+Date:   Wed Sep 2 11:51:02 2020 -0500
+
+    primera parte editar riesgo proyecto
+
+[33mcommit b1ff7bcf0c1e69c966d4c7c1347d7f9ff2d20c09[m
+Author: Camilo Galvis <camilogalvisn@gmail.com>
+Date:   Wed Sep 2 11:26:55 2020 -0500
+
+    Actualizaciones riesgos del proyecto
+
+[33mcommit 8de1db01d25442c734a6e75bd6af29a305b1d320[m
+Merge: 16c7429 de4d3aa
+Author: Camilo Galvis <camilogalvisn@gmail.com>
+Date:   Tue Sep 1 17:58:46 2020 -0500
+
+    La gloria de Dios
+
+[33mcommit 16c7429add5b72206dbcd8b97cf39690a710a1dc[m
+Author: Camilo Galvis <camilogalvisn@gmail.com>
+Date:   Tue Sep 1 17:36:12 2020 -0500
+
+    paz antes de la tormenta
+
+[33mcommit de4d3aa22968ed34016563106bdd4f0664f32e20[m
+Author: Diego Carrascal <skdiegomxtr@gmail.com>
+Date:   Tue Sep 1 17:34:04 2020 -0500
+
+    conbinados cambios de vista con riesgos sugeridos
+
+[33mcommit 1efeaa9c32310acb8c5d74fda239c2c29ce7a6b6[m
+Author: Camilo Galvis <camilogalvisn@gmail.com>
+Date:   Mon Aug 31 11:59:15 2020 -0500
+
+    actualizaciones
+
+[33mcommit 612863a10c8b183f11737e74060f35463d01556e[m
+Author: Camilo Galvis <camilogalvisn@gmail.com>
+Date:   Mon Aug 31 11:48:21 2020 -0500
+
+    actualizaciones
+
+[33mcommit 2c0c243bb3fe821bbf591c48577788011cfaa33b[m
+Author: Camilo Galvis <camilogalvisn@gmail.com>
+Date:   Mon Aug 31 08:48:45 2020 -0500
+
+    nuevas actualizaciones de identificar

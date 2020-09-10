@@ -20,9 +20,9 @@ class RiesgoController():
         riesgo_dao = RiesgoDao()
         return riesgo_dao.listar_riesgos(id)
 
-    def editar_riesgo(self, riesgo, nombre, causa, evento, efecto, privacidad, tipo, subcategoria):
+    def editar_riesgo(self, riesgo, nombre, causa, evento, efecto, tipo, subcategoria):
         riesgo_dao = RiesgoDao()
-        return riesgo_dao.editar_riesgo(riesgo, nombre, causa, evento, efecto, privacidad, tipo, subcategoria)
+        return riesgo_dao.editar_riesgo(riesgo, nombre, causa, evento, efecto, tipo, subcategoria)
 
     def obtener_riesgo(self, id):
         riesgo_dao = RiesgoDao()

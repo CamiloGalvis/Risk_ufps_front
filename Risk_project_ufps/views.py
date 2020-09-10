@@ -285,7 +285,7 @@ def mis_riesgos(request):
     rbs_controller = RbsController()               
     rbs = rbs_controller.obtener_rbs_completa(request.user.id)     
     rbsJSON = dumps(rbs)
-    return render(request, "mis_riesgos.html", {'rbs':rbsJSON})
+    return render(request, "mis_riesgos.html", {'rbs':rbsJSON, "lista_subcategorias": lista_subcategorias})
 
 
 
@@ -297,7 +297,10 @@ def editar_riesgo(request):
 
     riesgo_controller = RiesgoController()
     lista_riesgos = riesgo_controller.listar_riesgos(request.user.id)
-    
+
+    rbs_controller = RbsController()               
+    rbs = rbs_controller.obtener_rbs_completa(request.user.id) 
+    rbsJSON = dumps(rbs)
     if request.method == 'POST':
         riesgo = riesgo_controller.obtener_riesgo(request.POST["riesgo_id"])
         
@@ -305,9 +308,9 @@ def editar_riesgo(request):
         
         mensaje_editar = riesgo_controller.editar_riesgo(riesgo, request.POST["riesgo_nombre"], request.POST["riesgo_evento"], request.POST["riesgo_efecto"], request.POST["riesgo_causa"], request.POST["riesgo_tipo"], subcategoria)
 
-        return render(request, "mis_riesgos.html", {"lista_riesgos": lista_riesgos, "mensaje_editar": mensaje_editar, "lista_subcategorias": lista_subcategorias})
+        return render(request, "mis_riesgos.html", {'rbs':rbsJSON, "lista_riesgos": lista_riesgos, "mensaje_editar": mensaje_editar, "lista_subcategorias": lista_subcategorias})
 
-    return render(request, "mis_riesgos.html", {"lista_riesgos": lista_riesgos, "lista_subcategorias": lista_subcategorias})
+    return render(request, "mis_riesgos.html", {'rbs':rbsJSON, "lista_riesgos": lista_riesgos, "lista_subcategorias": lista_subcategorias})
 
 
 
@@ -316,19 +319,20 @@ def eliminar_riesgo(request):
 
     subcategoria_controller = SubcategoriaController()
     lista_subcategorias = subcategoria_controller.listar_subcategorias(request.user.id)
-
     riesgo_controller = RiesgoController()
     lista_riesgos = riesgo_controller.listar_riesgos(request.user.id)
+    riesgo = riesgo_controller.obtener_riesgo(request.POST["riesgo_id"])
+    mensaje_eliminar = riesgo_controller.eliminar_riesgo(riesgo)
+    rbs_controller = RbsController()               
+    rbs = rbs_controller.obtener_rbs_completa(request.user.id) 
+    rbsJSON = dumps(rbs)
 
     if request.method == 'POST':
-        riesgo = riesgo_controller.obtener_riesgo(request.POST["riesgo_id"])
         
-        
-        mensaje_eliminar = riesgo_controller.eliminar_riesgo(riesgo)
 
-        return render(request, "mis_riesgos.html", {"lista_riesgos": lista_riesgos, "mensaje_eliminar": mensaje_eliminar, "lista_subcategorias": lista_subcategorias})
+        return render(request, "mis_riesgos.html", {'rbs':rbsJSON, "lista_riesgos": lista_riesgos, "mensaje_eliminar": mensaje_eliminar, "lista_subcategorias": lista_subcategorias})
 
-    return render(request, "mis_riesgos.html", {"lista_riesgos": lista_riesgos, "lista_subcategorias": lista_subcategorias})
+    return render(request, "mis_riesgos.html", {'rbs':rbsJSON, "lista_riesgos": lista_riesgos, "lista_subcategorias": lista_subcategorias})
            
 
 def asociar_riesgo(request, proyecto_id):
