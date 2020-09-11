@@ -4,7 +4,9 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.core import serializers
 from django.forms.models import model_to_dict
-from json import dumps 
+from json import dumps
+from datetime import date
+from datetime import datetime 
 import json
 import MySQLdb
 import os
@@ -21,6 +23,8 @@ from Risk_project_ufps.core_risk.controller.RecursoController import *
 from Risk_project_ufps.core_risk.controller.ResponsableController import *
 from Risk_project_ufps.core_risk.controller.ActividadController import *
 from Risk_project_ufps.core_risk.controller.ReporteController import *
+from Risk_project_ufps.core_risk.controller.RolController import *
+
 """
 ////////////////////////////////////////////////////////////////////////////
     Metodos generales de usuario
@@ -297,17 +301,17 @@ def editar_riesgo(request):
 
     riesgo_controller = RiesgoController()
     lista_riesgos = riesgo_controller.listar_riesgos(request.user.id)
+    riesgo = riesgo_controller.obtener_riesgo(request.POST["riesgo_id"])
+        
+    subcategoria = subcategoria_controller.obtener_subcategoria(request.POST["sub_categoria_id"])
+        
+    mensaje_editar = riesgo_controller.editar_riesgo(riesgo, request.POST["riesgo_nombre"], request.POST["riesgo_evento"], request.POST["riesgo_efecto"], request.POST["riesgo_causa"], request.POST["riesgo_tipo"], subcategoria)
 
     rbs_controller = RbsController()               
     rbs = rbs_controller.obtener_rbs_completa(request.user.id) 
     rbsJSON = dumps(rbs)
     if request.method == 'POST':
-        riesgo = riesgo_controller.obtener_riesgo(request.POST["riesgo_id"])
         
-        subcategoria = subcategoria_controller.obtener_subcategoria(request.POST["sub_categoria_id"])
-        
-        mensaje_editar = riesgo_controller.editar_riesgo(riesgo, request.POST["riesgo_nombre"], request.POST["riesgo_evento"], request.POST["riesgo_efecto"], request.POST["riesgo_causa"], request.POST["riesgo_tipo"], subcategoria)
-
         return render(request, "mis_riesgos.html", {'rbs':rbsJSON, "lista_riesgos": lista_riesgos, "mensaje_editar": mensaje_editar, "lista_subcategorias": lista_subcategorias})
 
     return render(request, "mis_riesgos.html", {'rbs':rbsJSON, "lista_riesgos": lista_riesgos, "lista_subcategorias": lista_subcategorias})
@@ -464,6 +468,69 @@ def editar_tipo_recurso(request):
 
     return render(request, "nuevo_recurso.html", {"tipos_recursos":tipos_recursos})
 
+#Carga la vista de roles del equipo
+def roles_equipo(request):
+    gerente_controller = GerenteController()
+    gerente = gerente_controller.obtener_gerente(request.user.id)
+    rol_controller = RolController()
+    lista_roles = rol_controller.listar_roles(gerente) 
+
+    return render(request, "roles_equipo.html", {"lista_roles":lista_roles})
+
+#Agrega un nuevo rol y carga la vista de roles de un gerente
+def nuevo_rol(request):
+    gerente_controller = GerenteController()
+    gerente = gerente_controller.obtener_gerente(request.user.id)
+    rol_controller = RolController()
+    lista_roles = rol_controller.listar_roles(gerente) 
+
+    if request.method == 'POST':
+        
+        rol = rol_controller.registrar_rol(request.POST['rol_nombre'], request.POST['rol_descripcion'], gerente)
+        if rol == None:
+            mensaje_editar = "No se pudo registrar el nuevo rol."
+            return render(request, "roles_equipo.html", {"mensaje_error":mensaje_editar, "lista_roles":lista_roles})
+        mensaje = "Se registro el nuevo rol exitosamente."
+        return render(request, "roles_equipo.html", {"mensaje":mensaje, "lista_roles":lista_roles})
+
+    return render(request, "roles_equipo.html", {"lista_roles":lista_roles})
+
+#Actualiza la información de un rol y carga la vista de roles del gerente
+def editar_rol(request):
+    gerente_controller = GerenteController()
+    gerente = gerente_controller.obtener_gerente(request.user.id)
+    rol_controller = RolController()
+    lista_roles = rol_controller.listar_roles(gerente)
+    if request.method == 'POST':
+        rol = rol_controller.get_rol_by_id(request.POST['rol_id'])
+        rol_editado = rol_controller.editar_rol(rol, request.POST['rol_nombre'], request.POST['rol_descripcion'])
+        if rol_editado == None:
+            mensaje_editar = "No se pudo actualizar la información del rol."
+            return render(request, "roles_equipo.html", {"mensaje_error":mensaje_editar, "lista_roles":lista_roles})
+        mensaje_editar = "Se actualizo la información del rol exitosamente."
+        return render(request, "roles_equipo.html", {"mensaje_editar":mensaje_editar, "lista_roles":lista_roles})
+
+    return render(request, "roles_equipo.html", {"lista_roles":lista_roles})
+
+#Elimina un rol y carga la vista de roles del gerente
+def eliminar_rol(request):
+    gerente_controller = GerenteController()
+    gerente = gerente_controller.obtener_gerente(request.user.id)
+    rol_controller = RolController()
+    lista_roles = rol_controller.listar_roles(gerente)
+    if request.method == 'POST':
+        rol = rol_controller.get_rol_by_id(request.POST['rol_id'])
+        rol_eliminado = rol_controller.eliminar_rol(rol)
+        if rol_eliminado == False:
+            mensaje_editar = "No se pudo eliminar la información del rol."
+            return render(request, "roles_equipo.html", {"mensaje_error":mensaje_editar, "lista_roles":lista_roles})
+        mensaje_eliminar = "Se elimino la información del rol exitosamente."
+        return render(request, "roles_equipo.html", {"mensaje_eliminar":mensaje_eliminar, "lista_roles":lista_roles})
+
+    return render(request, "roles_equipo.html", {"lista_roles":lista_roles})
+
+
+
 
 
 #Carga la vista de un proyecto y permite editarlo
@@ -472,7 +539,22 @@ def mi_proyecto(request, id):
     proyecto = proyecto_controller.obtener_proyecto(id)    
     sector_controller = SectorController()
     lista_sectores = sector_controller.listar_sectores()
-    data = {"proyecto":proyecto, "lista_sectores": lista_sectores} 
+    duracion = ""
+    fecha_actual = datetime.now()
+    
+    fecha_proyecto = datetime(proyecto.proyecto_fecha_inicio.year, proyecto.proyecto_fecha_inicio.month, proyecto.proyecto_fecha_inicio.day, 00, 00, 00, 000000)
+    if proyecto.proyecto_fecha_finl != None:        
+        fecha_proyecto_final = datetime(proyecto.proyecto_fecha_finl.year, proyecto.proyecto_fecha_finl.month, proyecto.proyecto_fecha_finl.day, 00, 00, 00, 000000)
+    
+        dias = dias = abs((fecha_proyecto-fecha_proyecto_final).days)
+        duracion = "El proyecto ya ha finalizado. Tuvo una duración de %i dias." %(dias)
+    elif fecha_proyecto > fecha_actual:
+        duracion = "El proyecto aun no ha iniciado."
+    else:      
+        dias = abs((fecha_actual-fecha_proyecto).days)
+        duracion = "%i dias." %(dias)
+
+    data = {"proyecto":proyecto, "lista_sectores": lista_sectores, "duracion": duracion} 
 
     if(proyecto_controller.has_actividades(id)):
         data["actividades"] = True
@@ -717,7 +799,11 @@ def editar_recurso(request, id):
 
 def planificar_proyecto(request, proyecto_id):
     proyecto_controller = ProyectoController()
-    proyecto = proyecto_controller.obtener_proyecto(proyecto_id)    
+    proyecto = proyecto_controller.obtener_proyecto(proyecto_id)
+    gerente_controller = GerenteController()
+    gerente = gerente_controller.obtener_gerente(request.user.id)
+    rol_controller = RolController()
+    lista_roles = rol_controller.listar_roles(gerente)    
     rbs_controller = RbsController()               
     rbs_sugerida = rbs_controller.obtener_rbs_sugerida(proyecto.sector.sector_id)  
     rbs_proyecto = rbs_controller.obtener_rbs_proyecto(proyecto_id)   
@@ -727,10 +813,10 @@ def planificar_proyecto(request, proyecto_id):
     lista_responsables = responsable_controller.listar_responsables(proyecto_id)    
     if rbs_proyecto:
       # No vacía
-      return render(request, "procesos/planificar.html", {'proyecto':proyecto, 'rbs':True,'rbs_proyecto': rp,'rbs_sugerida':rs, "lista_responsables":lista_responsables})
+      return render(request, "procesos/planificar.html", {'proyecto':proyecto, 'rbs':True,'rbs_proyecto': rp,'rbs_sugerida':rs, "lista_responsables":lista_responsables, "lista_roles":lista_roles})
     else:
       # Vacía
-      return render(request, "procesos/planificar.html", {'proyecto':proyecto, 'rbs_proyecto': rp,'rbs_sugerida':rs, "lista_responsables": lista_responsables})
+      return render(request, "procesos/planificar.html", {'proyecto':proyecto, 'rbs_proyecto': rp,'rbs_sugerida':rs, "lista_responsables": lista_responsables, "lista_roles":lista_roles})
    
 
 
@@ -744,17 +830,22 @@ def registrar_responsable(request):
     rp = dumps(rbs_proyecto)
     rs = dumps(rbs_sugerida)
     responsable_controller = ResponsableController()
-    lista_responsables = responsable_controller.listar_responsables(request.POST['proyecto_id'])   
+    lista_responsables = responsable_controller.listar_responsables(request.POST['proyecto_id'])
+    gerente_controller = GerenteController()
+    gerente = gerente_controller.obtener_gerente(request.user.id)
+    rol_controller = RolController()
+    lista_roles = rol_controller.listar_roles(gerente)   
+       
 
     if request.method == 'POST':
-        
-        mensaje = responsable_controller.registrar_responsable(request.POST['nombre_responsable'], request.POST['descripcion_responsable'], proyecto.proyecto_id)
+        rol = rol_controller.get_rol_by_id(request.POST['rol_id'])
+        mensaje = responsable_controller.registrar_responsable(request.POST['nombre_responsable'], request.POST['descripcion_responsable'], proyecto.proyecto_id, rol)
 
-        return render(request, "procesos/planificar.html", {'proyecto':proyecto, 'rbs':True,'rbs_proyecto': rp,'rbs_sugerida':rs, "lista_responsables":lista_responsables, "mensaje":mensaje})
+        return render(request, "procesos/planificar.html", {'proyecto':proyecto, 'rbs':True,'rbs_proyecto': rp,'rbs_sugerida':rs, "lista_responsables":lista_responsables, "mensaje":mensaje, "lista_roles":lista_roles})
    
 
 
-    return render(request, "procesos/planificar.html", {'proyecto':proyecto, 'rbs':True,'rbs_proyecto': rp,'rbs_sugerida':rs, "lista_responsables":lista_responsables})
+    return render(request, "procesos/planificar.html", {'proyecto':proyecto, 'rbs':True,'rbs_proyecto': rp,'rbs_sugerida':rs, "lista_responsables":lista_responsables, "lista_roles":lista_roles})
    
 
 
@@ -771,16 +862,20 @@ def editar_responsable(request):
     rp = dumps(rbs_proyecto)
     rs = dumps(rbs_sugerida)
     lista_responsables = responsable_controller.listar_responsables(proyecto.proyecto_id)   
-
+    gerente_controller = GerenteController()
+    gerente = gerente_controller.obtener_gerente(request.user.id)
+    rol_controller = RolController()
+    lista_roles = rol_controller.listar_roles(gerente)   
+    
     if request.method == 'POST':
+        rol = rol_controller.get_rol_by_id(request.POST['rol_id'])
+        mensaje_editar = responsable_controller.editar_responsable(responsable, request.POST['responsable_nombre'], request.POST['responsable_descripcion'], rol) 
         
-        mensaje_editar = responsable_controller.editar_responsable(responsable, request.POST['responsable_nombre'], request.POST['responsable_descripcion']) 
         
-        
-        return render(request, "procesos/planificar.html", {'proyecto':proyecto, 'rbs':True,'rbs_proyecto': rp,'rbs_sugerida':rs, "lista_responsables":lista_responsables, "mensaje_editar":mensaje_editar})
+        return render(request, "procesos/planificar.html", {'proyecto':proyecto, 'rbs':True,'rbs_proyecto': rp,'rbs_sugerida':rs, "lista_responsables":lista_responsables, "mensaje_editar":mensaje_editar, "lista_roles":lista_roles})
    
 
-    return render(request, "procesos/planificar.html", {'proyecto':proyecto, 'rbs':True,'rbs_proyecto': rp,'rbs_sugerida':rs, "lista_responsables":lista_responsables})
+    return render(request, "procesos/planificar.html", {'proyecto':proyecto, 'rbs':True,'rbs_proyecto': rp,'rbs_sugerida':rs, "lista_responsables":lista_responsables, "lista_roles":lista_roles})
    
 
 
@@ -798,13 +893,18 @@ def eliminar_responsable(request):
     rp = dumps(rbs_proyecto)
     rs = dumps(rbs_sugerida)
     lista_responsables = responsable_controller.listar_responsables(proyecto.proyecto_id)
+    gerente_controller = GerenteController()
+    gerente = gerente_controller.obtener_gerente(request.user.id)
+    rol_controller = RolController()
+    lista_roles = rol_controller.listar_roles(gerente)   
+    
     if request.method == 'POST':
          
         mensaje_eliminar = responsable_controller.eliminar_responsable(responsable) 
         
-        return render(request, "procesos/planificar.html", {'proyecto':proyecto, 'rbs':True,'rbs_proyecto': rp,'rbs_sugerida':rs, "lista_responsables":lista_responsables, "mensaje_eliminar":mensaje_eliminar})
+        return render(request, "procesos/planificar.html", {'proyecto':proyecto, 'rbs':True,'rbs_proyecto': rp,'rbs_sugerida':rs, "lista_responsables":lista_responsables, "mensaje_eliminar":mensaje_eliminar, "lista_roles":lista_roles})
    
-    return render(request, "procesos/planificar.html", {'proyecto':proyecto, 'rbs':True,'rbs_proyecto': rp,'rbs_sugerida':rs, "lista_responsables":lista_responsables})
+    return render(request, "procesos/planificar.html", {'proyecto':proyecto, 'rbs':True,'rbs_proyecto': rp,'rbs_sugerida':rs, "lista_responsables":lista_responsables, "lista_roles":lista_roles})
    
 
 def nuevo_responsable_riesgo(request, proyecto_id):

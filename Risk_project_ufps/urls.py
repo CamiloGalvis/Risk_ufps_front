@@ -37,6 +37,12 @@ urlpatterns = [
     path('eliminar_tipo_recurso/', eliminar_tipo_recurso, name='eliminar_tipo_recurso'),
     path('editar_tipo_recurso/', editar_tipo_recurso, name='editar_tipo_recurso'),
 
+    #urls roles equipo de trabajo
+    path('roles_equipo/', roles_equipo, name='roles_equipo'),
+    path('nuevo_rol/', nuevo_rol, name='nuevo_rol'),
+    path('editar_rol/', editar_rol, name='editar_rol'),
+    path('eliminar_rol/', eliminar_rol, name='eliminar_rol'),
+
     #urls mi proyecto
     path('mi_proyecto/<int:id>/', mi_proyecto, name='mi_proyecto'),     
     path('mi_proyecto/<int:proyecto_id>/planificar/', planificar_proyecto, name='mi_proyecto'),

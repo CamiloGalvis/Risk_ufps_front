@@ -211,10 +211,11 @@
             <thead>
               <tr>
                 <th>Riesgo</th>
-                <th>Respuestas</th>
+
                 <th>Actividades</th>
                 <th>Responsables</th>
-                <th>Acciones</th>                    
+                <th>Respuestas Preliminares</th>
+                <th>Acciones del Riesgo</th>                    
               </tr>
             </thead>
             <tbody>
@@ -222,24 +223,28 @@
              {% for riesgo in lista_riesgos %}
              <tr>
               <td>{{ riesgo.riesgo_nombre }}</td>
-              <td> 
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-respuestas" onclick="abrir_modal_respuestas('{{ riesgo.riesgo_id }}')"><i   class="fa fa-edit"></i></button>
-              </td>
+
               <td>
                 <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modal-actividades"  onclick="abrir_modal_actividades('{{ riesgo.riesgo_id }}')"><i   class="fa fa-edit"></i></button>
 
               </td>
               <td>
                 <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#modal-responsables" onclick="abrir_modal_responsables('{{ riesgo.riesgo_id }}')"><i   class="fa fa-edit"></i></button>
-              </td>                  
+              </td>
+              <td> 
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-respuestas" onclick="abrir_modal_respuestas('{{ riesgo.riesgo_id }}')"><i   class="fa fa-edit"></i></button>
+              </td>
               <td>
+                <button type="button" class="btn btn-info" data-toggle="modal" onclick="abrir_modal_informacion_riesgo(' {{ riesgo.riesgo_nombre }}', '{{ riesgo.riesgo_causa }}',' {{ riesgo.riesgo_evento }}', ' {{ riesgo.riesgo_efecto }}', '{{ riesgo.riesgo_tipo }}')">&nbsp<i   class="fa fa-info">&nbsp</i>
+                </button>
                 <button type="button" class="btn btn-default" data-toggle="modal" onclick="abrir_modal_editar_riesgo('{{ riesgo.riesgo_id }}',' {{ riesgo.riesgo_nombre }}', '{{ riesgo.riesgo_causa }}',' {{ riesgo.riesgo_evento }}', ' {{ riesgo.riesgo_efecto }}',   '{{ riesgo.riesgo_tipo }}')"><i   class="fa fa-edit"></i>
                 </button>
 
 
                 <button type="button" class="btn btn-danger" data-toggle="#modal" onclick="abrir_modal_eliminar('{{ riesgo.riesgo_id }}',' {{ riesgo.riesgo_nombre }}')" data-target="#modal_eliminar"><i class="fa fa-trash-o danger"></i>
                 </button>
-              </td>
+              </td>                   
+              
             </tr>
             {% endfor %}
             {% else %}
@@ -254,11 +259,11 @@
           </tbody>
           <tfoot>
             <tr>
-              <th>Riesgo</th>
-              <th>Respuestas</th>
+              <th>Riesgo</th>                
               <th>Actividades</th>
               <th>Responsables</th>
-              <th>Acciones</th> 
+              <th>Respuestas Preliminares</th>
+              <th>Acciones del Riesgo</th>    
             </tr>
           </tfoot>
         </table>
@@ -607,6 +612,63 @@
 </div>
 <!-- /.modal-dialog -->
 </div>
+
+ <!-- /.modal-editar -->
+ <div class="modal fade" id="modal-informacion"> 
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Información del Riesgo</h4>
+          </div>
+          <div class="box-body">
+          
+          <form>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                <label >Nombre </label>
+                <p id="nombre_riesgo_info"></p>
+                </div>
+               
+                <div class="form-group">
+                  <label>Causa</label>
+                  <p id="causa_riesgo_info"></p>
+                </div>
+                <div class="form-group">
+                  <label>Evento</label>
+                  <p id="evento_riesgo_info"></p>
+                </div>
+              </div>
+              <!-- /.col -->
+              <div class="col-md-6">                                
+                <div class="form-group">
+                <label >Tipo Riesgo</label>
+                  <p id="tipo_riesgo_info"></p>                
+                </div>                
+                <div class="form-group">
+                  <label>Efecto</label>
+                  <p id="efecto_riesgo_info"></p>
+                </div>
+                <input type="text" class="form-control" id="riesgo_id_editar" name="riesgo_id_editar" style="visibility:hidden">
+
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary pull-left" data-dismiss="modal">Cerrar</button>
+              <button type="submit" class="btn btn-primary pull-right">Actualizar</button>
+            </div>
+            <!-- /.row -->
+          </form>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+
+
 <!-- /.modal -->
   <!-- /.modal-editar -->
  <div class="modal fade" id="modal-editar"> 
@@ -973,6 +1035,20 @@ function asosiar_riesgos(proyecto_id){
         
         return false;
     };
+
+  function abrir_modal_informacion_riesgo(nombre, causa, evento, efecto, tipo) {        
+
+        $("#modal-informacion").modal('show');
+        document.getElementById("nombre_riesgo_info").innerHTML = " "+nombre;
+        document.getElementById("causa_riesgo_info").innerHTML = " "+causa;
+        document.getElementById("evento_riesgo_info").innerHTML = " "+evento;
+        document.getElementById("efecto_riesgo_info").innerHTML = " "+efecto;
+        document.getElementById("tipo_riesgo_info").innerHTML = " "+tipo;
+        
+        
+        return false;
+    };
+
 
 
 

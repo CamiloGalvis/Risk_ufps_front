@@ -153,7 +153,7 @@ class Responsble(models.Model):
     responsble_nombre = models.CharField(max_length=100)
     responsble_descripcion = models.TextField(blank=True, null=True)
     proyecto = models.ForeignKey(Proyecto, models.DO_NOTHING)
-
+    rol = models.ForeignKey('Rol', models.DO_NOTHING)
     class Meta:
         managed = False
         db_table = 'responsble'
