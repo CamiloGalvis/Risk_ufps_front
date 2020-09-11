@@ -71,8 +71,6 @@ def nuevo_gerente(request):
     sector = sector_controller.obtener_sector(request.POST["gerente_sector"]) 
     user = registrar_usuario(request.POST["gerente_usuario"], request.POST["gerente_correo" ], request.POST["gerente_password"], request.POST["gerente_nombre"])
     gerente_controller = GerenteController()
-    print(user)
-    print(sector)
     mensaje = gerente_controller.registrar_gerente(user.id, request.POST["gerente_usuario"], request.POST["gerente_correo" ], request.POST["gerente_nombre"], sector, request.POST["gerente_profesion"], request.POST["gerente_empresa"], request.POST["gerente_pais"])
     return render(request, "registration/login.html", {"mensaje": mensaje})
     
@@ -117,7 +115,6 @@ def nuevo_proyecto(request):
             gerente_controller = GerenteController()
             sector = sector_controller.obtener_sector(request.POST["proyecto_sector"])
             gerente = gerente_controller.obtener_gerente(request.user.id)
-            print(gerente)
             proyecto_controller = ProyectoController()
             proyecto = ProyectoController.registrar_proyecto(request.POST["proyecto_nombre"], request.POST["proyecto_objetivo"], request.POST["proyecto_alcance"], request.POST["proyecto_descripcion"], request.POST["proyecto_presupuesto"], request.POST["proyecto_fecha_inicio"], gerente, sector)             
             if(proyecto):
@@ -178,7 +175,6 @@ def rbs_configurar(request):
                 rbs_controller.crear_rbs_sugerida(request.user.id)
             elif rbs_option == "3":
                 rbs_controller.crear_rbs_blanco(request.user.id)
-                print("En blanco")
             return HttpResponse({"msg":"rbs_creada"}, status=202)
         except Exception as inst:
             print(inst)
@@ -345,8 +341,6 @@ def asociar_riesgo(request, proyecto_id):
             riesgos_sugeridos = json.loads(request.POST.get('riesgos_sugeridos', None)) 
             aux = riesgo_controller.asosiar_riesgos_proyecto(riesgos_seleccionados, proyecto )
             aux = riesgo_controller.asosiar_riesgos_sugeridos_proyecto(riesgos_sugeridos, proyecto )
-            print(riesgos_seleccionados)
-            print(riesgos_sugeridos)
             return HttpResponse(status=200)
         except Exception as e:
             raise e
@@ -504,8 +498,7 @@ def mi_proyecto(request, id):
 def eliminar_riesgo_proyecto(request, proyecto_id):
     if request.method == 'POST':
         riesgo_controller = RiesgoController()        
-        riesgo_proyecto = riesgo_controller.get_riesgo_by_proyecto(proyecto_id, request.POST["riesgo_id"])
-        print("PHRIESGO", riesgo_proyecto, proyecto_id, request.POST["riesgo_id"])
+        riesgo_proyecto = riesgo_controller.get_riesgo_by_proyecto(proyecto_id, request.POST["riesgo_id"])     
         mensaje_eliminar= riesgo_controller.eliminar_riesgo_by_proyecto(riesgo_proyecto) 
         proyecto = Proyecto.objects.get(proyecto_id=proyecto_id)
         rbs_controller = RbsController()               
@@ -714,7 +707,11 @@ def editar_recurso(request, id):
 
     return render(request, "procesos/planificar.html", {'proyecto':proyecto, "lista_responsables":lista_responsables})
 """
-
+"""
+////////////////////////////////////////////////////////////////////////////
+    METODOS PARA PLANIFICAR PROYECTO
+/////////////////////////////////////////////////////////////////////////////
+"""
 def planificar_proyecto(request, proyecto_id):
     proyecto_controller = ProyectoController()
     proyecto = proyecto_controller.obtener_proyecto(proyecto_id)    
@@ -724,13 +721,16 @@ def planificar_proyecto(request, proyecto_id):
     rp = dumps(rbs_proyecto)
     rs = dumps(rbs_sugerida)
     responsable_controller = ResponsableController()
-    lista_responsables = responsable_controller.listar_responsables(proyecto_id)    
+    lista_responsables = responsable_controller.listar_responsables(proyecto_id)
+    impactos = proyecto_controller.obtener_impactos_by_proyecto_id(proyecto_id)
+    probabilidades = proyecto_controller.obtener_probabilidades_by_proyecto_id(proyecto_id)
+    clasificacion_riesgo = proyecto_controller.obtener_clasificaciones_riesgo_by_proyecto_id(proyecto_id)  
     if rbs_proyecto:
       # No vacía
-      return render(request, "procesos/planificar.html", {'proyecto':proyecto, 'rbs':True,'rbs_proyecto': rp,'rbs_sugerida':rs, "lista_responsables":lista_responsables})
+      return render(request, "procesos/planificar.html", {'proyecto':proyecto, 'rbs':True,'rbs_proyecto': rp,'rbs_sugerida':rs, "lista_responsables":lista_responsables, "impactos":impactos, "probabilidades":probabilidades, "clasificacion_riesgo":clasificacion_riesgo})
     else:
       # Vacía
-      return render(request, "procesos/planificar.html", {'proyecto':proyecto, 'rbs_proyecto': rp,'rbs_sugerida':rs, "lista_responsables": lista_responsables})
+      return render(request, "procesos/planificar.html", {'proyecto':proyecto, 'rbs_proyecto': rp,'rbs_sugerida':rs, "lista_responsables": lista_responsables, "impactos":impactos, "probabilidades":probabilidades, "clasificacion_riesgo":clasificacion_riesgo})
    
 
 
@@ -857,7 +857,44 @@ def nueva_actividad_riesgo(request, proyecto_id):
         
     return render(request, "procesos/identificar_riesgos.html", {'proyecto':proyecto, 'rbs':rbsJSON, 'lista_riesgos':lista_riesgos, 'lista_responsables':lista_responsables, 'lista_actividades':lista_actividades, "responsables_riesgo":responsables_riesgo, 'actividades_riesgo':actividades_riesgo})
 
-  
+def actualizar_definiciones_riesgo(request, proyecto_id):
+    if request.method == "POST":
+        proyecto_controller = ProyectoController()
+
+        impactos = filtrar_impacto_request(request)
+        probabilidades = filtrar_probabilidad_request(request)
+
+        proyecto_controller.actualizar_impactos_by_proyecto_id(impactos, proyecto_id)
+        proyecto_controller.actualizar_probabilidades_by_proyecto_id(probabilidades, proyecto_id)
+        return HttpResponse(status=200)
+    return HttpResponse(status=404)
+
+def filtrar_impacto_request(request):
+    impactos = []
+    for x in range(1,6):
+        aux = request.POST.get('impacto_nombre_'+x)
+        if(aux):
+            impactos.append({
+                "nombre" : aux,
+                "valor" : request.POST.get('impacto_valor_'+x) 
+            });
+    return impactos
+
+def filtrar_probabilidad_request(request):
+    probabilidades = []
+    for x in range(1,6):
+        aux = request.POST.get('probabilidad_nombre_'+x)
+        if(aux):
+            probabilidades.append({
+                "nombre" : aux,
+                "valor" : request.POST.get('probabilidad_valor_'+x) 
+            });
+    return probabilidades
+"""
+////////////////////////////////////////////////////////////////////////////
+    METODOS PARA IDENTIFICAR RIESGOS DEL PROYECTO
+/////////////////////////////////////////////////////////////////////////////
+"""
 
 def identificar_proyecto(request, proyecto_id):
     proyecto = Proyecto.objects.get(proyecto_id=proyecto_id)
@@ -942,8 +979,7 @@ def generar_informe_identificar(request, proyecto_id):
 
     reporte_controller = ReporteController()
     reporte = reporte_controller.generar_reporte_identificar(proyecto)
-    
-    print(reporte)
+
 
     zip_file = open(reporte, 'rb')
     t = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
@@ -964,7 +1000,6 @@ def generar_informe_planificar(request, proyecto_id):
     reporte_controller = ReporteController()
     reporte = reporte_controller.generar_reporte_planificar(proyecto)
     
-    print(reporte)
 
     zip_file = open(reporte, 'rb')
     t = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'

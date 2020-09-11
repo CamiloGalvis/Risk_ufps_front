@@ -149,11 +149,7 @@ class RiesgoController():
       
         riesgo = riesgo_dao.obtener_riesgo(riesgo_id)
         proyecto = proyecto_dao.obtener_proyecto(proyecto_id)
-        proyecto_has_riesgo = proyecto_has_riesgo_dao.get_by_riesgo_and_proyecto_2(riesgo, proyecto)
-
-        print(riesgo)
-        
-        print(proyecto_has_riesgo)
+        proyecto_has_riesgo = proyecto_has_riesgo_dao.get_by_riesgo_and_proyecto_2(riesgo, proyecto)  
 
         if( proyecto_has_riesgo.is_editado == 1 ):             
             print("uno")
