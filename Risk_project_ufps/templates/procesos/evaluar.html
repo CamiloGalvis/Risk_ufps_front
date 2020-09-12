@@ -133,15 +133,29 @@
 
 <script type="text/javascript">
   var riesgos = JSON.parse("{{lista_riesgos|escapejs}}");   
-  console.log(riesgos);
+  //console.log(riesgos);
 
-  var rangos_riesgos = {
-    "riesgo_bajo" : [1,4],
-    "riesgo_moderado" : [5,11],
-    "riesgo_alto" : [12,25]
-  }  
+  var rangos_riesgos = [
+    {
+      "posicion":1
+      "nombre":"riesgo_bajo"
+      "rango": [1,4]
+    },
+    {
+      "posicion":2
+      "nombre":"riesgo_moderado"
+      "rango": [5,11]
+    },
+    {
+      "posicion":3
+      "nombre":"riesgo_alto"
+      "rango": [12,25]
+    }
+  ];
 
-  var valores = {
+
+  var valores = JSON.parse("{{valores|escapejs}}");  
+  /*var valores = {
     "impactos" : [
       {
         "nombre" : "Insignificante",
@@ -188,7 +202,7 @@
       }
     ],
     "probabilidades_valores" : [1,2,3,4,5],      
-  }
+  }*/
 
 
   function construir_matriz_calor() {

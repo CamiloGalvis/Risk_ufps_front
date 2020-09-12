@@ -239,10 +239,11 @@
       <h3 class="box-title">Definiciones de la probabilidad e impactos de los riesgos</h3>
     </div>      
     <div class="box-body">
+      <form class="form-horizontal" id="impacto_form" action="/mi_proyecto/{{proyecto.proyecto_id}}/planificar_proyecto/actualizar_definiciones/" method="POST">
+      {% csrf_token %}
       <div class="row">
         <div class="col-md-6">
           <h5><b>Análisis de impacto:</b></h5>
-          <form class="form-horizontal" id="impacto_form">
               <div class="box-body" id="cont_impactos">
               {% if impactos %}
                 {% for impacto in impactos %}
@@ -250,22 +251,20 @@
                   <div class="col-xs-5">
                     <input type="text" class="form-control" name="impacto_nombre_{{ forloop.counter }}" value="{{impacto.impacto_categoria}}" required />
                   </div>
-                  <div class="col-xs-3">                    
-                    <input type="number" class="form-control" name="impacto_valor_{{ forloop.counter }}" value="{{impacto.impacto_valor}}" min="1" required />                  
-                  </div>              
-                  <a href="#" class="remove_field">Eliminar</a>                                   
+                  <div class="col-xs-3">
+                    <input type="number" class="form-control" name="impacto_valor_{{ forloop.counter }}" value="{{impacto.impacto_valor}}" min="1" required />
+                  </div>
+                  <a href="#" class="remove_field">Eliminar</a>
                 </div>
                 {% endfor%}
               {% endif %}
-              </div>              
-            </form>
+              </div>
             <div class="box-footer">
-              <button class="btn btn-default" id="add_button_impacto" >Agregar</button>                
+              <button class="btn btn-default" id="add_button_impacto" >Agregar</button>
             </div>
         </div>
-        <div class="col-md-6"> 
+        <div class="col-md-6">
           <h5><b>Análisis de probabilidad:</b></h5>
-          <form class="form-horizontal">
               <div class="box-body" id="cont_probabilidad">
               {% if probabilidades %}
                 {% for propabilidad in probabilidades %}
@@ -274,23 +273,23 @@
                     <input type="text" class="form-control" name="propabilida_nombre_{{ forloop.counter }}" value="{{propabilidad.propabilidad_categoria}}" required />
                   </div>
                   <div class="col-xs-3">
-                    <input type="number" class="form-control" name="probabilidad_valor_{{ forloop.counter }}" value="{{propabilidad.propabilidad_valor}}" min="1" required />
+                    <input type="number" class="form-control" name="propabilida_valor_{{ forloop.counter }}" value="{{propabilidad.propabilidad_valor}}" min="1" required />
                   </div>
-                  <a href="#" class="remove_field">Eliminar</a> 
+                  <a href="#" class="remove_field">Eliminar</a>
                 </div>
                 {% endfor%}
               {% endif %}
               </div>
-            </form>
             <div class="box-footer">
-              <button class="btn btn-default" id="add_button_probabilidad">Agregar</button>                
+              <button class="btn btn-default" id="add_button_probabilidad">Agregar</button>
             </div>
         </div>
       </div>
       <div class="box-footer">
-        <button class="btn btn-info pull-right" id="button_definiciones">Confirmar</button>                
+        <button type="submit" class="btn btn-info pull-right">Confirmar</button>
       </div>
-    </div>    
+    </div>
+    </form>
   </div>
   <!-- ./valores de impacto -->
   <!-- clasificacion del riesgo -->
@@ -299,7 +298,8 @@
       <h3 class="box-title">Clasificación del Riesgo</h3>
     </div>      
     <div class="box-body">
-      <form class="form-horizontal">
+      <form class="form-horizontal" method="post" action="/mi_proyecto/{{ proyecto.proyecto_id }}/planificar_proyecto/actualizar_clasificacion_riesgo/">
+        {% csrf_token %}
         <div class="box-body" id="cont_clasificacion">
         {% if clasificacion_riesgo %}
           {% for clasificacion in clasificacion_riesgo %}
@@ -335,12 +335,12 @@
           </div>
           {% endfor%}
         {% endif %}
-        </div>              
+        </div>
+        <div class="box-footer">
+          <button class="btn btn-default" id="add_button_clasificacion" >Agregar</button>
+          <button class="btn btn-info pull-right" type="submit">Confirmar</button>
+        </div>
       </form>
-      <div class="box-footer">
-        <button class="btn btn-default" id="add_button_clasificacion" >Agregar</button>    
-        <button class="btn btn-info pull-right" id="button_clasificacion">Confirmar</button>                
-      </div>
     </div>    
   </div>
   <!-- ./clasificacion del riesgo -->
@@ -668,9 +668,11 @@ function pintar_edr_sugerida() {
   var button_clasificacion = $("#button_clasificacion")
 
   var cant_impactos = parseInt('{{impactos|length}}');
+  var cant_impactos_index = cant_impactos;
   var cant_probabilidades = parseInt('{{probabilidades|length}}');
+  var cant_probabilidades_index = cant_probabilidades;
   var cant_clasificaion = parseInt('{{clasificacion_riesgo|length}}');
-
+  var cant_clasificaion_index = cant_clasificaion;
   /*
    * Agrego los listener a los botones
    */
@@ -679,7 +681,8 @@ function pintar_edr_sugerida() {
     e.preventDefault();
     if(cant_impactos < max_fields){
       cant_impactos++;
-      let str = '<div class="form-group"><div class="col-xs-5"><input type="text" class="form-control" name="impacto_nombre_'+cant_impactos+'" placeholder="Nombre de impacto" required /></div><div class="col-xs-3"><input type="number" class="form-control" name="impacto_valor_'+cant_impactos+'" min="1" required /></div><a href="#" class="remove_field">Eliminar</a></div>';
+      cant_impactos_index++;
+      let str = '<div class="form-group"><div class="col-xs-5"><input type="text" class="form-control" name="impacto_nombre_'+cant_impactos_index+'" placeholder="Nombre de impacto" required /></div><div class="col-xs-3"><input type="number" class="form-control" name="impacto_valor_'+cant_impactos_index+'" min="1" required /></div><a href="#" class="remove_field">Eliminar</a></div>';
       let html = $.parseHTML(str);
       $(div_impactos).append(html);
     }else{
@@ -691,7 +694,8 @@ function pintar_edr_sugerida() {
     e.preventDefault();
     if(cant_probabilidades < max_fields){
       cant_probabilidades++;
-      let str = '<div class="form-group"><div class="col-xs-5"><input type="text" class="form-control" name="probabilidad_nombre_"'+cant_probabilidades+'" placeholder="Nombre de probabilidad" required /></div><div class="col-xs-3"><input type="number" class="form-control" name="probabilidad_valor_'+cant_probabilidades+'" min="1" required /></div><a href="#" class="remove_field">Eliminar</a></div>';
+      cant_probabilidades_index++;
+      let str = '<div class="form-group"><div class="col-xs-5"><input type="text" class="form-control" name="propabilida_nombre_'+cant_probabilidades_index+'" placeholder="Nombre de probabilidad" required /></div><div class="col-xs-3"><input type="number" class="form-control" name="propabilida_valor_'+cant_probabilidades_index+'" min="1" required /></div><a href="#" class="remove_field">Eliminar</a></div>';
       let html = $.parseHTML(str);
       $(div_probabilidades).append(html);
     }else{
@@ -704,8 +708,9 @@ function pintar_edr_sugerida() {
     e.preventDefault();
     if(cant_clasificaion < max_fields){
       cant_clasificaion++;
+      cant_clasificaion_index++;
       let randomColor = Math.floor(Math.random()*16777215).toString(16);
-      let str = '<div class="row" ><div class="col-md-3"><input type="text" class="form-control" name="clasificacion_nombre_"'+cant_clasificaion+' placeholder="Nueva clasificación" required/></div><div class="col-md-4"><div class="input-group my-colorpicker2 colorpicker-element"><input type="text" class="form-control" name="clasificacion_color_'+cant_clasificaion+'" value="#'+randomColor+'" required/><div class="input-group-addon"><i style="background-color:#'+randomColor+'"></i></div></div> </div> <div class="col-md-2"> <div class="form-group"> <label for="input_min_'+cant_clasificaion+'" class="col-sm-2 control-label">De</label> <div class="col-sm-10"> <input type="number" id="input_min_'+cant_clasificaion+'" class="form-control" name="clasificacion_min_'+cant_clasificaion+'" required /> </div> </div> </div> <div class="col-md-2"> <div class="form-group"> <label for="input_max_'+cant_clasificaion+'" class="col-sm-2 control-label">a</label> <div class="col-sm-10"> <input type="number" class="form-control" id="input_max_'+cant_clasificaion+'" name="clasificacion_max_'+cant_clasificaion+'" required /> </div> </div> </div> <a href="#" class="remove_field" align="left">Eliminar</a> </div>';
+      let str = '<div class="row" ><div class="col-md-3"><input type="text" class="form-control" name="clasificacion_nombre_'+cant_clasificaion_index+'" placeholder="Nueva clasificación" required/></div><div class="col-md-4"><div class="input-group my-colorpicker2 colorpicker-element"><input type="text" class="form-control" name="clasificacion_color_'+cant_clasificaion_index+'" value="#'+randomColor+'" required/><div class="input-group-addon"><i style="background-color:#'+randomColor+'"></i></div></div> </div> <div class="col-md-2"> <div class="form-group"> <label for="input_min_'+cant_clasificaion_index+'" class="col-sm-2 control-label">De</label> <div class="col-sm-10"> <input type="number" id="input_min_'+cant_clasificaion_index+'" class="form-control" name="clasificacion_min_'+cant_clasificaion_index+'" required /> </div> </div> </div> <div class="col-md-2"> <div class="form-group"> <label for="input_max_'+cant_clasificaion_index+'" class="col-sm-2 control-label">a</label> <div class="col-sm-10"> <input type="number" class="form-control" id="input_max_'+cant_clasificaion_index+'" name="clasificacion_max_'+cant_clasificaion_index+'" required /> </div> </div> </div> <a href="#" class="remove_field" align="left">Eliminar</a> </div>';
         let html = $.parseHTML(str);
       $(div_clasificaciones).append(html);
     }else{
@@ -741,24 +746,16 @@ function pintar_edr_sugerida() {
       }
     });
 
+
+   /* $("#impacto_form").submit(function(e) {
+      e.preventDefault();
+      ee = $("#impacto_form");
+      console.log(ee.serialize());
+    })*/
+
     //color picker with addon
     $('.my-colorpicker2').colorpicker();
 
-    $(div_probabilidades).on("click",".remove_field", function(e){
-      e.preventDefault();
-      if(cant_probabilidades > 3){
-        $(this).parent('div').remove(); cant_probabilidades--;
-      }else{
-        alert("No pueden existir menos de tres(3) probabilidades.");
-      }
-    });
-
-  });
- 
- $(button_definiciones).on("click", function (e) {
-   let impacto_form = $("#impacto_form");
-   console.log(impacto_form);
-   console.log(impacto_form.serialize())
   });
 
 </script>
