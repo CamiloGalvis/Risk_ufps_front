@@ -7,29 +7,7 @@
 
 {% load static %}
 {% block organigrama_up %}
-<style type="text/css">
-  table, th, td {
-    border-top: 1px solid black !important;
-    border: 1px solid black;
-  }
-  td {
-    width: 50px !important;
-    height: 50px !important;   
-  }
 
-  .bajo {
-    background-color: #138D75; 
-  }
-
-  .medio {
-    background-color: #D68910; 
-  }
-
-  .alto {
-    background-color: #CD5C5C; 
-  }
-
-</style>
 {% endblock %}
 {% block content %}
 <div class="content-wrapper">
@@ -39,11 +17,11 @@
         {% if proyecto %}
         {{ proyecto.proyecto_nombre }}
         {% endif %}
-        <small>Identificar riesgos</small>
+        <small>Planificar Respuestas</small>
       </h1>
       <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Inicio</a></li>
-        <li class="active">Proyecto</li>
+        <li><a href="#"><i class="fa fa-folder-open"></i> Proyecto</a></li>
+        <li class="active">Planificar Respuestas</li>
       </ol>
       {% if mensaje %}
       <div class="callout callout-info">
@@ -67,34 +45,16 @@
     <section class="content">
       <div class="box box-default">
         <div class="box-header with-border">
-          <h3 class="box-title">Nombre Proyecto</h3>
+          <h3 class="box-title"><strong>Plan de Respuestas Proyecto {{ proyecto.proyecto_nombre }}</strong></h3>
         </div>
         <div class="box-body">
           Aqui deberia ir la información del proyecto.
           <a href="/mi_proyecto/{{ proyecto.proyecto_id }}/generar_informe/">Generar informe</a>
         </div>
-      </div>
-      <div class="box box-default">
-        <div class="box-body">
-          <div class="row">
-            <div class="col-md-2">
-              
-            </div>
-            <div class="col-md-10">
-              <table class="table">
-                <tbody id="matriz_calor">                 
-                </tbody>
-              </table>
-            </div>
-            <div class="col-md-2">
-              
-            </div>
-          </div>
-        </div>
-      </div>
+      </div>   
       <div class="box box-default">
         <div class="box-header with-border">
-          <h3 class="box-title">Nombre Proyecto</h3>
+          <h3 class="box-title"><strong>Planificar Respuestas Proyecto {{ proyecto.proyecto_nombre }}</strong></h3>
         </div>
         <div class="box-body">
         	<table id="tabla_riesgos" class="table table-bordered table-striped">
@@ -102,8 +62,11 @@
 	              <tr>
 	              	<th></th>
 	                <th>Riesgo</th>
-	                <th>Responsables</th>
-	                <th>Recursos</th>               
+                  <th>Categorización</th>
+	                <th>Respuestas</th>
+	                <th>Acciones</th>
+                  <th>Tareas</th>
+                  <th>Recursos</th>                
 	              </tr>
 	            </thead>
 	            <tbody>
@@ -112,12 +75,19 @@
 	             <tr>
 	             	<td></td>
 	              <td>{{ riesgo.riesgo_nombre }}</td>
+                <td><small class="label label-danger"></i>Muy riesgoso</small> </td>
 	              <td> 
 	                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-respuestas" onclick="abrir_modal_respuestas('{{ riesgo.riesgo_id }}')"><i   class="fa fa-edit"></i></button>
 	              </td>
 	              <td>
 	                <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#modal-responsables" onclick="abrir_modal_responsables('{{ riesgo.riesgo_id }}')"><i   class="fa fa-edit"></i></button>
-	              </td>                  
+	              </td>
+                <td>
+                  <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#modal-responsables" onclick="abrir_modal_responsables('{{ riesgo.riesgo_id }}')"><i   class="fa fa-edit"></i></button>
+                </td>
+                <td>
+                  <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#modal-responsables" onclick="abrir_modal_responsables('{{ riesgo.riesgo_id }}')"><i   class="fa fa-edit"></i></button>
+                </td>                  
 	            </tr>
 	            {% endfor %}
 	            {% else %}
@@ -132,9 +102,13 @@
 	          <tfoot>
 	            <tr>
 	              <th></th>
-	              <th>Riesgo</th>
-	              <th>Responsables</th>
-	              <th>Recursos</th> 
+	              
+                  <th>Riesgo</th>
+                  <th>Categorización</th>
+                  <th>Respuestas</th>
+                  <th>Acciones</th>
+                  <th>Tareas</th>
+                  <th>Recursos</th>  
 	            </tr>
 	          </tfoot>
 	        </table>
@@ -252,20 +226,21 @@
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title"><i class="fa fa-edit"></i> Respuestas preliminares</h4>
+          <h4 class="modal-title"><i class="fa fa-edit"></i> Respuestas del Riesgo</h4>
         </div>
         <div class="modal-body">
 
          <div class="nav-tabs-custom">
           <!-- Tabs within a box -->
           <ul class="nav nav-tabs pull-right">
-            <li class="active"><a href="#listado-respuestas" data-toggle="tab"> Listado</a></li>
-            <li ><a href="#nueva-respuesta" data-toggle="tab">Nueva Respuesta</a></li>            
+            <li class="active"><a href="#listado_respuestas" data-toggle="tab"> Listado</a></li>         <li ><a href="#respuesta_sugerida" data-toggle="tab">Agregar Respuesta Sugerida</a></li> 
+            <li ><a href="#nueva_respuesta" data-toggle="tab">Nueva Respuesta</a></li> 
+            
 
           </ul>
           <div class="tab-content no-padding">
             <!-- Morris chart - Sales -->
-            <div class="chart tab-pane active" id="listado-respuestas" style="position: relative; height: 300px;">
+            <div class="chart tab-pane active" id="listado_respuestas" style="position: relative; height: 300px;">
 
              <div class="box-body">
 
@@ -284,6 +259,36 @@
                     <td></td>                
                   </tr>
                 </tbody>
+                <tfoot>
+                  <tr>
+                    <th>Respuesta</th>
+                    <th>Descripción</th>                  
+                    <th>Acciones</th>      
+                  </tr>
+                </tfoot>
+              </table>
+            </div>  
+
+          </div>
+          <div class="chart tab-pane" id="respuesta_sugerida" style="position: relative; height: 300px;">
+
+           <div class="box-body">
+
+            <table id="tabla2" class="table table-bordered table-striped">
+              <thead>
+                <tr>
+                  <th>Respuesta</th>
+                  <th>Descripción</th>                  
+                  <th>Acciones</th>                    
+                </tr>
+              </thead>
+              <tbody id="respuestas_body">                 
+                <tr>
+                  <td>No cuentas con respuestas sugeridas para este riesgo.</td>
+                  <td></td> 
+                  <td></td>                
+                </tr>
+              </tbody>
               <tfoot>
                 <tr>
                   <th>Respuesta</th>
@@ -295,7 +300,7 @@
           </div>  
 
         </div>
-        <div class="chart tab-pane" id="nueva-respuesta" style="position: relative; height: 300px;">
+        <div class="chart tab-pane" id="nueva_respuesta" style="position: relative; height: 300px;">
          <div class="box-body">
           <form action="/proyecto/{{ proyecto.proyecto_id }}/nueva_respuesta/" method="post">
             {% csrf_token %}
