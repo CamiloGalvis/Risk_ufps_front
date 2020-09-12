@@ -75,9 +75,20 @@ urlpatterns = [
     # Metodos que hacen funcionar el grafico de la rbs
     path('rbs/listar/', profile, name='listarrbs'),
     path('rbs/confirmar_cambios/', confirmar_cambios_rbs, name='confirmar_cambios_rbs'),
+    #HAY QUE EMPEZAR A ORGANIZAR ESTO
+
+
+    #####################################################
+    ## Planificar proyecto
+    #####################################################
+    path('mi_proyecto/<int:proyecto_id>/planificar_proyecto/actualizar_definiciones/', actualizar_definiciones_riesgo, name='actualizar_definiciones_riesgo'),
+    path('mi_proyecto/<int:proyecto_id>/planificar_proyecto/actualizar_clasificacion_riesgo/', actualizar_clasificacion_riesgo, name='actualizar_clasificacion_riesgo'),
 
     #####################################################
     ## Planificar respuestas
     #####################################################
     path('mi_proyecto/<int:proyecto_id>/planificar_respuestas/', planificar_respuestas, name='planificar_respuestas'),
+
+
+
 ]

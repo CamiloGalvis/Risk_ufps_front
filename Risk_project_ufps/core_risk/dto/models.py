@@ -67,6 +67,17 @@ class Gerente(models.Model):
         db_table = 'gerente'
 
 
+class Impacto(models.Model):
+    impacto_id = models.AutoField(primary_key=True)
+    impacto_categoria = models.CharField(max_length=70)
+    impacto_valor = models.IntegerField()
+    proyecto = models.ForeignKey('Proyecto', models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'impacto'
+
+
 class Pais(models.Model):
     pais_id = models.AutoField(primary_key=True)
     pais_nombre = models.CharField(max_length=100, blank=True, null=True)
@@ -79,6 +90,17 @@ class Pais(models.Model):
     class Meta:
         managed = False
         db_table = 'pais'
+
+
+class Propabilidad(models.Model):
+    propabilidad_id = models.AutoField(primary_key=True)
+    propabilidad_categoria = models.CharField(max_length=70)
+    propabilidad_valor = models.IntegerField()
+    proyecto = models.ForeignKey('Proyecto', models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'propabilidad'
 
 
 class Proyecto(models.Model):
@@ -108,6 +130,9 @@ class ProyectoHasRiesgo(models.Model):
     riesgo = models.ForeignKey('Riesgo', models.DO_NOTHING)
     is_editado = models.IntegerField(default = 0)
     responsable = models.ForeignKey('Responsble', models.DO_NOTHING, blank=True, null=True)
+    impacto = models.ForeignKey(Impacto, models.DO_NOTHING, blank=True, null=True)
+    propabilidad = models.ForeignKey(Propabilidad, models.DO_NOTHING, blank=True, null=True)
+    fecha_manifestacion = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         managed = False
@@ -124,6 +149,18 @@ class ProyectoHasRiesgoActividad(models.Model):
     class Meta:
         managed = False
         db_table = 'proyecto_has_riesgo_actividad'
+
+
+class ProyectoHasRiesgoRespuesta(models.Model):
+    proyecto_has = models.OneToOneField(ProyectoHasRiesgo, models.DO_NOTHING, primary_key=True)
+    respuesta_has = models.ForeignKey('RiesgoHasRespuesta', models.DO_NOTHING)
+    fecha_inicio_respuesta = models.DateTimeField(blank=True, null=True)
+    fecha_fin_respuesta = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'proyecto_has_riesgo_respuesta'
+        unique_together = (('proyecto_has', 'respuesta_has'),)
 
 
 class Rbs(models.Model):
@@ -220,6 +257,29 @@ class SubCategoria(models.Model):
         db_table = 'sub_categoria'
 
 
+class Tarea(models.Model):
+    tarea_id = models.AutoField(primary_key=True)
+    tarea_nombre = models.CharField(max_length=77)
+    tarea_descripcion = models.TextField()
+    proyecto_has_riesgo = models.ForeignKey(ProyectoHasRiesgoRespuesta, models.DO_NOTHING, related_name="%(class)s_riesgo")
+    riesgo_has_respuesta = models.ForeignKey(ProyectoHasRiesgoRespuesta, models.DO_NOTHING,  related_name="%(class)s_respuesta")
+
+    class Meta:
+        managed = False
+        db_table = 'tarea'
+
+
+class TareaHasRecurso(models.Model):
+    tarea = models.OneToOneField(Tarea, models.DO_NOTHING, primary_key=True)
+    recurso = models.ForeignKey(Recurso, models.DO_NOTHING)
+    cantidad = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'tarea_has_recurso'
+        unique_together = (('tarea', 'recurso'),)
+
+
 class TipoRecurso(models.Model):
     tipo_recurso_id = models.AutoField(primary_key=True)
     tipo_recurso_nombre = models.CharField(max_length=45)
@@ -241,25 +301,7 @@ class Rol(models.Model):
         managed = False
         db_table = 'rol'
 
-class Impacto(models.Model):
-    impacto_id = models.AutoField(primary_key=True)
-    impacto_categoria = models.CharField(max_length=70)
-    impacto_valor = models.IntegerField()
-    proyecto = models.ForeignKey('Proyecto', models.DO_NOTHING)
 
-    class Meta:
-        managed = False
-        db_table = 'impacto'
-
-class Propabilidad(models.Model):
-    propabilidad_id = models.AutoField(primary_key=True)
-    propabilidad_categoria = models.CharField(max_length=70)
-    propabilidad_valor = models.IntegerField()
-    proyecto = models.ForeignKey('Proyecto', models.DO_NOTHING)
-
-    class Meta:
-        managed = False
-        db_table = 'propabilidad'
 
 
 
