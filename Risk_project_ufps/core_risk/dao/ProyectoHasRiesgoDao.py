@@ -58,10 +58,10 @@ class ProyectoHasRiesgoDao():
         finally:
             return responsables_riesgo 
 
-    def get_by_riesgo_and_proyecto(self, proyecto, riesgo):         
+    def get_by_riesgo_and_proyecto(self, proyecto, riesgo) -> ProyectoHasRiesgo:
         proyecto_riesgo = None
         try:        
-            proyecto_riesgo = ProyectoHasRiesgo.objects.get( proyecto_id = proyecto, riesgo_id = riesgo)            
+            proyecto_riesgo = ProyectoHasRiesgo.objects.get(proyecto_id=proyecto, riesgo_id=riesgo)
         except ProyectoHasRiesgo.DoesNotExist:
             proyecto_riesgo = None
         finally:

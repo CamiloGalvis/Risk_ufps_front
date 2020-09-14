@@ -1152,12 +1152,22 @@ def evaluar_proyecto(request, proyecto_id):
     lista_riesgos = dumps(riesgo_controller.get_riesgos_by_proyecto_2(proyecto))
     impactos = proyecto_controller.obtener_impactos_parseados_by_proyecto_id(proyecto_id)
     probabilidades = proyecto_controller.obtener_probabilidades_parseados_by_proyecto_id(proyecto_id)
-    rangos = proyecto_controller.obtener_rangos_parseados_by_proyecto_id(proyecto_id)
+    rangos = dumps(proyecto_controller.obtener_rangos_parseados_by_proyecto_id(proyecto_id))
     impactos.update(probabilidades)
     valores = dumps(impactos)
-    return render(request, "procesos/evaluar.html", {'proyecto': proyecto, 'lista_riesgos': lista_riesgos, 'valores':valores})
+    return render(request, "procesos/evaluar.html", {'proyecto': proyecto, 'lista_riesgos': lista_riesgos, 'valores':valores, 'rangos':rangos})
 
-
+def actualizar_valores(request, proyecto_id):
+    if request.method == 'POST':
+        proyecto_controller = ProyectoController()
+        valores = json.loads(request.POST["valores"])
+        #try:
+        proyecto_controller.actualizar_valores_riesgo_proyecto(valores, proyecto_id)
+        #except Exception as e:
+        #    print(e)
+        #   return HttpResponse(status=500)
+        return HttpResponse(status=200)
+    return HttpResponse(status=500)
 """
 ////////////////////////////////////////////////////////////////////////////
     METODOS DE PLANIFICAR RESPUESTAS
@@ -1218,6 +1228,23 @@ def generar_informe_planificar(request, proyecto_id):
         print("The file does not exist")
     return response
 
+
+def generar_informe_evaluar(request, proyecto_id):
+    proyecto_controller = ProyectoController()
+    proyecto = proyecto_controller.obtener_proyecto(proyecto_id)
+
+    reporte_controller = ReporteController()
+    reporte = reporte_controller.generar_reporte_evaluar(proyecto)
+
+    zip_file = open(reporte, 'rb')
+    t = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    response = HttpResponse(zip_file, content_type=t)
+    response['Content-Disposition'] = 'attachment; filename="%s"' % reporte
+    if os.path.exists("demofile.txt"):
+        os.remove("demofile.txt")
+    else:
+        print("The file does not exist")
+    return response
 
 """
 ////////////////////////////////////////////////////////////////////////////

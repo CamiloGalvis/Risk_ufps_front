@@ -218,6 +218,8 @@ class Riesgo(models.Model):
     riesgo_uid = models.BigIntegerField(unique=True, blank=True, null=True)
     sub_categoria = models.ForeignKey('SubCategoria', models.DO_NOTHING)
     riesgo_is_proyecto = int()
+    impacto_id = int()
+    propabilidad_id = int()
 
     class Meta:
         managed = False

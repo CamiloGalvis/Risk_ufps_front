@@ -2,8 +2,7 @@ from Risk_project_ufps.core_risk.dao.ProyectoDao import *
 from Risk_project_ufps.core_risk.dao.ImpactoDao import *
 from Risk_project_ufps.core_risk.dao.ProbabilidadDao import *
 from Risk_project_ufps.core_risk.dao.ClasificacionRiesgoDao import *
-from Risk_project_ufps.core_risk.dto.models import Impacto
-from Risk_project_ufps.core_risk.dto.models import Propabilidad
+from Risk_project_ufps.core_risk.dao.ProyectoHasRiesgoDao import *
 from Risk_project_ufps.core_risk.dto.models import *
 
 
@@ -93,13 +92,15 @@ class ProyectoController:
     def obtener_rangos_parseados_by_proyecto_id(self, proyecto_id):
         clasificacion_riesgo_dao = ClasificacionRiesgoDao()
         proyecto = Proyecto(proyecto_id=proyecto_id)
-        return clasificacion_riesgo_dao.listar_clasificaciones_by_proyecto(proyecto)
+        rangos = clasificacion_riesgo_dao.listar_clasificaciones_by_proyecto(proyecto)
+        return self.parsear_rangos(rangos)
 
     def parsear_impactos(self, impactos: "list of Impacto"):
         aux = []
         aux_2 = []
         for impacto in impactos:
             aux.append({
+                "id": impacto.impacto_id,
                 "nombre": impacto.impacto_categoria,
                 "escala": impacto.impacto_valor
             })
@@ -111,6 +112,7 @@ class ProyectoController:
         aux_2 = []
         for probabilidad in probabilidades:
             aux.append({
+                "id": probabilidad.propabilidad_id,
                 "nombre": probabilidad.propabilidad_categoria,
                 "escala": probabilidad.propabilidad_valor
             })
@@ -127,3 +129,16 @@ class ProyectoController:
                 "rango": [rango.clasificacion_riesgo_min, rango.clasificacion_riesgo_max],
                 "color": rango.clasificacion_color
             })
+        return aux
+
+    def actualizar_valores_riesgo_proyecto(self, valores, proyecto_id):
+        p_h_r = ProyectoHasRiesgoDao()
+        for key in valores:
+            p_h_r_aux = p_h_r.get_by_riesgo_and_proyecto(Proyecto(proyecto_id=proyecto_id), Riesgo(riesgo_id=valores[key]['riesgo']))
+            if 'impacto' in key:
+                p_h_r_aux.impacto_id = valores[key]['id']
+            elif 'probabilidad' in key:
+                p_h_r_aux.propabilidad_id = valores[key]['id']
+            p_h_r_aux.save()
+
+
