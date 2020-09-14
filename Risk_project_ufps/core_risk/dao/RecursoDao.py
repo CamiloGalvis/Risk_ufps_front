@@ -16,7 +16,7 @@ class RecursoDao():
   		return "Se registro un recurso exitosamente."
 
   def listar_recursos(self, id):
-    recrusos = {}
+    recursos = {}
     try:
       recursos = Recurso.objects.filter(proyecto_id=id) 
     except Error as e:
@@ -25,7 +25,7 @@ class RecursoDao():
       return recursos
 
   def obtener_recurso(self, id):
-    recruso = {}
+    recurso = {}
     try:
       recurso = Recurso.objects.get(recurso_id=id)
     except Error as e:
@@ -34,7 +34,7 @@ class RecursoDao():
       return recurso
 
   def eliminar_recurso(self, recurso):
-    recruso = recurso
+    recurso = recurso
     try:
       recurso.delete()
     except Error as e:
@@ -52,6 +52,15 @@ class RecursoDao():
       print(e)
     finally:
       return "Se actualizó la información del recurso exitosamente."
+
+  def listar_recursos_tareas(self, proyecto):
+    recursos = {}
+    try:
+      recursos = Recurso.objects.raw("SELECT * FROM recurso r INNER JOIN tarea_has_recurso tr ON r.recurso_id=tr.recurso_id INNER JOIN tarea t ON tr.tarea_id = t.tarea_id INNER JOIN proyecto_has_riesgo_respuesta pr ON t.proyecto_has_riesgo_id=pr.proyecto_has_id AND t.riesgo_has_respuesta_id=pr.respuesta_has_id INNER JOIN proyecto_has_riesgo rp ON pr.proyecto_has_id = rp.proyecto_has_riesgo_id WHERE rp.proyecto_id = %s", [proyecto.proyecto_id])
+    except Error as e:
+      print(e)
+    finally:
+      return recursos
 
 
 

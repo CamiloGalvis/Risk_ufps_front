@@ -7,29 +7,7 @@
 
 {% load static %}
 {% block organigrama_up %}
-<style type="text/css">
-  table, th, td {
-    border-top: 1px solid black !important;
-    border: 1px solid black;
-  }
-  td {
-    width: 50px !important;
-    height: 50px !important;   
-  }
 
-  .bajo {
-    background-color: #138D75; 
-  }
-
-  .medio {
-    background-color: #D68910; 
-  }
-
-  .alto {
-    background-color: #CD5C5C; 
-  }
-
-</style>
 {% endblock %}
 {% block content %}
 <div class="content-wrapper">
@@ -39,11 +17,11 @@
         {% if proyecto %}
         {{ proyecto.proyecto_nombre }}
         {% endif %}
-        <small>Identificar riesgos</small>
+        <small>Planificar Respuestas</small>
       </h1>
       <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Inicio</a></li>
-        <li class="active">Proyecto</li>
+        <li><a href="#"><i class="fa fa-folder-open"></i> Proyecto</a></li>
+        <li class="active">Planificar Respuestas</li>
       </ol>
       {% if mensaje %}
       <div class="callout callout-info">
@@ -67,34 +45,16 @@
     <section class="content">
       <div class="box box-default">
         <div class="box-header with-border">
-          <h3 class="box-title">Nombre Proyecto</h3>
+          <h3 class="box-title"><strong>Plan de Respuestas Proyecto {{ proyecto.proyecto_nombre }}</strong></h3>
         </div>
         <div class="box-body">
           Aqui deberia ir la información del proyecto.
           <a href="/mi_proyecto/{{ proyecto.proyecto_id }}/generar_informe/">Generar informe</a>
         </div>
-      </div>
-      <div class="box box-default">
-        <div class="box-body">
-          <div class="row">
-            <div class="col-md-2">
-              
-            </div>
-            <div class="col-md-10">
-              <table class="table">
-                <tbody id="matriz_calor">                 
-                </tbody>
-              </table>
-            </div>
-            <div class="col-md-2">
-              
-            </div>
-          </div>
-        </div>
-      </div>
+      </div>   
       <div class="box box-default">
         <div class="box-header with-border">
-          <h3 class="box-title">Nombre Proyecto</h3>
+          <h3 class="box-title"><strong>Planificar Respuestas Proyecto {{ proyecto.proyecto_nombre }}</strong></h3>
         </div>
         <div class="box-body">
         	<table id="tabla_riesgos" class="table table-bordered table-striped">
@@ -102,8 +62,10 @@
 	              <tr>
 	              	<th></th>
 	                <th>Riesgo</th>
-	                <th>Responsables</th>
-	                <th>Recursos</th>               
+                  <th>Categorización</th>	                
+	                <th>Acciones</th>
+                  <th>Tareas</th>
+                  <th>Recursos</th>                
 	              </tr>
 	            </thead>
 	            <tbody>
@@ -112,12 +74,16 @@
 	             <tr>
 	             	<td></td>
 	              <td>{{ riesgo.riesgo_nombre }}</td>
+                <td><small class="label label-danger"></i>Muy riesgoso</small> </td>
 	              <td> 
 	                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-respuestas" onclick="abrir_modal_respuestas('{{ riesgo.riesgo_id }}')"><i   class="fa fa-edit"></i></button>
-	              </td>
-	              <td>
-	                <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#modal-responsables" onclick="abrir_modal_responsables('{{ riesgo.riesgo_id }}')"><i   class="fa fa-edit"></i></button>
-	              </td>                  
+	              </td>	             
+                <td>
+                  <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modal-tareas" onclick="abrir_modal_tareas('{{ riesgo.riesgo_id }}')"><i   class="fa fa-edit"></i></button>
+                </td>
+                <td>
+                  <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#modal-recursos" onclick="abrir_modal_recursos('{{ riesgo.riesgo_id }}')"><i   class="fa fa-edit"></i></button>
+                </td>                  
 	            </tr>
 	            {% endfor %}
 	            {% else %}
@@ -132,9 +98,12 @@
 	          <tfoot>
 	            <tr>
 	              <th></th>
-	              <th>Riesgo</th>
-	              <th>Responsables</th>
-	              <th>Recursos</th> 
+	              
+                  <th>Riesgo</th>
+                  <th>Categorización</th>
+                  <th>Acciones</th>                  
+                  <th>Tareas</th>
+                  <th>Recursos</th>  
 	            </tr>
 	          </tfoot>
 	        </table>
@@ -145,27 +114,27 @@
 
 
 
-<!-- /.modal responsables -->
-<div class="modal fade" id="modal_responsables">
+<!-- /.modal tareas -->
+<div class="modal fade" id="modal_tareas">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title"><i class="fa fa-edit"></i> Responsables</h4>
+          <h4 class="modal-title"><i class="fa fa-edit"></i> Tareas</h4>
         </div>
         <div class="modal-body">
 
          <div class="nav-tabs-custom">
           <!-- Tabs within a box -->
           <ul class="nav nav-tabs pull-right">
-            <li class="active"><a href="#listado-responsables" data-toggle="tab"> Listado</a></li>
-            <li ><a href="#nuevo-responsable" data-toggle="tab">Nuevo Responsable</a></li>            
+            <li class="active"><a href="#listado-tareas" data-toggle="tab"> Listado</a></li>
+            <li ><a href="#nueva-tarea" data-toggle="tab">Nueva Tarea</a></li>            
 
           </ul>
           <div class="tab-content no-padding">
             <!-- Morris chart - Sales -->
-            <div class="chart tab-pane active" id="listado-responsables" style="position: relative; height: 300px;">
+            <div class="chart tab-pane active" id="listado-tareas" style="position: relative; height: 300px; overflow-y: scroll;">
 
              <div class="box-body">
 
@@ -173,24 +142,28 @@
                 <thead>
                   <tr>
                     <th>Nombre</th>
+                    <th>Descripción</th>
                     <th>Acciones</th>                                      
                   </tr>
                 </thead>
                 <tbody >         
-                  {% if responsables_riesgo %}
-                  {% for responsable in responsables_riesgo %}
+                  {% if lista_tareas %}
+                  {% for tarea in lista_tareas %}
                   
                   <tr>
-                    <td>{{ responsable.responsble_nombre }}</td>                                       
+                    <td>{{ tarea.tarea_nombre }}</td>
+                    <td>{{ tarea.tarea_descripcion }}</td>                                        
                     <td>
-                      <button type="button" class="btn btn-danger" data-toggle="#modal_eliminar" onclick="abrir_modal_eliminar('{{ riesgo.riesgo_nombre }}', '{{ riesgo.riesgo_id }}')" data-target="#modal_eliminar"><i class="fa fa-trash-o danger"></i>
+                      <button type="button" class="btn btn-default" data-toggle="#modal_eliminar" onclick="abrir_modal_editar_tarea('{{ tarea.tarea_id }}', '{{ tarea.tarea_nombre }}', '{{ tarea.tarea_descripcion }}')" data-target="#modal_eliminar"><i class="fa fa-edit"></i>
+                      </button>
+                      <button type="button" class="btn btn-danger" data-toggle="#modal_eliminar" onclick="abrir_modal_editar_tarea('{{ tarea.tarea_id }}', '{{ tarea.tarea_nombre }}')" data-target="#modal_eliminar"><i class="fa fa-trash-o danger"></i>
                       </button>
                     </td>
                   </tr>
                     
                   {% endfor %}
                   {% else %}
-                    <td>No cuentas con responsables asociados a este riesgo.</td>
+                    <td>No cuentas con tareas asociados a este riesgo.</td>
                     <td></td>
                   {% endif %} 
                 </tbody>
@@ -204,36 +177,43 @@
             </div>  
 
         </div>
-        <div class="chart tab-pane" id="nuevo-responsable" style="position: relative; height: 300px;">
+        <div class="chart tab-pane" id="nueva-tarea" style="position: relative; height: 300px;">
          <div class="box-body">
-          <form action="/proyecto/{{ proyecto.proyecto_id }}/responsable_riesgo/" method="post">
+          <form action="/mi_proyecto/{{ proyecto.proyecto_id }}/nueva_tarea/" method="post">
             {% csrf_token %}
             <div class="row">
-              <div class="col-md-12">
+              <div class="col-md-6">
                 <div class="form-group">
-                  <div id="bloq_subcategorias" class="form-group">
-                    <label>Responsables</label>
-                    {% if lista_responsables %}                    
-                    <select class="form-control select2" id="responsable_id" name="responsable_id">
-                      {% for responsable in lista_responsables %}
-                      <option value="{{ responsable.responsable_id }}">
-                       {{ responsable.responsble_nombre }}
-                     </option>
-                     {% endfor %}
-                     {% else %}
-                     <p>No cuentas con responsables asociados al proyecto.</p>
-                     {% endif %} 
+                  <div id="" class="form-group">
+                    <label>Nombre Tarea</label>
+                    <input type="text" class="form-control" id="tarea_nombre" placeholder="Nombre tarea" name="tarea_nombre">                   
+                  </div>
+                  <div id="" class="form-group">
+                    <label>Accion Asociada</label>                                        
+                    <select class="form-control select2" id="respuesta_id" name="respuesta_id">    
+                      <option value="63">
+                       Accion 1
+                     </option>                      
                    </select>
                  </div>
-               </div>
-               <!-- / input para pasar el id del riesgo al asociarle la actividad -->
-               <input type="text" class="form-control" id="riesgo_id_re" name="riesgo_id" style="visibility:hidden">
-               <button type="submit" class="btn btn-primary pull-right">Agregar</button>
+                 <input type="text" class="form-control" id="riesgo_id_ta" name="riesgo_id" style="visibility:hidden">
+               </div>            
              </div>
-             <!-- /.col -->
-           </div>
-           <!-- /.row -->
-         </form>
+             <div class="col-md-6">
+              <div class="form-group">
+                  <label>Descripción</label>
+                  <textarea class="form-control" rows="5" placeholder="Descripción de la tarea" name="tarea_descripcion"></textarea>
+                </div>
+              <div class="form-group">                  
+              </div>
+              <!-- / input para pasar el id del riesgo al asociarle la actividad -->
+              
+              <button type="submit" class="btn btn-primary pull-right">Agregar</button>
+            </div>
+            <!-- /.col -->
+          </div>
+          <!-- /.row -->
+        </form>
        </div><!-- /.box-body -->
      </div>     
    </div>
@@ -245,6 +225,131 @@
 <!-- /.modal-dialog -->
 </div>
 
+
+<!-- /.modal recursos -->
+<div class="modal fade" id="modal_recursos">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title"><i class="fa fa-edit"></i> Recursos</h4>
+        </div>
+        <div class="modal-body">
+
+         <div class="nav-tabs-custom">
+          <!-- Tabs within a box -->
+          <ul class="nav nav-tabs pull-right">
+            <li class="active"><a href="#listado-recursos" data-toggle="tab"> Listado</a></li>
+            <li ><a href="#nuevo-recurso" data-toggle="tab">Nuevo Recurso</a></li>            
+
+          </ul>
+          <div class="tab-content no-padding">
+            <!-- Morris chart - Sales -->
+            <div class="chart tab-pane active" id="listado-recursos" style="position: relative; height: 300px; overflow-y: scroll;">
+
+             <div class="box-body">
+
+               <table id="tabla_responsables" class="table table-bordered table-striped">
+                <thead>
+                  <tr>
+                    <th>Tarea</th>
+                    <th>Recursos</th>
+                    <th>Cantidad</th>
+                    <th>Acciones</th>                                      
+                  </tr>
+                </thead>
+                <tbody >         
+                  {% if recursos_tareas %}
+                  {% for recurso in recursos_tareas %}
+                  
+                  <tr>
+                    <td>{{ recurso.tarea_nombre }}</td>
+                    <td>{{ recurso.recurso_nombre }}</td>
+                    <td>{{ recurso.cantidad }}</td>                                         
+                    <td>
+                      <button type="button" class="btn btn-danger" data-toggle="#modal_eliminar" onclick="abrir_modal_desvincular_recurso('{{ recurso.recurso_id }}', '{{ recurso.recurso_nombre }}', '{{ recurso.tarea_nombre }}', '{{ recurso.tarea_id }}')" data-target="#modal_eliminar"><i class="fa fa-trash-o danger"></i>
+                      </button>
+                    </td>
+                  </tr>
+                    
+                  {% endfor %}
+                  {% else %}
+                    <td>No cuentas con recursos asociados a este riesgo.</td>
+                    <td></td>
+                  {% endif %} 
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <th>Tarea</th>
+                    <th>Recursos</th>
+                    <th>Cantidad</th>
+                    <th>Acciones</th>         
+                  </tr>
+                </tfoot>
+              </table>
+            </div>  
+
+        </div>
+        <div class="chart tab-pane" id="nuevo-recurso" style="position: relative; height: 300px;">
+         <div class="box-body">
+          <form action="/mi_proyecto/{{ proyecto.proyecto_id }}/nuevo_recurso_tarea/" method="post">
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <div id="" class="form-group">
+                    <label>Recurso</label>
+                    {% if lista_recursos %}
+                    
+                    <select class="form-control select2" id="recurso_id" name="recurso_id">
+                    {% for recurso in lista_recursos %}    
+                      <option value="{{ recurso.recurso_id }}">
+                       {{ recurso.recurso_nombre }}
+                     </option>
+                      {% endfor %}                      
+                   </select>                   
+                  {% else %}
+                    <p>No cuentas con recursos asociados al proyecto.</p>                    
+                  {% endif %}                 
+                  </div>
+                  <div id="" class="form-group">
+                    <label>Tarea Asociada</label>                                        
+                    <select class="form-control select2" id="tarea_id" name="tarea_id">    
+                      <option value="10">
+                       Tarea 1
+                     </option>                      
+                   </select>
+                 </div>                
+               </div>            
+             </div>
+             <div class="col-md-6">
+              <div class="form-group">
+                  <label>Cantidad</label>
+                  <input type="number" class="form-control" id="recurso_cantidad" placeholder="Cantidad del recurso asignado..." name="recurso_cantidad">
+                </div>
+               <input type="text" class="form-control" id="riesgo_id_re" name="riesgo_id" style="visibility:hidden">
+              <!-- / input para pasar el id del riesgo al asociarle la actividad -->
+              
+              <button type="submit" class="btn btn-primary pull-right">Agregar</button>
+            </div>
+            <!-- /.col -->
+          </div>
+          <!-- /.row -->
+        </form>
+       </div><!-- /.box-body -->
+     </div>     
+   </div>
+ </div>
+</div>
+</div>
+<!-- /.modal-content -->
+</div>
+<!-- /.modal-dialog -->
+</div>
+
+
+
 <!-- /modal respuestas -->
 <div class="modal fade" id="modal_respuestas">
   <div class="modal-dialog">
@@ -252,20 +357,21 @@
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title"><i class="fa fa-edit"></i> Respuestas preliminares</h4>
+          <h4 class="modal-title"><i class="fa fa-edit"></i> Acciones de Respuesta</h4>
         </div>
         <div class="modal-body">
 
          <div class="nav-tabs-custom">
           <!-- Tabs within a box -->
           <ul class="nav nav-tabs pull-right">
-            <li class="active"><a href="#listado-respuestas" data-toggle="tab"> Listado</a></li>
-            <li ><a href="#nueva-respuesta" data-toggle="tab">Nueva Respuesta</a></li>            
+            <li class="active"><a href="#listado_respuestas" data-toggle="tab"> Listado</a></li>         <li ><a href="#respuesta_sugerida" data-toggle="tab">Agregar Respuesta Sugerida</a></li> 
+            <li ><a href="#nueva_respuesta" data-toggle="tab">Nueva Respuesta</a></li> 
+            
 
           </ul>
           <div class="tab-content no-padding">
             <!-- Morris chart - Sales -->
-            <div class="chart tab-pane active" id="listado-respuestas" style="position: relative; height: 300px;">
+            <div class="chart tab-pane active" id="listado_respuestas" style="position: relative; height: 300px; overflow-y: scroll;">
 
              <div class="box-body">
 
@@ -273,17 +379,50 @@
                 <thead>
                   <tr>
                     <th>Respuesta</th>
-                    <th>Descripción</th>                  
+                    <th>Descripción</th>
+                    <th>Fecha de Inicio</th>                  
                     <th>Acciones</th>                    
                   </tr>
                 </thead>
                 <tbody id="respuestas_body">                 
                   <tr>
                     <td>No cuentas con respuestas asociadas a este riesgo.</td>
+                    <td></td>
                     <td></td> 
                     <td></td>                
                   </tr>
                 </tbody>
+                <tfoot>
+                  <tr>
+                    <th>Respuesta</th>
+                    <th>Descripción</th>
+                    <th>Fecha de Inicio</th>                  
+                    <th>Acciones</th>      
+                  </tr>
+                </tfoot>
+              </table>
+            </div>  
+
+          </div>
+          <div class="chart tab-pane" id="respuesta_sugerida" style="position: relative; height: 300px; overflow-y: scroll;">
+
+           <div class="box-body">
+
+            <table id="tabla2" class="table table-bordered table-striped">
+              <thead>
+                <tr>
+                  <th>Respuesta</th>
+                  <th>Descripción</th>                  
+                  <th>Acciones</th>                    
+                </tr>
+              </thead>
+              <tbody id="respuestas_body">                 
+                <tr>
+                  <td>No cuentas con respuestas sugeridas para este riesgo.</td>
+                  <td></td> 
+                  <td></td>                
+                </tr>
+              </tbody>
               <tfoot>
                 <tr>
                   <th>Respuesta</th>
@@ -295,9 +434,9 @@
           </div>  
 
         </div>
-        <div class="chart tab-pane" id="nueva-respuesta" style="position: relative; height: 300px;">
+        <div class="chart tab-pane" id="nueva_respuesta" style="position: relative; height: 300px;">
          <div class="box-body">
-          <form action="/proyecto/{{ proyecto.proyecto_id }}/nueva_respuesta/" method="post">
+          <form action="/mi_proyecto/{{ proyecto.proyecto_id }}/nueva_respuesta_planificar/" method="post">
             {% csrf_token %}
             <div class="row">
               <div class="col-md-6">
@@ -307,16 +446,25 @@
                     <input type="text" class="form-control" id="respuesta_nombre" placeholder="Nombre respuesta" name="respuesta_nombre">
                   </div>
                 </div>
+                <div class="form-group">
+                <label>Fecha tentativa de inicio</label>
+
+                <div class="input-group date">
+                  <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                  </div>
+                  <input type="date" class="form-control pull-right" name="respuesta_fecha_inicio">
+                </div>
+              </div>
                 <!-- / input para pasar el id del riesgo al asociarle la respuesta -->
                 <input type="text" class="form-control" id="riesgo_id_r" name="riesgo_id" style="visibility:hidden">
-              </div>           
+              </div>            
               <div class="col-md-6">
                 <div class="form-group">
                   <label>Descripción</label>
-                  <textarea class="form-control" rows="3" placeholder="Descripción de la respuesta preliminar" name="respuesta_descripcion"></textarea>
+                  <textarea class="form-control" rows="5" placeholder="Descripción de la accion" name="respuesta_descripcion"></textarea>
                 </div>
-                <div class="box-footer">
-                  <button type="submit" class="btn btn-default">Cancelar</button>
+                <div class="box-footer">                 
                   <button type="submit" class="btn btn-primary pull-right">Registrar</button>
                 </div>
               </div>
@@ -335,6 +483,114 @@
 <!-- /.modal-dialog -->
 </div>
 <!-- /modal respuestas -->
+
+<!-- /.modal-eliminar tarea -->
+
+  <div class="modal modal-danger fade" id="modal_eliminar_tarea" >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title"> Eliminar </h4>
+          </div>
+          <form  action="/mi_proyecto/{{ proyecto.proyecto_id }}/eliminar_tarea/" method="post">
+            {% csrf_token %}
+          <div class="modal-body">
+            <p id="contenido_modal_tarea">&hellip;</p>
+            <h2 id="nombre_tarea"></h2>
+            <input type="text" class="form-control" id="tarea_id_e" name="tarea_id" style="visibility:hidden">            
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Cerrar</button>
+            <button type="submit" class="btn btn-outline">Eliminar</button>
+          </div>
+          </form>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+    </div>
+<!-- /.modal-eliminar -->
+
+  <!-- /.modal-editar tarea -->
+ <div class="modal fade" id="modal-editar-tarea"> 
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Editar Tarea</h4>
+          </div>
+          <div class="box-body">
+          {% if proyecto %}
+          <form action="/mi_proyecto/{{ proyecto.proyecto_id }}/editar_tarea/" method="post">
+          {% else %}  
+          <form action="#" method="post">
+          {% endif %}
+
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                <label >Nombre </label>
+                <input type="text" class="form-control" id="tarea_nombre_e" name="tarea_nombre">
+                </div>
+                <input type="text" class="form-control" id="tarea_id_ed" name="tarea_id" style="visibility:hidden">               
+              </div>
+              <!-- /.col -->
+              <div class="col-md-6">              
+                <div class="form-group">
+                  <label>Descripción</label>
+                  <textarea class="form-control" rows="3"  id="descripcion_tarea_e" name="descripcion_tarea"></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary pull-left" data-dismiss="modal">Cerrar</button>
+              <button type="submit" class="btn btn-primary pull-right">Actualizar</button>
+            </div>
+            <!-- /.row -->
+          </form>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+
+  <!-- /.modal-eliminar tarea -->
+
+  <div class="modal modal-danger fade" id="modal_desvincular_recurso" >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title"> Eliminar </h4>
+          </div>
+          <form  action="/mi_proyecto/{{ proyecto.proyecto_id }}/desvincular_recurso_tarea/" method="post">
+            {% csrf_token %}
+          <div class="modal-body">
+            <p id="contenido_modal_recurso">&hellip;</p>
+            <h2 id="nombre_recurso"></h2>
+            <input type="text" class="form-control" id="recurso_id_e" name="recurso_id" style="visibility:hidden" >
+            <input type="text" class="form-control" id="tarea_id_e_r" name="tarea_id" style="visibility:hidden">            
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Cerrar</button>
+            <button type="submit" class="btn btn-outline">Eliminar</button>
+          </div>
+          </form>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+    </div>
+<!-- /.modal-eliminar -->
+
+
+
 {% endblock %}
 {% block organigrama_down %}
 <!-- DataTables -->
@@ -384,13 +640,55 @@
   function abrir_modal_respuestas(id_riesgo) {
    
     $("#modal_respuestas").modal('show');
+    var input_id = document.getElementById("riesgo_id_r");
+    input_id.value = id_riesgo;  
+
   };
 
-  function abrir_modal_responsables(id_riesgo, responsables) {                
-    $("#modal_responsables").modal('show');
+  function abrir_modal_tareas(id_riesgo) {                
+    $("#modal_tareas").modal('show');
+    var input_id = document.getElementById("riesgo_id_ta");
+    input_id.value = id_riesgo;
+};
+
+function abrir_modal_eliminar_tarea(id_tarea, nombre_tarea) {                
+    $("#modal_eliminar_tarea").modal('show');
+    document.getElementById("contenido_modal_tarea").innerHTML = "¿Estas seguro que desea eliminar esta tarea de la acción? Esta podria tener asociados recursos.";
+    document.getElementById("nombre_tarea").innerHTML = " "+nombre_tarea;
+    var input_id = document.getElementById("tarea_id_e");
+    input_id.value = id_tarea;
+};
+
+function abrir_modal_editar_tarea(id_tarea, nombre_tarea, descripcion) {                
+    $("#modal-editar-tarea").modal('show');
+    var input_id = document.getElementById("tarea_id_ed");
+    var input_nombre = document.getElementById("tarea_nombre_e");
+    input_id.value = id_tarea;
+    input_nombre.value = nombre_tarea;
+    document.getElementById("descripcion_tarea_e").innerHTML = " "+descripcion;
+
+   
+};
+
+  function abrir_modal_recursos(id_riesgo) {                
+    $("#modal_recursos").modal('show');
     var input_id = document.getElementById("riesgo_id_re");
     input_id.value = id_riesgo;
 };
+
+  function abrir_modal_desvincular_recurso(id_recurso, nombre_recurso, nombre_tarea, id_tarea) {               
+    $("#modal_desvincular_recurso").modal('show');
+    document.getElementById("contenido_modal_recurso").innerHTML = "¿Estas seguro que desea desvincular este recurso de la tarea "+nombre_tarea;
+    document.getElementById("nombre_recurso").innerHTML = " "+nombre_recurso;
+    var input_id = document.getElementById("recurso_id_e");
+    var input_id_t = document.getElementById("tarea_id_e_r");
+    input_id.value = id_recurso;
+    input_id_t.value = id_tarea;
+   
+};
+
+  
+
 </script>
 
 

@@ -96,6 +96,13 @@ urlpatterns = [
     # Planificar respuestas
     #####################################################
     path('mi_proyecto/<int:proyecto_id>/planificar_respuestas/', planificar_respuestas, name='planificar_respuestas'),
+    path('mi_proyecto/<int:proyecto_id>/nueva_respuesta_planificar/', nueva_respuesta_planificar, name='nueva_respuesta_planificar'),
+    path('mi_proyecto/<int:proyecto_id>/nueva_tarea/', nueva_tarea, name='nueva_tarea'),
+    path('mi_proyecto/<int:proyecto_id>/eliminar_tarea/', eliminar_tarea, name='eliminar_tarea'),
+    path('mi_proyecto/<int:proyecto_id>/editar_tarea/', editar_tarea, name='editar_tarea'),
+    path('mi_proyecto/<int:proyecto_id>/nuevo_recurso_tarea/', nuevo_recurso_tarea, name='nuevo_recurso_tarea'),
+    path('mi_proyecto/<int:proyecto_id>/desvincular_recurso_tarea/', desvincular_recurso_tarea, name='desvincular_recurso_tarea'),
+
 
 
 

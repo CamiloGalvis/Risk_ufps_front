@@ -23,6 +23,7 @@ from Risk_project_ufps.core_risk.controller.ResponsableController import *
 from Risk_project_ufps.core_risk.controller.ActividadController import *
 from Risk_project_ufps.core_risk.controller.ReporteController import *
 from Risk_project_ufps.core_risk.controller.RolController import *
+from Risk_project_ufps.core_risk.controller.TareaController import *
 
 """
 ////////////////////////////////////////////////////////////////////////////
@@ -691,13 +692,12 @@ def proyecto_nueva_respuesta(request, proyecto_id):
     riesgo_controller = RiesgoController()
     respuesta_controller = RespuestaController()
     if request.method == 'POST':
-        respuesta = respuesta_controller.registrar_respuesta(request.POST["respuesta_nombre"],
-                                                             request.POST["respuesta_descripcion"])
+        respuesta = respuesta_controller.registrar_respuesta(request.POST["respuesta_nombre"], request.POST["respuesta_descripcion"])
         riesgo = riesgo_controller.obtener_riesgo(request.POST["riesgo_id"])
         mensaje_no = respuesta_controller.registrar_respuesta_riesgo(respuesta, riesgo)
         proyecto_riesgo = riesgo_controller.get_riesgo_by_proyecto(proyecto_id, request.POST["riesgo_id"])
         riesgo_respuesta = respuesta_controller.obtener_respuesta_riesgo(riesgo.riesgo_id, respuesta.respuesta_id)
-        mensaje = respuesta_controller.registrar_respuesta_proyecto(proyecto_riesgo, riesgo_respuesta)
+        mensaje = respuesta_controller.registrar_respuesta_proyecto(proyecto_riesgo, riesgo_respuesta, None)
         proyecto = Proyecto.objects.get(proyecto_id=proyecto_id)
         rbs_controller = RbsController()
         rbs = rbs_controller.obtener_rbs_completa_by_proyecto(request.user.id, proyecto_id)
@@ -1174,16 +1174,190 @@ def actualizar_valores(request, proyecto_id):
 /////////////////////////////////////////////////////////////////////////////
 """
 
-
 def planificar_respuestas(request, proyecto_id):
     proyecto_controller = ProyectoController()
     riesgo_controller = RiesgoController()
-
+    respuesta_controller = RespuestaController()
     proyecto = proyecto_controller.obtener_proyecto(proyecto_id)
     lista_riesgos = riesgo_controller.get_riesgos_by_proyecto(proyecto)
+    #Listado de respuestas por riesgo, reutilizado de identificar
+    respuestas_riesgo = dumps(respuesta_controller.listar_riesgos_respuesta(proyecto_id))    
+    recurso_controller = RecursoController()
+    #Recursos generales del proyecto
+    lista_recursos = recurso_controller.listar_recursos(proyecto_id)
+    tarea_controller = TareaController()
+    #Tareas por acciones por riesgo del proyecto
+    lista_tareas = tarea_controller.listar_tareas(proyecto)
+    #Recursos por tareas por acciones por riesgo del proyecto
+    recursos_tareas = recurso_controller.listar_recursos_tareas(proyecto)
 
-    return render(request, "procesos/planificar_respuestas.html",
-                  {'proyecto': proyecto, 'lista_riesgos': lista_riesgos})
+    return render(request, "procesos/planificar_respuestas.html", {'proyecto': proyecto, 'lista_riesgos': lista_riesgos, "respuestas_riesgo":respuestas_riesgo, "lista_recursos":lista_recursos, "lista_tareas":lista_tareas, "recursos_tareas":recursos_tareas})
+
+
+def nueva_respuesta_planificar(request, proyecto_id):
+    proyecto_controller = ProyectoController()
+    riesgo_controller = RiesgoController()
+    respuesta_controller = RespuestaController()    
+    proyecto = proyecto_controller.obtener_proyecto(proyecto_id)
+    lista_riesgos = riesgo_controller.get_riesgos_by_proyecto(proyecto)
+    respuestas_riesgo = dumps(respuesta_controller.listar_riesgos_respuesta(proyecto_id))
+    recurso_controller = RecursoController()
+    lista_recursos = recurso_controller.listar_recursos(proyecto_id)
+    tarea_controller = TareaController()
+    lista_tareas = tarea_controller.listar_tareas(proyecto)
+    recursos_tareas = recurso_controller.listar_recursos_tareas(proyecto)
+        
+    if request.method == 'POST':
+        respuesta = respuesta_controller.registrar_respuesta(request.POST["respuesta_nombre"], request.POST["respuesta_descripcion"])
+        riesgo = riesgo_controller.obtener_riesgo(request.POST["riesgo_id"])
+        mensaje_no = respuesta_controller.registrar_respuesta_riesgo(respuesta, riesgo)
+        proyecto_riesgo = riesgo_controller.get_riesgo_by_proyecto(proyecto_id, request.POST["riesgo_id"])
+        riesgo_respuesta = respuesta_controller.obtener_respuesta_riesgo(riesgo.riesgo_id, respuesta.respuesta_id)
+        fecha = request.POST["respuesta_fecha_inicio"]
+
+        if fecha is '':
+            mensaje = respuesta_controller.registrar_respuesta_proyecto(proyecto_riesgo, riesgo_respuesta, None)
+        else:
+            mensaje = respuesta_controller.registrar_respuesta_proyecto(proyecto_riesgo, riesgo_respuesta, fecha)
+        
+        respuestas_riesgo = dumps(respuesta_controller.listar_riesgos_respuesta(proyecto_id))
+        return render(request, "procesos/planificar_respuestas.html", {'proyecto': proyecto, 'lista_riesgos': lista_riesgos, "respuestas_riesgo":respuestas_riesgo, "mensaje":mensaje, "lista_recursos":lista_recursos, "lista_tareas":lista_tareas, "recursos_tareas":recursos_tareas})
+
+
+    return render(request, "procesos/planificar_respuestas.html", {'proyecto': proyecto, 'lista_riesgos': lista_riesgos, "respuestas_riesgo":respuestas_riesgo, "lista_recursos":lista_recursos, "lista_tareas":lista_tareas, "recursos_tareas":recursos_tareas})
+
+def nueva_tarea(request, proyecto_id):
+
+    proyecto_controller = ProyectoController()
+    riesgo_controller = RiesgoController()
+    respuesta_controller = RespuestaController()    
+    proyecto = proyecto_controller.obtener_proyecto(proyecto_id)
+    lista_riesgos = riesgo_controller.get_riesgos_by_proyecto(proyecto)
+    respuestas_riesgo = dumps(respuesta_controller.listar_riesgos_respuesta(proyecto_id))
+    recurso_controller = RecursoController()
+    lista_recursos = recurso_controller.listar_recursos(proyecto_id)
+    tarea_controller = TareaController()
+    lista_tareas = tarea_controller.listar_tareas(proyecto)
+    recursos_tareas = recurso_controller.listar_recursos_tareas(proyecto)
+    if request.method == 'POST':       
+        riesgo_proyecto = riesgo_controller.get_riesgo_by_proyecto(proyecto_id, request.POST["riesgo_id"])
+        riesgo = riesgo_controller.obtener_riesgo(request.POST["riesgo_id"])
+        respuesta = respuesta_controller.obtener_respuesta(request.POST["respuesta_id"])       
+        riesgo_respuesta = respuesta_controller.obtener_respuesta_riesgo(riesgo.riesgo_id, respuesta.respuesta_id)
+        proyecto_riesgo_respuesta = respuesta_controller.get_riesgo_respuesta_by_id(riesgo_proyecto, riesgo_respuesta)        
+        tarea = tarea_controller.registrar_tarea(proyecto_riesgo_respuesta, request.POST["tarea_nombre"], request.POST["tarea_descripcion"] )
+        lista_tareas = tarea_controller.listar_tareas(proyecto)
+        if tarea == None:
+            mensaje_editar = "No se pudo registrar la tarea."
+            return render(request, "procesos/planificar_respuestas.html", {'proyecto': proyecto, 'lista_riesgos': lista_riesgos, "respuestas_riesgo":respuestas_riesgo, "mensaje_editar":mensaje_editar, "lista_recursos":lista_recursos, "lista_tareas":lista_tareas, "recursos_tareas":recursos_tareas})
+        else:
+            mensaje = "Nueva tarea registrada."
+            return render(request, "procesos/planificar_respuestas.html", {'proyecto': proyecto, 'lista_riesgos': lista_riesgos, "respuestas_riesgo":respuestas_riesgo, "mensaje":mensaje, "lista_recursos":lista_recursos, "lista_tareas":lista_tareas, "recursos_tareas":recursos_tareas})
+    return render(request, "procesos/planificar_respuestas.html", {'proyecto': proyecto, 'lista_riesgos': lista_riesgos, "respuestas_riesgo":respuestas_riesgo, "lista_recursos":lista_recursos, "lista_tareas":lista_tareas, "recursos_tareas":recursos_tareas})
+
+
+
+def eliminar_tarea(request, proyecto_id):
+    proyecto_controller = ProyectoController()
+    riesgo_controller = RiesgoController()
+    respuesta_controller = RespuestaController()    
+    proyecto = proyecto_controller.obtener_proyecto(proyecto_id)
+    lista_riesgos = riesgo_controller.get_riesgos_by_proyecto(proyecto)
+    respuestas_riesgo = dumps(respuesta_controller.listar_riesgos_respuesta(proyecto_id))
+    recurso_controller = RecursoController()
+    lista_recursos = recurso_controller.listar_recursos(proyecto_id)
+    tarea_controller = TareaController()
+    if request.method == 'POST':
+        tarea = tarea_controller.get_tarea_by_id(request.POST["tarea_id"])
+        print(tarea)
+        mensaje_eliminar = tarea_controller.eliminar_tarea(tarea)
+        lista_tareas = tarea_controller.listar_tareas(proyecto)
+        recursos_tareas = recurso_controller.listar_recursos_tareas(proyecto)
+        return render(request, "procesos/planificar_respuestas.html", {'proyecto': proyecto, 'lista_riesgos': lista_riesgos, "respuestas_riesgo":respuestas_riesgo, "lista_recursos":lista_recursos, "lista_tareas":lista_tareas, "recursos_tareas":recursos_tareas, "mensaje_eliminar":mensaje_eliminar})
+   
+
+    return render(request, "procesos/planificar_respuestas.html", {'proyecto': proyecto, 'lista_riesgos': lista_riesgos, "respuestas_riesgo":respuestas_riesgo, "lista_recursos":lista_recursos, "lista_tareas":lista_tareas, "recursos_tareas":recursos_tareas})
+
+
+def editar_tarea(request, proyecto_id):
+    proyecto_controller = ProyectoController()
+    riesgo_controller = RiesgoController()
+    respuesta_controller = RespuestaController()
+    respuestas_riesgo = dumps(respuesta_controller.listar_riesgos_respuesta(proyecto_id))
+    proyecto = proyecto_controller.obtener_proyecto(proyecto_id)
+    lista_riesgos = riesgo_controller.get_riesgos_by_proyecto(proyecto)
+    recurso_controller = RecursoController()
+    lista_recursos = recurso_controller.listar_recursos(proyecto_id)
+    tarea_controller = TareaController()
+    lista_tareas = tarea_controller.listar_tareas(proyecto)
+    recursos_tareas = recurso_controller.listar_recursos_tareas(proyecto)
+    if request.method == 'POST':
+        tarea = tarea_controller.get_tarea_by_id(request.POST["tarea_id"])
+        tarea_editada = tarea_controller.editar_tarea(tarea, request.POST["tarea_nombre"], request.POST["descripcion_tarea"])
+        mensaje_editar = "Se edito la tarea exitosamente."
+        lista_tareas = tarea_controller.listar_tareas(proyecto)
+        recursos_tareas = recurso_controller.listar_recursos_tareas(proyecto)
+        return render(request, "procesos/planificar_respuestas.html", {'proyecto': proyecto, 'lista_riesgos': lista_riesgos, "respuestas_riesgo":respuestas_riesgo, "lista_recursos":lista_recursos, "lista_tareas":lista_tareas, "recursos_tareas":recursos_tareas, "mensaje_editar":mensaje_editar})
+
+    return render(request, "procesos/planificar_respuestas.html", {'proyecto': proyecto, 'lista_riesgos': lista_riesgos, "respuestas_riesgo":respuestas_riesgo, "lista_recursos":lista_recursos, "lista_tareas":lista_tareas, "recursos_tareas":recursos_tareas})
+
+
+def nuevo_recurso_tarea(request, proyecto_id):
+    proyecto_controller = ProyectoController()
+    riesgo_controller = RiesgoController()
+    respuesta_controller = RespuestaController()
+    respuestas_riesgo = dumps(respuesta_controller.listar_riesgos_respuesta(proyecto_id))
+    proyecto = proyecto_controller.obtener_proyecto(proyecto_id)
+    lista_riesgos = riesgo_controller.get_riesgos_by_proyecto(proyecto)
+    recurso_controller = RecursoController()
+    lista_recursos = recurso_controller.listar_recursos(proyecto_id)
+    tarea_controller = TareaController()
+    lista_tareas = tarea_controller.listar_tareas(proyecto)
+    recursos_tareas = recurso_controller.listar_recursos_tareas(proyecto)
+    if request.method == 'POST':
+        tarea_controller = TareaController()
+        tarea = tarea_controller.get_tarea_by_id(request.POST["tarea_id"])
+        recurso = recurso_controller.obtener_recurso(request.POST["recurso_id"])
+        aux= tarea_controller.get_recurso_tarea_by_id(tarea, recurso)
+        if aux == None:
+            mensaje = tarea_controller.agregar_recurso_tarea(tarea, recurso, request.POST["recurso_cantidad"] )
+            recursos_tareas = recurso_controller.listar_recursos_tareas(proyecto)
+            return render(request, "procesos/planificar_respuestas.html", {'proyecto': proyecto, 'lista_riesgos': lista_riesgos, "respuestas_riesgo":respuestas_riesgo, "lista_recursos":lista_recursos, "mensaje":mensaje, "lista_tareas":lista_tareas, "recursos_tareas":recursos_tareas})
+        else:
+            mensaje_editar = "Ya cuntas con este recurso asignado a la tarea."
+            return render(request, "procesos/planificar_respuestas.html", {'proyecto': proyecto, 'lista_riesgos': lista_riesgos, "respuestas_riesgo":respuestas_riesgo, "lista_recursos":lista_recursos, "mensaje_editar":mensaje_editar, "lista_tareas":lista_tareas, "recursos_tareas":recursos_tareas})
+               
+    return render(request, "procesos/planificar_respuestas.html", {'proyecto': proyecto, 'lista_riesgos': lista_riesgos, "respuestas_riesgo":respuestas_riesgo, "lista_recursos":lista_recursos, "lista_tareas":lista_tareas, "recursos_tareas":recursos_tareas})
+
+#Tiene un error porque borra todos los muchos a muchos de la misma tarea (Revisar)
+def desvincular_recurso_tarea(request, proyecto_id):
+    proyecto_controller = ProyectoController()
+    riesgo_controller = RiesgoController()
+    respuesta_controller = RespuestaController()
+    respuestas_riesgo = dumps(respuesta_controller.listar_riesgos_respuesta(proyecto_id))
+    proyecto = proyecto_controller.obtener_proyecto(proyecto_id)
+    lista_riesgos = riesgo_controller.get_riesgos_by_proyecto(proyecto)
+    recurso_controller = RecursoController()
+    lista_recursos = recurso_controller.listar_recursos(proyecto_id)
+    tarea_controller = TareaController()
+    lista_tareas = tarea_controller.listar_tareas(proyecto)
+    recursos_tareas = recurso_controller.listar_recursos_tareas(proyecto)
+
+    if request.method == 'POST':
+        tarea = tarea_controller.get_tarea_by_id(request.POST["tarea_id"])
+        print(tarea)
+        recurso = recurso_controller.obtener_recurso(request.POST["recurso_id"])
+        print(recurso)
+        tarea_recurso = tarea_controller.get_recurso_tarea_by_id(tarea, recurso)
+        print(tarea_recurso)
+        mensaje_eliminar = tarea_controller.eliminar_recurso_tarea(tarea_recurso)
+        recursos_tareas = recurso_controller.listar_recursos_tareas(proyecto)
+        return render(request, "procesos/planificar_respuestas.html", {'proyecto': proyecto, 'lista_riesgos': lista_riesgos, "respuestas_riesgo":respuestas_riesgo, "lista_recursos":lista_recursos, "lista_tareas":lista_tareas, "recursos_tareas":recursos_tareas, "mensaje_eliminar":mensaje_eliminar})
+
+    return render(request, "procesos/planificar_respuestas.html", {'proyecto': proyecto, 'lista_riesgos': lista_riesgos, "respuestas_riesgo":respuestas_riesgo, "lista_recursos":lista_recursos, "lista_tareas":lista_tareas, "recursos_tareas":recursos_tareas})
+
+
+
 
 
 """

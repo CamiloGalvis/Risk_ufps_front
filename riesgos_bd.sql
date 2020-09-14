@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 10-09-2020 a las 03:16:17
+-- Tiempo de generación: 12-09-2020 a las 23:25:56
 -- Versión del servidor: 10.4.13-MariaDB
 -- Versión de PHP: 7.2.32
 
@@ -2273,6 +2273,21 @@ CREATE TABLE `clasificacion_riesgo` (
   `proyecto_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Volcado de datos para la tabla `clasificacion_riesgo`
+--
+
+INSERT INTO `clasificacion_riesgo` (`clasificacion_riesgo_id`, `clasificacion_riesgo_nombre`, `clasificacion_riesgo_min`, `clasificacion_riesgo_max`, `clasificacion_color`, `proyecto_id`) VALUES
+(9, 'Bajo', 1, 4, '#138d75', 15),
+(10, 'sdsd', 5, 7, '#bf04da', 15),
+(11, 'Alto', 12, 25, '#cd5c5c', 15),
+(12, 'sdfsd', 4, 5, '#c73327', 15),
+(13, 'sdfsd', 5, 2, '#294764', 15),
+(14, 'dsfdsf', 2, 4, '#6e8ebc', 15),
+(15, 'Bajo', 1, 4, '#138D75', 17),
+(16, 'Moderado', 5, 11, '#D68910', 17),
+(17, 'Alto', 12, 25, '#CD5C5C', 17);
+
 -- --------------------------------------------------------
 
 --
@@ -2329,6 +2344,25 @@ CREATE TABLE `impacto` (
   `impacto_valor` int(11) NOT NULL,
   `proyecto_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `impacto`
+--
+
+INSERT INTO `impacto` (`impacto_id`, `impacto_categoria`, `impacto_valor`, `proyecto_id`) VALUES
+(1, 'Catastrófico', 5, 2),
+(2, 'Mayor', 4, 2),
+(3, 'Moderado', 3, 2),
+(4, 'Menor', 2, 2),
+(5, 'Insignificante', 1, 2),
+(40, 'a', 1, 15),
+(41, 'b', 2, 15),
+(42, 'c', 3, 15),
+(43, 'd', 4, 15),
+(49, 'Insignificante', 1, 17),
+(50, 'Menor', 2, 17),
+(51, 'Moderado', 3, 17),
+(52, 'Mayor', 4, 17);
 
 -- --------------------------------------------------------
 
@@ -2613,6 +2647,26 @@ CREATE TABLE `propabilidad` (
   `proyecto_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Volcado de datos para la tabla `propabilidad`
+--
+
+INSERT INTO `propabilidad` (`propabilidad_id`, `propabilidad_categoria`, `propabilidad_valor`, `proyecto_id`) VALUES
+(1, 'Certeza', 5, 2),
+(2, 'Probable', 4, 2),
+(3, 'Moderada', 3, 2),
+(4, 'improbable', 2, 2),
+(5, 'raro', 1, 2),
+(19, 'bb', 2, 15),
+(20, 'cc', 2, 15),
+(21, 'dd', 2, 15),
+(27, 'raro', 1, 17),
+(28, 'improbable', 2, 17),
+(29, 'Moderada', 3, 17),
+(30, 'Probable', 4, 17),
+(31, 'Certeza', 5, 17),
+(32, 'Kilometro', 6, 17);
+
 -- --------------------------------------------------------
 
 --
@@ -2653,7 +2707,26 @@ INSERT INTO `proyecto` (`proyecto_id`, `proyecto_nombre`, `proyecto_objetivo`, `
 (13, 'FIN_2', 'sdfsdf', 'dsfsdf', 'sdfsdf', 333, '2020-09-15', NULL, NULL, NULL, 0, 0, 28, 9),
 (14, 'FIN_3', 'dsfds', 'sdfsfd', 'sdfds', 324234, '2020-09-16', NULL, NULL, NULL, 0, 0, 28, 9),
 (15, 'FIN_4', 'dsfsd', 'sdfsd', 'dsfsdf', 32423, '2020-09-30', NULL, NULL, NULL, 0, 0, 28, 9),
-(16, 'Proyecto test', 'probar', 'probar', 'probar', 50000, '2020-09-14', NULL, NULL, NULL, 0, 0, 31, 9);
+(16, 'Proyecto test', 'probar', 'probar', 'probar', 50000, '2020-09-14', NULL, NULL, NULL, 0, 0, 31, 9),
+(17, 'Atributos', 'sddsd', 'sdsd', 'sdsd', 2323, '2020-09-24', NULL, NULL, NULL, 0, 0, 28, 9);
+
+--
+-- Disparadores `proyecto`
+--
+DELIMITER $$
+CREATE TRIGGER `Agregar categorías del riesgo a proyecto` AFTER INSERT ON `proyecto` FOR EACH ROW INSERT INTO `clasificacion_riesgo`(`clasificacion_riesgo_nombre`, `clasificacion_riesgo_min`, `clasificacion_riesgo_max`, `clasificacion_color`, `proyecto_id`) VALUES ("Bajo", 1 , 4,'#138D75',NEW.proyecto_id),
+("Moderado", 5, 11,'#D68910',NEW.proyecto_id),("Alto", 12, 25,'#CD5C5C',NEW.proyecto_id)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `Agregar impactos por defecto` AFTER INSERT ON `proyecto` FOR EACH ROW INSERT INTO `impacto`(`impacto_categoria`, `impacto_valor`, `proyecto_id`) 
+VALUES ('Catastrófico',5,NEW.proyecto_id),('Mayor',4,NEW.proyecto_id),('Moderado',3,NEW.proyecto_id),('Menor',2,NEW.proyecto_id),('Insignificante',1,NEW.proyecto_id)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `Agregar probabilidad por defecto` AFTER INSERT ON `proyecto` FOR EACH ROW INSERT INTO `propabilidad`(`propabilidad_categoria`, `propabilidad_valor`, `proyecto_id`) VALUES ('Certeza',5,NEW.proyecto_id),('Probable',4,NEW.proyecto_id),('Moderada',3,NEW.proyecto_id),('improbable',2,NEW.proyecto_id),('raro',1,NEW.proyecto_id)
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -2668,47 +2741,51 @@ CREATE TABLE `proyecto_has_riesgo` (
   `is_editado` int(11) NOT NULL DEFAULT 0,
   `responsable_id` int(11) DEFAULT NULL,
   `impacto_id` int(11) DEFAULT NULL,
-  `propabilidad_id` int(11) DEFAULT NULL
+  `propabilidad_id` int(11) DEFAULT NULL,
+  `fecha_manifestacion` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `proyecto_has_riesgo`
 --
 
-INSERT INTO `proyecto_has_riesgo` (`proyecto_has_riesgo_id`, `proyecto_id`, `riesgo_id`, `is_editado`, `responsable_id`, `impacto_id`, `propabilidad_id`) VALUES
-(6, 2, 22, 0, NULL, NULL, NULL),
-(19, 2, 5, 0, NULL, NULL, NULL),
-(20, 2, 25, 0, NULL, NULL, NULL),
-(21, 2, 26, 0, NULL, NULL, NULL),
-(25, 2, 30, 0, NULL, NULL, NULL),
-(28, 2, 31, 0, NULL, NULL, NULL),
-(30, 4, 22, 0, NULL, NULL, NULL),
-(31, 6, 33, 0, NULL, NULL, NULL),
-(37, 7, 36, 0, NULL, NULL, NULL),
-(38, 7, 39, 0, NULL, NULL, NULL),
-(40, 2, 4, 1, NULL, NULL, NULL),
-(42, 2, 24, 1, NULL, NULL, NULL),
-(44, 2, 29, 1, NULL, NULL, NULL),
-(45, 2, 32, 1, NULL, NULL, NULL),
-(46, 2, 47, 0, NULL, NULL, NULL),
-(47, 2, 48, 0, NULL, NULL, NULL),
-(48, 2, 49, 0, NULL, NULL, NULL),
-(50, 2, 50, 1, NULL, NULL, NULL),
-(51, 2, 51, 0, NULL, NULL, NULL),
-(52, 2, 53, 1, NULL, NULL, NULL),
-(54, 2, 55, 0, NULL, NULL, NULL),
-(55, 2, 56, 1, NULL, NULL, NULL),
-(56, 2, 3, 0, NULL, NULL, NULL),
-(57, 16, 57, 1, NULL, NULL, NULL),
-(58, 16, 58, 1, NULL, NULL, NULL),
-(59, 2, 6, 0, NULL, NULL, NULL),
-(60, 2, 7, 0, NULL, NULL, NULL),
-(61, 2, 8, 0, NULL, NULL, NULL),
-(62, 2, 59, 0, NULL, NULL, NULL),
-(63, 2, 21, 0, NULL, NULL, NULL),
-(64, 2, 54, 0, NULL, NULL, NULL),
-(65, 2, 28, 0, NULL, NULL, NULL),
-(66, 2, 63, 0, NULL, NULL, NULL);
+INSERT INTO `proyecto_has_riesgo` (`proyecto_has_riesgo_id`, `proyecto_id`, `riesgo_id`, `is_editado`, `responsable_id`, `impacto_id`, `propabilidad_id`, `fecha_manifestacion`) VALUES
+(6, 2, 22, 0, NULL, NULL, NULL, NULL),
+(19, 2, 5, 0, NULL, NULL, NULL, NULL),
+(20, 2, 25, 0, NULL, NULL, NULL, NULL),
+(21, 2, 26, 0, NULL, NULL, NULL, NULL),
+(25, 2, 30, 0, NULL, NULL, NULL, NULL),
+(28, 2, 31, 0, NULL, NULL, NULL, NULL),
+(30, 4, 22, 0, NULL, NULL, NULL, NULL),
+(31, 6, 33, 0, NULL, NULL, NULL, NULL),
+(37, 7, 36, 0, NULL, NULL, NULL, NULL),
+(38, 7, 39, 0, NULL, NULL, NULL, NULL),
+(40, 2, 4, 1, NULL, NULL, NULL, NULL),
+(42, 2, 24, 1, NULL, NULL, NULL, NULL),
+(44, 2, 29, 1, NULL, NULL, NULL, NULL),
+(45, 2, 32, 1, NULL, NULL, NULL, NULL),
+(46, 2, 47, 0, NULL, NULL, NULL, NULL),
+(47, 2, 48, 0, NULL, NULL, NULL, NULL),
+(48, 2, 49, 0, NULL, NULL, NULL, NULL),
+(50, 2, 50, 1, NULL, NULL, NULL, NULL),
+(51, 2, 51, 0, NULL, NULL, NULL, NULL),
+(52, 2, 53, 1, NULL, NULL, NULL, NULL),
+(54, 2, 55, 0, NULL, NULL, NULL, NULL),
+(55, 2, 56, 1, NULL, NULL, NULL, NULL),
+(56, 2, 3, 0, NULL, NULL, NULL, NULL),
+(57, 16, 57, 1, NULL, NULL, NULL, NULL),
+(58, 16, 58, 1, NULL, NULL, NULL, NULL),
+(59, 2, 6, 0, NULL, NULL, NULL, NULL),
+(60, 2, 7, 0, NULL, NULL, NULL, NULL),
+(61, 2, 8, 0, NULL, NULL, NULL, NULL),
+(62, 2, 59, 0, NULL, NULL, NULL, NULL),
+(63, 2, 21, 0, NULL, NULL, NULL, NULL),
+(64, 2, 54, 0, NULL, NULL, NULL, NULL),
+(65, 2, 28, 0, NULL, NULL, NULL, NULL),
+(66, 2, 63, 0, NULL, NULL, NULL, NULL),
+(67, 17, 21, 0, NULL, NULL, NULL, NULL),
+(68, 17, 22, 0, NULL, NULL, NULL, NULL),
+(69, 17, 28, 0, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -2737,25 +2814,27 @@ INSERT INTO `proyecto_has_riesgo_actividad` (`proyecto_has_riesgo_actividad_id`,
 
 CREATE TABLE `proyecto_has_riesgo_respuesta` (
   `proyecto_has_id` int(11) NOT NULL,
-  `respuesta_has_id` int(11) NOT NULL
+  `respuesta_has_id` int(11) NOT NULL,
+  `fecha_inicio_respuesta` datetime DEFAULT NULL,
+  `fecha_fin_respuesta` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `proyecto_has_riesgo_respuesta`
 --
 
-INSERT INTO `proyecto_has_riesgo_respuesta` (`proyecto_has_id`, `respuesta_has_id`) VALUES
-(19, 32),
-(37, 4),
-(37, 8),
-(37, 9),
-(37, 10),
-(37, 11),
-(37, 12),
-(37, 13),
-(40, 30),
-(40, 31),
-(56, 33);
+INSERT INTO `proyecto_has_riesgo_respuesta` (`proyecto_has_id`, `respuesta_has_id`, `fecha_inicio_respuesta`, `fecha_fin_respuesta`) VALUES
+(19, 32, NULL, NULL),
+(37, 4, NULL, NULL),
+(37, 8, NULL, NULL),
+(37, 9, NULL, NULL),
+(37, 10, NULL, NULL),
+(37, 11, NULL, NULL),
+(37, 12, NULL, NULL),
+(37, 13, NULL, NULL),
+(40, 30, NULL, NULL),
+(40, 31, NULL, NULL),
+(56, 33, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -3254,6 +3333,39 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `tarea`
+--
+
+CREATE TABLE `tarea` (
+  `tarea_id` int(11) NOT NULL,
+  `tarea_nombre` varchar(77) NOT NULL,
+  `tarea_descripcion` tinytext NOT NULL,
+  `proyecto_has_riesgo_id` int(11) NOT NULL,
+  `riesgo_has_respuesta_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `tarea`
+--
+
+INSERT INTO `tarea` (`tarea_id`, `tarea_nombre`, `tarea_descripcion`, `proyecto_has_riesgo_id`, `riesgo_has_respuesta_id`) VALUES
+(2, 'dfg', 'dgdfg', 37, 8);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tarea_has_recurso`
+--
+
+CREATE TABLE `tarea_has_recurso` (
+  `tarea_id` int(11) NOT NULL,
+  `recurso_id` int(11) NOT NULL,
+  `cantidad` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `tipo_recurso`
 --
 
@@ -3453,6 +3565,21 @@ ALTER TABLE `sub_categoria`
   ADD KEY `fk_sub_categoria_categoria1_idx` (`categoria_id`);
 
 --
+-- Indices de la tabla `tarea`
+--
+ALTER TABLE `tarea`
+  ADD PRIMARY KEY (`tarea_id`),
+  ADD KEY `fk_tarea_proyecto_has_riesgo_respuesta_idx` (`proyecto_has_riesgo_id`,`riesgo_has_respuesta_id`);
+
+--
+-- Indices de la tabla `tarea_has_recurso`
+--
+ALTER TABLE `tarea_has_recurso`
+  ADD PRIMARY KEY (`tarea_id`,`recurso_id`),
+  ADD KEY `fk_tarea_has_recurso_recurso1_idx` (`recurso_id`),
+  ADD KEY `fk_tarea_has_recurso_tarea1_idx` (`tarea_id`);
+
+--
 -- Indices de la tabla `tipo_recurso`
 --
 ALTER TABLE `tipo_recurso`
@@ -3473,7 +3600,7 @@ ALTER TABLE `categoria`
 -- AUTO_INCREMENT de la tabla `clasificacion_riesgo`
 --
 ALTER TABLE `clasificacion_riesgo`
-  MODIFY `clasificacion_riesgo_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `clasificacion_riesgo_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT de la tabla `gerente`
@@ -3485,7 +3612,7 @@ ALTER TABLE `gerente`
 -- AUTO_INCREMENT de la tabla `impacto`
 --
 ALTER TABLE `impacto`
-  MODIFY `impacto_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `impacto_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 
 --
 -- AUTO_INCREMENT de la tabla `pais`
@@ -3497,19 +3624,19 @@ ALTER TABLE `pais`
 -- AUTO_INCREMENT de la tabla `propabilidad`
 --
 ALTER TABLE `propabilidad`
-  MODIFY `propabilidad_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `propabilidad_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT de la tabla `proyecto`
 --
 ALTER TABLE `proyecto`
-  MODIFY `proyecto_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `proyecto_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT de la tabla `proyecto_has_riesgo`
 --
 ALTER TABLE `proyecto_has_riesgo`
-  MODIFY `proyecto_has_riesgo_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
+  MODIFY `proyecto_has_riesgo_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
 
 --
 -- AUTO_INCREMENT de la tabla `proyecto_has_riesgo_actividad`
@@ -3570,6 +3697,12 @@ ALTER TABLE `sector`
 --
 ALTER TABLE `sub_categoria`
   MODIFY `sub_categoria_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=205;
+
+--
+-- AUTO_INCREMENT de la tabla `tarea`
+--
+ALTER TABLE `tarea`
+  MODIFY `tarea_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_recurso`
@@ -3693,6 +3826,19 @@ ALTER TABLE `rol`
 --
 ALTER TABLE `sub_categoria`
   ADD CONSTRAINT `fk_sub_categoria_categoria1` FOREIGN KEY (`categoria_id`) REFERENCES `categoria` (`categoria_id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+
+--
+-- Filtros para la tabla `tarea`
+--
+ALTER TABLE `tarea`
+  ADD CONSTRAINT `fk_tarea_proyecto_has_riesgo_respuesta` FOREIGN KEY (`proyecto_has_riesgo_id`,`riesgo_has_respuesta_id`) REFERENCES `proyecto_has_riesgo_respuesta` (`proyecto_has_id`, `respuesta_has_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Filtros para la tabla `tarea_has_recurso`
+--
+ALTER TABLE `tarea_has_recurso`
+  ADD CONSTRAINT `fk_tarea_has_recurso_recurso1` FOREIGN KEY (`recurso_id`) REFERENCES `recurso` (`recurso_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_tarea_has_recurso_tarea1` FOREIGN KEY (`tarea_id`) REFERENCES `tarea` (`tarea_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Filtros para la tabla `tipo_recurso`

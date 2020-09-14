@@ -7,12 +7,12 @@ from Risk_project_ufps.core_risk.dto.models import *
 
 class ProyectoHasRiesgo_RespuestaDao():
 
-	def registrar_respuesta_proyecto(self, proyecto_riesgo, riesgo_respuesta):
+	def registrar_respuesta_proyecto(self, proyecto_riesgo, riesgo_respuesta, fecha_inicio):
 		with closing(connection.cursor()) as cursor:
 			cursor.execute(
-                'INSERT INTO riesgos_bd.`proyecto_has_riesgo_respuesta`(`proyecto_has_id`, `respuesta_has_id`)'
-                'VALUES (%s, %s)',
-                (proyecto_riesgo.proyecto_has_riesgo_id, riesgo_respuesta.riesgo_has_respuesta_id),
+                'INSERT INTO riesgos_bd.`proyecto_has_riesgo_respuesta`(`proyecto_has_id`, `respuesta_has_id`, `fecha_inicio_respuesta` )'
+                'VALUES (%s, %s, %s)',
+                (proyecto_riesgo.proyecto_has_riesgo_id, riesgo_respuesta.riesgo_has_respuesta_id, fecha_inicio),
             )
 
 			return "Se registro respuesta exitosamente."
@@ -28,5 +28,17 @@ class ProyectoHasRiesgo_RespuestaDao():
 
 		finally:
 			return respuestas
+
+	def get_riesgo_respuesta_by_id(self, proyecto_riesgo, riesgo_respuesta):
+		respuesta = None
+		try:
+			
+			respuesta = ProyectoHasRiesgoRespuesta.objects.get(respuesta_has_id=riesgo_respuesta.riesgo_has_respuesta_id, proyecto_has_id=proyecto_riesgo.proyecto_has_riesgo_id)
+
+		except Error as e:
+			print(e)
+
+		finally:
+			return respuesta
 
 	

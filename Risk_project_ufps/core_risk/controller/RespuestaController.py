@@ -35,9 +35,14 @@ class RespuestaController():
         respuesta_riesgo_dao = RiesgoHasRespuestaDao()
         return respuesta_riesgo_dao.obtener_respuesta_riesgo(riesgo, respuesta)
 
-    def registrar_respuesta_proyecto(self, proyecto_riesgo, riesgo_respuesta):
+    def registrar_respuesta_proyecto(self, proyecto_riesgo, riesgo_respuesta, fecha_inicio):
         p_r_r= ProyectoHasRiesgo_RespuestaDao()
-        return p_r_r.registrar_respuesta_proyecto(proyecto_riesgo, riesgo_respuesta)
+        return p_r_r.registrar_respuesta_proyecto(proyecto_riesgo, riesgo_respuesta, fecha_inicio)
+
+    def get_riesgo_respuesta_by_id(self, proyecto_riesgo, riesgo_respuesta):
+        p_r_r= ProyectoHasRiesgo_RespuestaDao()
+        return p_r_r.get_riesgo_respuesta_by_id(proyecto_riesgo, riesgo_respuesta)
+
 
     def listar_riesgos_respuesta(self, proyecto_id):
         p_r_r= ProyectoHasRiesgo_RespuestaDao()
