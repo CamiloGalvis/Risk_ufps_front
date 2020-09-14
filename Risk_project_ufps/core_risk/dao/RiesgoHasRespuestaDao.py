@@ -16,14 +16,14 @@ class RiesgoHasRespuestaDao():
 
 
 	def obtener_respuesta_riesgo(self, riesgo, respuesta):
-		
+		riesgo_respuesta = None
 		try:
-			riesgo = RiesgoHasRespuesta.objects.get(riesgo_id=riesgo, respuesta_id=respuesta)
+			riesgo_respuesta = RiesgoHasRespuesta.objects.get(riesgo_id=riesgo, respuesta_id=respuesta)
 		except Error as e:
 			print(e)
 
 		finally:
-			return riesgo
+			return riesgo_respuesta
 
 
 	def listar_respuesta_riesgo(self, id):

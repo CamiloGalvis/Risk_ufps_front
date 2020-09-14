@@ -22,4 +22,8 @@ class RecursoController():
 	def editar_recurso(self, recurso, nombre, costo):
 		recurso_dao = RecursoDao()
 		return recurso_dao.editar_recurso(recurso, nombre, costo)
+
+	def listar_recursos_tareas(self, proyecto):
+		recurso_dao = RecursoDao()
+		return recurso_dao.listar_recursos_tareas(proyecto)
 	

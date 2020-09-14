@@ -221,7 +221,7 @@
 
                 <th>Actividades</th>
                 <th>Responsables</th>
-                <th>Respuestas Preliminares</th>
+                <th>Acciones de Respuesta</th>
                 <th>Acciones del Riesgo</th>                    
               </tr>
             </thead>
@@ -269,7 +269,7 @@
               <th>Riesgo</th>                
               <th>Actividades</th>
               <th>Responsables</th>
-              <th>Respuestas Preliminares</th>
+              <th>Acciones de Respuesta</th>
               <th>Acciones del Riesgo</th>    
             </tr>
           </tfoot>
@@ -360,7 +360,7 @@
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title"><i class="fa fa-edit"></i> Respuestas preliminares</h4>
+          <h4 class="modal-title"><i class="fa fa-edit"></i> Acciones de respuesta preliminares</h4>
         </div>
         <div class="modal-body">
 
@@ -368,19 +368,19 @@
           <!-- Tabs within a box -->
           <ul class="nav nav-tabs pull-right">
             <li class="active"><a href="#listado-respuestas" data-toggle="tab"> Listado</a></li>
-            <li ><a href="#nueva-respuesta" data-toggle="tab">Nueva Respuesta</a></li>            
+            <li ><a href="#nueva-respuesta" data-toggle="tab">Nueva Acción</a></li>            
 
           </ul>
           <div class="tab-content no-padding">
             <!-- Morris chart - Sales -->
-            <div class="chart tab-pane active" id="listado-respuestas" style="position: relative; height: 300px;">
+            <div class="chart tab-pane active" id="listado-respuestas" style="position: relative; height: 300px; overflow-y: scroll;">
 
              <div class="box-body">
 
               <table id="tabla2" class="table table-bordered table-striped">
                 <thead>
                   <tr>
-                    <th>Respuesta</th>
+                    <th>Accion de respuesta</th>
                     <th>Descripción</th>                  
                     <th>Acciones</th>                    
                   </tr>
@@ -394,7 +394,7 @@
                 </tbody>
               <tfoot>
                 <tr>
-                  <th>Respuesta</th>
+                  <th>Accion de respuesta</th>
                   <th>Descripción</th>                  
                   <th>Acciones</th>      
                 </tr>
@@ -412,7 +412,7 @@
                 <div class="form-group">
                   <div class="form-group">
                     <label >Nombre</label>
-                    <input type="text" class="form-control" id="respuesta_nombre" placeholder="Nombre respuesta" name="respuesta_nombre">
+                    <input type="text" class="form-control" id="respuesta_nombre" placeholder="Nombre acción de respuesta" name="respuesta_nombre">
                   </div>
                 </div>
                 <!-- / input para pasar el id del riesgo al asociarle la respuesta -->
@@ -421,7 +421,7 @@
               <div class="col-md-6">
                 <div class="form-group">
                   <label>Descripción</label>
-                  <textarea class="form-control" rows="3" placeholder="Descripción de la respuesta preliminar" name="respuesta_descripcion"></textarea>
+                  <textarea class="form-control" rows="3" placeholder="Descripción de la acción de respuesta preliminar" name="respuesta_descripcion"></textarea>
                 </div>
                 <div class="box-footer">
                   <button type="submit" class="btn btn-default">Cancelar</button>
@@ -998,7 +998,7 @@ function asosiar_riesgos(proyecto_id){
       let td_nombre = document.createElement("td");
       let td_descripcion = document.createElement("td");
       let td_acciones = document.createElement("td");
-      td_nombre.appendChild(document.createTextNode("No cuentas con respuestas asociadas a este riesgo."));
+      td_nombre.appendChild(document.createTextNode("No cuentas con respuestas asociadas a este riesgo.")); 
       tr.appendChild(td_nombre);
       tr.appendChild(td_descripcion);
       tr.appendChild(td_acciones);    
