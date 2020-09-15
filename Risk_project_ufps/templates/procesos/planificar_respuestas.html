@@ -381,7 +381,7 @@
                     <th>Respuesta</th>
                     <th>Descripción</th>
                     <th>Fecha de Inicio</th>                  
-                    <th>Acciones</th>                    
+                    <th>Opciones</th>                    
                   </tr>
                 </thead>
                 <tbody id="respuestas_body">                 
@@ -397,7 +397,7 @@
                     <th>Respuesta</th>
                     <th>Descripción</th>
                     <th>Fecha de Inicio</th>                  
-                    <th>Acciones</th>      
+                    <th>Opciones</th>      
                   </tr>
                 </tfoot>
               </table>
@@ -598,6 +598,16 @@
 <script src="{% static 'risk_project/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
 
 <script type="text/javascript">
+  //////////////////////////////////////////
+  //  Variables globales
+  /////////////////////////////////////////
+
+  /*
+   *  Corresponde a todo el conjunto de riesgos del proyecto 
+   *  junto con sus respuestas asociadas  
+   */
+  var respuestas_riesgo = JSON.parse("{{respuestas_riesgo|escapejs}}");  
+  console.log(respuestas_riesgo);
 
 	$(document).ready(function() {
 	    var t = $("#tabla_riesgos").DataTable({
@@ -636,20 +646,95 @@
 	        } );
 	    } ).draw();
 	});
+////////////////////////////////////////////
+// Funciones del modal acciones de respuesta
+////////////////////////////////////////////
 
-  function abrir_modal_respuestas(id_riesgo) {
-   
+
+  function abrir_modal_respuestas(id_riesgo) { 
+    construir_listado_respuesta(id_riesgo);  
     $("#modal_respuestas").modal('show');
     var input_id = document.getElementById("riesgo_id_r");
     input_id.value = id_riesgo;  
-
   };
 
+
+  function construir_listado_respuesta(id_riesgo) {
+    let respuestas_body = document.getElementById('respuestas_body');
+    respuestas_body.innerHTML = "";
+    let key = 'riesgo_'+id_riesgo;
+   
+    if(respuestas_riesgo.hasOwnProperty(key)){   
+      let respuestas = respuestas_riesgo[key];
+      for (var i = 0; i < respuestas.length; i++) {
+        let tr = document.createElement("tr");   
+        let td_nombre = document.createElement("td");
+        let td_descripcion = document.createElement("td");
+        let td_fecha = document.createElement("td");
+        let td_acciones = document.createElement("td");
+        td_nombre.appendChild(document.createTextNode(respuestas[i]["respuesta_nombre"]));
+        td_descripcion.appendChild(document.createTextNode(respuestas[i]["respuesta_descripcion"]));
+        td_fecha.appendChild(document.createTextNode(respuestas[i]["fecha_inicio_respuesta"]))
+        let boton = document.createElement("button");
+        boton.setAttribute("type", "button");
+        boton.setAttribute("class", "btn btn-danger");
+        boton.setAttribute("data-toggle", "#modal_eliminar");//NO SE LE OLVIDE CAMBIAR EL MODAL
+        boton.setAttribute("onclick", "abrir_modal_eliminar('"+respuestas[i]["respuesta_nombre"]+"', '"+respuestas[i]["respuesta_id"]+"')" );
+        boton.setAttribute("data-target", "#modal_eliminar");//NO SE LE OLVIDE CAMBIAR EL MODAL
+        let mi_icon = document.createElement("i");
+        mi_icon.setAttribute("class", "fa fa-trash-o danger")
+        boton.appendChild(mi_icon);
+        td_acciones.appendChild(boton);
+        tr.appendChild(td_nombre);
+        tr.appendChild(td_descripcion);
+        tr.appendChild(td_fecha);
+        tr.appendChild(td_acciones);  
+        respuestas_body.appendChild(tr);
+      }
+    }else{
+      let tr = document.createElement("tr");   
+      let td_nombre = document.createElement("td");
+      let td_descripcion = document.createElement("td");
+      let td_acciones = document.createElement("td");
+      td_nombre.appendChild(document.createTextNode("No cuentas con respuestas asociadas a este riesgo.")); 
+      tr.appendChild(td_nombre);
+      tr.appendChild(td_descripcion);
+      tr.appendChild(td_acciones);    
+      respuestas_body.appendChild(tr);  
+    }  
+  }
+
+////////////////////////////////////////////////
+// ./Funciones del modal acciones de respuesta
+////////////////////////////////////////////////
+
+//////////////////////////////////////////////
+// Funciones para el modal de tareas
+//////////////////////////////////////////////
+
   function abrir_modal_tareas(id_riesgo) {                
+    construir_select_respuesta_for_tareas(id_riesgo)
     $("#modal_tareas").modal('show');
     var input_id = document.getElementById("riesgo_id_ta");
     input_id.value = id_riesgo;
+
 };
+
+  function construir_select_respuesta_for_tareas(id_riesgo){    
+    let respuestas_body = document.getElementById('respuesta_id');
+    respuestas_body.innerHTML = "";
+    let key = 'riesgo_'+id_riesgo;
+   
+    if(respuestas_riesgo.hasOwnProperty(key)){   
+      let respuestas = respuestas_riesgo[key];
+      for (var i = 0; i < respuestas.length; i++) {
+        let opcion = document.createElement("option");
+        opcion.appendChild(document.createTextNode(respuestas[i]["respuesta_nombre"]));
+        opcion.setAttribute("value", respuestas[i]["respuesta_id"]);
+        respuestas_body.appendChild(opcion);
+      }
+    }
+  }
 
 function abrir_modal_eliminar_tarea(id_tarea, nombre_tarea) {                
     $("#modal_eliminar_tarea").modal('show');
@@ -669,6 +754,11 @@ function abrir_modal_editar_tarea(id_tarea, nombre_tarea, descripcion) {
 
    
 };
+
+
+//////////////////////////////////////////////
+// ./Funciones para el modal de tareas
+//////////////////////////////////////////////
 
   function abrir_modal_recursos(id_riesgo) {                
     $("#modal_recursos").modal('show');

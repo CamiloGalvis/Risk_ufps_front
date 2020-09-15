@@ -16,14 +16,17 @@ class RespuestaDao():
 			return respuesta
 
 	def obtener_respuesta(self, id):
+		"""
+		Permite consultar una respuesta por su id
 		
+		:rtype: Respuesta
+		:type id: int
+		"""
 		try:
-			respuesta = Respuesta.objects.get(respuesta_id=id)		
-		except Error as e:
+			return Respuesta.objects.get(respuesta_id=id)
+		except Exception as e:
 			print(e)
-
-		finally:
-			return respuesta
+			return None
 
 	def editar_respuesta(self, respuesta, nombre, descripcion):
 		respuesta = respuesta

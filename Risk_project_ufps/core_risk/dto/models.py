@@ -201,7 +201,7 @@ class Respuesta(models.Model):
     respuesta_nombre = models.CharField(max_length=45, blank=True, null=True)
     respuesta_descripcion = models.TextField(blank=True, null=True)
     respuesta_costo = models.FloatField(blank=True, null=True)
-
+    fecha_inicio_respuesta = str()
     class Meta:
         managed = False
         db_table = 'respuesta'
