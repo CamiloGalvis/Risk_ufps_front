@@ -65,7 +65,7 @@
                   <th>Categorización</th>	                
 	                <th>Acciones</th>
                   <th>Tareas</th>
-                  <th>Recursos</th>                
+                  <th><label data-toggle="tooltip" data-placement="top" title="Corresponde a los recursos definidos dentro de este proyecto">Recursos</label></th>                
 	              </tr>
 	            </thead>
 	            <tbody>
@@ -103,7 +103,7 @@
                   <th>Categorización</th>
                   <th>Acciones</th>                  
                   <th>Tareas</th>
-                  <th>Recursos</th>  
+                  <th><label data-toggle="tooltip" data-placement="top" title="Corresponde a los recursos definidos dentro de este proyecto">Recursos</label></th>  
 	            </tr>
 	          </tfoot>
 	        </table>
@@ -143,34 +143,16 @@
                   <tr>
                     <th>Nombre</th>
                     <th>Descripción</th>
-                    <th>Acciones</th>                                      
+                    <th>Opciones</th>                                      
                   </tr>
                 </thead>
-                <tbody >         
-                  {% if lista_tareas %}
-                  {% for tarea in lista_tareas %}
-                  
-                  <tr>
-                    <td>{{ tarea.tarea_nombre }}</td>
-                    <td>{{ tarea.tarea_descripcion }}</td>                                        
-                    <td>
-                      <button type="button" class="btn btn-default" data-toggle="#modal_eliminar" onclick="abrir_modal_editar_tarea('{{ tarea.tarea_id }}', '{{ tarea.tarea_nombre }}', '{{ tarea.tarea_descripcion }}')" data-target="#modal_eliminar"><i class="fa fa-edit"></i>
-                      </button>
-                      <button type="button" class="btn btn-danger" data-toggle="#modal_eliminar" onclick="abrir_modal_editar_tarea('{{ tarea.tarea_id }}', '{{ tarea.tarea_nombre }}')" data-target="#modal_eliminar"><i class="fa fa-trash-o danger"></i>
-                      </button>
-                    </td>
-                  </tr>
-                    
-                  {% endfor %}
-                  {% else %}
-                    <td>No cuentas con tareas asociados a este riesgo.</td>
-                    <td></td>
-                  {% endif %} 
+                <tbody id="tareas_riesgo">          
                 </tbody>
                 <tfoot>
                   <tr>
                     <th>Nombre</th>
-                    <th>Acciones</th>      
+                    <th>Descripción</th>
+                    <th>Opciones</th>      
                   </tr>
                 </tfoot>
               </table>
@@ -178,7 +160,7 @@
 
         </div>
         <div class="chart tab-pane" id="nueva-tarea" style="position: relative; height: 300px;">
-         <div class="box-body">
+         <div class="box-body" id="tab_nueva_tarea">
           <form action="/mi_proyecto/{{ proyecto.proyecto_id }}/nueva_tarea/" method="post">
             {% csrf_token %}
             <div class="row">
@@ -215,6 +197,7 @@
           <!-- /.row -->
         </form>
        </div><!-- /.box-body -->
+       <div class="callout callout-warning" id="letrero_nueva_tarea" hidden="true"><h4>Notificación</h4>El riesgo no tiene acciones relacionadas. Debe agregar acciones antes de crear tareas.</div>
      </div>     
    </div>
  </div>
@@ -259,25 +242,11 @@
                     <th>Acciones</th>                                      
                   </tr>
                 </thead>
-                <tbody >         
-                  {% if recursos_tareas %}
-                  {% for recurso in recursos_tareas %}
-                  
+                <tbody id="listado_recursos">         
                   <tr>
-                    <td>{{ recurso.tarea_nombre }}</td>
-                    <td>{{ recurso.recurso_nombre }}</td>
-                    <td>{{ recurso.cantidad }}</td>                                         
-                    <td>
-                      <button type="button" class="btn btn-danger" data-toggle="#modal_eliminar" onclick="abrir_modal_desvincular_recurso('{{ recurso.recurso_id }}', '{{ recurso.recurso_nombre }}', '{{ recurso.tarea_nombre }}', '{{ recurso.tarea_id }}')" data-target="#modal_eliminar"><i class="fa fa-trash-o danger"></i>
-                      </button>
-                    </td>
-                  </tr>
-                    
-                  {% endfor %}
-                  {% else %}
                     <td>No cuentas con recursos asociados a este riesgo.</td>
                     <td></td>
-                  {% endif %} 
+                  </tr>                  
                 </tbody>
                 <tfoot>
                   <tr>
@@ -292,7 +261,7 @@
 
         </div>
         <div class="chart tab-pane" id="nuevo-recurso" style="position: relative; height: 300px;">
-         <div class="box-body">
+         <div class="box-body" id="recurso_form_nuevo">
           <form action="/mi_proyecto/{{ proyecto.proyecto_id }}/nuevo_recurso_tarea/" method="post">
             {% csrf_token %}
             <div class="row">
@@ -315,10 +284,7 @@
                   </div>
                   <div id="" class="form-group">
                     <label>Tarea Asociada</label>                                        
-                    <select class="form-control select2" id="tarea_id" name="tarea_id">    
-                      <option value="10">
-                       Tarea 1
-                     </option>                      
+                    <select class="form-control select2" id="tarea_id" name="tarea_id">                       
                    </select>
                  </div>                
                </div>            
@@ -338,6 +304,14 @@
           <!-- /.row -->
         </form>
        </div><!-- /.box-body -->
+       <div class="callout callout-warning" id="recurso_letrero_uno" >
+        <h4>Notificación</h4>
+        Este proyecto no cuenta con recursos para poder asignar.      
+      </div>
+      <div class="callout callout-warning" id="recurso_letrero_dos" hidden="true">
+        <h4>Notificación</h4>
+        Este riesgo no cuenta con tareas para poder asignar recursos.       
+      </div>
      </div>     
    </div>
  </div>
@@ -609,6 +583,14 @@
   var respuestas_riesgo = JSON.parse("{{respuestas_riesgo|escapejs}}");  
   console.log(respuestas_riesgo);
 
+  var lista_tareas = JSON.parse("{{lista_tareas|escapejs}}");  
+  console.log(lista_tareas);
+
+  //Contiene la cantidad de recursos que tiene el proyecto.
+  //Con esta variable puedo controlar el tipo de mensaje
+  //en el modal de nuevo recursos
+  var cantidad_recursos = parseInt("{{lista_recursos|length}}", 10);
+
 	$(document).ready(function() {
 	    var t = $("#tabla_riesgos").DataTable({
 			 
@@ -645,6 +627,11 @@
 	            cell.innerHTML = i+1;
 	        } );
 	    } ).draw();
+
+     /*
+      Este segmento permite activar los subtitulos para todos los elementos del documento
+    */    
+    $('[data-toggle="tooltip"]').tooltip();
 	});
 ////////////////////////////////////////////
 // Funciones del modal acciones de respuesta
@@ -713,14 +700,19 @@
 //////////////////////////////////////////////
 
   function abrir_modal_tareas(id_riesgo) {                
-    construir_select_respuesta_for_tareas(id_riesgo)
+    construir_select_respuesta_for_tareas(id_riesgo);
+    construir_listado_tareas(id_riesgo);
     $("#modal_tareas").modal('show');
     var input_id = document.getElementById("riesgo_id_ta");
     input_id.value = id_riesgo;
 
 };
 
-  function construir_select_respuesta_for_tareas(id_riesgo){    
+  function construir_select_respuesta_for_tareas(id_riesgo){  
+    let tab_nueva_tarea = document.getElementById('tab_nueva_tarea');
+      tab_nueva_tarea.removeAttribute("hidden");
+    let letrero_nueva_tarea = document.getElementById('letrero_nueva_tarea');
+      letrero_nueva_tarea.setAttribute("hidden", "true");  
     let respuestas_body = document.getElementById('respuesta_id');
     respuestas_body.innerHTML = "";
     let key = 'riesgo_'+id_riesgo;
@@ -733,8 +725,41 @@
         opcion.setAttribute("value", respuestas[i]["respuesta_id"]);
         respuestas_body.appendChild(opcion);
       }
+    }else{
+      let tab_nueva_tarea = document.getElementById('tab_nueva_tarea');
+        tab_nueva_tarea.setAttribute("hidden", "true");
+      let letrero_nueva_tarea = document.getElementById('letrero_nueva_tarea');
+        letrero_nueva_tarea.removeAttribute("hidden");
     }
+    
   }
+
+   function construir_listado_tareas(id_riesgo) {
+    let tareas_riesgo = document.getElementById('tareas_riesgo');
+    tareas_riesgo.innerHTML = "";
+    let key = 'riesgo_'+id_riesgo;
+   
+    if(lista_tareas.hasOwnProperty(key)){   
+      let tareas = lista_tareas[key];
+      for (var i = 0; i < tareas.length; i++) {
+        let tarea = tareas[i];
+        let temp = '<tr><td>'+tarea["tarea_nombre"]+'</td><td>'+tarea["tarea_descripcion"]+'</td><td><button type="button" class="btn btn-default" data-toggle="#modal_eliminar" onclick="abrir_modal_editar_tarea(\''+tarea["tarea_id"]+'\', \''+tarea["tarea_nombre"]+'\', \''+tarea["tarea_descripcion"]+'\')" data-target="#modal_eliminar"><i class="fa fa-edit"></i></button><button type="button" class="btn btn-danger" data-toggle="#modal_eliminar" onclick="abrir_modal_editar_tarea(\''+tarea["tarea_id"]+'\', \''+tarea["tarea_nombre"]+'\',\''+tarea["tarea_descripcion"]+'\')" data-target="#modal_eliminar"><i class="fa fa-trash-o danger"></i></button></td></tr>';       
+        let gg = $.parseHTML(temp) 
+        $(tareas_riesgo).append(gg);
+      }
+    }else{
+      let tr = document.createElement("tr");   
+      let td_nombre = document.createElement("td");
+      let td_descripcion = document.createElement("td");
+      let td_acciones = document.createElement("td");
+      td_nombre.appendChild(document.createTextNode("No cuentas con tareas asociadas a este riesgo.")); 
+      tr.appendChild(td_nombre);
+      tr.appendChild(td_descripcion);
+      tr.appendChild(td_acciones);    
+      tareas_riesgo.appendChild(tr);  
+    }  
+  }
+
 
 function abrir_modal_eliminar_tarea(id_tarea, nombre_tarea) {                
     $("#modal_eliminar_tarea").modal('show');
@@ -760,11 +785,82 @@ function abrir_modal_editar_tarea(id_tarea, nombre_tarea, descripcion) {
 // ./Funciones para el modal de tareas
 //////////////////////////////////////////////
 
-  function abrir_modal_recursos(id_riesgo) {                
+
+//////////////////////////////////////////////
+// ./Funciones para el modal de recursos
+//////////////////////////////////////////////
+  function abrir_modal_recursos(id_riesgo) {    
+    construir_select_tareas_for_recursos(id_riesgo);
+    construir_listado_recursos(id_riesgo);
     $("#modal_recursos").modal('show');
     var input_id = document.getElementById("riesgo_id_re");
     input_id.value = id_riesgo;
+    cantidad_recursos
 };
+
+  
+  function construir_select_tareas_for_recursos(id_riesgo){  
+    let recurso_form_nuevo = document.getElementById("recurso_form_nuevo");
+    let recurso_letrero_uno = document.getElementById("recurso_letrero_uno");
+    let recurso_letrero_dos = document.getElementById("recurso_letrero_dos");
+    recurso_form_nuevo.removeAttribute("hidden");
+    recurso_letrero_uno.setAttribute("hidden", "true");
+    recurso_letrero_dos.setAttribute("hidden", "true");
+    //Primero valido si el proyecto tiene recursos
+    console.log(cantidad_recursos);
+    if(cantidad_recursos <= 0){
+      recurso_form_nuevo.setAttribute("hidden", "true");
+      recurso_letrero_uno.removeAttribute("hidden");
+    }else{    
+      let select_tarea = document.getElementById("tarea_id");
+      select_tarea.innerHTML = "";
+      let key = 'riesgo_'+id_riesgo;
+     
+      if(lista_tareas.hasOwnProperty(key)){   
+        let tareas = lista_tareas[key];
+        for (var i = 0; i < tareas.length; i++) {
+          let opcion = document.createElement("option");
+          opcion.appendChild(document.createTextNode(tareas[i]["tarea_nombre"]));
+          opcion.setAttribute("value", tareas[i]["tarea_id"]);
+          select_tarea.appendChild(opcion);
+        }
+      }else{
+        recurso_form_nuevo.setAttribute("hidden", "true");
+        recurso_letrero_dos.removeAttribute("hidden");
+      }
+    }
+  }
+
+
+function construir_listado_recursos(id_riesgo) {
+    let listado_recursos = document.getElementById('listado_recursos');
+    listado_recursos.innerHTML = "";
+    let key = 'riesgo_'+id_riesgo;
+   
+    if(lista_tareas.hasOwnProperty(key)){   
+      let tareas = lista_tareas[key];
+      for (var i = 0; i < tareas.length; i++) {
+        let tarea = tareas[i];
+        for(let j = 0; j < tarea["recursos"].length; j++){
+          let recurso = tarea["recursos"][j];
+          let temp = '<tr><td>'+tarea["tarea_nombre"]+'</td><td>'+recurso["recurso_nombre"]+'</td><td>'+recurso["cantidad"]+'</td><td><button type="button" class="btn btn-danger" data-toggle="#modal_eliminar" onclick="abrir_modal_desvincular_recurso(\''+recurso["recurso_id"]+'\', \''+recurso["recurso_nombre"]+'\', \''+tarea["tarea_nombre"]+'\', \''+tarea["tarea_id"]+'\')" data-target="#modal_eliminar"><i class="fa fa-trash-o danger"></i></button></td></tr>';
+        let gg = $.parseHTML(temp) 
+        $(listado_recursos).append(gg);
+        }
+      }
+    }else{
+      let tr = document.createElement("tr");   
+      let td_nombre = document.createElement("td");
+      let td_descripcion = document.createElement("td");
+      let td_acciones = document.createElement("td");
+      td_nombre.appendChild(document.createTextNode("No cuentas con tareas asociadas a este riesgo.")); 
+      tr.appendChild(td_nombre);
+      tr.appendChild(td_descripcion);
+      tr.appendChild(td_acciones);    
+      listado_recursos.appendChild(tr);  
+    }  
+  }
+          
 
   function abrir_modal_desvincular_recurso(id_recurso, nombre_recurso, nombre_tarea, id_tarea) {               
     $("#modal_desvincular_recurso").modal('show');

@@ -1193,17 +1193,16 @@ def get_data_planificar_respuesta(proyecto_id: int):
     lista_recursos = recurso_controller.listar_recursos(proyecto_id)
     tarea_controller = TareaController()
     # Tareas por acciones por riesgo del proyecto
-    lista_tareas = tarea_controller.listar_tareas(proyecto)
-    # Recursos por tareas por acciones por riesgo del proyecto
-    recursos_tareas = recurso_controller.listar_recursos_tareas(proyecto)
+    lista_tareas = dumps(tarea_controller.listar_tareas_group_by_riesgo(proyecto))
 
+    #respuestas_sugeridas = dumps(respuesta_controller.obtener_respuestas_sugeridas(proyecto_id))
+    print(lista_recursos)
     return dict(
         proyecto=proyecto,
         lista_riesgos=lista_riesgos,
         respuestas_riesgo=respuestas_riesgo,
         lista_recursos=lista_recursos,
         lista_tareas=lista_tareas,
-        recursos_tareas=recursos_tareas
     )
 
 

@@ -265,6 +265,7 @@ class Tarea(models.Model):
     tarea_descripcion = models.TextField()
     proyecto_has_riesgo = models.ForeignKey(ProyectoHasRiesgoRespuesta, models.DO_NOTHING, related_name="%(class)s_riesgo")
     riesgo_has_respuesta = models.ForeignKey(ProyectoHasRiesgoRespuesta, models.DO_NOTHING,  related_name="%(class)s_respuesta")
+    riesgo_id = str()
 
     class Meta:
         managed = False
