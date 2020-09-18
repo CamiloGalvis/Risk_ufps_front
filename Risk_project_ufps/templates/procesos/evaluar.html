@@ -11,6 +11,7 @@
   table, th, td {
     border-top: 1px solid black !important;
     border: 1px solid black;
+    
   }
   td { 
     width: 50px !important;
@@ -244,8 +245,41 @@
         columnas[j].appendChild(document.createTextNode("i_"+ii));        
         columnas[j].setAttribute("style", "background-color:"+get_rango(p*ii)+";");
       }
-    }   
+    }
+
   }
+
+  function llenar_encabezado(impactos, probabilidades){
+    let matriz_calor = document.getElementById('matriz_calor');
+    let filas = matriz_calor.getElementsByTagName("tr");    
+    console.log(filas);
+    let columnas = filas[0].getElementsByTagName("td");
+    columnas[0].appendChild(document.createTextNode("Impacto / Probabilidad"));
+    columnas[0].setAttribute("style", "background-color:#F6F4F3 ; font-weight:bold;"); 
+    let aux=probabilidades.length;
+    for (let i = 0; i < 1; i++) {
+      let columnas = filas[i].getElementsByTagName("td");
+      for (let j = 1; j < columnas.length; j++) {
+        columnas[j].appendChild(document.createTextNode(""+impactos[j-1]["nombre"]));             
+        columnas[j].setAttribute("style", "background-color:#F6F4F3; font-weight:bold;");
+      }
+    }
+    for (let i = 1; i < filas.length; i++) {
+      let columnas = filas[i].getElementsByTagName("td");      
+      for (let j = 0; j < 1; j++) {
+        columnas[j].appendChild(document.createTextNode(""+probabilidades[aux-1]["nombre"]));            
+        columnas[j].setAttribute("style", "background-color:#F6F4F3; font-weight:bold;");
+        aux = aux-1;
+      }
+    }
+
+
+  }
+
+
+
+
+
 
   function ordenarMenoraMayor(mi_array) {      
     return mi_array.sort(function(a, b){return a-b});
@@ -453,6 +487,7 @@ function construir_tabla_clasificacion_riesgos(){
   $(function() {
     construir_matriz_calor(valores["impactos"].length + 1, valores["probabilidades"].length + 1);
     llenar_matriz_calor(valores["impactos_valores"], valores["probabilidades_valores"]);
+    llenar_encabezado(valores["impactos"], valores["probabilidades"]);
     construir_tabla_riesgos(riesgos);
     construir_tabla_clasificacion_riesgos();
     $("#example").DataTable({
