@@ -12,7 +12,7 @@
     border-top: 1px solid black !important;
     border: 1px solid black;
   }
-  td {
+  td { 
     width: 50px !important;
     height: 50px !important;   
   }
@@ -53,31 +53,46 @@
       {% endif %}
     </section>
     <section class="content">
-      <div class="box box-default">
+
+      <div class="box">
+        <div class="box-group" id="accordion">
+          <div class="panel box box-primary">
+            <div class="box-header with-border">
+              <h4 class="box-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" style="color:#444444";>
+                  <label data-toggle="tooltip" data-placement="top" title="Presione aqui para ver mas información del proceso y generar su informe."><strong>Informe Evaluar Riesgos Proyecto {{ proyecto.proyecto_nombre }} <i class="fa fa-sort-desc"></i></strong></label>
+                  
+                </a>
+              </h4>
+            </div>
+            <div id="collapseThree" class="panel-collapse collapse">
+              <div class="box-body">
+                  Este proceso permite establecer un peso que de soporte para la priorización de acciones de respuesta y asignaciones de responsabilidades. La evaluación de riesgos se lleva a cabo mediante un análisis cualitativo de riesgos, para evaluar la probabilidad de ocurrencia e impacto de dichos riesgos.                  
+                <a href="/mi_proyecto/{{ proyecto.proyecto_id }}/generar_informe_evaluar/">Generar informe</a>
+             </div>
+           </div>
+         </div>
+       </div>
+     </div>
+
+      <div class="box box-primary">
         <div class="box-header with-border">
-          <h3 class="box-title"><strong>Informe Evaluar Riesgos Proyecto {{ proyecto.proyecto_nombre }}</strong></h3>
-        </div>
-        <div class="box-body">
-          Aqui deberia ir la información del proyecto.
-          <a href="/mi_proyecto/{{ proyecto.proyecto_id }}/generar_informe_evaluar/">Generar informe</a>
-        </div>
-      </div>
-            <div class="box box-default">
-        <div class="box-header with-border">
-          <h3 class="box-title"><strong>Evaluar Riesgos Proyecto {{ proyecto.proyecto_nombre }}</strong></h3>
+          <h3 class="box-title">
+            <label data-toggle="tooltip" data-placement="top" title="En esta sección podrá evaluar los riesgos del proyecto."><strong>Evaluar Riesgos Proyecto {{ proyecto.proyecto_nombre }}</strong></label>
+          </h3>
         </div>
         <div class="box-body">
           <table id="example" class="table table-bordered table-striped dataTable" style="width:100%">
             <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>
-                      <label data-toggle="tooltip" data-placement="top" title="Consecuencias que puede ocasionar al proyecto la materialización del riesgo">Impacto</label>
-                    </th>
-                    <th>
-                      <label data-toggle="tooltip" data-placement="top" title="Posibilidad de ocurrencia del riesgo">Probabilidad</label>
-                    </th>
-                    <th>
+              <tr>
+                <th>Nombre</th>
+                <th>
+                  <label data-toggle="tooltip" data-placement="top" title="Consecuencias que puede ocasionar al proyecto la materialización del riesgo">Impacto</label>
+                </th>
+                <th>
+                  <label data-toggle="tooltip" data-placement="top" title="Posibilidad de ocurrencia del riesgo">Probabilidad</label>
+                </th>
+                <th>
                       <label data-toggle="tooltip" data-placement="top" title="Resultado de multiplicar probabilidad por impacto.">Nivel</label>
                     </th>
                     <th>
@@ -109,10 +124,15 @@
         </table>
         </div>
         <div class="box-footer">
-          <button class="btn btn-info pull-right" onclick="actualizar_valores();">Confirmar</button>
+          <button class="btn btn-primary pull-right" onclick="actualizar_valores();">Confirmar</button>
         </div>
       </div>
-      <div class="box box-default">
+      <div class="box box-primary">
+        <div class="box-header with-border">
+          <h3 class="box-title">
+            <label data-toggle="tooltip" data-placement="top" title="En esta sección podrá visualizar la matriz de probabilidad e impacto con la distribución de los riesgos del proyecto."><strong>Matriz de Probabilidad e Impacto Proyecto {{ proyecto.proyecto_nombre }}</strong></label>
+          </h3>
+        </div>
         <div class="box-body">
           <div class="row justify-content-md-center">
             <div class="col col-lg-2"></div>

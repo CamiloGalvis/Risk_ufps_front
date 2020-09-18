@@ -49,6 +49,19 @@ class ProyectoHasRiesgo_RespuestaDao():
         finally:
             return respuesta
 
+    def actualizar_fecha_respuesta(self, proyecto_respuesta, fecha):
+      with closing(connection.cursor()) as cursor:
+            sql = 'UPDATE riesgos_bd.proyecto_has_riesgo_respuesta SET fecha_inicio_respuesta = %s' \
+                  'WHERE proyecto_has_id = %s ' \
+                  'AND respuesta_has_id = %s'
+            cursor.execute(
+                sql,
+                [fecha, proyecto_respuesta.proyecto_has_id,
+                 proyecto_respuesta.respuesta_has_id],
+            )
+
+            
+
     def eliminar(self, proyecto_has_riesgo, riesgo_has_respuesta):
         """
 

@@ -46,6 +46,10 @@ class RespuestaController():
         p_r_r= ProyectoHasRiesgo_RespuestaDao()
         return p_r_r.get_riesgo_respuesta_by_id(proyecto_riesgo, riesgo_respuesta)
 
+    def actualizar_fecha_respuesta(self, proyecto_respuesta, fecha):
+        p_r_r= ProyectoHasRiesgo_RespuestaDao()
+        return p_r_r.actualizar_fecha_respuesta(proyecto_respuesta, fecha)
+
     def desasociar_respuesta_riesgo_by_proyecto(self, respuesta_id, riesgo_id, proyecto_id):
 
         proyecto_has_riesgo_dao = ProyectoHasRiesgoDao()
@@ -88,9 +92,14 @@ class RespuestaController():
 
     def get_datetime(self, now):
         try:
-            return now.strftime("%d/%m/%Y")
-        except Exception:
+
+            date_time = now.strftime("%d/%m/%Y")
+            
+        except Exception as e:
             return None
+        
+        return date_time
+
 
 
     def obtener_respuestas_sugeridas(self, proyecto_id: int):

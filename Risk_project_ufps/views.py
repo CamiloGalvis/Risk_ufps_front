@@ -1300,6 +1300,19 @@ def asociar_respuesta_sugeridas(request, proyecto_id):
 
     return planificar_respuestas(request, proyecto_id)
 
+def editar_respuesta_planificar(request, proyecto_id):
+    if request.method == 'POST':
+        riesgo_controller = RiesgoController()
+        respuesta_controller = RespuestaController()
+        respuesta = respuesta_controller.obtener_respuesta(request.POST["respuesta_id"])
+        riesgo = riesgo_controller.obtener_riesgo(request.POST["riesgo_id"])       
+        mensaje_editar = respuesta_controller.editar_respuesta(respuesta, request.POST["respuesta_nombre"], request.POST["respuesta_descripcion"])
+        proyecto_riesgo = riesgo_controller.get_riesgo_by_proyecto(proyecto_id, riesgo.riesgo_id)
+        riesgo_respuesta = respuesta_controller.obtener_respuesta_riesgo(riesgo.riesgo_id, respuesta.respuesta_id)        
+        respuesta_proyecto = respuesta_controller.get_riesgo_respuesta_by_id( proyecto_riesgo, riesgo_respuesta)
+        print(respuesta_proyecto)
+        mensaje_editar = respuesta_controller.actualizar_fecha_respuesta(respuesta_proyecto, request.POST["respuesta_fecha_inicio"])
+    return planificar_respuestas(request, proyecto_id)
 
 def desasociar_respuesta_riesgo(request, proyecto_id):
     if request.method == 'POST':
