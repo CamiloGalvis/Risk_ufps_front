@@ -26,6 +26,10 @@ class TareaController():
 		tarea_dao = TareaHasRecursoDao()
 		return tarea_dao.eliminar_recurso_tarea(tarea_recurso)
 
+	def eliminar_recurso_tarea_2(self, recurso_id, tarea_id):
+		tarea_dao = TareaHasRecursoDao()
+		return tarea_dao.eliminar_recurso_tarea_2(recurso_id, tarea_id)
+
 	def listar_tareas(self, proyecto):
 		tarea_dao = TareaDao()
 		return tarea_dao.listar_tareas(proyecto)

@@ -74,7 +74,7 @@
 	             <tr>
 	             	<td></td>
 	              <td>{{ riesgo.riesgo_nombre }}</td>
-                <td><small class="label label-danger"></i>Muy riesgoso</small> </td>
+                <td class="riesgo_rango" id="riesgo_rango_{{ riesgo.riesgo_id }}" value="{{ riesgo.riesgo_id }}">{{ riesgo.riesgo_id }}</td>
 	              <td> 
 	                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-respuestas" onclick="abrir_modal_respuestas('{{ riesgo.riesgo_id }}')"><i   class="fa fa-edit"></i></button>
 	              </td>	             
@@ -271,7 +271,7 @@
                     <label>Recurso</label>
                     {% if lista_recursos %}
                     
-                    <select class="form-control select2" id="recurso_id" name="recurso_id">
+                    <select class="form-control select2"  id="recurso_id" name="recurso_id">
                     {% for recurso in lista_recursos %}    
                       <option value="{{ recurso.recurso_id }}">
                        {{ recurso.recurso_nombre }}
@@ -306,7 +306,7 @@
        </div><!-- /.box-body -->
        <div class="callout callout-warning" id="recurso_letrero_uno" >
         <h4>Notificación</h4>
-        Este proyecto no cuenta con recursos para poder asignar.      
+        Este proyecto no cuenta con recursos para poder asignar. <b>Registre sus recursos <a href="/recursos/{{proyecto.proyecto_id}}/">aqui</a></b>      
       </div>
       <div class="callout callout-warning" id="recurso_letrero_dos" hidden="true">
         <h4>Notificación</h4>
@@ -381,16 +381,17 @@
           <div class="chart tab-pane" id="respuesta_sugerida" style="position: relative; height: 300px; overflow-y: scroll;">
 
            <div class="box-body">
-
-            <table id="tabla2" class="table table-bordered table-striped">
+            <form action="/mi_proyecto/{{proyecto.proyecto_id}}/asociar_respuesta_sugeridas/" method="post">
+              {% csrf_token %}
+              <table id="tabla2" class="table table-bordered table-striped">
               <thead>
                 <tr>
+                  <th></th>
                   <th>Respuesta</th>
-                  <th>Descripción</th>                  
-                  <th>Acciones</th>                    
+                  <th>Descripción</th>                                  
                 </tr>
               </thead>
-              <tbody id="respuestas_body">                 
+              <tbody id="respuestas_sugeridas_body">                 
                 <tr>
                   <td>No cuentas con respuestas sugeridas para este riesgo.</td>
                   <td></td> 
@@ -399,14 +400,27 @@
               </tbody>
               <tfoot>
                 <tr>
+                  <th></th>
                   <th>Respuesta</th>
-                  <th>Descripción</th>                  
-                  <th>Acciones</th>      
+                  <th>Descripción</th>                                    
                 </tr>
               </tfoot>
-            </table>
+              </table>
+              <input type="text" name="riesgo_id_rta" id="riesgo_id_rta" hidden="true"/>
+               <div class="form-group">
+                <div class="row no-print">
+                  <div class="col-md-11">   
+                    <button type="submit" class="btn btn-success pull-right">
+                      <i class="fa fa-plus"></i>
+                      Agregar
+                    </button>   
+                  </div>
+                </div>
+                <br>
+              </div>
+            </form>
           </div>  
-
+         
         </div>
         <div class="chart tab-pane" id="nueva_respuesta" style="position: relative; height: 300px;">
          <div class="box-body">
@@ -457,6 +471,41 @@
 <!-- /.modal-dialog -->
 </div>
 <!-- /modal respuestas -->
+
+
+<!-- modal eliminar respuesta -->
+  <div class="modal modal-danger fade" id="modal_eliminar_respuesta" >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title"> Eliminar </h4>
+          </div>
+          <form  action="/mi_proyecto/{{ proyecto.proyecto_id }}/desasociar_respuesta_riesgo/" method="post">
+            {% csrf_token %}
+          <div class="modal-body">
+            <p id="contenido_modal_respuesta">&hellip;</p>
+            <h2 id="nombre_modal_respuesta"></h2>
+            <input type="text" class="form-control" id="respuesta_id_eliminar" name="respuesta_id_eliminar" style="visibility: hidden;" />         
+            <input type="text" class="form-control" id="riesgo_id_eliminar" name="riesgo_id_eliminar" style="visibility: hidden;" />      
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Cerrar</button>
+            <button type="submit" class="btn btn-outline">Eliminar</button>
+          </div>
+          </form>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+    </div>
+<!-- /. modal eliminar respuesta -->
+
+
+
+
+
 
 <!-- /.modal-eliminar tarea -->
 
@@ -548,8 +597,8 @@
           <div class="modal-body">
             <p id="contenido_modal_recurso">&hellip;</p>
             <h2 id="nombre_recurso"></h2>
-            <input type="text" class="form-control" id="recurso_id_e" name="recurso_id" style="visibility:hidden" >
-            <input type="text" class="form-control" id="tarea_id_e_r" name="tarea_id" style="visibility:hidden">            
+            <input type="text" class="form-control" id="recurso_id_e" name="recurso_id" style="visibility: hidden;" >
+            <input type="text" class="form-control" id="tarea_id_e_r" name="tarea_id" style="visibility: hidden; ">            
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Cerrar</button>
@@ -586,10 +635,89 @@
   var lista_tareas = JSON.parse("{{lista_tareas|escapejs}}");  
   console.log(lista_tareas);
 
+  //Contiene los riesgos junto con sus respuestas sugeridas
+  var respuestas_sugeridas = JSON.parse("{{respuestas_sugeridas|escapejs}}");
+  console.log("respuestas");
+  console.log(respuestas_sugeridas);
+
   //Contiene la cantidad de recursos que tiene el proyecto.
   //Con esta variable puedo controlar el tipo de mensaje
   //en el modal de nuevo recursos
   var cantidad_recursos = parseInt("{{lista_recursos|length}}", 10);
+
+  //Son los colores de la evaluacion
+  var rangos_riesgos = JSON.parse("{{rangos|escapejs}}");  
+  console.log(rangos_riesgos);
+
+  var riesgos_evaluados = JSON.parse("{{riesgos_evaluados|escapejs}}");  
+  console.log("riesgos_evaluados", riesgos_evaluados);
+
+  var valores = JSON.parse("{{valores|escapejs}}");
+  console.log(valores);
+
+  function pintar_rangos_riesgos() {
+    let riesgos = document.getElementsByClassName("riesgo_rango");
+    console.log("hola", riesgos);
+    for (let i = 0; i < riesgos.length; i++) {  
+      riesgo_id = riesgos[i].innerText;
+      riesgos[i].innerHTML ="";
+      let key = 'riesgo_' + riesgo_id;
+      if(riesgos_evaluados.hasOwnProperty(key)){
+        impacto_id = riesgos_evaluados[key]['impacto_id'];
+        probabilidad_id = riesgos_evaluados[key]['propabilidad_id'];
+        impacto_escala = get_escala_by_impacto_id(impacto_id);
+        probabilidad_escala = get_escala_by_probabilidad_id(probabilidad_id);
+        evaluacion = impacto_escala * probabilidad_escala;
+        rango = get_rango(evaluacion);        
+        let temp = '<small class="label" style="background-color:'+rango[0]+';"></i>'+rango[1]+'</small>';
+        let gg = $.parseHTML(temp) 
+        $("#riesgo_rango_"+riesgo_id).append(gg);
+      }
+    }
+  }
+
+  function get_escala_by_impacto_id(impacto_id) {
+    impactos = valores['impactos'];
+    escala = 0;
+    for (let i = 0; i < impactos.length; i++) {
+      if(impactos[i]['id'] == impacto_id){
+        escala = impactos[i]['escala'];
+        break;
+      }
+    }
+    return escala;
+  }
+
+  function get_escala_by_probabilidad_id(probabilidad_id) {
+    probabilidades = valores['probabilidades'];
+    escala = 0;
+    for (let i = 0; i < probabilidades.length; i++) {
+      if(probabilidades[i]['id'] == probabilidad_id){
+        escala = probabilidades[i]['escala'];
+        break;
+      }
+    }
+    return escala;
+  }
+
+  function get_rango(valor){
+    color = 0;
+    nombre = "";
+    n = rangos_riesgos.length;
+    for (let i = 0; i < n - 1; i++) {
+      let rango = rangos_riesgos[i]["rango"];
+      if(valor >= rango[0] && valor <= rango[1] ){      
+        color = rangos_riesgos[i]["color"];
+        nombre = rangos_riesgos[i]["nombre"];
+        break;
+      }
+    }
+    if(color == 0){
+      color = rangos_riesgos[n-1]["color"];
+      nombre = rangos_riesgos[n-1]["nombre"];      
+    }
+    return [color, nombre];
+  }
 
 	$(document).ready(function() {
 	    var t = $("#tabla_riesgos").DataTable({
@@ -632,6 +760,7 @@
       Este segmento permite activar los subtitulos para todos los elementos del documento
     */    
     $('[data-toggle="tooltip"]').tooltip();
+    pintar_rangos_riesgos();
 	});
 ////////////////////////////////////////////
 // Funciones del modal acciones de respuesta
@@ -640,11 +769,20 @@
 
   function abrir_modal_respuestas(id_riesgo) { 
     construir_listado_respuesta(id_riesgo);  
+    construir_respuestas_sugeridas(id_riesgo);
+    $("#riesgo_id_rta").val(id_riesgo);
     $("#modal_respuestas").modal('show');
     var input_id = document.getElementById("riesgo_id_r");
     input_id.value = id_riesgo;  
   };
 
+  function abrir_modal_eliminar_respuesta(riesgo_id, respuesta_id, nombre) {        
+    $("#modal_eliminar_respuesta").modal('show');
+    document.getElementById("contenido_modal_respuesta").innerHTML = "Estas seguro que desea eliminar este rec.";
+    document.getElementById("nombre_modal_respuesta").innerHTML = " "+nombre;
+    $("#respuesta_id_eliminar").val(respuesta_id);
+    $("#riesgo_id_eliminar").val(riesgo_id);    
+  }
 
   function construir_listado_respuesta(id_riesgo) {
     let respuestas_body = document.getElementById('respuestas_body');
@@ -665,9 +803,9 @@
         let boton = document.createElement("button");
         boton.setAttribute("type", "button");
         boton.setAttribute("class", "btn btn-danger");
-        boton.setAttribute("data-toggle", "#modal_eliminar");//NO SE LE OLVIDE CAMBIAR EL MODAL
-        boton.setAttribute("onclick", "abrir_modal_eliminar('"+respuestas[i]["respuesta_nombre"]+"', '"+respuestas[i]["respuesta_id"]+"')" );
-        boton.setAttribute("data-target", "#modal_eliminar");//NO SE LE OLVIDE CAMBIAR EL MODAL
+        boton.setAttribute("data-toggle", "#modal_eliminar_respuesta");//NO SE LE OLVIDE CAMBIAR EL MODAL
+        boton.setAttribute("onclick", "abrir_modal_eliminar_respuesta('"+id_riesgo+"','"+respuestas[i]["respuesta_id"]+"', '"+respuestas[i]["respuesta_nombre"]+"')" );
+        boton.setAttribute("data-target", "#modal_eliminar_respuesta");//NO SE LE OLVIDE CAMBIAR EL MODAL
         let mi_icon = document.createElement("i");
         mi_icon.setAttribute("class", "fa fa-trash-o danger")
         boton.appendChild(mi_icon);
@@ -691,6 +829,79 @@
     }  
   }
 
+  function construir_respuestas_sugeridas(id_riesgo){
+    let respuestas_body = document.getElementById('respuestas_sugeridas_body');
+    respuestas_body.innerHTML = "";
+    let key = 'riesgo_'+id_riesgo;
+   
+    if(respuestas_sugeridas.hasOwnProperty(key)){   
+      let respuestas = respuestas_sugeridas[key];
+      if(respuestas.length > 0){              
+        for (var i = 0; i < respuestas.length; i++) {
+          if (validar_nombre_respuesta_repetida(id_riesgo, respuestas[i]["respuesta_nombre"]) == false){        
+            let tr = document.createElement("tr");   
+            let td_input = document.createElement("td");
+            let td_nombre = document.createElement("td");
+            let td_descripcion = document.createElement("td");
+
+            let input = document.createElement("input");
+            input.setAttribute("type", "checkbox");
+            input.setAttribute("value", respuestas[i]["respuesta_id"]);
+            input.setAttribute("name", "respuesta_sugerida_"+respuestas[i]["respuesta_id"]);
+            td_input.appendChild(input);
+            td_nombre.appendChild(document.createTextNode(respuestas[i]["respuesta_nombre"]));
+            td_descripcion.appendChild(document.createTextNode(respuestas[i]["respuesta_descripcion"]));      
+                     
+            tr.appendChild(td_input);
+            tr.appendChild(td_nombre);
+            tr.appendChild(td_descripcion);
+      
+            respuestas_body.appendChild(tr);
+          }
+        }
+      }else{
+        let tr = document.createElement("tr");   
+        let td_acciones = document.createElement("td");
+        let td_nombre = document.createElement("td");
+        let td_descripcion = document.createElement("td");      
+        td_nombre.appendChild(document.createTextNode("No cuentas con respuestas asociadas a este riesgo.")); 
+        tr.appendChild(td_acciones);   
+        tr.appendChild(td_nombre);
+        tr.appendChild(td_descripcion);   
+        respuestas_body.appendChild(tr);  
+      }
+    }else{
+      let tr = document.createElement("tr");   
+      let td_acciones = document.createElement("td");
+      let td_nombre = document.createElement("td");
+      let td_descripcion = document.createElement("td");      
+      td_nombre.appendChild(document.createTextNode("No cuentas con respuestas asociadas a este riesgo.")); 
+      tr.appendChild(td_acciones);   
+      tr.appendChild(td_nombre);
+      tr.appendChild(td_descripcion);   
+      respuestas_body.appendChild(tr);  
+    }  
+  }
+
+  /*
+   * El objetivo es verificar que no aparezcan respuestas sugeridas con el mismo nombre
+   * de respuestas ya asignadas. Esto no es un error, simplemente es un efecto colateral de 
+   * duplicar las respuestas para que queden independientes
+   */
+  function validar_nombre_respuesta_repetida(id_riesgo, respuesta_nombre){
+    let flag = false;
+    let key = 'riesgo_'+id_riesgo;
+    if(respuestas_riesgo.hasOwnProperty(key)){   
+      let respuestas = respuestas_riesgo[key];
+      for (let i = 0; i < respuestas.length; i++) {
+        if(respuestas[i]["respuesta_nombre"] == respuesta_nombre){
+          flag = true;
+          break;
+        }
+      }
+    }
+    return flag;
+  }
 ////////////////////////////////////////////////
 // ./Funciones del modal acciones de respuesta
 ////////////////////////////////////////////////
@@ -737,8 +948,7 @@
    function construir_listado_tareas(id_riesgo) {
     let tareas_riesgo = document.getElementById('tareas_riesgo');
     tareas_riesgo.innerHTML = "";
-    let key = 'riesgo_'+id_riesgo;
-   
+    let key = 'riesgo_'+id_riesgo;   
     if(lista_tareas.hasOwnProperty(key)){   
       let tareas = lista_tareas[key];
       for (var i = 0; i < tareas.length; i++) {
@@ -794,9 +1004,8 @@ function abrir_modal_editar_tarea(id_tarea, nombre_tarea, descripcion) {
     construir_listado_recursos(id_riesgo);
     $("#modal_recursos").modal('show');
     var input_id = document.getElementById("riesgo_id_re");
-    input_id.value = id_riesgo;
-    cantidad_recursos
-};
+    input_id.value = id_riesgo;    
+  }
 
   
   function construir_select_tareas_for_recursos(id_riesgo){  
@@ -836,16 +1045,18 @@ function construir_listado_recursos(id_riesgo) {
     let listado_recursos = document.getElementById('listado_recursos');
     listado_recursos.innerHTML = "";
     let key = 'riesgo_'+id_riesgo;
-   
+
     if(lista_tareas.hasOwnProperty(key)){   
-      let tareas = lista_tareas[key];
+      let tareas = lista_tareas[key];      
       for (var i = 0; i < tareas.length; i++) {
         let tarea = tareas[i];
+
         for(let j = 0; j < tarea["recursos"].length; j++){
+
           let recurso = tarea["recursos"][j];
           let temp = '<tr><td>'+tarea["tarea_nombre"]+'</td><td>'+recurso["recurso_nombre"]+'</td><td>'+recurso["cantidad"]+'</td><td><button type="button" class="btn btn-danger" data-toggle="#modal_eliminar" onclick="abrir_modal_desvincular_recurso(\''+recurso["recurso_id"]+'\', \''+recurso["recurso_nombre"]+'\', \''+tarea["tarea_nombre"]+'\', \''+tarea["tarea_id"]+'\')" data-target="#modal_eliminar"><i class="fa fa-trash-o danger"></i></button></td></tr>';
-        let gg = $.parseHTML(temp) 
-        $(listado_recursos).append(gg);
+          let gg = $.parseHTML(temp); 
+          $(listado_recursos).append(gg);
         }
       }
     }else{

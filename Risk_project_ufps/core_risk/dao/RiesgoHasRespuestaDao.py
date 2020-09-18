@@ -15,7 +15,12 @@ class RiesgoHasRespuestaDao():
 			return "Se registro respuesta exitosamente."
 
 
-	def obtener_respuesta_riesgo(self, riesgo, respuesta):
+	def obtener_respuesta_riesgo(self, riesgo:int, respuesta:int):
+		"""
+
+		:type riesgo: int
+		:type respuesta: int
+		"""
 		riesgo_respuesta = None
 		try:
 			riesgo_respuesta = RiesgoHasRespuesta.objects.get(riesgo_id=riesgo, respuesta_id=respuesta)

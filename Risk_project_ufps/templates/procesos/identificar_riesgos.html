@@ -244,7 +244,7 @@
               <td>
                 <button type="button" class="btn btn-info" data-toggle="modal" onclick="abrir_modal_informacion_riesgo(' {{ riesgo.riesgo_nombre }}', '{{ riesgo.riesgo_causa }}',' {{ riesgo.riesgo_evento }}', ' {{ riesgo.riesgo_efecto }}', '{{ riesgo.riesgo_tipo }}')">&nbsp<i   class="fa fa-info">&nbsp</i>
                 </button>
-                <button type="button" class="btn btn-default" data-toggle="modal" onclick="abrir_modal_editar_riesgo('{{ riesgo.riesgo_id }}',' {{ riesgo.riesgo_nombre }}', '{{ riesgo.riesgo_causa }}',' {{ riesgo.riesgo_evento }}', ' {{ riesgo.riesgo_efecto }}',   '{{ riesgo.riesgo_tipo }}')"><i   class="fa fa-edit"></i>
+                <button type="button" class="btn btn-default" data-toggle="modal" onclick="abrir_modal_editar_riesgo('{{ riesgo.riesgo_id }}','{{ riesgo.riesgo_nombre }}', '{{ riesgo.riesgo_causa }}','{{ riesgo.riesgo_evento }}', '{{ riesgo.riesgo_efecto }}',   '{{ riesgo.riesgo_tipo }}')"><i   class="fa fa-edit"></i>
                 </button>
 
 
@@ -658,8 +658,6 @@
                   <label>Efecto</label>
                   <p id="efecto_riesgo_info"></p>
                 </div>
-                <input type="text" class="form-control" id="riesgo_id_editar" name="riesgo_id_editar" style="visibility:hidden">
-
               </div>
             </div>
             <div class="modal-footer">
@@ -723,7 +721,7 @@
                   <label>Efecto</label>
                   <textarea class="form-control" rows="3"  id="riesgo_efecto" name="riesgo_efecto"></textarea>
                 </div>
-                <input type="text" class="form-control" id="riesgo_id_editar" name="riesgo_id_editar" style="visibility:hidden">
+                <input type="text" class="form-control" id="riesgo_id_editar" name="riesgo_id_editar" style="visibility: hidden;">
 
               </div>
             </div>

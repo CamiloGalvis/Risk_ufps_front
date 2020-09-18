@@ -39,7 +39,6 @@ class ProyectoHasRiesgo_RespuestaDao():
     def get_riesgo_respuesta_by_id(self, proyecto_riesgo, riesgo_respuesta):
         respuesta = None
         try:
-
             respuesta = ProyectoHasRiesgoRespuesta.objects.get(
                 respuesta_has_id=riesgo_respuesta.riesgo_has_respuesta_id,
                 proyecto_has_id=proyecto_riesgo.proyecto_has_riesgo_id)
@@ -49,3 +48,26 @@ class ProyectoHasRiesgo_RespuestaDao():
 
         finally:
             return respuesta
+
+    def eliminar(self, proyecto_has_riesgo, riesgo_has_respuesta):
+        """
+
+        :param proyecto_has_riesgo: ProyectoHasRiesgo
+        :param riesgo_has_respuesta: RiesgoHasRespuesta
+        """
+
+        with closing(connection.cursor()) as cursor:
+            sql = 'DELETE FROM riesgos_bd.proyecto_has_riesgo_respuesta ' \
+                  'WHERE proyecto_has_id = %s ' \
+                  'AND respuesta_has_id = %s'
+            cursor.execute(
+                sql,
+                [proyecto_has_riesgo.proyecto_has_riesgo_id,
+                 riesgo_has_respuesta.riesgo_has_respuesta_id],
+            )
+
+
+
+
+
+
