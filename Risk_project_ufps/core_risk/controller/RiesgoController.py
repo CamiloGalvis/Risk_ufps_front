@@ -91,12 +91,12 @@ class RiesgoController():
         return riesgo_dao.get_riesgos_by_proyecto(proyecto)
 
     def get_riesgos_by_proyecto_2(self, proyecto):
-        """Devuelve todos los riesgos que esten asociados a un riesgo,
-        devuelve como un array de diccionarios
+        """Devuelve todos los riesgos que esten asociados a un proyecto,
+        como un array de diccionarios
         """
         riesgo_dao = RiesgoDao()
         riesgos = riesgo_dao.get_riesgos_by_proyecto(proyecto)
-        return self.raw_queryset_as_values_list(riesgos)
+        return self.raw_queryset_of_riesgos_as_values_list(riesgos)
             
 
     def eliminar_riesgo_by_proyecto(self, riesgo_proyecto):
@@ -161,10 +161,13 @@ class RiesgoController():
             proyecto_has_riesgo_dao.registrar_proyecto_riesgo_editado(proyecto, riesgo_nuevo) 
             return riesgo_nuevo
 
-    def raw_queryset_as_values_list(self, raw_qs):
+    def raw_queryset_of_riesgos_as_values_list(self, raw_qs):
         aux = []
         for row in raw_qs:
-            aux.append(model_to_dict(row))
+            aa = model_to_dict(row)
+            aa["impacto_id"] = row.impacto_id
+            aa["propabilidad_id"] = row.propabilidad_id
+            aux.append(aa)
         return aux
 
 

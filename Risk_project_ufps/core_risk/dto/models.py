@@ -201,7 +201,7 @@ class Respuesta(models.Model):
     respuesta_nombre = models.CharField(max_length=45, blank=True, null=True)
     respuesta_descripcion = models.TextField(blank=True, null=True)
     respuesta_costo = models.FloatField(blank=True, null=True)
-
+    fecha_inicio_respuesta = str()
     class Meta:
         managed = False
         db_table = 'respuesta'
@@ -218,6 +218,8 @@ class Riesgo(models.Model):
     riesgo_uid = models.BigIntegerField(unique=True, blank=True, null=True)
     sub_categoria = models.ForeignKey('SubCategoria', models.DO_NOTHING)
     riesgo_is_proyecto = int()
+    impacto_id = int()
+    propabilidad_id = int()
 
     class Meta:
         managed = False
@@ -263,6 +265,7 @@ class Tarea(models.Model):
     tarea_descripcion = models.TextField()
     proyecto_has_riesgo = models.ForeignKey(ProyectoHasRiesgoRespuesta, models.DO_NOTHING, related_name="%(class)s_riesgo")
     riesgo_has_respuesta = models.ForeignKey(ProyectoHasRiesgoRespuesta, models.DO_NOTHING,  related_name="%(class)s_respuesta")
+    riesgo_id = str()
 
     class Meta:
         managed = False

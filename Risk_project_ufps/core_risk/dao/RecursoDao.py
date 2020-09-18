@@ -3,23 +3,23 @@ from Risk_project_ufps.core_risk.dto.models import *
 class RecursoDao():
     
   def registrar_recurso(self, proyecto, nombre, costo, tipo_recurso):
-  	recurso = Recurso(
-  		  recurso_nombre = nombre,
+    recurso = Recurso(
+        recurso_nombre = nombre,
         recurso_costo = costo,
         tipo_recurso_id = tipo_recurso,
         proyecto = proyecto)
-  	try:
-  		recurso.save()
-  	except Error as e:
-  		print(e)
-  	finally:
-  		return "Se registro un recurso exitosamente."
+    try:
+      recurso.save()
+    except Exception as e:
+      print(e)
+    finally:
+      return "Se registro un recurso exitosamente."
 
   def listar_recursos(self, id):
     recursos = {}
     try:
       recursos = Recurso.objects.filter(proyecto_id=id) 
-    except Error as e:
+    except Exception as e:
       print(e)
     finally:
       return recursos
@@ -28,7 +28,7 @@ class RecursoDao():
     recurso = {}
     try:
       recurso = Recurso.objects.get(recurso_id=id)
-    except Error as e:
+    except Exception as e:
       print(e)
     finally:
       return recurso
@@ -37,7 +37,7 @@ class RecursoDao():
     recurso = recurso
     try:
       recurso.delete()
-    except Error as e:
+    except Exception as e:
       print(e)
     finally:
       return "Se eliminó recurso exitosamente."
@@ -48,7 +48,7 @@ class RecursoDao():
       recurso.recurso_nombre = nombre
       recurso.recurso_costo = costo
       recurso.save()
-    except Error as e:
+    except Exception as e:
       print(e)
     finally:
       return "Se actualizó la información del recurso exitosamente."
@@ -56,8 +56,9 @@ class RecursoDao():
   def listar_recursos_tareas(self, proyecto):
     recursos = {}
     try:
-      recursos = Recurso.objects.raw("SELECT * FROM recurso r INNER JOIN tarea_has_recurso tr ON r.recurso_id=tr.recurso_id INNER JOIN tarea t ON tr.tarea_id = t.tarea_id INNER JOIN proyecto_has_riesgo_respuesta pr ON t.proyecto_has_riesgo_id=pr.proyecto_has_id AND t.riesgo_has_respuesta_id=pr.respuesta_has_id INNER JOIN proyecto_has_riesgo rp ON pr.proyecto_has_id = rp.proyecto_has_riesgo_id WHERE rp.proyecto_id = %s", [proyecto.proyecto_id])
-    except Error as e:
+      sql = "SELECT * FROM recurso r INNER JOIN tarea_has_recurso tr ON r.recurso_id=tr.recurso_id INNER JOIN tarea t ON tr.tarea_id = t.tarea_id INNER JOIN proyecto_has_riesgo_respuesta pr ON t.proyecto_has_riesgo_id=pr.proyecto_has_id AND t.riesgo_has_respuesta_id=pr.respuesta_has_id INNER JOIN proyecto_has_riesgo rp ON pr.proyecto_has_id = rp.proyecto_has_riesgo_id WHERE rp.proyecto_id = %s"
+      recursos = Recurso.objects.raw(sql, [proyecto.proyecto_id])
+    except Exception as e:
       print(e)
     finally:
       return recursos

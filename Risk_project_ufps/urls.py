@@ -32,12 +32,12 @@ urlpatterns = [
     path('eliminar_respuesta/', eliminar_respuesta, name='eliminar_respuesta'),    
     path('editar_respuesta/', editar_respuesta, name='editar_respuesta'),
 
-    #urls tipo de recurso
+    # urls tipo de recurso
     path('tipo_recurso/', tipo_recurso, name='tipo_recurso'),
     path('eliminar_tipo_recurso/', eliminar_tipo_recurso, name='eliminar_tipo_recurso'),
     path('editar_tipo_recurso/', editar_tipo_recurso, name='editar_tipo_recurso'),
 
-    #urls roles equipo de trabajo
+    # urls roles equipo de trabajo
     path('roles_equipo/', roles_equipo, name='roles_equipo'),
     path('nuevo_rol/', nuevo_rol, name='nuevo_rol'),
     path('editar_rol/', editar_rol, name='editar_rol'),
@@ -62,9 +62,9 @@ urlpatterns = [
 
     path('mi_proyecto/<int:proyecto_id>/identificar/asociar_riesgo/', asociar_riesgo, name='asociar_riesgo'),
     path('mi_proyecto/<int:proyecto_id>/generar_informe/', generar_informe_identificar, name='generar_informe_identificar'),
-    path('mi_proyecto/<int:proyecto_id>/generar_informe_planificar/', generar_informe_planificar, name='generar_informe_planificar'),
 
-    path('mi_proyecto/<int:proyecto_id>/evaluar/', evaluar_proyecto, name='evaluar_proyecto'),
+
+
 
 
     #url de recursos
@@ -79,13 +79,21 @@ urlpatterns = [
 
 
     #####################################################
-    ## Planificar proyecto
+    # Planificar proyecto
     #####################################################
     path('mi_proyecto/<int:proyecto_id>/planificar_proyecto/actualizar_definiciones/', actualizar_definiciones_riesgo, name='actualizar_definiciones_riesgo'),
     path('mi_proyecto/<int:proyecto_id>/planificar_proyecto/actualizar_clasificacion_riesgo/', actualizar_clasificacion_riesgo, name='actualizar_clasificacion_riesgo'),
+    path('mi_proyecto/<int:proyecto_id>/generar_informe_planificar/', generar_informe_planificar, name='generar_informe_planificar'),
 
     #####################################################
-    ## Planificar respuestas
+    # Evaluar proyecto
+    #####################################################
+    path('mi_proyecto/<int:proyecto_id>/evaluar/', evaluar_proyecto, name='evaluar_proyecto'),
+    path('mi_proyecto/<int:proyecto_id>/evaluar/actualizar_valores/', actualizar_valores, name='actualizar_valores'),
+    path('mi_proyecto/<int:proyecto_id>/generar_informe_evaluar/', generar_informe_evaluar, name='generar_informe_evaluar'),
+
+    #####################################################
+    # Planificar respuestas
     #####################################################
     path('mi_proyecto/<int:proyecto_id>/planificar_respuestas/', planificar_respuestas, name='planificar_respuestas'),
     path('mi_proyecto/<int:proyecto_id>/nueva_respuesta_planificar/', nueva_respuesta_planificar, name='nueva_respuesta_planificar'),

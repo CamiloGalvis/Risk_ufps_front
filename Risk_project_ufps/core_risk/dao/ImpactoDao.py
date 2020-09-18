@@ -1,4 +1,5 @@
 from Risk_project_ufps.core_risk.dto.models import Impacto
+from Risk_project_ufps.core_risk.dto.models import Proyecto
 
 
 class ImpactoDao:
@@ -43,3 +44,18 @@ class ImpactoDao:
             print(e)
         finally:
             return result
+
+    def obtener_impacto_by_id_and_proyecto(self, impacto_id, proyecto) -> Impacto:
+        """
+
+        :type impacto_id: int
+        :type proyecto: Proyecto
+        """
+        impacto = None
+        try:
+            impacto = Impacto.objects.get(impacto_id=impacto_id, proyecto=proyecto)
+        except Exception as e:
+            raise e
+        finally:
+            return impacto
+

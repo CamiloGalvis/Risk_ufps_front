@@ -29,7 +29,28 @@ class TareaDao():
   def listar_tareas(self, proyecto):
     tareas = {}
     try:
-      tareas = Tarea.objects.raw("SELECT * FROM tarea t INNER JOIN proyecto_has_riesgo_respuesta pr ON t.proyecto_has_riesgo_id=pr.proyecto_has_id AND t.riesgo_has_respuesta_id=pr.respuesta_has_id INNER JOIN proyecto_has_riesgo rp ON pr.proyecto_has_id = rp.proyecto_has_riesgo_id WHERE rp.proyecto_id = %s", [proyecto.proyecto_id])
+      sql = "SELECT t.tarea_id, t.tarea_nombre, t.tarea_descripcion, rp.riesgo_id FROM tarea t " \
+            "INNER JOIN proyecto_has_riesgo_respuesta pr " \
+            "ON t.proyecto_has_riesgo_id=pr.proyecto_has_id " \
+            "AND t.riesgo_has_respuesta_id=pr.respuesta_has_id " \
+            "INNER JOIN proyecto_has_riesgo rp ON pr.proyecto_has_id = rp.proyecto_has_riesgo_id " \
+            "WHERE rp.proyecto_id = %s"
+      tareas = Tarea.objects.raw(sql, [proyecto.proyecto_id])
+    except Exception as e:
+      print(e)
+    finally:
+      return tareas
+
+  def listar_tareas_with_recursos(self, proyecto):
+    tareas = {}
+    try:
+      sql = "SELECT t.tarea_id, t.tarea_nombre, t.tarea_descripcion, rp.riesgo_id FROM tarea t " \
+            "INNER JOIN proyecto_has_riesgo_respuesta pr " \
+            "ON t.proyecto_has_riesgo_id=pr.proyecto_has_id " \
+            "AND t.riesgo_has_respuesta_id=pr.respuesta_has_id " \
+            "INNER JOIN proyecto_has_riesgo rp ON pr.proyecto_has_id = rp.proyecto_has_riesgo_id " \
+            "WHERE rp.proyecto_id = %s"
+      tareas = Tarea.objects.raw(sql, [proyecto.proyecto_id])
     except Exception as e:
       print(e)
     finally:

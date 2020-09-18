@@ -1,4 +1,5 @@
-from Risk_project_ufps.core_risk.dto.models import Propabilidad
+from Risk_project_ufps.core_risk.dto.models import Propabilidad, Proyecto
+
 
 class ProbabilidadDao():
 
@@ -43,5 +44,28 @@ class ProbabilidadDao():
             print(e)
         finally:
             return result
+
+    def obtener_probabilidad_by_id(self, probabilidad_id) -> Propabilidad:
+        """
+        Permite consultar una probabilidad de ocurrencia especifica a partir de su atributo proyecto_id
+
+        :type probabilidad_id: int:
+        """
+        try:
+            return Propabilidad.objects.get(propabilidad_id=probabilidad_id)
+        except Exception as e:
+            print(e)
+            return None
+
+
+
+
+
+
+
+
+
+
+
 
 

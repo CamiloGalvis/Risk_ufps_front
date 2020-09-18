@@ -12,21 +12,9 @@
     border-top: 1px solid black !important;
     border: 1px solid black;
   }
-  td {
+  td { 
     width: 50px !important;
     height: 50px !important;   
-  }
-
-  .bajo {
-    background-color: #138D75; 
-  }
-
-  .medio {
-    background-color: #D68910; 
-  }
-
-  .alto {
-    background-color: #CD5C5C; 
   }
 
 </style>
@@ -65,43 +53,51 @@
       {% endif %}
     </section>
     <section class="content">
-      <div class="box box-default">
+
+      <div class="box">
+        <div class="box-group" id="accordion">
+          <div class="panel box box-primary">
+            <div class="box-header with-border">
+              <h4 class="box-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" style="color:#444444";>
+                  <label data-toggle="tooltip" data-placement="top" title="Presione aqui para ver mas información del proceso y generar su informe."><strong>Informe Evaluar Riesgos Proyecto {{ proyecto.proyecto_nombre }} <i class="fa fa-sort-desc"></i></strong></label>
+                  
+                </a>
+              </h4>
+            </div>
+            <div id="collapseThree" class="panel-collapse collapse">
+              <div class="box-body">
+                  Este proceso permite establecer un peso que de soporte para la priorización de acciones de respuesta y asignaciones de responsabilidades. La evaluación de riesgos se lleva a cabo mediante un análisis cualitativo de riesgos, para evaluar la probabilidad de ocurrencia e impacto de dichos riesgos.                  
+                <a href="/mi_proyecto/{{ proyecto.proyecto_id }}/generar_informe_evaluar/">Generar informe</a>
+             </div>
+           </div>
+         </div>
+       </div>
+     </div>
+
+      <div class="box box-primary">
         <div class="box-header with-border">
-          <h3 class="box-title"><strong>Informe Evaluar Riesgos Proyecto {{ proyecto.proyecto_nombre }}</strong></h3>
-        </div>
-        <div class="box-body">
-          Aqui deberia ir la información del proyecto.
-          <a href="/mi_proyecto/{{ proyecto.proyecto_id }}/generar_informe/">Generar informe</a>
-        </div>
-      </div>
-      <div class="box box-default">
-        <div class="box-header with-border">
-          <h3 class="box-title"><strong>Matriz de Probabilidad e Impacto Proyecto {{ proyecto.proyecto_nombre }}</strong></h3>
-        </div>
-        <div class="box-body">
-          <div class="row">            
-            <div class="col-md-12">
-              <table class="table">
-                <tbody id="matriz_calor">                 
-                </tbody>
-              </table>
-            </div>            
-          </div>
-        </div>
-      </div>
-      <div class="box box-default">
-        <div class="box-header with-border">
-          <h3 class="box-title"><strong>Evaluar Riesgos Proyecto {{ proyecto.proyecto_nombre }}</strong></h3>
+          <h3 class="box-title">
+            <label data-toggle="tooltip" data-placement="top" title="En esta sección podrá evaluar los riesgos del proyecto."><strong>Evaluar Riesgos Proyecto {{ proyecto.proyecto_nombre }}</strong></label>
+          </h3>
         </div>
         <div class="box-body">
           <table id="example" class="table table-bordered table-striped dataTable" style="width:100%">
             <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Impacto</th>
-                    <th>Probabilidad</th>
-                    <th>Nivel</th>
-                    <th>Total</th>
+              <tr>
+                <th>Nombre</th>
+                <th>
+                  <label data-toggle="tooltip" data-placement="top" title="Consecuencias que puede ocasionar al proyecto la materialización del riesgo">Impacto</label>
+                </th>
+                <th>
+                  <label data-toggle="tooltip" data-placement="top" title="Posibilidad de ocurrencia del riesgo">Probabilidad</label>
+                </th>
+                <th>
+                      <label data-toggle="tooltip" data-placement="top" title="Resultado de multiplicar probabilidad por impacto.">Nivel</label>
+                    </th>
+                    <th>
+                      <label data-toggle="tooltip" data-placement="top" title="Resultado de multiplicar probabilidad por impacto">Total</label>
+                    </th>
                 </tr>
             </thead>
             <tbody id="tabla_riesgos">
@@ -111,13 +107,86 @@
             <tfoot>
                 <tr>
                     <th>Nombre</th>
-                    <th>Impacto</th>
-                    <th>Probabilidad</th>
-                    <th>Nivel</th>
-                    <th>Total</th>
+                    <th>
+                      <label data-toggle="tooltip" data-placement="bottom" title="Consecuencias que puede ocasionar al proyecto la materialización del riesgo">Impacto</label>
+                    </th>
+                    <th>
+                      <label data-toggle="tooltip" data-placement="bottom" title="Posibilidad de ocurrencia del riesgo">Probabilidad</label>
+                    </th>
+                    <th>
+                      <label data-toggle="tooltip" data-placement="bottom" title="Resultado de multiplicar probabilidad por impacto.">Nivel</label>
+                    </th>
+                    <th>
+                      <label data-toggle="tooltip" data-placement="bottom" title="Resultado de multiplicar probabilidad por impacto">Total</label>
+                    </th>
                 </tr>
             </tfoot>
         </table>
+        </div>
+        <div class="box-footer">
+          <button class="btn btn-info pull-right" onclick="actualizar_valores();">Confirmar</button>
+        </div>
+      </div>
+      <div class="box box-primary">
+        <div class="box-header with-border">
+          <h3 class="box-title">
+            <label data-toggle="tooltip" data-placement="top" title="En esta sección podrá visualizar la matriz de probabilidad e impacto con la distribución de los riesgos del proyecto."><strong>Matriz de Probabilidad e Impacto Proyecto {{ proyecto.proyecto_nombre }}</strong></label>
+          </h3>
+        </div>
+        <div class="box-body">
+          <div class="row justify-content-md-center">
+            <div class="col col-lg-2"></div>
+            <div class="col-md-8">
+              <table class="table">
+                <tbody id="matriz_calor">                 
+                </tbody>
+              </table>
+            </div>
+            <div class="col col-lg-2"></div>
+          </div>
+          <div class="row justify-content-md-center">
+            <div class="col col-lg-3"></div>
+            <div class="col-md-6">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>
+                      Clasificación del Riesgo
+                    </th>
+                    <th>
+                      Rango de P * I
+                    </th>
+                  </tr>
+                </thead>
+                <tbody id="tabla_clasificacion_riesgos">     
+                  <tr>
+                    <td>
+                      <div class="input-group my-colorpicker2 colorpicker-element">
+                        <div class="input-group-addon" style="background-color:#cdc85c;">
+                          <i></i>
+                        </div>
+                        <div class="form-control" style="border-top: 0px;border-bottom: 0px;border-right: 0px;">
+                          <label>dfd</label>
+                        </div>
+                      </div>
+                    </td>
+                    <td><label>
+                      4-5
+                    </label></td>
+                  </tr>
+                  <tr>
+                    <td>dsf</td>
+                    <td>sdf</td>
+                  </tr>
+                  <tr>
+                    <td>sdf</td>
+                    <td>dsf</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="col col-lg-3"></div>
+          </div>
         </div>
       </div>
   </div>
@@ -129,83 +198,25 @@
 <script src="{% static 'risk_project/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
 
 <script type="text/javascript">
+  //////////////////////////////////////////
+  //  Variables globales
+  /////////////////////////////////////////
   var riesgos = JSON.parse("{{lista_riesgos|escapejs}}");   
-  //console.log(riesgos);
+  console.log(riesgos);
 
-  var rangos_riesgos = [
-    {
-      "posicion":1
-      "nombre":"riesgo_bajo"
-      "rango": [1,4]
-    },
-    {
-      "posicion":2
-      "nombre":"riesgo_moderado"
-      "rango": [5,11]
-    },
-    {
-      "posicion":3
-      "nombre":"riesgo_alto"
-      "rango": [12,25]
-    }
-  ];
-
+  var rangos_riesgos = JSON.parse("{{rangos|escapejs}}");  
 
   var valores = JSON.parse("{{valores|escapejs}}");  
-  /*var valores = {
-    "impactos" : [
-      {
-        "nombre" : "Insignificante",
-        "escala" : 1
-      },
-      {
-        "nombre" : "Menor",
-        "escala" : 2
-      },
-      {
-        "nombre" : "Moderado",
-        "escala" : 3
-      },
-      {
-        "nombre" : "Mayor",
-        "escala" : 4
-      },
-      {
-        "nombre" : "Catastrófico",
-        "escala" : 5
-      }
-    ],
-    "impactos_valores" : [1,2,3,4,5],
-    "probabilidades":[
-      {
-        "nombre" : "Raro",
-        "escala" : 1
-      },
-      {
-        "nombre" : "Improbable",
-        "escala" : 2
-      },
-      {
-        "nombre" : "Moderada",
-        "escala" : 3
-      },
-      {
-        "nombre" : "Probable",
-        "escala" : 4
-      },
-      {
-        "nombre" : "Casi certeza",
-        "escala" : 5
-      }
-    ],
-    "probabilidades_valores" : [1,2,3,4,5],      
-  }*/
 
+  var cambios_riesgos = {};
 
-  function construir_matriz_calor() {
+  const csrftoken = getCookie('csrftoken');
+
+  console.log(rangos_riesgos);
+  console.log(valores);
+
+  function construir_matriz_calor(anchura, altura) {
     let matriz_calor = document.getElementById('matriz_calor');
-    let anchura = 6;
-    let altura = 6;
     for (let i = 0; i < altura ; i++) {
       let tr = document.createElement("tr");
       for (let j = 0; j < anchura; j++) {
@@ -217,8 +228,8 @@
 
   function llenar_matriz_calor(impactos, probabilidades) {
     let matriz_calor = document.getElementById('matriz_calor');
-    let anchura = 6;
-    let altura = 6;
+    let anchura = impactos.length;
+    let altura = probabilidades.length;
     impactos = ordenarMenoraMayor(impactos);
     probabilidades = ordenarMayoraMenor(probabilidades);
 
@@ -230,8 +241,8 @@
         let p = probabilidades[i-1];
         let ii = impactos[j-1];
         columnas[j].appendChild(document.createTextNode("p_"+p));
-        columnas[j].appendChild(document.createTextNode("i_"+ii));
-        columnas[j].setAttribute("class", get_rango(p*ii));
+        columnas[j].appendChild(document.createTextNode("i_"+ii));        
+        columnas[j].setAttribute("style", "background-color:"+get_rango(p*ii)+";");
       }
     }   
   }
@@ -245,20 +256,31 @@
   }
 
   function get_rango(valor){
-    if(valor <= 4 ){
-      return "bajo";
-    }if(valor > 4 && valor <= 11){
-      return "medio"
-    }else{
-      return "alto";
+    color = 0
+    n = rangos_riesgos.length
+    for (let i = 0; i < n - 1; i++) {
+      let rango = rangos_riesgos[i]["rango"];
+      if(valor >= rango[0] && valor <= rango[1] ){      
+        color = rangos_riesgos[i]["color"];
+        break;
+      }
     }
+    if(color == 0){
+      return rangos_riesgos[n-1]["color"];
+    }
+    return color;
   }
 
-  function construir_select_escalas(valores){
+  function construir_select_escalas(tipo, riesgo_id, valores, valor_default){
     let select = document.createElement("select");
+    select.setAttribute("id", "select_"+tipo+"_"+riesgo_id);
+    select.setAttribute("onchange", "ajustar_evaluacion('"+tipo+"', "+riesgo_id+");")
     for (let i = 0; i < valores.length; i++) {
-      let option = document.createElement("option");      
-      option.setAttribute("value", valores[i]["escala"]);
+      let option = document.createElement("option");  
+      if(valores[i]["id"] == valor_default){
+        option.setAttribute("selected", true);      
+      }    
+      option.setAttribute("value", valores[i]["id"]);       
       option.appendChild(document.createTextNode(valores[i]["nombre"]));
       select.appendChild(option);
     }
@@ -269,36 +291,25 @@
     return ((valor * 100)/25);
   }
 
-  function construir_pogress_bar(valor) {
-    let mi_class = "";
-    if(get_rango(valor) == "alto"){
-      mi_class = "danger";
-    }else if(get_rango(valor) == "medio"){
-      mi_class = "yellow";
-    }else{
-      mi_class = "success";
-    }
+  function construir_pogress_bar(valor, riesgo_id) {
+    let mi_class = get_rango(valor);
     let div_1 = document.createElement("div");
-    let div_1_1 = document.createElement("div"); 
+    let div_1_1 = document.createElement("div");
+    div_1_1.setAttribute("id", "barra_"+riesgo_id); 
     div_1.setAttribute("class", "progress progress-xs");
-    div_1_1.setAttribute("class", "progress-bar progress-bar-"+mi_class);
-    div_1_1.setAttribute("style", "width:"+get_porcentaje(valor)+"%;");
+    div_1_1.setAttribute("class", "progress-bar");
+    div_1_1.setAttribute("style", "width:"+get_porcentaje(valor)+"%; background-color:"+mi_class+";");
     div_1.appendChild(div_1_1);
     return div_1;                        
   }
 
-  function construir_letrero(valor){
-    let mi_class = "";
-    if(get_rango(valor) == "alto"){
-      mi_class = "red";
-    }else if(get_rango(valor) == "medio"){
-      mi_class = "yellow";
-    }else{
-      mi_class = "green";
-    }
+  function construir_letrero(valor, riesgo_id){
+    let mi_class = get_rango(valor);
     let span = document.createElement("span");
     span.appendChild(document.createTextNode(valor));
-    span.setAttribute("class", "badge bg-"+mi_class);
+    span.setAttribute("id", "letrero_"+riesgo_id);
+    span.setAttribute("class", "badge");
+    span.setAttribute("style", "background-color:"+mi_class+";")
     return span;
   }
 
@@ -315,10 +326,13 @@
       
 
       td_1.appendChild(document.createTextNode(riesgos[i]["riesgo_nombre"]));
-      td_2.appendChild(construir_select_escalas(valores["impactos"]));
-      td_3.appendChild(construir_select_escalas(valores["probabilidades"]));
-      td_4.appendChild(construir_pogress_bar(5));
-      td_5.appendChild(construir_letrero(5));
+      td_2.appendChild(construir_select_escalas("impacto", riesgos[i]["riesgo_id"], valores["impactos"],riesgos[i]["impacto_id"]));
+      td_3.appendChild(construir_select_escalas("probabilidad", riesgos[i]["riesgo_id"], valores["probabilidades"],riesgos[i]["propabilidad_id"]));
+      let a = get_valor_impacto_id(riesgos[i]["impacto_id"]);
+      let b = get_valor_probabilidad_id(riesgos[i]["propabilidad_id"]);
+      let c = a*b;
+      td_4.appendChild(construir_pogress_bar(c,riesgos[i]["riesgo_id"]));
+      td_5.appendChild(construir_letrero(c,riesgos[i]["riesgo_id"]));
 
       tr.appendChild(td_1);
       tr.appendChild(td_2);
@@ -333,11 +347,114 @@
   }
 
 
+  function ajustar_evaluacion(tipo, riesgo_id) {    
+    let mi_impacto = $("#select_impacto_"+riesgo_id).val();
+    let mi_probabilidad = $("#select_probabilidad_"+riesgo_id).val();
+    let a = get_valor_impacto_id(mi_impacto)
+    let b = get_valor_probabilidad_id(mi_probabilidad);
+    let c = a * b;
+    let barra = document.getElementById("barra_"+riesgo_id);
+    barra.removeAttribute("style")
+    barra.setAttribute("style", "width:"+get_porcentaje(c)+"%; background-color:"+get_rango(c)+";");
+    let letrero = document.getElementById("letrero_"+riesgo_id);
+    letrero.removeAttribute("style");
+    letrero.setAttribute("style", "background-color:"+get_rango(c)+";");
+    letrero.innerHTML = '';
+    letrero.appendChild(document.createTextNode(c));
+    if(tipo == "impacto"){
+      set_cambios_riesgos(tipo, riesgo_id, c, mi_impacto);
+    }else{
+      set_cambios_riesgos(tipo, riesgo_id, c, mi_probabilidad);
+    }
+   
+    console.log(cambios_riesgos);
+  }
+
+  function set_cambios_riesgos(tipo, riesgo_id, valor_nuevo, id) {
+    let key = tipo+"_"+riesgo_id;     
+    if(cambios_riesgos.hasOwnProperty(key)){
+      cambios_riesgos[key]['valor'] = valor_nuevo;
+      cambios_riesgos[key]['id'] = id;
+    }else{
+      cambios_riesgos[key] = {
+        'valor':valor_nuevo,
+        'id':id,
+        'riesgo':riesgo_id
+      }
+    }    
+  }
+
+  function get_valor_impacto_id(impacto_id) {
+    let valor_aux = -1;
+    for (let i = 0; i < valores["impactos"].length; i++) {
+      if(valores["impactos"][i]["id"] == impacto_id){
+        valor_aux = valores["impactos"][i]["escala"];
+        break;
+      }
+    }
+    return valor_aux;
+  }
+
+  function get_valor_probabilidad_id(probabilidad_id) {
+    let valor_aux = -1;
+    for (let i = 0; i < valores["probabilidades"].length; i++) {
+      if(valores["probabilidades"][i]["id"] == probabilidad_id){
+        valor_aux = valores["probabilidades"][i]["escala"];
+        break;
+      }
+    }
+    return valor_aux;
+  }
+
+  function actualizar_valores() {
+    console.log(JSON.stringify(cambios_riesgos));
+    $.ajax({
+      url: '/mi_proyecto/{{proyecto.proyecto_id}}/evaluar/actualizar_valores/',
+      type: 'POST',
+      headers: {'X-CSRFToken': csrftoken},
+      data: {valores:JSON.stringify(cambios_riesgos)},
+      success: function(data) {
+          alert("Cambios actualizados exitosamente");
+      }, error: function (jqXhr, textStatus, errorMessage) {
+        console.log(errorMessage);
+        alert("No se pudieron actualizar los cambios");        
+      }
+    });
+  }
+
+
+  function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          // Does this cookie string begin with the name we want?
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+              break;
+          }
+      }
+  }
+  return cookieValue;
+}
+
+function construir_tabla_clasificacion_riesgos(){
+  let mi_body_table = document.getElementById("tabla_clasificacion_riesgos");
+  mi_body_table.innerHTML = '';
+  for (var i = 0; i < rangos_riesgos.length; i++) {
+    let template = '<tr><td><div class="input-group my-colorpicker2 colorpicker-element"><div class="input-group-addon" style="background-color:'+rangos_riesgos[i]["color"]+';"><i></i></div><div class="form-control" style="border-top: 0px;border-bottom: 0px;border-right: 0px;"><label>'+rangos_riesgos[i]["nombre"]+'</label></div></div></td><td><label>'+rangos_riesgos[i]["rango"][0]+' - '+rangos_riesgos[i]["rango"][1]+'</label></td></tr>';
+    let html = $.parseHTML(template);
+    $(mi_body_table).append(html);    
+  }
+}
+  
 
   $(function() {
-    construir_matriz_calor();
-    llenar_matriz_calor([1,2,3,4,5], [1,2,3,4,5]);
+    construir_matriz_calor(valores["impactos"].length + 1, valores["probabilidades"].length + 1);
+    llenar_matriz_calor(valores["impactos_valores"], valores["probabilidades_valores"]);
     construir_tabla_riesgos(riesgos);
+    construir_tabla_clasificacion_riesgos();
     $("#example").DataTable({
      "language": {
          "sProcessing":    "Procesando...",
@@ -363,7 +480,12 @@
              "sSortDescending": ": Activar para ordenar la columna de manera descendente"
          }
      }
-    });    
+    });
+
+    /*
+      Este segmento permite activar los subtitulos para todos los elementos del documento
+    */    
+    $('[data-toggle="tooltip"]').tooltip();
   });
 </script>
 

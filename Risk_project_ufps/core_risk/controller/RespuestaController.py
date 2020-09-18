@@ -1,7 +1,10 @@
 from Risk_project_ufps.core_risk.dao.RespuestaDao import *
 from Risk_project_ufps.core_risk.dao.RiesgoHasRespuestaDao import *
 from Risk_project_ufps.core_risk.dao.ProyectoHasRiesgo_RespuestaDao import *
+from Risk_project_ufps.core_risk.dao.RiesgoDao import *
+
 from Risk_project_ufps.core_risk.dto.models import *
+from datetime import datetime
 
 class RespuestaController():
 
@@ -52,17 +55,50 @@ class RespuestaController():
             key = "riesgo_"+str(respuesta.riesgo_id)
             riesgo_aux = aux.get(key)
             if(riesgo_aux):
-                riesgo_aux.append({
-                "repuesta_id": respuesta.respuesta_id,
-                "respuesta_nombre":respuesta.respuesta_nombre,
-                "respuesta_descripcion" :respuesta.respuesta_descripcion
-                })
+                riesgo_aux.append(
+                    dict(
+                        respuesta_id=respuesta.respuesta_id,
+                        respuesta_nombre=respuesta.respuesta_nombre,
+                        respuesta_descripcion=respuesta.respuesta_descripcion,
+                        fecha_inicio_respuesta=self.get_datetime(respuesta.fecha_inicio_respuesta)
+                    )
+                )
             else:
                 aux[key] = []
-                aux[key].append({
-                "repuesta_id": respuesta.respuesta_id,
-                "respuesta_nombre":respuesta.respuesta_nombre,
-                "respuesta_descripcion" :respuesta.respuesta_descripcion
-                })
+                aux[key].append(
+                    dict(
+                        respuesta_id=respuesta.respuesta_id,
+                        respuesta_nombre=respuesta.respuesta_nombre,
+                        respuesta_descripcion=respuesta.respuesta_descripcion,
+                        fecha_inicio_respuesta=self.get_datetime(respuesta.fecha_inicio_respuesta)
+                    )
+                )
         return aux
+
+    def get_datetime(self, now):
+        try:
+            date_time = now.strftime("%d/%m/%Y")
+            
+        except Exception as e:
+            return None
+        
+        return date_time
+
+
+    def obtener_respuestas_sugeridas(self, proyecto_id):
+        """
+        Consulta todas las respuestas asociadas a los riesgos
+        del proyecto que no se hayan utilizado dentro del mismo proyecto
+        :param proyecto_id:
+        :return:
+        """
+        respuesta_dao = RespuestaDao()
+        riesgo_dao = RiesgoDao()
+        proyecto = Proyecto(proyecto_id = proyecto_id)
+        riesgos = riesgo_dao.get_riesgos_by_proyecto(proyecto)
+
+        return respuesta_dao.obtener_all_respuestas_from_riesgo_by_proyecto_id(proyecto_id)
+
+
+
 
