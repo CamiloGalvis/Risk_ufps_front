@@ -70,7 +70,7 @@ class ProyectoHasRiesgoDao():
     def get_by_riesgo_and_proyecto_2(self, riesgo, proyecto):         
         proyecto_riesgo = None
         try:        
-            proyecto_riesgo = ProyectoHasRiesgo.objects.get( riesgo = riesgo, proyecto = proyecto )            
+            proyecto_riesgo = ProyectoHasRiesgo.objects.get(riesgo=riesgo, proyecto=proyecto )
         except Exception as e:
             print(e)
         finally:

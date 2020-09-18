@@ -68,7 +68,7 @@ class RiesgoDao():
         try:
             riesgo = Riesgo.objects.get(riesgo_id=id)
 
-        except Error as e:
+        except Exception as e:
             print(e)
 
         finally:
