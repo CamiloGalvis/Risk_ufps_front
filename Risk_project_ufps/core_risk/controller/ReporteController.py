@@ -66,7 +66,21 @@ class ReporteController():
             proyecto.proyecto_objetivo, proyecto.proyecto_alcance)
         return nombreEXCEL + ".xlsx"
 
+    def generar_reporte_planificar_respuesta(self, proyecto):
+        """
+        :type proyecto: Proyecto
+        """
+        propietario = proyecto.gerente.gerente_nombre
+        titulo = "REPORTE PROYECTO " + proyecto.proyecto_nombre
+        cabecera = ("CÓDIGO", "RIESGO", "IMPACTO", "PROBABILIDAD", "TOTAL")
 
+        riesgo_dao = RiesgoDao()
+        riesgos = riesgo_dao.get_riesgos_by_proyecto(proyecto)
+        registros = self.raw_queryset_as_values_list_evaluar(riesgos, proyecto)
+        nombreEXCEL = "reporte_" + self.get_datetime()
+        reporte = reporteEXCEL(titulo, cabecera, registros, nombreEXCEL, propietario).exportar_evaluar(
+            proyecto.proyecto_objetivo, proyecto.proyecto_alcance)
+        return nombreEXCEL + ".xlsx"
 
     def get_datetime(self):
         now = datetime.now()

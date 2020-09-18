@@ -104,7 +104,7 @@ urlpatterns = [
     path('mi_proyecto/<int:proyecto_id>/editar_tarea/', editar_tarea, name='editar_tarea'),
     path('mi_proyecto/<int:proyecto_id>/nuevo_recurso_tarea/', nuevo_recurso_tarea, name='nuevo_recurso_tarea'),
     path('mi_proyecto/<int:proyecto_id>/desvincular_recurso_tarea/', desvincular_recurso_tarea, name='desvincular_recurso_tarea'),
-
+    path('mi_proyecto/<int:proyecto_id>/planificar_respuestas/informe/', generar_informe_planificar_respuesta, name='generar_informe_planificar_respuesta'),
 
 
 
