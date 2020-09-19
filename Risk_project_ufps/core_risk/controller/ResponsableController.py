@@ -1,7 +1,12 @@
 from Risk_project_ufps.core_risk.dao.ResponsableDao import *
+from Risk_project_ufps.core_risk.dao.ProyectoHasRiesgoDao import *
+
 from Risk_project_ufps.core_risk.dto.models import *
 
-class ResponsableController(): 
+from django.forms.models import model_to_dict
+
+
+class ResponsableController():
 
 	def registrar_responsable(self, nombre, descripcion, proyecto, rol):
 		responsable_dao = ResponsableDao()
@@ -14,6 +19,19 @@ class ResponsableController():
 	def obtener_responsable(self, id):
 		responsable_dao = ResponsableDao()
 		return responsable_dao.obtener_responsable(id)
+
+	def obtener_responsables_by_proyecto_group_for_riesgos(self, proyecto_id):
+		responsable_dao = ResponsableDao()
+		proyecto_has_riesgo_dao = ProyectoHasRiesgoDao()
+		proyecto = Proyecto(proyecto_id=proyecto_id)
+		proyectos_has_riesgos = proyecto_has_riesgo_dao.listar_proyecto_has_riesgo_by_proyecto(proyecto)
+		return proyectos_has_riesgos
+
+	def raw_queryset_as_dictionary(self, raw_qs):
+		aux = []
+		for row in raw_qs:
+			aux.append(model_to_dict(row))
+		return aux
 
 	def editar_responsable(self, responsable, nombre, descripcion, rol):
 		responsable_dao = ResponsableDao()

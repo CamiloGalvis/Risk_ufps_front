@@ -80,6 +80,7 @@ class TareaController():
 				aux.append(dict(
 					recurso_id=recurso.recurso_id,
 					recurso_nombre=recurso.recurso_nombre,
+					recurso_costo=recurso.recurso_costo,
 					cantidad=recurso.cantidad
 				))
 		return aux

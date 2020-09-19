@@ -75,7 +75,8 @@ class RespuestaController():
                         respuesta_id=respuesta.respuesta_id,
                         respuesta_nombre=respuesta.respuesta_nombre,
                         respuesta_descripcion=respuesta.respuesta_descripcion,
-                        fecha_inicio_respuesta=self.get_datetime(respuesta.fecha_inicio_respuesta)
+                        fecha_inicio_respuesta=self.get_datetime(respuesta.fecha_inicio_respuesta),
+                        riesgo_has_respuesta=respuesta.riesgo_has_respuesta_id
                     )
                 )
             else:
@@ -85,7 +86,8 @@ class RespuestaController():
                         respuesta_id=respuesta.respuesta_id,
                         respuesta_nombre=respuesta.respuesta_nombre,
                         respuesta_descripcion=respuesta.respuesta_descripcion,
-                        fecha_inicio_respuesta=self.get_datetime(respuesta.fecha_inicio_respuesta)
+                        fecha_inicio_respuesta=self.get_datetime(respuesta.fecha_inicio_respuesta),
+                        riesgo_has_respuesta=respuesta.riesgo_has_respuesta_id
                     )
                 )
         return aux
