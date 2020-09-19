@@ -1,7 +1,7 @@
 from Risk_project_ufps.core_risk.dao.SectorDao import *
-from Risk_project_ufps.core_risk.dto.models import *
 
-class SectorController():  
+
+class SectorController:
 
 	def listar_sectores(self):
 		sector_dao = SectorDao()

@@ -1,7 +1,7 @@
 from Risk_project_ufps.core_risk.dao.GerenteDao import *
-from Risk_project_ufps.core_risk.dto.models import *
 
-class GerenteController(): 
+
+class GerenteController:
 
 	def registrar_gerente(self, id, usuario, correo, nombre, sector, profesion, empresa, pais):
 		gerente_dao = GerenteDao()

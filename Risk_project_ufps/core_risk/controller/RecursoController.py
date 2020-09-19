@@ -1,7 +1,7 @@
 from Risk_project_ufps.core_risk.dao.RecursoDao import *
-from Risk_project_ufps.core_risk.dto.models import *
 
-class RecursoController():
+
+class RecursoController:
 
 	def registrar_recurso(self, proyecto, nombre, costo, tipo_recurso):
 		recurso_dao = RecursoDao()

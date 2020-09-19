@@ -1,12 +1,11 @@
 from Risk_project_ufps.core_risk.dao.ActividadDao import *
 from Risk_project_ufps.core_risk.dao.RiesgoDao import *
-from Risk_project_ufps.core_risk.dao.ProyectoDao import *
 from Risk_project_ufps.core_risk.dao.ProyectoHasRiesgo_ActividadDao import *
 from Risk_project_ufps.core_risk.dto.models import *
 
 from django.forms.models import model_to_dict
 
-class ActividadController(): 
+class ActividadController:
 
 	def listar_actividades_proyecto(self, proyecto_id):
 		actividad_dao = ActividadDao()

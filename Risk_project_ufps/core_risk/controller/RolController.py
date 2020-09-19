@@ -1,7 +1,7 @@
 from Risk_project_ufps.core_risk.dao.RolDao import *
 from Risk_project_ufps.core_risk.dto.models import *
 
-class RolController():
+class RolController:
 
 	def registrar_rol(self, nombre, descripcion, gerente):
 		rol_dao = RolDao()

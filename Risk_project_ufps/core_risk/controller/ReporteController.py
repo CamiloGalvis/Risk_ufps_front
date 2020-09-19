@@ -16,7 +16,7 @@ from datetime import datetime
 from django.forms.models import model_to_dict
 
 
-class ReporteController():
+class ReporteController:
 
     def generar_reporte_identificar(self, proyecto):
         """Llamar la función Exportar, la cuál esta en la clase reporteEXCEL,
@@ -90,9 +90,9 @@ class ReporteController():
         # A continuacion voy hacer un merge detodo lo de arriba
         registros=[]
         for responsable in responsables:
-            print(type(responsable), responsable)
+
             total = responsable.impacto.impacto_valor * responsable.propabilidad.propabilidad_valor
-            print(total)
+
             aux=(
                 'R_'+str(responsable.riesgo_id),
                 responsable.riesgo.riesgo_nombre,
@@ -153,8 +153,6 @@ class ReporteController():
             if impacto is None:
                 impacto = impacto_dao.obtener_impacto_by_id_and_proyecto(row.impacto_id, proyecto)
                 valores["i_" + str(row.riesgo_id)] = impacto
-            print("row", row)
-            print("impacto: ", impacto, " - ", row.impacto_id)
             if probabilidad is None:
                 probabilidad = probabilidad_dao.obtener_probabilidad_by_id(row.propabilidad_id)
                 valores["p_" + str(row.riesgo_id)] = probabilidad

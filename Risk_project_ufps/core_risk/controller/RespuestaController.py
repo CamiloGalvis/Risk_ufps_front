@@ -6,7 +6,7 @@ from Risk_project_ufps.core_risk.dao.RiesgoDao import *
 from Risk_project_ufps.core_risk.dto.models import *
 from datetime import datetime
 
-class RespuestaController():
+class RespuestaController:
 
     def registrar_respuesta(self, nombre, descripcion):
         respuesta_dao = RespuestaDao()
