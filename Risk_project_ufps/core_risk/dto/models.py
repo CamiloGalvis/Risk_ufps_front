@@ -202,6 +202,7 @@ class Respuesta(models.Model):
     respuesta_descripcion = models.TextField(blank=True, null=True)
     respuesta_costo = models.FloatField(blank=True, null=True)
     fecha_inicio_respuesta = str()
+    riesgo_has_respuesta_id = int()
     class Meta:
         managed = False
         db_table = 'respuesta'

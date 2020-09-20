@@ -153,11 +153,11 @@ class RiesgoController():
         proyecto_has_riesgo = proyecto_has_riesgo_dao.get_by_riesgo_and_proyecto_2(riesgo, proyecto)
 
         if proyecto_has_riesgo.is_editado == 1:
-            print("uno")
-            proyecto_has_riesgo.actualizar_fecha(proyecto_has_riesgo, fecha)
+            proyecto_has_riesgo.actualizar_fecha(proyecto_has_riesgo, fecha)          
+
             return riesgo_dao.editar_riesgo(riesgo, nombre, causa, evento, efecto, tipo, riesgo.sub_categoria)
         else:
-            print("cero")
+            
             proyecto_has_riesgo.delete()
             riesgo_nuevo = riesgo_dao.registrar_riesgo_2(nombre, causa, evento, efecto, tipo, riesgo.sub_categoria)
             proyecto_has_riesgo_dao.registrar_proyecto_riesgo_editado(proyecto, riesgo_nuevo)

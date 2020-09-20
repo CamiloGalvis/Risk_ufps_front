@@ -1,5 +1,5 @@
 from Risk_project_ufps.core_risk.dao.TipoRecursoDao import *
-from Risk_project_ufps.core_risk.dto.models import *
+
 
 class TipoRecursoController():
 

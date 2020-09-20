@@ -59,13 +59,12 @@
                 <div id="collapseThree" class="panel-collapse collapse">
                   <div class="box-body">
                       Este proceso permite desarrollar y establecer estrategias junto con sus recursos para las acciones a ejecutar cuando un riesgo logre materializarse a lo largo de todo el proyecto. A continuación podras descargar un informe del proceso planificar respuestas actualizado.
-                    <a href="/mi_proyecto/{{ proyecto.proyecto_id }}/generar_informe/">Generar informe</a>
+                    <a href="/mi_proyecto/{{ proyecto.proyecto_id }}/planificar_respuestas/informe/">Generar informe</a>
                   </div>
                 </div>
               </div>
            </div>
          </div>
-     
 
       <div class="box box-primary">
         <div class="box-header with-border">
@@ -82,7 +81,8 @@
                   <th><label data-toggle="tooltip" data-placement="top" title="Evaluación asignada al riesgo.">Categorización </label></th>       
 	                <th><label data-toggle="tooltip" data-placement="top" title="Acciones de respuesta asociadas al riesgo.">Acciones </label></th>
                   <th><label data-toggle="tooltip" data-placement="top" title="Tareas o actividades asociadas a las acciones.">Tareas </label></th>
-                  <th><label data-toggle="tooltip" data-placement="top" title="Recursos del proyecto asociados a las tareas.">Recursos</label></th>                
+                  <th><label data-toggle="tooltip" data-placement="top" title="Recursos del proyecto asociados a las tareas.">Recursos</label></th>      
+                  <th><label data-toggle="tooltip" data-placement="top" title="Suma de los recursos asignados a las tareas">Costos</label></th>           
 	              </tr>
 	            </thead>
 	            <tbody>
@@ -100,6 +100,9 @@
                 </td>
                 <td>
                   <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#modal-recursos" onclick="abrir_modal_recursos('{{ riesgo.riesgo_id }}')"><i   class="fa fa-edit"></i></button>
+                </td>
+                <td>
+                  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal-recursos" onclick="abrir_modal_costos('{{ riesgo.riesgo_id }}')"><i   class="fa fa-edit"></i></button>
                 </td>                  
 	            </tr>
 	            {% endfor %}
@@ -120,7 +123,8 @@
                   <th>Categorización</th>
                   <th>Acciones</th>                  
                   <th>Tareas</th>
-                  <th><label data-toggle="tooltip" data-placement="top" title="Corresponde a los recursos definidos dentro de este proyecto">Recursos</label></th>  
+                  <th><label data-toggle="tooltip" data-placement="top" title="Corresponde a los recursos definidos dentro de este proyecto">Recursos</label></th> 
+                  <th><label data-toggle="tooltip" data-placement="top" title="Suma de los recursos asignados a las tareas">Costos</label></th>   
 	            </tr>
 	          </tfoot>
 	        </table>
@@ -687,6 +691,65 @@
 <!-- /.modal-eliminar -->
 
 
+<!-- /.modal costos -->
+
+<div class="modal fade" id="modal-costos"> 
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Costos</h4>
+      </div>
+      <div class="box-body" >
+        <div class="row justify-content-md-center">
+          <div class="col col-lg-1"></div>
+          <div class="col-md-10">
+            <table class="table table-striped">
+              <thead>
+              <tr>
+                <th></th>
+                <th>Accion</th>
+                <th>Tarea</th>
+                <th>Recurso</th>
+                <th>Cantidad</th>
+                <th>Costo</th>
+              </tr>
+              </thead>
+              <tbody id="costos_body">
+              </tbody>
+              <tfoot>
+              <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th>Costo del riesgo</th>
+                <th id="costo_riesgo"></th>
+              </tr>
+              <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th>Total del proyecto</th>
+                <th id="costo_proyecto"></th>
+              </tr>
+              </tfoot>
+            </table>
+          </div>
+          <div class="col col-lg-1"></div>
+        </div>   
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary pull-right" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>   
+</div>
+
+<!-- /.modal costos -->
+
 
 {% endblock %}
 {% block organigrama_down %}
@@ -731,7 +794,6 @@
 
   function pintar_rangos_riesgos() {
     let riesgos = document.getElementsByClassName("riesgo_rango");
-    console.log("hola", riesgos);
     for (let i = 0; i < riesgos.length; i++) {  
       riesgo_id = riesgos[i].innerText;
       riesgos[i].innerHTML ="";
@@ -868,7 +930,72 @@
 
      
   }
+  function abrir_modal_costos(riesgo_id) {
+    let costos_body = document.getElementById("costos_body");
+    costos_body.innerHTML = "";
+    let key = 'riesgo_'+riesgo_id;
+    let total = 0;  
+    let total_proyecto = get_costo_total_proyecto();
+    if(lista_tareas.hasOwnProperty(key)){   
+      let tareas = lista_tareas[key];
+      let cont = 1;      
+      for (let i = 0; i < tareas.length; i++) {
+        let tarea = tareas[i];
+        if(tarea['recursos'].length > 0){
+          let respuesta = get_respuesta_by_riesgo_has_respuesta(riesgo_id, tareas[i]['riesgo_has_respuesta']);
+          let recursos_nombres = "";
+          let recursos_costos = "";
+          let recursos_cantidad = "";
+          for (let j = 0; j < tarea['recursos'].length; j++) {
+            recursos_nombres += tarea['recursos'][j]['recurso_nombre'] + '<br>';
+            let c = tarea['recursos'][j]['cantidad'] * tarea['recursos'][j]['recurso_costo'];
+            recursos_costos += tarea['recursos'][j]['recurso_costo'] + '<br>';
+            recursos_cantidad += tarea['recursos'][j]['cantidad'] + '<br>';
+            total += c;
+          }
+          let temp = '<tr><td>'+cont+'</td><td>'+respuesta['respuesta_nombre']+'</td><td>'+tareas[i]['tarea_nombre']+'</td><td>'+recursos_nombres+'</td><td>'+recursos_cantidad+'</td><td>'+recursos_costos+'</td></tr>'
+          let gg = $.parseHTML(temp) 
+          $(costos_body).append(gg);
+          $("#costo_riesgo").text("$"+total);
+          $("#costo_proyecto").text("$"+total_proyecto);
+        }
+      }
+    }else{
+      let tempr = '<tr><td></td><td>No existen costos para mostrar</td><td></td><td></td><td></td><td></td></tr>'
+      let ggt = $.parseHTML(tempr) 
+      $(costos_body).append(ggt); 
+      $("#costo_riesgo").text("$0");
+      $("#costo_proyecto").text("$"+total_proyecto);
+    }        
+    $("#modal-costos").modal('show');  
+  }
 
+  function get_costo_total_proyecto() {
+    let aux = 0;
+    //perdoname Diosito(Object.keys(an_obj)
+    Object.keys(lista_tareas).forEach(function(key) {
+      let riesgo = lista_tareas[key];
+      riesgo.forEach(function(tarea) {
+        tarea['recursos'].forEach(function(recurso) {
+          aux += recurso['recurso_costo'] * recurso['cantidad'];
+        });
+      });
+    });
+    return aux;
+  } 
+
+  function get_respuesta_by_riesgo_has_respuesta(riesgo_id, riesgo_has_respuesta){      
+    let key = 'riesgo_'+riesgo_id;   
+    if(respuestas_riesgo.hasOwnProperty(key)){   
+      let respuestas = respuestas_riesgo[key];      
+      for (let i = 0; i < respuestas.length; i++) {
+        if( respuestas[i]['riesgo_has_respuesta'] == riesgo_has_respuesta ){
+          return respuestas[i];
+        } 
+      }
+    }
+    return null;
+  }
 
 
   function construir_listado_respuesta(id_riesgo) {
