@@ -256,7 +256,7 @@
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-respuestas" onclick="abrir_modal_respuestas('{{ riesgo.riesgo_id }}')"><i   class="fa fa-edit"></i></button>
               </td>
               <td>
-                <button type="button" class="btn btn-info" data-toggle="modal" onclick="abrir_modal_informacion_riesgo(' {{ riesgo.riesgo_nombre }}', '{{ riesgo.riesgo_causa }}',' {{ riesgo.riesgo_evento }}', ' {{ riesgo.riesgo_efecto }}', '{{ riesgo.riesgo_tipo }}')">&nbsp<i   class="fa fa-info">&nbsp</i>
+                <button type="button" class="btn btn-info" data-toggle="modal" onclick="abrir_modal_informacion_riesgo(' {{ riesgo.riesgo_nombre }}', '{{ riesgo.riesgo_causa }}',' {{ riesgo.riesgo_evento }}', ' {{ riesgo.riesgo_efecto }}', '{{ riesgo.riesgo_tipo }}', '{{ riesgo.fecha_manifestacion }}')">&nbsp<i   class="fa fa-info">&nbsp</i>
                 </button>
                 <button type="button" class="btn btn-default" data-toggle="modal" onclick="abrir_modal_editar_riesgo('{{ riesgo.riesgo_id }}','{{ riesgo.riesgo_nombre }}', '{{ riesgo.riesgo_causa }}','{{ riesgo.riesgo_evento }}', '{{ riesgo.riesgo_efecto }}',   '{{ riesgo.riesgo_tipo }}')"><i   class="fa fa-edit"></i>
                 </button>
@@ -672,6 +672,10 @@
                   <label>Efecto</label>
                   <p id="efecto_riesgo_info"></p>
                 </div>
+                <div class="form-group">
+                  <label>Fecha manifestación</label>
+                  <p id="fecha_riesgo_info"></p>
+                </div>
               </div>
             </div>
             <div class="modal-footer">
@@ -734,6 +738,15 @@
                 <div class="form-group">
                   <label>Efecto</label>
                   <textarea class="form-control" rows="3"  id="riesgo_efecto" name="riesgo_efecto"></textarea>
+                </div>
+                <div class="form-group">
+                  <label>Fecha de Manifestación</label>
+                  <div class="input-group date">
+                  <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                  </div>
+                  <input type="date" class="form-control pull-right" name="riesgo_fecha_manifestacion">
+                </div>
                 </div>
                 <input type="text" class="form-control" id="riesgo_id_editar" name="riesgo_id_editar" style="visibility: hidden;">
 
@@ -1055,7 +1068,7 @@ function asosiar_riesgos(proyecto_id){
         return false;
     };
 
-  function abrir_modal_informacion_riesgo(nombre, causa, evento, efecto, tipo) {        
+  function abrir_modal_informacion_riesgo(nombre, causa, evento, efecto, tipo, fecha) {        
 
         $("#modal-informacion").modal('show');
         document.getElementById("nombre_riesgo_info").innerHTML = " "+nombre;
@@ -1063,6 +1076,7 @@ function asosiar_riesgos(proyecto_id){
         document.getElementById("evento_riesgo_info").innerHTML = " "+evento;
         document.getElementById("efecto_riesgo_info").innerHTML = " "+efecto;
         document.getElementById("tipo_riesgo_info").innerHTML = " "+tipo;
+        document.getElementById("fecha_riesgo_info").innerHTML = " "+ fecha;
         
         
         return false;

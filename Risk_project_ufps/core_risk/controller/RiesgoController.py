@@ -85,6 +85,8 @@ class RiesgoController():
         p_h_r = ProyectoHasRiesgoDao()
         return p_h_r.get_by_riesgo_and_proyecto(proyecto, riesgo)
 
+
+
     def get_riesgos_by_proyecto(self, proyecto):
         """Devuelve todos los riesgos que esten asociados a un riesgo,
         devuleve como un objeto raw query
@@ -140,7 +142,7 @@ class RiesgoController():
             aux[row.riesgo_nombre] = row
         return aux
 
-    def editar_riesgo_proyecto(self, proyecto_id, riesgo_id, nombre, causa, evento, efecto, tipo):
+    def editar_riesgo_proyecto(self, proyecto_id, riesgo_id, nombre, causa, evento, efecto, tipo, fecha):
 
         riesgo_dao = RiesgoDao()
         proyecto_dao = ProyectoDao()
@@ -152,6 +154,7 @@ class RiesgoController():
 
         if proyecto_has_riesgo.is_editado == 1:
             print("uno")
+            proyecto_has_riesgo.actualizar_fecha(proyecto_has_riesgo, fecha)
             return riesgo_dao.editar_riesgo(riesgo, nombre, causa, evento, efecto, tipo, riesgo.sub_categoria)
         else:
             print("cero")

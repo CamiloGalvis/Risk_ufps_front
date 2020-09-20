@@ -128,6 +128,8 @@
           <button class="btn btn-primary pull-right" onclick="actualizar_valores();">Confirmar</button>
         </div>
       </div>
+
+
       <div class="box box-primary">
         <div class="box-header with-border">
           <h3 class="box-title">
@@ -144,7 +146,17 @@
               </table>
             </div>
             <div class="col col-lg-2"></div>
-          </div>
+          </div>          
+        </div>
+      </div>
+
+      <div class="box box-primary">
+        <div class="box-header with-border">
+          <h3 class="box-title">
+            <label data-toggle="tooltip" data-placement="top" title="En esta sección podrá visualizar la clasificación de la evaluación del riesgo."><strong>Clasificación de la Evaluación del Riesgo Proyecto {{ proyecto.proyecto_nombre }}</strong></label>
+          </h3>
+        </div>
+        <div class="box-body">          
           <div class="row justify-content-md-center">
             <div class="col col-lg-3"></div>
             <div class="col-md-6">
@@ -190,8 +202,8 @@
           </div>
         </div>
       </div>
+    </div>
   </div>
-</div>
 {% endblock %}
 {% block organigrama_down %}
 <!-- DataTables -->
@@ -227,7 +239,7 @@
     }
   }
 
-  function llenar_matriz_calor(impactos, probabilidades) {
+  function llenar_matriz_calor(impactos, probabilidades, riesgos) {
     let matriz_calor = document.getElementById('matriz_calor');
     let anchura = impactos.length;
     let altura = probabilidades.length;
@@ -241,13 +253,26 @@
       for (let j = 1; j < columnas.length; j++) {
         let p = probabilidades[i-1];
         let ii = impactos[j-1];
-        columnas[j].appendChild(document.createTextNode("p_"+p));
-        columnas[j].appendChild(document.createTextNode("i_"+ii));        
         columnas[j].setAttribute("style", "background-color:"+get_rango(p*ii)+";");
+
+        for (let r = 0; r<riesgos.length; r++){
+          probabilidad = get_valor_probabilidad_id(riesgos[r]["propabilidad_id"])
+          impacto = get_valor_impacto_id(riesgos[r]["impacto_id"])
+
+          if(probabilidad == p && impacto == ii){            
+            
+            columnas[j].appendChild(document.createTextNode(riesgos[r]["riesgo_nombre"]));
+
+          }
+          
+        }
+       
+       
       }
     }
 
   }
+
 
   function llenar_encabezado(impactos, probabilidades){
     let matriz_calor = document.getElementById('matriz_calor');
@@ -486,7 +511,7 @@ function construir_tabla_clasificacion_riesgos(){
 
   $(function() {
     construir_matriz_calor(valores["impactos"].length + 1, valores["probabilidades"].length + 1);
-    llenar_matriz_calor(valores["impactos_valores"], valores["probabilidades_valores"]);
+    llenar_matriz_calor(valores["impactos_valores"], valores["probabilidades_valores"], riesgos);
     llenar_encabezado(valores["impactos"], valores["probabilidades"]);
     construir_tabla_riesgos(riesgos);
     construir_tabla_clasificacion_riesgos();
