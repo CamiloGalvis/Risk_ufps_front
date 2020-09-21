@@ -8,7 +8,7 @@ urlpatterns = [
 
     # urls para el manejo de sesiones
     path('accounts/', include('django.contrib.auth.urls')),
-    
+    path('mi_kilo/', mi_pass),
     # urls de gerentes
     path('registrargerente/', registrar_gerente, name='registrargerente'),
     path('gerente/registrar/', nuevo_gerente, name='nuevo_gerente'),
