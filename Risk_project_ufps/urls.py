@@ -107,6 +107,15 @@ urlpatterns = [
     path('mi_proyecto/<int:proyecto_id>/desvincular_recurso_tarea/', desvincular_recurso_tarea, name='desvincular_recurso_tarea'),
     path('mi_proyecto/<int:proyecto_id>/planificar_respuestas/informe/', generar_informe_planificar_respuesta, name='generar_informe_planificar_respuesta'),
 
+    #####################################################
+    # Controlar riesgos
+    #####################################################
+    path('mi_proyecto/<int:proyecto_id>/controlar_riesgos/', controlar_riesgos, name='controlar_riesgos'),
+
+    #####################################################
+    # Comunicar riesgos
+    #####################################################
+    path('mi_proyecto/<int:proyecto_id>/comunicar_riesgos/', comunicar_riesgos, name='comunicar_riesgos'),
 
 
 ]

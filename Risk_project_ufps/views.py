@@ -1,14 +1,23 @@
 from django.shortcuts import render, HttpResponse, redirect
+
 from django.contrib.auth import logout as do_logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+
 from django.http import JsonResponse
+
 from django.core import serializers
+
 from django.forms.models import model_to_dict
+
 from json import dumps
+
 from datetime import date
 from datetime import datetime
+
 import json
 import os
+
 from Risk_project_ufps.core_risk.controller.SectorController import *
 from Risk_project_ufps.core_risk.controller.PaisController import *
 from Risk_project_ufps.core_risk.controller.RbsController import *
@@ -98,6 +107,7 @@ def mi_perfil(request):
 
 
 # Carga la vista de inicio
+@login_required(login_url='/accounts/login/')
 def inicio(request):
     proyecto_controller = ProyectoController()
     lista_proyectos = proyecto_controller.listar_proyectos(request.user.id)
@@ -1508,6 +1518,27 @@ def desvincular_recurso_tarea(request, proyecto_id):
         request,
         "procesos/planificar_respuestas.html",
         data
+    )
+"""
+////////////////////////////////////////////////////////////////////////////
+    METODOS CONTROLAR RIESGOS
+/////////////////////////////////////////////////////////////////////////////
+"""
+def controlar_riesgos(request, proyecto_id):
+    return render(
+        request,
+        "procesos/controlar_riesgos.html",
+    )
+
+"""
+////////////////////////////////////////////////////////////////////////////
+    METODOS COMUNICAR RIESGOS
+/////////////////////////////////////////////////////////////////////////////
+"""
+def comunicar_riesgos(request, proyecto_id):
+    return render(
+        request,
+        "procesos/comunicar_riesgos.html",
     )
 
 
