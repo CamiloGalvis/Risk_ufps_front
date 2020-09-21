@@ -84,7 +84,7 @@ DATABASES = {
             },
            'NAME': 'riesgos_users',
            'USER': 'root',
-           'PASSWORD': '',
+           'PASSWORD': 'Soporte',
            'HOST': 'localhost',
            'PORT': '3306',
     },
@@ -95,7 +95,7 @@ DATABASES = {
             },
             'NAME': 'riesgos_bd',
             'USER': 'root',
-            'PASSWORD': '',
+            'PASSWORD': 'Soporte',
             'HOST': 'localhost',
             'PORT': '3306',
     },
@@ -151,3 +151,10 @@ STATIC_URL = '/static/'
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
 LOGIN_REDIRECT_URL = '/inicio/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'riskprojectufps@gmail.com'
+EMAIL_HOST_PASSWORD = ''
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

@@ -1608,3 +1608,8 @@ def generar_informe_planificar_respuesta(request, proyecto_id):
         response['Content-Disposition'] = 'attachment; filename="%s"' % 'CDX_COMPOSITES_20140626.xlsx'
 
         return response"""
+
+def mi_pass(request):
+    return render(
+        request,
+        "registration/password_reset_form.html")
