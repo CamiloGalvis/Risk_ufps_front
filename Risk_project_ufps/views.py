@@ -325,6 +325,9 @@ def editar_riesgo(request):
                                                      request.POST["riesgo_evento"], request.POST["riesgo_efecto"],
                                                      request.POST["riesgo_causa"], request.POST["riesgo_tipo"],
                                                      subcategoria)
+    
+
+
 
     rbs_controller = RbsController()
     rbs = rbs_controller.obtener_rbs_completa(request.user.id)
@@ -640,6 +643,7 @@ def editar_riesgo_proyecto(request, proyecto_id):
             request.POST["riesgo_evento"],
             request.POST["riesgo_efecto"],
             request.POST["riesgo_tipo"],
+            request.POST["riesgo_fecha_manifestacion"],
         )
 
         data = get_data_render_identificar_riesgo(request.user.id, proyecto_id)

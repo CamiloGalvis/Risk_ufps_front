@@ -36,7 +36,17 @@ class ProyectoHasRiesgoDao():
                 (proyecto.proyecto_id, riesgo.riesgo_id),
             )
 
-    def agregar_responsable_riesgo(self, proyecto_riesgo, responsable):
+    def actualizar_fecha(self, proyecto_riesgo, fecha):
+        with closing(connection.cursor()) as cursor:
+            sql = 'UPDATE riesgos_bd.proyecto_has_riesgo SET fecha_manifestacion = %s' \
+                  'WHERE proyecto_has_riesgo_id = %s '
+            cursor.execute(
+                sql,
+                [fecha, proyecto_riesgo.proyecto_has_riesgo_id],
+            )
+
+    def agregar_responsable_riesgo(self, proyecto_riesgo, responsable):         
+
         proyecto_riesgo = proyecto_riesgo
         try:
             proyecto_riesgo.responsable = responsable
