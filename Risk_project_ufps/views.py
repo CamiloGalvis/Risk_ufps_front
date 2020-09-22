@@ -441,6 +441,7 @@ def editar_respuesta(request):
 
 
 # Registra un tipo de recurso para un gerente y carga los recursos de un gerente
+"""
 def tipo_recurso(request):
     tipo_recurso_controller = TipoRecursoController()
     tipos_recursos = tipo_recurso_controller.listar_tipos_recursos(request.user.id)
@@ -453,8 +454,9 @@ def tipo_recurso(request):
 
         return render(request, "nuevo_recurso.html", {"mensaje": mensaje, "tipos_recursos": tipos_recursos})
     return render(request, "nuevo_recurso.html", {"tipos_recursos": tipos_recursos})
+"""
 
-
+"""
 # Elimina un tipo de recurso y carga el listado de tipos de recursos
 def eliminar_tipo_recurso(request):
     tipo_recurso_controller = TipoRecursoController()
@@ -467,8 +469,9 @@ def eliminar_tipo_recurso(request):
                       {"tipos_recursos": tipos_recursos, "mensaje_eliminar": mensaje_eliminar})
 
     return render(request, "nuevo_recurso.html", {"tipos_recursos": tipos_recursos})
+"""
 
-
+"""
 # Actualiza la información de un tipo de recurso y carga el listado de tipos de recursos
 def editar_tipo_recurso(request):
     tipo_recurso_controller = TipoRecursoController()
@@ -484,7 +487,7 @@ def editar_tipo_recurso(request):
                       {"tipos_recursos": tipos_recursos, "mensaje_editar": mensaje_editar})
 
     return render(request, "nuevo_recurso.html", {"tipos_recursos": tipos_recursos})
-
+"""
 
 # Carga la vista de roles del equipo
 def roles_equipo(request):

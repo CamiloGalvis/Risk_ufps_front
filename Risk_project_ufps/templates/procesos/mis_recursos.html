@@ -63,9 +63,9 @@
 
             </div>
             <div class="form-group">
-              <label>Tipo de recurso al que pertenece</label>
+              <label >Tipo de recurso al que pertenece</label>
               {% if tipos_recursos %}
-              <select class="form-control select2" id="tipo_recurso_id" name="tipo_recurso_id" style="width: 100%;">
+              <select class="form-control select2" id="tipo_recurso_id" name="tipo_recurso_id" style="width: 100%;" onchange="actualizar_label()">
                 {% for tipo_recurso in tipos_recursos %}
                 <option value="{{tipo_recurso.tipo_recurso_id}}">
                   {{tipo_recurso.tipo_recurso_nombre}}
@@ -79,7 +79,8 @@
           <!-- /.col -->
           <div class="col-md-6">
             <div class="form-group">
-              <label>Costo</label>
+              <label id="label_costo" data-toggle="tooltip" data-placement="top" title="Agregue el costo por unidad o por hora según el tipo de recurso."><strong>Costo Unidad/Hora</label>
+              
               <input type="number" class="form-control" id="recurso_costo" placeholder="Ingrese Costo del recurso" name="recurso_costo">
             </div>
             <div class="box-footer">
@@ -107,12 +108,12 @@
             <div   class="box-body no-padding">
 
 
-              <table id="example1"class="table table-bordered table-striped">
+              <table id="example1" class="table table-bordered table-striped">
                 <thead>
                   <tr>
                     <th>Nombre</th>
-                    <th>Costo</th> 
-                    <th>Tipo</th>                   
+                    <th><label id="label_costo" data-toggle="tooltip" data-placement="top" title="Costo por unidad o por hora según el tipo de recurso."><strong>Costo</label></th> 
+                    <th><label id="label_costo" data-toggle="tooltip" data-placement="top" title="Categoría asociada al recurso."><strong>Tipo Recurso</label></th>                   
                     <th>Acciones</th>
                   </tr>
                 </thead>
@@ -251,8 +252,8 @@
     $('#example1').DataTable()
     $('#example2').DataTable({
       'paging'      : true,
-      'lengthChange': false,
-      'searching'   : false,
+      'lengthChange': true,
+      'searching'   : true,
       'ordering'    : true,
       'info'        : true,
       'autoWidth'   : false
@@ -274,6 +275,25 @@ function abrir_modal_eliminar(nombre, id) {
         
         return false;
     };
+
+function actualizar_label(){
+
+  
+  let aux = document.getElementById("tipo_recurso_id");
+  let v = aux.options[aux.selectedIndex].text;
+  console.log(v);  
+  if(v == "Material"){
+    document.getElementById("label_costo").innerHTML = "Costo Unidad";
+  }
+  else if(v == "Trabajo"){
+    document.getElementById("label_costo").innerHTML = "Costo Hora";
+  }
+  else if(v == "Costo"){
+    document.getElementById("label_costo").innerHTML = "Costo Unidad";
+  }
+
+
+}
 
 function abrir_modal_editar(nombre, id) {
             
