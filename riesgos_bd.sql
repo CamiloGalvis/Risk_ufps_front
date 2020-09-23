@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 12-09-2020 a las 23:25:56
+-- Tiempo de generación: 22-09-2020 a las 01:46:59
 -- Versión del servidor: 10.4.13-MariaDB
 -- Versión de PHP: 7.2.32
 
@@ -2161,7 +2161,9 @@ INSERT INTO `categoria` (`categoria_id`, `categoria_nombre`, `categoria_descripc
 (38, 'Riesgo técnico', '', 0, 98895409027481601, 33),
 (39, 'Riesgo de gestión', '', 0, 98895409027481608, 33),
 (40, 'Riesgo comercial', '', 0, 98895409027481615, 33),
-(41, 'Riesgo externo', '', 0, 98895409027481622, 33);
+(41, 'Riesgo externo', '', 0, 98895409027481622, 33),
+(42, 'Riesgo técnico', '', 2, 98913166502658048, 34),
+(43, 'Riesgo comercial', '', 2, 98913166502658053, 34);
 
 --
 -- Disparadores `categoria`
@@ -2284,9 +2286,22 @@ INSERT INTO `clasificacion_riesgo` (`clasificacion_riesgo_id`, `clasificacion_ri
 (12, 'sdfsd', 4, 5, '#c73327', 15),
 (13, 'sdfsd', 5, 2, '#294764', 15),
 (14, 'dsfdsf', 2, 4, '#6e8ebc', 15),
-(15, 'Bajo', 1, 4, '#138D75', 17),
-(16, 'Moderado', 5, 11, '#D68910', 17),
-(17, 'Alto', 12, 25, '#CD5C5C', 17);
+(33, 'Bajo', 1, 4, '#8d1364', 17),
+(34, 'Moderado', 5, 11, '#10cad6', 17),
+(35, 'Alto', 12, 25, '#cdc85c', 17),
+(36, 'ss', 26, 34, '#f144a6', 17),
+(37, 'gg', 35, 36, '#80e36c', 17),
+(38, 'hh', 38, 40, '#e7c096', 17),
+(42, 'Bajo', 1, 4, '#138d75', 18),
+(43, 'Moderado', 5, 11, '#d68910', 18),
+(44, 'Alto', 12, 25, '#cd5c5c', 18),
+(45, 'guilo', 26, 28, '#88ecee', 18),
+(46, 'Bajo', 1, 4, '#138D75', 19),
+(47, 'Moderado', 5, 11, '#D68910', 19),
+(48, 'Alto', 12, 25, '#CD5C5C', 19),
+(49, 'Bajo', 1, 4, '#138D75', 20),
+(50, 'Moderado', 5, 11, '#D68910', 20),
+(51, 'Alto', 12, 25, '#CD5C5C', 20);
 
 -- --------------------------------------------------------
 
@@ -2321,7 +2336,9 @@ INSERT INTO `gerente` (`gerente_id`, `gerente_nombre`, `gerente_usuario`, `geren
 (32, 'www', 'www', 'ww@ww.com', NULL, NULL, 'ww', 'ww', NULL, NULL, 9, 16),
 (33, 'user_civil', 'user_civil', 'user_civil@correo.com', NULL, NULL, 'user_civil', 'user_civil', NULL, NULL, 14, 18),
 (34, 'qqq', 'qqq', 'qqq@correo.com', NULL, NULL, 'qqq', 'qqq', NULL, NULL, 9, 5),
-(35, 'ewe', 'ewe', 'ewe@gmail.com', NULL, NULL, 'ewe', 'ewe', NULL, NULL, 15, 10);
+(35, 'ewe', 'ewe', 'ewe@gmail.com', NULL, NULL, 'ewe', 'ewe', NULL, NULL, 15, 10),
+(36, 'Diego', 'diegok', 'skdiegomxtr@gmail.com', NULL, NULL, 'ingen', 'ufos', NULL, NULL, 9, 18),
+(37, 'Alirio Villa', 'userw', 'user@correo.w', NULL, NULL, 'cantante', 'userw', NULL, NULL, 9, 14);
 
 --
 -- Disparadores `gerente`
@@ -2351,7 +2368,7 @@ CREATE TABLE `impacto` (
 
 INSERT INTO `impacto` (`impacto_id`, `impacto_categoria`, `impacto_valor`, `proyecto_id`) VALUES
 (1, 'Catastrófico', 5, 2),
-(2, 'Mayor', 4, 2),
+(2, 'Mayor', 6, 2),
 (3, 'Moderado', 3, 2),
 (4, 'Menor', 2, 2),
 (5, 'Insignificante', 1, 2),
@@ -2362,7 +2379,23 @@ INSERT INTO `impacto` (`impacto_id`, `impacto_categoria`, `impacto_valor`, `proy
 (49, 'Insignificante', 1, 17),
 (50, 'Menor', 2, 17),
 (51, 'Moderado', 3, 17),
-(52, 'Mayor', 4, 17);
+(52, 'Mayor', 6, 17),
+(53, 'ss', 6, 17),
+(54, 'ssyh', 8, 17),
+(82, 'Insignificante', 1, 18),
+(83, 'Menor', 2, 18),
+(84, 'Moderado', 3, 18),
+(85, 'Mayor', 4, 18),
+(86, 'Catastrófico', 5, 19),
+(87, 'Mayor', 4, 19),
+(88, 'Moderado', 3, 19),
+(89, 'Menor', 2, 19),
+(90, 'Insignificante', 1, 19),
+(91, 'Catastrófico', 5, 20),
+(92, 'Mayor', 4, 20),
+(93, 'Moderado', 3, 20),
+(94, 'Menor', 2, 20),
+(95, 'Insignificante', 1, 20);
 
 -- --------------------------------------------------------
 
@@ -2665,7 +2698,21 @@ INSERT INTO `propabilidad` (`propabilidad_id`, `propabilidad_categoria`, `propab
 (29, 'Moderada', 3, 17),
 (30, 'Probable', 4, 17),
 (31, 'Certeza', 5, 17),
-(32, 'Kilometro', 6, 17);
+(32, 'Kilometro', 6, 17),
+(56, 'jj', 1, 18),
+(57, 'improbable', 2, 18),
+(58, 'kilo', 4, 18),
+(59, 'rte', 7, 18),
+(60, 'Certeza', 5, 19),
+(61, 'Probable', 4, 19),
+(62, 'Moderada', 3, 19),
+(63, 'improbable', 2, 19),
+(64, 'raro', 1, 19),
+(65, 'Certeza', 5, 20),
+(66, 'Probable', 4, 20),
+(67, 'Moderada', 3, 20),
+(68, 'improbable', 2, 20),
+(69, 'raro', 1, 20);
 
 -- --------------------------------------------------------
 
@@ -2708,7 +2755,10 @@ INSERT INTO `proyecto` (`proyecto_id`, `proyecto_nombre`, `proyecto_objetivo`, `
 (14, 'FIN_3', 'dsfds', 'sdfsfd', 'sdfds', 324234, '2020-09-16', NULL, NULL, NULL, 0, 0, 28, 9),
 (15, 'FIN_4', 'dsfsd', 'sdfsd', 'dsfsdf', 32423, '2020-09-30', NULL, NULL, NULL, 0, 0, 28, 9),
 (16, 'Proyecto test', 'probar', 'probar', 'probar', 50000, '2020-09-14', NULL, NULL, NULL, 0, 0, 31, 9),
-(17, 'Atributos', 'sddsd', 'sdsd', 'sdsd', 2323, '2020-09-24', NULL, NULL, NULL, 0, 0, 28, 9);
+(17, 'Atributos', 'sddsd', 'sdsd', 'sdsd', 2323, '2020-09-24', NULL, NULL, NULL, 0, 0, 28, 9),
+(18, 'defin', 'edsfds', 'dsfsdf', 'dsfsd', 3333, '2020-09-25', NULL, NULL, NULL, 0, 0, 28, 9),
+(19, 'prueba', 'hhh', 'hhh', 'hhh', 50000, '2020-09-24', NULL, NULL, NULL, 0, 0, 28, 9),
+(20, 'proyecto_test', 'operativo', 'francia', 'der', 50000, '2020-09-16', NULL, NULL, NULL, 0, 0, 37, 9);
 
 --
 -- Disparadores `proyecto`
@@ -2751,7 +2801,7 @@ CREATE TABLE `proyecto_has_riesgo` (
 
 INSERT INTO `proyecto_has_riesgo` (`proyecto_has_riesgo_id`, `proyecto_id`, `riesgo_id`, `is_editado`, `responsable_id`, `impacto_id`, `propabilidad_id`, `fecha_manifestacion`) VALUES
 (6, 2, 22, 0, NULL, NULL, NULL, NULL),
-(19, 2, 5, 0, NULL, NULL, NULL, NULL),
+(19, 2, 5, 0, 3, NULL, NULL, NULL),
 (20, 2, 25, 0, NULL, NULL, NULL, NULL),
 (21, 2, 26, 0, NULL, NULL, NULL, NULL),
 (25, 2, 30, 0, NULL, NULL, NULL, NULL),
@@ -2783,9 +2833,31 @@ INSERT INTO `proyecto_has_riesgo` (`proyecto_has_riesgo_id`, `proyecto_id`, `rie
 (64, 2, 54, 0, NULL, NULL, NULL, NULL),
 (65, 2, 28, 0, NULL, NULL, NULL, NULL),
 (66, 2, 63, 0, NULL, NULL, NULL, NULL),
-(67, 17, 21, 0, NULL, NULL, NULL, NULL),
-(68, 17, 22, 0, NULL, NULL, NULL, NULL),
-(69, 17, 28, 0, NULL, NULL, NULL, NULL);
+(68, 17, 22, 0, NULL, 52, 29, NULL),
+(69, 17, 28, 0, 3, 52, 32, NULL),
+(72, 17, 4, 0, NULL, 50, 28, NULL),
+(73, 17, 64, 0, NULL, 49, 27, NULL),
+(76, 13, 65, 1, NULL, NULL, NULL, NULL),
+(78, 13, 66, 1, NULL, NULL, NULL, NULL),
+(79, 9, 22, 0, NULL, NULL, NULL, NULL),
+(80, 18, 10, 0, NULL, 82, 56, NULL),
+(81, 19, 3, 0, NULL, 88, 62, NULL),
+(82, 19, 5, 0, NULL, 90, 64, NULL),
+(83, 19, 6, 0, NULL, 86, 62, NULL),
+(86, 20, 67, 0, 4, 93, 67, NULL),
+(87, 20, 68, 0, NULL, 92, 67, NULL);
+
+--
+-- Disparadores `proyecto_has_riesgo`
+--
+DELIMITER $$
+CREATE TRIGGER `Agregar impacto por defecto al riesgo del proyecto` BEFORE INSERT ON `proyecto_has_riesgo` FOR EACH ROW SET NEW.impacto_id = (SELECT i.impacto_id FROM impacto i WHERE i.proyecto_id = NEW.proyecto_id ORDER BY i.impacto_valor ASC LIMIT 1)
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `Agregar propabilidad al riesgo del proyecto` BEFORE INSERT ON `proyecto_has_riesgo` FOR EACH ROW SET NEW.propabilidad_id = (SELECT p.propabilidad_id FROM propabilidad p WHERE p.proyecto_id = NEW.proyecto_id ORDER BY p.propabilidad_valor ASC LIMIT 1)
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -2815,26 +2887,34 @@ INSERT INTO `proyecto_has_riesgo_actividad` (`proyecto_has_riesgo_actividad_id`,
 CREATE TABLE `proyecto_has_riesgo_respuesta` (
   `proyecto_has_id` int(11) NOT NULL,
   `respuesta_has_id` int(11) NOT NULL,
-  `fecha_inicio_respuesta` datetime DEFAULT NULL,
-  `fecha_fin_respuesta` datetime DEFAULT NULL
+  `tipo_respuesta` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `proyecto_has_riesgo_respuesta`
 --
 
-INSERT INTO `proyecto_has_riesgo_respuesta` (`proyecto_has_id`, `respuesta_has_id`, `fecha_inicio_respuesta`, `fecha_fin_respuesta`) VALUES
-(19, 32, NULL, NULL),
-(37, 4, NULL, NULL),
-(37, 8, NULL, NULL),
-(37, 9, NULL, NULL),
-(37, 10, NULL, NULL),
-(37, 11, NULL, NULL),
-(37, 12, NULL, NULL),
-(37, 13, NULL, NULL),
-(40, 30, NULL, NULL),
-(40, 31, NULL, NULL),
-(56, 33, NULL, NULL);
+INSERT INTO `proyecto_has_riesgo_respuesta` (`proyecto_has_id`, `respuesta_has_id`, `tipo_respuesta`) VALUES
+(19, 32, ''),
+(37, 4, ''),
+(37, 8, ''),
+(37, 9, ''),
+(37, 10, ''),
+(37, 11, ''),
+(37, 12, ''),
+(37, 13, ''),
+(40, 30, ''),
+(40, 31, ''),
+(56, 33, ''),
+(68, 35, ''),
+(69, 34, ''),
+(73, 36, ''),
+(73, 37, ''),
+(76, 42, ''),
+(81, 45, ''),
+(82, 44, ''),
+(86, 46, ''),
+(86, 47, '');
 
 -- --------------------------------------------------------
 
@@ -2859,7 +2939,8 @@ INSERT INTO `rbs` (`rbs_id`, `rbs_default`, `gerente_id`) VALUES
 (30, 1, 33),
 (31, 0, 34),
 (32, 0, 31),
-(33, 0, 35);
+(33, 0, 35),
+(34, 2, 37);
 
 --
 -- Disparadores `rbs`
@@ -2890,6 +2971,21 @@ CREATE TABLE `recurso` (
   `tipo_recurso_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Volcado de datos para la tabla `recurso`
+--
+
+INSERT INTO `recurso` (`recurso_id`, `recurso_nombre`, `recurso_costo`, `proyecto_id`, `tipo_recurso_id`) VALUES
+(2, 'Ejercito otomano', 9888, 17, 5),
+(3, 'Espadas de ideales', 5000, 17, 7),
+(4, 'Comptadores', 520000, 13, 7),
+(5, 'Ejercito espartano', 34334, 13, 8),
+(6, 'mascarillas', 5656, 13, 9),
+(7, 'Recurso1', 5000, 19, 7),
+(8, 'recurso 2', 5000, 19, 7),
+(9, 'Electricista', 65000, 20, 32),
+(10, 'Operador', 69000, 20, 33);
+
 -- --------------------------------------------------------
 
 --
@@ -2903,6 +2999,16 @@ CREATE TABLE `responsble` (
   `proyecto_id` int(11) NOT NULL,
   `rol_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `responsble`
+--
+
+INSERT INTO `responsble` (`responsable_id`, `responsble_nombre`, `responsble_descripcion`, `proyecto_id`, `rol_id`) VALUES
+(3, 'Don comedia', 'Viene a matarnos de la risa.', 17, 1),
+(4, 'Gerardo Buenavidez', 'Diferenciador', 20, 2),
+(5, 'kilometraje', 'huilense', 20, 2),
+(6, 'plablo', 'pinguino que trae zapatos', 20, 2);
 
 -- --------------------------------------------------------
 
@@ -2969,7 +3075,21 @@ INSERT INTO `respuesta` (`respuesta_id`, `respuesta_nombre`, `respuesta_descripc
 (45, 'Repuesta franca', 'no sirve para nada, ! OJO Y LA VARIABRE REsPUESTA_PRECIO!\r\n', NULL),
 (46, 'Repuesta franca', 'no sirve para nada, ! OJO Y LA VARIABRE REsPUESTA_PRECIO!\r\n', NULL),
 (47, 'REspuesat sorpresa', 'sin sorpresa\r\n', NULL),
-(48, 'res', 'dddd', NULL);
+(48, 'res', 'dddd', NULL),
+(49, 'sdfsdf', 'dsfsdfsd', NULL),
+(50, 'fghgf', 'fghfh', NULL),
+(51, 'Accion prueba _ 2', 'llll', NULL),
+(52, 'Accion prueba _ 1', 'llll', NULL),
+(53, 'hhh', 'hgghg', NULL),
+(54, 'Accion prueba _ 1', 'llll', NULL),
+(55, 'Accion prueba _ 2', 'llll', NULL),
+(56, 'Accion prueba _ 1', 'llll', NULL),
+(57, 'Accion prueba _ 2', 'llll', NULL),
+(58, 'Accion prueba _ 1', 'llll', NULL),
+(59, 'Respuesta prueba', 'ddd', NULL),
+(60, 'lll', 'ss', NULL),
+(61, 'Dibujar una sonrisa', '', NULL),
+(62, 'Establecer nuevas marcas', 'Crear una moda\r\n', NULL);
 
 -- --------------------------------------------------------
 
@@ -3053,7 +3173,12 @@ INSERT INTO `riesgo` (`riesgo_id`, `riesgo_nombre`, `riesgo_causa`, `riesgo_even
 (60, 'sdfsdf', 'proro', 'dekldls', 'sdfdsf', 0, NULL, 98894425144426497, 95),
 (61, 'riesgo novedoso', 'dfds', 'sdfsd', 'fsdf', 0, NULL, 98894425144426498, 74),
 (62, 'novedosox3', 'sdf', 'sdfsd', 'dsfsdf', 0, NULL, 98894425144426499, 77),
-(63, 'riesgo nuevo ', 'ddd', 'dd', 'dd', 0, NULL, 98895409027481600, 78);
+(63, 'riesgo nuevo ', 'ddd', 'dd', 'dd', 0, NULL, 98895409027481600, 78),
+(64, 'probar acciones', 'aaa', 'aa', 'aaa', 0, NULL, 98906083078176768, 86),
+(65, 'probar acciones', 'liop', ' aa´sdfsd', ' aaa', 0, NULL, 98906083078176769, 86),
+(66, 'novedosox3', 'francia invadio polonia', ' sdfsd', ' dsfsdf', 0, NULL, 98906083078176770, 77),
+(67, 'riesgo 8 septiemve', '', '', '', 0, NULL, 98913166502658055, 206),
+(68, 'riesgo nuevo ', '', '', '', 0, NULL, 98913166502658056, 207);
 
 --
 -- Disparadores `riesgo`
@@ -3099,9 +3224,13 @@ INSERT INTO `riesgo_has_respuesta` (`riesgo_has_respuesta_id`, `riesgo_id`, `res
 (28, 3, 43),
 (29, 3, 44),
 (33, 3, 48),
+(45, 3, 60),
 (30, 4, 45),
 (31, 4, 46),
 (32, 5, 47),
+(44, 5, 59),
+(35, 22, 50),
+(34, 28, 49),
 (3, 36, 18),
 (4, 36, 19),
 (8, 36, 23),
@@ -3112,7 +3241,17 @@ INSERT INTO `riesgo_has_respuesta` (`riesgo_has_respuesta_id`, `riesgo_id`, `res
 (13, 36, 28),
 (5, 37, 20),
 (6, 37, 21),
-(7, 37, 22);
+(7, 37, 22),
+(36, 64, 51),
+(37, 64, 52),
+(38, 65, 53),
+(39, 65, 54),
+(40, 65, 55),
+(41, 65, 56),
+(42, 65, 57),
+(43, 65, 58),
+(46, 67, 61),
+(47, 67, 62);
 
 -- --------------------------------------------------------
 
@@ -3126,6 +3265,14 @@ CREATE TABLE `rol` (
   `rol_descripcion` tinytext DEFAULT NULL,
   `gerente_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `rol`
+--
+
+INSERT INTO `rol` (`rol_id`, `rol_nombre`, `rol_descripcion`, `gerente_id`) VALUES
+(1, 'Comediantes', 'Se encargan de divertirnos.', 28),
+(2, 'Comediante', 'Encargado de matarnos de la risa.', 37);
 
 -- --------------------------------------------------------
 
@@ -3320,7 +3467,12 @@ INSERT INTO `sub_categoria` (`sub_categoria_id`, `sub_categoria_nombre`, `sub_ca
 (201, 'Sitios/Instalaciones', '', 0, 98895409027481625, 41),
 (202, 'Ambiental/clima', '', 0, 98895409027481626, 41),
 (203, 'Competencia', '', 0, 98895409027481627, 41),
-(204, 'Normativo', '', 0, 98895409027481628, 41);
+(204, 'Normativo', '', 0, 98895409027481628, 41),
+(205, 'Definición del alcance', '', 2, 98913166502658049, 42),
+(206, 'Definición de los requisitos', '', 2, 98913166502658050, 42),
+(207, 'Tecnología', '', 2, 98913166502658051, 42),
+(208, 'Procesos técnicos', '', 2, 98913166502658052, 42),
+(209, 'Términos y condiciones contractuales', '', 2, 98913166502658054, 43);
 
 --
 -- Disparadores `sub_categoria`
@@ -3341,15 +3493,29 @@ CREATE TABLE `tarea` (
   `tarea_nombre` varchar(77) NOT NULL,
   `tarea_descripcion` tinytext NOT NULL,
   `proyecto_has_riesgo_id` int(11) NOT NULL,
-  `riesgo_has_respuesta_id` int(11) NOT NULL
+  `riesgo_has_respuesta_id` int(11) NOT NULL,
+  `fecha_inicio` datetime DEFAULT NULL,
+  `duracion` int(11) DEFAULT NULL,
+  `fecha_fin` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Volcado de datos para la tabla `tarea`
 --
 
-INSERT INTO `tarea` (`tarea_id`, `tarea_nombre`, `tarea_descripcion`, `proyecto_has_riesgo_id`, `riesgo_has_respuesta_id`) VALUES
-(2, 'dfg', 'dgdfg', 37, 8);
+INSERT INTO `tarea` (`tarea_id`, `tarea_nombre`, `tarea_descripcion`, `proyecto_has_riesgo_id`, `riesgo_has_respuesta_id`, `fecha_inicio`, `duracion`, `fecha_fin`) VALUES
+(2, 'dfg', 'dgdfg', 37, 8, NULL, NULL, NULL),
+(4, 'acabar las dictaduras', 'instaruar un referendo', 69, 34, NULL, NULL, NULL),
+(5, 'acabar las dictaduras', 'instaruar un referendo', 69, 34, NULL, NULL, NULL),
+(6, 'www', 'sadsad', 69, 34, NULL, NULL, NULL),
+(7, 'destruir al capitalismo', 'sss', 76, 42, NULL, NULL, NULL),
+(8, 'destruir al capitalismo', 'sss', 76, 42, NULL, NULL, NULL),
+(9, 'destruir al capitalismo', 'sss', 76, 42, NULL, NULL, NULL),
+(10, 'destruir al capitalismo', 'sss', 76, 42, NULL, NULL, NULL),
+(11, 'destruir al capitalismo', 'sss', 76, 42, NULL, NULL, NULL),
+(12, 'destruir al capitalismo', 'sss', 76, 42, NULL, NULL, NULL),
+(13, 'tarea1', '', 82, 44, NULL, NULL, NULL),
+(14, 'planear todo', 'ggg', 86, 46, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -3360,8 +3526,19 @@ INSERT INTO `tarea` (`tarea_id`, `tarea_nombre`, `tarea_descripcion`, `proyecto_
 CREATE TABLE `tarea_has_recurso` (
   `tarea_id` int(11) NOT NULL,
   `recurso_id` int(11) NOT NULL,
-  `cantidad` int(11) DEFAULT NULL
+  `cantidad` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `tarea_has_recurso`
+--
+
+INSERT INTO `tarea_has_recurso` (`tarea_id`, `recurso_id`, `cantidad`) VALUES
+(6, 2, 2),
+(6, 3, 3),
+(7, 6, 33),
+(13, 7, 5),
+(14, 9, 5);
 
 -- --------------------------------------------------------
 
@@ -3404,7 +3581,13 @@ INSERT INTO `tipo_recurso` (`tipo_recurso_id`, `tipo_recurso_nombre`, `tipo_recu
 (24, 'Costo', 'Este tipo de recurso implica un gasto para el proyecto, pero no dependen del trabajo o la duración de una tarea. Pueden tratarse de gastos de representación (comidas, viajes…).', 34),
 (25, 'Material', 'Este tipo de recurso se refiere a los suministros, materiales y cualquier otro consumible necesario para completar las tareas.', 35),
 (26, 'Trabajo', 'Se trata de los miembros de tu equipo de trabajo. La dedicación de cada individuo se mide en horas de trabajo.', 35),
-(27, 'Costo', 'Este tipo de recurso implica un gasto para el proyecto, pero no dependen del trabajo o la duración de una tarea. Pueden tratarse de gastos de representación (comidas, viajes…).', 35);
+(27, 'Costo', 'Este tipo de recurso implica un gasto para el proyecto, pero no dependen del trabajo o la duración de una tarea. Pueden tratarse de gastos de representación (comidas, viajes…).', 35),
+(28, 'Material', 'Este tipo de recurso se refiere a los suministros, materiales y cualquier otro consumible necesario para completar las tareas.', 36),
+(29, 'Trabajo', 'Se trata de los miembros de tu equipo de trabajo. La dedicación de cada individuo se mide en horas de trabajo.', 36),
+(30, 'Costo', 'Este tipo de recurso implica un gasto para el proyecto, pero no dependen del trabajo o la duración de una tarea. Pueden tratarse de gastos de representación (comidas, viajes…).', 36),
+(31, 'Material', 'Este tipo de recurso se refiere a los suministros, materiales y cualquier otro consumible necesario para completar las tareas.', 37),
+(32, 'Trabajo', 'Se trata de los miembros de tu equipo de trabajo. La dedicación de cada individuo se mide en horas de trabajo.', 37),
+(33, 'Costo', 'Este tipo de recurso implica un gasto para el proyecto, pero no dependen del trabajo o la duración de una tarea. Pueden tratarse de gastos de representación (comidas, viajes…).', 37);
 
 --
 -- Índices para tablas volcadas
@@ -3594,25 +3777,25 @@ ALTER TABLE `tipo_recurso`
 -- AUTO_INCREMENT de la tabla `categoria`
 --
 ALTER TABLE `categoria`
-  MODIFY `categoria_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `categoria_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 
 --
 -- AUTO_INCREMENT de la tabla `clasificacion_riesgo`
 --
 ALTER TABLE `clasificacion_riesgo`
-  MODIFY `clasificacion_riesgo_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `clasificacion_riesgo_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
 
 --
 -- AUTO_INCREMENT de la tabla `gerente`
 --
 ALTER TABLE `gerente`
-  MODIFY `gerente_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `gerente_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT de la tabla `impacto`
 --
 ALTER TABLE `impacto`
-  MODIFY `impacto_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+  MODIFY `impacto_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=96;
 
 --
 -- AUTO_INCREMENT de la tabla `pais`
@@ -3624,19 +3807,19 @@ ALTER TABLE `pais`
 -- AUTO_INCREMENT de la tabla `propabilidad`
 --
 ALTER TABLE `propabilidad`
-  MODIFY `propabilidad_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `propabilidad_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
 
 --
 -- AUTO_INCREMENT de la tabla `proyecto`
 --
 ALTER TABLE `proyecto`
-  MODIFY `proyecto_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `proyecto_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT de la tabla `proyecto_has_riesgo`
 --
 ALTER TABLE `proyecto_has_riesgo`
-  MODIFY `proyecto_has_riesgo_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
+  MODIFY `proyecto_has_riesgo_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=88;
 
 --
 -- AUTO_INCREMENT de la tabla `proyecto_has_riesgo_actividad`
@@ -3648,43 +3831,43 @@ ALTER TABLE `proyecto_has_riesgo_actividad`
 -- AUTO_INCREMENT de la tabla `rbs`
 --
 ALTER TABLE `rbs`
-  MODIFY `rbs_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `rbs_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT de la tabla `recurso`
 --
 ALTER TABLE `recurso`
-  MODIFY `recurso_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `recurso_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `responsble`
 --
 ALTER TABLE `responsble`
-  MODIFY `responsable_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `responsable_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `respuesta`
 --
 ALTER TABLE `respuesta`
-  MODIFY `respuesta_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
+  MODIFY `respuesta_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
 
 --
 -- AUTO_INCREMENT de la tabla `riesgo`
 --
 ALTER TABLE `riesgo`
-  MODIFY `riesgo_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
+  MODIFY `riesgo_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=69;
 
 --
 -- AUTO_INCREMENT de la tabla `riesgo_has_respuesta`
 --
 ALTER TABLE `riesgo_has_respuesta`
-  MODIFY `riesgo_has_respuesta_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `riesgo_has_respuesta_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
 -- AUTO_INCREMENT de la tabla `rol`
 --
 ALTER TABLE `rol`
-  MODIFY `rol_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `rol_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `sector`
@@ -3696,19 +3879,19 @@ ALTER TABLE `sector`
 -- AUTO_INCREMENT de la tabla `sub_categoria`
 --
 ALTER TABLE `sub_categoria`
-  MODIFY `sub_categoria_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=205;
+  MODIFY `sub_categoria_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=210;
 
 --
 -- AUTO_INCREMENT de la tabla `tarea`
 --
 ALTER TABLE `tarea`
-  MODIFY `tarea_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `tarea_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_recurso`
 --
 ALTER TABLE `tipo_recurso`
-  MODIFY `tipo_recurso_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `tipo_recurso_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- Restricciones para tablas volcadas
@@ -3762,8 +3945,8 @@ ALTER TABLE `proyecto`
 -- Filtros para la tabla `proyecto_has_riesgo`
 --
 ALTER TABLE `proyecto_has_riesgo`
-  ADD CONSTRAINT `fk_proyecto_has_riesgo_impacto1` FOREIGN KEY (`impacto_id`) REFERENCES `impacto` (`impacto_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_proyecto_has_riesgo_propabilidad1` FOREIGN KEY (`propabilidad_id`) REFERENCES `propabilidad` (`propabilidad_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_proyecto_has_riesgo_impacto1` FOREIGN KEY (`impacto_id`) REFERENCES `impacto` (`impacto_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_proyecto_has_riesgo_propabilidad1` FOREIGN KEY (`propabilidad_id`) REFERENCES `propabilidad` (`propabilidad_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_proyecto_has_riesgo_proyecto1` FOREIGN KEY (`proyecto_id`) REFERENCES `proyecto` (`proyecto_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_proyecto_has_riesgo_responsble1` FOREIGN KEY (`responsable_id`) REFERENCES `responsble` (`responsable_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_proyecto_has_riesgo_riesgo1` FOREIGN KEY (`riesgo_id`) REFERENCES `riesgo` (`riesgo_id`) ON DELETE CASCADE ON UPDATE NO ACTION;
@@ -3838,7 +4021,7 @@ ALTER TABLE `tarea`
 --
 ALTER TABLE `tarea_has_recurso`
   ADD CONSTRAINT `fk_tarea_has_recurso_recurso1` FOREIGN KEY (`recurso_id`) REFERENCES `recurso` (`recurso_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_tarea_has_recurso_tarea1` FOREIGN KEY (`tarea_id`) REFERENCES `tarea` (`tarea_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_tarea_has_recurso_tarea1` FOREIGN KEY (`tarea_id`) REFERENCES `tarea` (`tarea_id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
 --
 -- Filtros para la tabla `tipo_recurso`

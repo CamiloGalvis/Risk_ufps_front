@@ -38,17 +38,17 @@ class RespuestaController:
         respuesta_riesgo_dao = RiesgoHasRespuestaDao()
         return respuesta_riesgo_dao.obtener_respuesta_riesgo(riesgo, respuesta)
 
-    def registrar_respuesta_proyecto(self, proyecto_riesgo, riesgo_respuesta, fecha_inicio):
+    def registrar_respuesta_proyecto(self, proyecto_riesgo, riesgo_respuesta, tipo_respuesta):
         p_r_r= ProyectoHasRiesgo_RespuestaDao()
-        return p_r_r.registrar_respuesta_proyecto(proyecto_riesgo, riesgo_respuesta, fecha_inicio)
+        return p_r_r.registrar_respuesta_proyecto(proyecto_riesgo, riesgo_respuesta, tipo_respuesta)
 
     def get_riesgo_respuesta_by_id(self, proyecto_riesgo, riesgo_respuesta):
         p_r_r= ProyectoHasRiesgo_RespuestaDao()
         return p_r_r.get_riesgo_respuesta_by_id(proyecto_riesgo, riesgo_respuesta)
 
-    def actualizar_fecha_respuesta(self, proyecto_respuesta, fecha):
+    def actualizar_tipo_respuesta(self, proyecto_respuesta, tipo_respuesta):
         p_r_r= ProyectoHasRiesgo_RespuestaDao()
-        return p_r_r.actualizar_fecha_respuesta(proyecto_respuesta, fecha)
+        return p_r_r.actualizar_tipo_respuesta(proyecto_respuesta, tipo_respuesta)
 
     def desasociar_respuesta_riesgo_by_proyecto(self, respuesta_id, riesgo_id, proyecto_id):
 
@@ -75,7 +75,7 @@ class RespuestaController:
                         respuesta_id=respuesta.respuesta_id,
                         respuesta_nombre=respuesta.respuesta_nombre,
                         respuesta_descripcion=respuesta.respuesta_descripcion,
-                        fecha_inicio_respuesta=self.get_datetime(respuesta.fecha_inicio_respuesta),
+                        tipo_respuesta= respuesta.tipo_respuesta,
                         riesgo_has_respuesta=respuesta.riesgo_has_respuesta_id
                     )
                 )
@@ -86,7 +86,7 @@ class RespuestaController:
                         respuesta_id=respuesta.respuesta_id,
                         respuesta_nombre=respuesta.respuesta_nombre,
                         respuesta_descripcion=respuesta.respuesta_descripcion,
-                        fecha_inicio_respuesta=self.get_datetime(respuesta.fecha_inicio_respuesta),
+                        tipo_respuesta= respuesta.tipo_respuesta,
                         riesgo_has_respuesta=respuesta.riesgo_has_respuesta_id
                     )
                 )

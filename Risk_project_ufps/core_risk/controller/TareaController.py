@@ -6,9 +6,9 @@ from django.forms.models import model_to_dict
 
 class TareaController():
 
-	def registrar_tarea(self, proyecto_riesgo_respuesta, nombre, descripcion):
+	def registrar_tarea(self, proyecto_riesgo_respuesta, nombre, descripcion, fecha_inicio, fecha_fin):
 		tarea_dao = TareaDao()
-		return tarea_dao.registrar_tarea(proyecto_riesgo_respuesta, nombre, descripcion)
+		return tarea_dao.registrar_tarea(proyecto_riesgo_respuesta, nombre, descripcion, fecha_inicio, fecha_fin)
 
 	def get_tarea_by_id(self, id):
 		tarea_dao = TareaDao()
@@ -38,9 +38,9 @@ class TareaController():
 		tarea_dao = TareaDao()
 		return tarea_dao.eliminar_tarea(tarea)
 
-	def editar_tarea(self, tarea, nombre, descripcion):
+	def editar_tarea(self, tarea, nombre, descripcion, fecha_inicio, fecha_fin):
 		tarea_dao = TareaDao()
-		return tarea_dao.editar_tarea(tarea, nombre, descripcion)
+		return tarea_dao.editar_tarea(tarea, nombre, descripcion, fecha_inicio, fecha_fin)
 
 	def listar_tareas_group_by_riesgo(self, proyecto):
 		tarea_dao = TareaDao()

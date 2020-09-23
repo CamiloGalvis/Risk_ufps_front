@@ -7,12 +7,12 @@ from Risk_project_ufps.core_risk.dto.models import *
 
 class ProyectoHasRiesgo_RespuestaDao():
 
-    def registrar_respuesta_proyecto(self, proyecto_riesgo, riesgo_respuesta, fecha_inicio):
+    def registrar_respuesta_proyecto(self, proyecto_riesgo, riesgo_respuesta, tipo_respuesta):
         with closing(connection.cursor()) as cursor:
             cursor.execute(
-                'INSERT INTO riesgos_bd.`proyecto_has_riesgo_respuesta`(`proyecto_has_id`, `respuesta_has_id`, `fecha_inicio_respuesta` )'
+                'INSERT INTO riesgos_bd.`proyecto_has_riesgo_respuesta`(`proyecto_has_id`, `respuesta_has_id`, `tipo_respuesta` )'
                 'VALUES (%s, %s, %s)',
-                (proyecto_riesgo.proyecto_has_riesgo_id, riesgo_respuesta.riesgo_has_respuesta_id, fecha_inicio),
+                (proyecto_riesgo.proyecto_has_riesgo_id, riesgo_respuesta.riesgo_has_respuesta_id, tipo_respuesta),
             )
 
             return "Se registro respuesta exitosamente."
@@ -49,14 +49,14 @@ class ProyectoHasRiesgo_RespuestaDao():
         finally:
             return respuesta
 
-    def actualizar_fecha_respuesta(self, proyecto_respuesta, fecha):
+    def actualizar_tipo_respuesta(self, proyecto_respuesta, tipo_respuesta):
       with closing(connection.cursor()) as cursor:
-            sql = 'UPDATE riesgos_bd.proyecto_has_riesgo_respuesta SET fecha_inicio_respuesta = %s' \
+            sql = 'UPDATE riesgos_bd.proyecto_has_riesgo_respuesta SET tipo_respuesta = %s' \
                   'WHERE proyecto_has_id = %s ' \
                   'AND respuesta_has_id = %s'
             cursor.execute(
                 sql,
-                [fecha, proyecto_respuesta.proyecto_has_id,
+                [tipo_respuesta, proyecto_respuesta.proyecto_has_id,
                  proyecto_respuesta.respuesta_has_id],
             )
 
