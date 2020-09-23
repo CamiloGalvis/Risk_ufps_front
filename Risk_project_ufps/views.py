@@ -10,6 +10,10 @@ from django.core import serializers
 
 from django.forms.models import model_to_dict
 
+
+from Risk_project_ufps.core_risk.dto.models import *
+
+
 from json import dumps
 
 from datetime import date
@@ -1236,6 +1240,12 @@ def get_data_planificar_respuesta(proyecto_id: int):
 
 
 def planificar_respuestas(request, proyecto_id):
+
+    #proyecto = Proyecto.objects.using('base').get(proyecto_id=2, proyecto_linea_base=1)
+    #proyecto = Proyecto.objects.get(proyecto_id=17)
+    #print(proyecto.proyecto_nombre, proyecto.linea_base)
+    # proyecto = Proyecto.objects.get(proyecto_id=17)
+    # print(proyecto.proyecto_nombre, proyecto.linea_base
     return render(
         request,
         "procesos/planificar_respuestas.html",

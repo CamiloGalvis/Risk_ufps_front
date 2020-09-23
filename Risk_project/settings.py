@@ -99,6 +99,17 @@ DATABASES = {
             'HOST': 'localhost',
             'PORT': '3306',
     },
+    'base': {
+            'ENGINE': 'django.db.backends.mysql',
+            'OPTIONS': {
+            'sql_mode': 'STRICT_ALL_TABLES',
+            },
+            'NAME': 'riesgos_base',
+            'USER': 'root',
+            'PASSWORD': 'Soporte',
+            'HOST': 'localhost',
+            'PORT': '3306',
+    },
 }
 
 DATABASE_ROUTERS = ['Risk_project.AuthRouter.AuthRouter']
