@@ -16,17 +16,7 @@
         <li><a href="#"><i class="fa fa-dashboard"></i> Inicio</a></li>
         <li class="active">Proyectos</li>
       </ol>
-      <br>
-      <ul class="chart-legend clearfix">
-        <div class="row">
-          <div class="col-xs-2">
-            <li><i class="fa fa-circle-o text-blue"> &nbsp Proyectos en ejecución</i></li>
-          </div>
-          <div class="col-xs-2">
-            <li><i class="fa fa-circle-o text-red"> &nbsp Proyectos finalizados</i></li> 
-          </div>
-        </div>                                                      
-      </ul>
+      
     </section>
 
    
@@ -34,11 +24,19 @@
     <section class="content-header">
 
      <!-- Sección tarjetas -->
+     {% if lista_proyectos %}
+     <ul class="chart-legend clearfix">               
+       <span class="label label-danger pull-right">Proyectos Finalizados</span>       
+       <span class="label label-info pull-right">Proyectos en Ejecución</span>                 
+     </ul>
+     <br>
 
      <div class="row">
       <!-- Tarjeta -->
-      {% if lista_proyectos %}
+
       {% for proyecto in lista_proyectos %}
+
+
       <div class="col-lg-3 col-xs-6">
         {% if proyecto.proyecto_fin_status %}
         <div class="small-box bg-red">
@@ -46,7 +44,7 @@
         <div class="small-box bg-aqua">
         {% endif %}  
           <div class="inner">
-            <h1>{{ proyecto.proyecto_nombre}}</h1>
+            <h2>{{ proyecto.proyecto_nombre}}</h2>
           </div>
           <div class="icon">
             <i class="ion ion-document"></i>

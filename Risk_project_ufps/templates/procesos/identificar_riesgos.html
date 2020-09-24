@@ -232,7 +232,7 @@
           <table id="tabla_riesgos" class="table table-bordered table-striped">
             <thead>
               <tr>
-                <th>Riesgo</th>
+                <th>Riesgo &nbsp<i class="fa fa-long-arrow-down"><i class="fa fa-long-arrow-up"></th>
                 <th><label data-toggle="tooltip" data-placement="top" title="Actividades del cronograma del proyecto afectadas por el riesgo.">Actividades</label></th>
                 <th><label data-toggle="tooltip" data-placement="top" title="Responsable asignado al riesgo.">Responsable</label></th>
                 <th><label data-toggle="tooltip" data-placement="top" title="Acciones de respuesta preliminares asociadas al riesgo.">Acciones de respuesta</label></th>
@@ -429,11 +429,46 @@
                     <input type="text" class="form-control" id="respuesta_nombre" placeholder="Nombre acción de respuesta" name="respuesta_nombre">
                   </div>
                 </div>
-                <!-- / input para pasar el id del riesgo al asociarle la respuesta -->
-                <input type="text" class="form-control" id="riesgo_id_r" name="riesgo_id" style="visibility:hidden">
-              </div>           
-              <div class="col-md-6">
                 <div class="form-group">
+                  <div class="form-group">
+                    <label >Tipo de Acción</label>
+                    <select class="form-control select2" id="responsable_id" name="tipo_respuesta">
+                      <optgroup label="Riesgo">
+                        <option value="Mitigar">
+                         Mitigar
+                       </option>
+                       <option value="Evitar">
+                         Evitar
+                       </option>
+                       <option value="Transferir">
+                         Transferir
+                       </option>
+                       <option value="Aceptar">
+                         Aceptar
+                       </option>
+                     </optgroup> 
+                     <optgroup label="Oportunidades">
+                      <option value="Explotar">
+                       Explotar
+                     </option>
+                     <option value="Compartir">
+                       Compartir
+                     </option>
+                     <option value="Mejorar">
+                       Mejorar
+                     </option>
+                     <option value="Aceptar">
+                       Aceptar
+                     </option>
+                   </optgroup>                  
+                 </select>
+               </div>
+             </div>
+             <!-- / input para pasar el id del riesgo al asociarle la respuesta -->
+             <input type="text" class="form-control" id="riesgo_id_r" name="riesgo_id" style="visibility:hidden">
+           </div>           
+           <div class="col-md-6">
+            <div class="form-group">
                   <label>Descripción</label>
                   <textarea class="form-control" rows="3" placeholder="Descripción de la acción de respuesta preliminar" name="respuesta_descripcion"></textarea>
                 </div>

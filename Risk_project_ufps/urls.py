@@ -32,11 +32,6 @@ urlpatterns = [
     path('eliminar_respuesta/', eliminar_respuesta, name='eliminar_respuesta'),    
     path('editar_respuesta/', editar_respuesta, name='editar_respuesta'),
 
-    # urls tipo de recurso
-    path('tipo_recurso/', tipo_recurso, name='tipo_recurso'),
-    path('eliminar_tipo_recurso/', eliminar_tipo_recurso, name='eliminar_tipo_recurso'),
-    path('editar_tipo_recurso/', editar_tipo_recurso, name='editar_tipo_recurso'),
-
     # urls roles equipo de trabajo
     path('roles_equipo/', roles_equipo, name='roles_equipo'),
     path('nuevo_rol/', nuevo_rol, name='nuevo_rol'),

@@ -86,7 +86,7 @@
           <table id="example" class="table table-bordered table-striped dataTable" style="width:100%">
             <thead>
               <tr>
-                <th>Nombre</th>
+                <th>Nombre&nbsp<i class="fa fa-long-arrow-down"><i class="fa fa-long-arrow-up"></th>
                 <th>
                   <label data-toggle="tooltip" data-placement="top" title="Consecuencias que puede ocasionar al proyecto la materialización del riesgo">Impacto</label>
                 </th>
@@ -97,7 +97,7 @@
                       <label data-toggle="tooltip" data-placement="top" title="Resultado de multiplicar probabilidad por impacto.">Nivel</label>
                     </th>
                     <th>
-                      <label data-toggle="tooltip" data-placement="top" title="Resultado de multiplicar probabilidad por impacto">Total</label>
+                      <label data-toggle="tooltip" data-placement="top" title="Resultado de multiplicar probabilidad por impacto">Total</label>&nbsp<i class="fa fa-long-arrow-down"><i class="fa fa-long-arrow-up">
                     </th>
                 </tr>
             </thead>
@@ -137,6 +137,14 @@
           </h3>
         </div>
         <div class="box-body">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label >Filtrar Riesgos</label>
+              <select class="form-control select2" id="categorias_evaluar" name="categorias" onchange="cargar_riesgos();">              
+              </select>
+            </div>           
+          </div>
+          <div class="col-md-12">
           <div class="row justify-content-md-center">
             <div class="col col-lg-2"></div>
             <div class="col-md-8">
@@ -146,7 +154,8 @@
               </table>
             </div>
             <div class="col col-lg-2"></div>
-          </div>          
+          </div>
+           </div>          
         </div>
       </div>
 
@@ -273,6 +282,80 @@
 
   }
 
+  function agregarOpciones(evaluaciones){
+    let select = document.getElementById('categorias_evaluar');    
+    var opcion1 = document.createElement("option");
+    opcion1.text = "Todos";        
+    opcion1.value = "Todos";
+    select.appendChild(opcion1);
+    for(var i = 0; i<evaluaciones.length; i++){
+      var opcion = document.createElement("option");
+      opcion.text = evaluaciones[i]["nombre"];        
+      opcion.value = evaluaciones[i]["nombre"];
+      select.appendChild(opcion);
+    }
+
+  }
+
+  function cargar_riesgos(){
+    let select = document.getElementById('categorias_evaluar');
+    let v = select.options[select.selectedIndex].text;
+    let matriz_calor = document.getElementById('matriz_calor');
+    let filas = matriz_calor.getElementsByTagName("tr");    
+    impactos = ordenarMenoraMayor(valores["impactos_valores"]);
+    probabilidades = ordenarMayoraMenor( valores["probabilidades_valores"]);
+
+
+
+
+    for (let i = 1; i < filas.length; i++) {
+      let columnas = filas[i].getElementsByTagName("td");
+
+      for (let j = 1; j < columnas.length; j++) {
+        let p = probabilidades[i-1];
+        let ii = impactos[j-1];   
+        columnas[j].innerHTML = "";
+        for (let r = 0; r<riesgos.length; r++){
+          probabilidad = get_valor_probabilidad_id(riesgos[r]["propabilidad_id"])
+          impacto = get_valor_impacto_id(riesgos[r]["impacto_id"])
+
+          
+
+          if(probabilidad == p && impacto == ii){
+            evaluacion = get_evaluacion_nombre(impacto, probabilidad)
+
+            if(v=="Todos"){
+              columnas[j].appendChild(document.createTextNode(riesgos[r]["riesgo_nombre"]));
+            }else if(v==evaluacion){              
+              
+              columnas[j].appendChild(document.createTextNode(riesgos[r]["riesgo_nombre"]));
+            } 
+
+          }
+          
+        }
+
+
+      }
+    }
+    
+
+  }
+
+  function get_evaluacion_nombre(impacto, probabilidad){
+
+    let evaluacion = impacto * probabilidad;
+    
+    for(var i = 0; i<rangos_riesgos.length; i++){      
+        if(evaluacion>=rangos_riesgos[i]["rango"][0] && evaluacion<=rangos_riesgos[i]["rango"][1]){
+          console.log(rangos_riesgos[i]["nombre"])
+          return rangos_riesgos[i]["nombre"];
+        }
+      }
+    
+  }
+
+
 
   function llenar_encabezado(impactos, probabilidades){
     let matriz_calor = document.getElementById('matriz_calor');
@@ -300,10 +383,6 @@
 
 
   }
-
-
-
-
 
 
   function ordenarMenoraMayor(mi_array) {      
@@ -513,6 +592,7 @@ function construir_tabla_clasificacion_riesgos(){
     construir_matriz_calor(valores["impactos"].length + 1, valores["probabilidades"].length + 1);
     llenar_matriz_calor(valores["impactos_valores"], valores["probabilidades_valores"], riesgos);
     llenar_encabezado(valores["impactos"], valores["probabilidades"]);
+    agregarOpciones(rangos_riesgos)
     construir_tabla_riesgos(riesgos);
     construir_tabla_clasificacion_riesgos();
     $("#example").DataTable({
