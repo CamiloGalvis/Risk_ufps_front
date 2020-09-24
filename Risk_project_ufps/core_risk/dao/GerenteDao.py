@@ -11,8 +11,17 @@ class GerenteDao():
 		finally:      
 			return gerente
 
+	def validar_gerente(self, usuario):
+		gerente = None
+		try:
+			gerente = Gerente.objects.get(gerente_usuario = usuario)
+		except Error as e:
+			print(e)
+		finally:      
+			return gerente
+
 		
-	def registrar_gerente(self, id, usuario, correo, nombre, sector, profesion, empresa, pais):
+	def registrar_gerente(self, id, usuario, correo, nombre, sector, profesion, empresa, pais, metodologia, certificacion):
 
 		gerente = Gerente(
 			gerente_id = id,
@@ -22,7 +31,9 @@ class GerenteDao():
 				sector = sector,
 				gerente_profesion = profesion,
 				gerente_empresa  = empresa,
-				pais_id = pais
+				pais_id = pais,
+				gerente_metodologias = metodologia,
+				gerente_certificaciones = certificacion
 		)	
 		try:
 			gerente.save()      

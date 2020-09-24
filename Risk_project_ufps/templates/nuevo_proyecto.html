@@ -62,7 +62,7 @@
 
                 <div class="form-group">
                   <label>Nombre</label>
-                  <input type="text" class="form-control" placeholder="Ingrese Nombre del Proyecto" name="proyecto_nombre" required>
+                  <input type="text" maxlength="100" class="form-control" placeholder="Ingrese Nombre del Proyecto" name="proyecto_nombre" required>
                 </div>
                 <div class="form-group">
                   <label>Presupuesto para riesgos</label>
@@ -71,11 +71,11 @@
 
                 <div class="form-group">
                   <label>Objetivo</label>
-                  <textarea class="form-control" rows="3" placeholder="Objetivo del proyecto..." name="proyecto_objetivo"></textarea>
+                  <textarea class="form-control" rows="3" placeholder="Objetivo del proyecto..." name="proyecto_objetivo" maxlength="200"></textarea>
                 </div>
                 <div class="form-group">
                   <label>Alcance</label>
-                  <textarea class="form-control" rows="3" placeholder="Alcance del proyecto..." name="proyecto_alcance"></textarea>
+                  <textarea class="form-control" rows="3" placeholder="Alcance del proyecto..." name="proyecto_alcance" maxlength="200"></textarea>
                 </div>
               </div>
             </div>
@@ -88,7 +88,7 @@
               </div>
               <div class="form-group">
                 <label>Descripción</label>
-                <textarea class="form-control" rows="3" placeholder="Descripción del proyecto..." name="proyecto_descripcion"></textarea>
+                <textarea class="form-control"  placeholder="Descripción del proyecto..." name="proyecto_descripcion" maxlength="254"></textarea>
               </div>
               <div class="form-group">
                 <label>Fecha de inicio</label>
@@ -97,7 +97,7 @@
                   <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>
                   </div>
-                  <input type="date" class="form-control pull-right" name="proyecto_fecha_inicio" required>
+                  <input type="date" min="{{ today }}"class="form-control pull-right" name="proyecto_fecha_inicio" required>
                 </div>
               </div>
               <div class="form-group">
@@ -171,7 +171,7 @@ $("#form_proyecto").submit(function(e) {
             data: $("#form_proyecto").serialize()+"&actividades=False",
             success: function(data) {
                 alert("Registro exitoso");
-                window.location.href = "/nuevoproyecto/";
+                window.location.href = "/nuevoproyecto/";                
             }, error: function (jqXhr, textStatus, errorMessage) {
               console.log(errorMessage);
               alert("Fallo Registro");

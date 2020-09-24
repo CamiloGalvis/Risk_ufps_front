@@ -30,6 +30,17 @@ class ProyectoDao:
         finally:
             return proyecto
 
+
+
+    def validar_proyecto(self, nombre):
+        proyecto = None
+        try:
+            proyecto = Proyecto.objects.get(proyecto_nombre=nombre)
+        except Error as e:
+            print(e)
+        finally:
+            return proyecto
+
     def editar_proyecto(self, proyecto, nombre, objetivo, alcance, descripcion, presupuesto, fecha_inicio, sector):
         proyecto = proyecto
         try:

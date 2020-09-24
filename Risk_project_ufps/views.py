@@ -81,16 +81,23 @@ def registrar_usuario(usuario, correo, password, nombre):
 
 # Registra un nuevo gerente en la bd riesgos
 def nuevo_gerente(request):
-    sector_controller = SectorController()
-    sector = sector_controller.obtener_sector(request.POST["gerente_sector"])
-    user = registrar_usuario(request.POST["gerente_usuario"], request.POST["gerente_correo"],
-                             request.POST["gerente_password"], request.POST["gerente_nombre"])
     gerente_controller = GerenteController()
-    mensaje = gerente_controller.registrar_gerente(user.id, request.POST["gerente_usuario"],
-                                                   request.POST["gerente_correo"], request.POST["gerente_nombre"],
-                                                   sector, request.POST["gerente_profesion"],
-                                                   request.POST["gerente_empresa"], request.POST["gerente_pais"])
-    return render(request, "registration/login.html", {"mensaje": mensaje})
+    gerente = gerente_controller.validar_gerente(request.POST["gerente_usuario"])
+    if gerente == None:
+        sector_controller = SectorController()
+        sector = sector_controller.obtener_sector(request.POST["gerente_sector"])
+        user = registrar_usuario(request.POST["gerente_usuario"], request.POST["gerente_correo"],
+                                 request.POST["gerente_password"], request.POST["gerente_nombre"])
+        
+        mensaje = gerente_controller.registrar_gerente(user.id, request.POST["gerente_usuario"],
+                                                       request.POST["gerente_correo"], request.POST["gerente_nombre"],
+                                                       sector, request.POST["gerente_profesion"],
+                                                       request.POST["gerente_empresa"], request.POST["gerente_pais"], 
+                                                       request.POST["metodologia"], request.POST["certificacion"])
+        return render(request, "registration/login.html", {"mensaje": mensaje})
+
+    return render(request, "registration/registrar_gerente.html", {"mensaje_editar": "El usuario ya se encuentra registrado."})
+    
 
 
 # Muestra el perfil del gerente y actualiza su información
@@ -131,54 +138,63 @@ def inicio(request):
 def nuevo_proyecto(request):
     sector_controller = SectorController()
     lista_sectores = sector_controller.listar_sectores()
-    if (request.method == "POST"):
-        try:
-            gerente_controller = GerenteController()
-            sector = sector_controller.obtener_sector(request.POST["proyecto_sector"])
-            print("sector", sector)
-            gerente = gerente_controller.obtener_gerente(request.user.id)
-            proyecto_controller = ProyectoController()
-            proyecto = proyecto_controller.registrar_proyecto(
-                request.POST["proyecto_nombre"],
-                request.POST["proyecto_objetivo"],
-                request.POST["proyecto_alcance"],
-                request.POST["proyecto_descripcion"],
-                request.POST["proyecto_presupuesto"],
-                request.POST["proyecto_fecha_inicio"],
-                gerente,
-                sector
-            )
-            if (proyecto):
-                mensaje = "Se registro un proyecto exitosamente."
-            else:
-                mensaje = "No se pudo registrar exitosamente."
-            if (request.POST["actividades"] == '1'):
-                actividades = json.loads(request.POST["actividades_data"])["tasks"]
-                orden = 0
-                for actividad in actividades:
-                    act = Actividad(
-                        actividad_id="p_" + str(proyecto.proyecto_id) + "_a_" + str(actividad["uid"]),
-                        actividad_orden=orden,
-                        actividad_uuid=actividad["uid"],
-                        actividad_nombre=actividad["name"],
-                        actividad_level=actividad["level"],
-                        actividad_wbs=actividad["WBS"],
-                        proyecto=proyecto)
-                    act.save()
-                    orden = orden + 1
-            return HttpResponse(status=200)
-        except Exception as inst:
-            print(inst)
-            raise inst
-            return HttpResponse(status=400)
-
-    data = {"lista_sectores": lista_sectores}
-
+    fecha_actual = datetime.now()
+    formato = "%Y-%m-%d"
+    today = fecha_actual.strftime(formato)
+    data = {"lista_sectores": lista_sectores, "today":today}
     rbs_controller = RbsController()
     rbs = rbs_controller.get_rbs_gerente_id(request.user.id)
-
     if rbs:
         data["rbs"] = rbs
+    if (request.method == "POST"):
+        proyecto_controller = ProyectoController()
+        aux = proyecto_controller.validar_proyecto(request.POST["proyecto_nombre"])
+        if aux == None:            
+            try:
+                gerente_controller = GerenteController()
+                sector = sector_controller.obtener_sector(request.POST["proyecto_sector"])
+                print("sector", sector)
+                gerente = gerente_controller.obtener_gerente(request.user.id)
+
+                proyecto = proyecto_controller.registrar_proyecto(
+                    request.POST["proyecto_nombre"],
+                    request.POST["proyecto_objetivo"],
+                    request.POST["proyecto_alcance"],
+                    request.POST["proyecto_descripcion"],
+                    request.POST["proyecto_presupuesto"],
+                    request.POST["proyecto_fecha_inicio"],
+                    gerente,
+                    sector
+                    )
+                if (proyecto):
+                    data["mensaje"] = "Se registro un proyecto exitosamente."
+                else:
+                    data["mensaje"] = "No se pudo registrar exitosamente."
+                if (request.POST["actividades"] == '1'):
+                    actividades = json.loads(request.POST["actividades_data"])["tasks"]
+                    orden = 0
+                    for actividad in actividades:
+                        act = Actividad(
+                                actividad_id="p_" + str(proyecto.proyecto_id) + "_a_" + str(actividad["uid"]),
+                                actividad_orden=orden,
+                                actividad_uuid=actividad["uid"],
+                                actividad_nombre=actividad["name"],
+                                actividad_level=actividad["level"],
+                                actividad_wbs=actividad["WBS"],
+                                proyecto=proyecto)
+                        act.save()
+                        orden = orden + 1
+                return render(request, "nuevo_proyecto.html", data)
+
+            except Exception as inst:
+
+                print(inst)
+                raise inst
+                return HttpResponse(status=400)
+
+            data["mensaje"] = "El nombre del proyecto ya se encuentra en uso."
+
+    
 
     return render(request, "nuevo_proyecto.html", data)
 
