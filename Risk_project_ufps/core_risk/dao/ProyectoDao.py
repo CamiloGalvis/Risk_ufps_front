@@ -1,5 +1,5 @@
 from Risk_project_ufps.core_risk.dto.models import *
-
+from django.db import connections
 
 class ProyectoDao:
 
@@ -66,3 +66,14 @@ class ProyectoDao:
             raise e
         finally:
             return flag
+
+    def crear_linea_base(self, gerente_id: int, proyecto):
+        try:
+            with connections['riesgos'].cursor() as cursor:
+                cursor.callproc('crear_linea_base',
+                                [gerente_id, proyecto.proyecto_id, proyecto.proyecto_linea_base + 1])
+            flag = True
+        except Exception as e:
+            print(e)
+            flag = False
+        return flag

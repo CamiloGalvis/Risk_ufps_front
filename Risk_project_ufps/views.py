@@ -10,9 +10,7 @@ from django.core import serializers
 
 from django.forms.models import model_to_dict
 
-
 from Risk_project_ufps.core_risk.dto.models import *
-
 
 from json import dumps
 
@@ -339,9 +337,6 @@ def editar_riesgo(request):
                                                      request.POST["riesgo_evento"], request.POST["riesgo_efecto"],
                                                      request.POST["riesgo_causa"], request.POST["riesgo_tipo"],
                                                      subcategoria)
-    
-
-
 
     rbs_controller = RbsController()
     rbs = rbs_controller.obtener_rbs_completa(request.user.id)
@@ -1240,10 +1235,9 @@ def get_data_planificar_respuesta(proyecto_id: int):
 
 
 def planificar_respuestas(request, proyecto_id):
-
-    #proyecto = Proyecto.objects.using('base').get(proyecto_id=2, proyecto_linea_base=1)
-    #proyecto = Proyecto.objects.get(proyecto_id=17)
-    #print(proyecto.proyecto_nombre, proyecto.linea_base)
+    # proyecto = Proyecto.objects.using('base').get(proyecto_id=2, proyecto_linea_base=1)
+    # proyecto = Proyecto.objects.get(proyecto_id=17)
+    # print(proyecto.proyecto_nombre, proyecto.linea_base)
     # proyecto = Proyecto.objects.get(proyecto_id=17)
     # print(proyecto.proyecto_nombre, proyecto.linea_base
     return render(
@@ -1324,19 +1318,23 @@ def asociar_respuesta_sugeridas(request, proyecto_id):
 
     return planificar_respuestas(request, proyecto_id)
 
+
 def editar_respuesta_planificar(request, proyecto_id):
     if request.method == 'POST':
         riesgo_controller = RiesgoController()
         respuesta_controller = RespuestaController()
         respuesta = respuesta_controller.obtener_respuesta(request.POST["respuesta_id"])
-        riesgo = riesgo_controller.obtener_riesgo(request.POST["riesgo_id"])       
-        mensaje_editar = respuesta_controller.editar_respuesta(respuesta, request.POST["respuesta_nombre"], request.POST["respuesta_descripcion"])
+        riesgo = riesgo_controller.obtener_riesgo(request.POST["riesgo_id"])
+        mensaje_editar = respuesta_controller.editar_respuesta(respuesta, request.POST["respuesta_nombre"],
+                                                               request.POST["respuesta_descripcion"])
         proyecto_riesgo = riesgo_controller.get_riesgo_by_proyecto(proyecto_id, riesgo.riesgo_id)
-        riesgo_respuesta = respuesta_controller.obtener_respuesta_riesgo(riesgo.riesgo_id, respuesta.respuesta_id)        
-        respuesta_proyecto = respuesta_controller.get_riesgo_respuesta_by_id( proyecto_riesgo, riesgo_respuesta)
+        riesgo_respuesta = respuesta_controller.obtener_respuesta_riesgo(riesgo.riesgo_id, respuesta.respuesta_id)
+        respuesta_proyecto = respuesta_controller.get_riesgo_respuesta_by_id(proyecto_riesgo, riesgo_respuesta)
         print(respuesta_proyecto)
-        mensaje_editar = respuesta_controller.actualizar_fecha_respuesta(respuesta_proyecto, request.POST["respuesta_fecha_inicio"])
+        mensaje_editar = respuesta_controller.actualizar_fecha_respuesta(respuesta_proyecto,
+                                                                         request.POST["respuesta_fecha_inicio"])
     return planificar_respuestas(request, proyecto_id)
+
 
 def desasociar_respuesta_riesgo(request, proyecto_id):
     if request.method == 'POST':
@@ -1529,22 +1527,39 @@ def desvincular_recurso_tarea(request, proyecto_id):
         "procesos/planificar_respuestas.html",
         data
     )
+
+
 """
 ////////////////////////////////////////////////////////////////////////////
     METODOS CONTROLAR RIESGOS
 /////////////////////////////////////////////////////////////////////////////
 """
+
+
 def controlar_riesgos(request, proyecto_id):
     return render(
         request,
         "procesos/controlar_riesgos.html",
     )
 
+
+def crear_linea_base(request, proyecto_id):
+    proyecto_controller = ProyectoController()
+    gerente_id = request.user.id
+    rta = proyecto_controller.crear_linea_base(gerente_id, proyecto_id)
+    if rta:
+        return HttpResponse({'rta': rta}, status=200)
+    else:
+        return HttpResponse({'rta': rta}, status=500)
+
+
 """
 ////////////////////////////////////////////////////////////////////////////
     METODOS COMUNICAR RIESGOS
 /////////////////////////////////////////////////////////////////////////////
 """
+
+
 def comunicar_riesgos(request, proyecto_id):
     return render(
         request,
@@ -1649,6 +1664,7 @@ def generar_informe_planificar_respuesta(request, proyecto_id):
         response['Content-Disposition'] = 'attachment; filename="%s"' % 'CDX_COMPOSITES_20140626.xlsx'
 
         return response"""
+
 
 def mi_pass(request):
     return render(
