@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 23-09-2020 a las 03:39:40
+-- Tiempo de generación: 24-09-2020 a las 21:39:05
 -- Versión del servidor: 10.4.13-MariaDB
 -- Versión de PHP: 7.2.32
 
@@ -20,6 +20,754 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `riesgos_bd`
 --
+
+DELIMITER $$
+--
+-- Procedimientos
+--
+CREATE DEFINER=`root`@`localhost` PROCEDURE `crear_linea_base` (IN `var_gerente_id` INT, IN `var_proyecto_id` INT, IN `var_linea_base` INT)  NO SQL
+BEGIN
+####################################################################
+## PRIMERO ACTUALIZO EL CAMPO DE LINEA BASE EN LA TABLA 'riesgos_bd'
+####################################################################
+##########################
+UPDATE 
+	`riesgos_bd`.`gerente` g
+SET 
+	g.`proyecto_linea_base` = var_linea_base
+WHERE 
+	g.`gerente_id` = var_gerente_id;
+##########################
+UPDATE 
+	`riesgos_bd`.`proyecto` p 
+SET 
+	p.`proyecto_linea_base`= var_linea_base
+WHERE 
+	p.`proyecto_id` = var_proyecto_id;
+##########################
+UPDATE 
+	`riesgos_bd`.`actividad` a 
+SET 
+	a.`proyecto_linea_base` = var_linea_base
+WHERE
+	a.`proyecto_id` = var_proyecto_id;
+##########################
+UPDATE 
+	`riesgos_bd`.`rbs` r 
+SET 
+	r.`proyecto_linea_base` = var_linea_base 
+WHERE 
+	r.`gerente_id` = var_gerente_id;
+##########################
+UPDATE 
+	`riesgos_bd`.`categoria` c 
+INNER JOIN 
+	`riesgos_bd`.`sub_categoria` sc 
+ON 
+	c.`categoria_id` = sc.`categoria_id` 
+INNER JOIN 
+	`riesgos_bd`.`riesgo` r 
+ON 
+	sc.`sub_categoria_id` = r.`sub_categoria_id` 
+INNER JOIN 
+	`riesgos_bd`.`proyecto_has_riesgo` phr 
+ON 
+	r.`riesgo_id` = phr.`riesgo_id` 
+SET 
+	c.`proyecto_linea_base` = var_linea_base 
+WHERE 
+	phr.`proyecto_id` = var_proyecto_id;
+##################################
+UPDATE 
+	`riesgos_bd`.`sub_categoria` sc
+INNER JOIN 
+	`riesgos_bd`.`riesgo` r
+ON 
+	sc.`sub_categoria_id` = r.`sub_categoria_id`
+INNER JOIN 
+	`riesgos_bd`.`proyecto_has_riesgo` phr
+ON
+	r.`riesgo_id` = phr.`riesgo_id`
+SET 
+	sc.`proyecto_linea_base` = var_linea_base
+WHERE
+    phr.`proyecto_id` = var_proyecto_id;
+###################################
+UPDATE 
+	`riesgos_bd`.`clasificacion_riesgo` cr
+SET 
+	cr.`proyecto_linea_base` = var_linea_base
+WHERE
+	cr.`proyecto_id` = var_proyecto_id;
+##################################
+UPDATE 
+	`riesgos_bd`.`impacto` i
+SET 
+	i.`proyecto_linea_base` = var_linea_base 
+WHERE
+	i.`proyecto_id` = var_proyecto_id;
+##################################
+UPDATE 
+	`riesgos_bd`.`propabilidad` p
+SET 
+	p.`proyecto_linea_base` = var_linea_base
+WHERE 
+	p.`proyecto_id` = var_proyecto_id;
+##################################
+UPDATE 
+	`riesgos_bd`.`proyecto_has_riesgo` phr
+SET 
+	phr.`proyecto_linea_base` = var_linea_base 
+WHERE 
+	phr.`proyecto_id` = var_proyecto_id;
+##################################
+UPDATE 
+	`riesgos_bd`.`proyecto_has_riesgo_actividad` phra 
+INNER JOIN
+	`riesgos_bd`.`proyecto_has_riesgo` phr
+ON
+	phra.`proyecto_has_riesgo_id` = phr.`proyecto_has_riesgo_id`
+SET 
+	phra.`proyecto_linea_base` = var_linea_base 
+WHERE
+    phr.`proyecto_id` = var_proyecto_id;
+###################################
+UPDATE 
+	`riesgos_bd`.`tipo_recurso` tr
+SET 
+	tr.`proyecto_linea_base` = var_linea_base	
+WHERE 
+	tr.`gerente_id` = var_gerente_id;
+###################################
+UPDATE 
+	`riesgos_bd`.`recurso` r 
+SET 
+	r.`proyecto_linea_base` = var_linea_base
+WHERE
+	r.`proyecto_id` = var_proyecto_id;
+###################################
+UPDATE 
+	`riesgos_bd`.`riesgo` r
+INNER JOIN 
+	`riesgos_bd`.`proyecto_has_riesgo` phr
+ON
+	r.`riesgo_id` = phr.`riesgo_id`
+SET 
+	r.`proyecto_linea_base` = var_linea_base 
+WHERE
+    phr.`proyecto_id` = var_proyecto_id;
+###################################
+UPDATE 
+	`riesgos_bd`.`respuesta` rta 
+INNER JOIN 
+	`riesgos_bd`.`riesgo_has_respuesta` rhr
+ON
+	rta.`respuesta_id` = rhr.`respuesta_id`
+INNER JOIN
+	`riesgos_bd`.`riesgo` r
+ON 
+	rhr.`riesgo_id` = r.`riesgo_id`
+INNER JOIN 
+	`riesgos_bd`.`proyecto_has_riesgo` phr
+ON
+	r.`riesgo_id` = phr.`riesgo_id`
+SET 
+	rta.`proyecto_linea_base` = var_linea_base
+WHERE
+    phr.`proyecto_id` = var_proyecto_id;
+###################################
+UPDATE 
+	`riesgos_bd`.`riesgo_has_respuesta` rhr
+INNER JOIN 
+	`riesgos_bd`.`proyecto_has_riesgo_respuesta` phrr
+ON
+	rhr.`riesgo_has_respuesta_id` = phrr.`respuesta_has_id`
+INNER JOIN 
+	`riesgos_bd`.`proyecto_has_riesgo` phr
+ON
+	phrr.`proyecto_has_id` = phr.`proyecto_has_riesgo_id`
+SET 
+	rhr.`proyecto_linea_base` = var_linea_base
+WHERE
+    phr.`proyecto_id` = var_proyecto_id;
+#####################################
+UPDATE 
+	`riesgos_bd`.`proyecto_has_riesgo_respuesta` phrr
+INNER JOIN 
+	`riesgos_bd`.`proyecto_has_riesgo` phr
+ON
+	phrr.`proyecto_has_id` = phr.`proyecto_has_riesgo_id`
+SET 
+	phrr.`proyecto_linea_base` = var_linea_base
+WHERE
+    phr.`proyecto_id` = var_proyecto_id;
+#######################################
+UPDATE 
+	`riesgos_bd`.`responsble`r
+SET 
+	r.`proyecto_linea_base` = var_linea_base
+WHERE
+    r.`proyecto_id` = var_proyecto_id;
+#######################################
+UPDATE 
+	`riesgos_bd`.`rol` r
+SET
+	r.`proyecto_linea_base` = var_linea_base
+WHERE
+    r.`gerente_id` = var_gerente_id;
+#######################################
+UPDATE 
+	`riesgos_bd`.`tarea` t
+INNER JOIN 
+	`riesgos_bd`.`tarea_has_recurso` thr
+ON 
+	t.`tarea_id` = thr.`tarea_id`
+INNER JOIN 
+	`riesgos_bd`.`recurso` r
+ON 
+	thr.`recurso_id` = r.`recurso_id`
+SET
+	r.`proyecto_linea_base` = var_linea_base
+WHERE
+    r.`proyecto_id` = var_proyecto_id;
+#######################################
+UPDATE 
+	`riesgos_bd`.`tarea_has_recurso` thr
+INNER JOIN 
+	`riesgos_bd`.`recurso` r
+ON 
+	thr.`recurso_id` = r.`recurso_id`
+SET
+	r.`proyecto_linea_base` = var_linea_base
+WHERE
+    r.`proyecto_id` = var_proyecto_id;
+#######################################
+
+
+####################################################################
+## LUEGO COPIO TODO DE LA TABLA 'riesgos_bd' A 'riesgos_base'
+####################################################################
+############################################
+INSERT INTO `riesgos_base`.`gerente`(
+    `gerente_id`,
+    `proyecto_linea_base`,
+    `gerente_nombre`,
+    `gerente_usuario`,
+    `gerente_correo`,
+    `gerente_fecha_creacion`,
+    `gerente_correo_institucional`,
+    `gerente_profesion`,
+    `gerente_empresa`,
+    `gerente_metodologias`,
+    `gerente_certificaciones`,
+    `sector_id`,
+    `pais_id`
+)
+SELECT
+    `gerente_id`,
+    `proyecto_linea_base`,
+    `gerente_nombre`,
+    `gerente_usuario`,
+    `gerente_correo`,
+    `gerente_fecha_creacion`,
+    `gerente_correo_institucional`,
+    `gerente_profesion`,
+    `gerente_empresa`,
+    `gerente_metodologias`,
+    `gerente_certificaciones`,
+    `sector_id`,
+    `pais_id` 
+FROM 
+	`riesgos_bd`.`gerente`
+WHERE 
+	`riesgos_bd`.`gerente`.`gerente_id` = var_gerente_id;
+#############################################
+INSERT INTO `riesgos_base`.`proyecto`(
+    `proyecto_id`,
+    `proyecto_nombre`,
+    `proyecto_objetivo`,
+    `proyecto_alcance`,
+    `proyecto_descripcion`,
+    `proyecto_presupuesto`,
+    `proyecto_fecha_inicio`,
+    `proyecto_fecha_finl`,
+    `proyecto_evaluacion_general`,
+    `proyecto_evaluacion`,
+    `proyecto_rbs_status`,
+    `proyecto_fin_status`,
+    `gerente_id`,
+    `sector_id`,
+    `proyecto_linea_base`
+)
+SELECT
+    `proyecto_id`,
+    `proyecto_nombre`,
+    `proyecto_objetivo`,
+    `proyecto_alcance`,
+    `proyecto_descripcion`,
+    `proyecto_presupuesto`,
+    `proyecto_fecha_inicio`,
+    `proyecto_fecha_finl`,
+    `proyecto_evaluacion_general`,
+    `proyecto_evaluacion`,
+    `proyecto_rbs_status`,
+    `proyecto_fin_status`,
+    `gerente_id`,
+    `sector_id`,
+    `proyecto_linea_base`
+FROM
+    `riesgos_bd`.`proyecto`
+WHERE
+    `riesgos_bd`.`proyecto`.`proyecto_id` = var_proyecto_id;
+############################################
+INSERT INTO `riesgos_base`.`actividad`(
+    `actividad_id`,
+    `actividad_orden`,
+    `actividad_uuid`,
+    `actividad_nombre`,
+    `actividad_level`,
+    `actividad_wbs`,
+    `proyecto_id`,
+    `proyecto_linea_base`
+)
+SELECT
+    `actividad_id`,
+    `actividad_orden`,
+    `actividad_uuid`,
+    `actividad_nombre`,
+    `actividad_level`,
+    `actividad_wbs`,
+    `proyecto_id`,
+    `proyecto_linea_base`
+FROM
+    `riesgos_bd`.`actividad`
+WHERE
+    `riesgos_bd`.`actividad`.`proyecto_id` = var_proyecto_id;
+##############################################
+INSERT INTO `riesgos_base`.`rbs`(
+    `rbs_id`,
+    `rbs_default`,
+    `gerente_id`,
+    `proyecto_linea_base`
+)
+SELECT
+    `rbs_id`,
+    `rbs_default`,
+    `gerente_id`,
+    `proyecto_linea_base`
+FROM
+    `riesgos_bd`.`rbs`
+WHERE
+    `riesgos_bd`.`rbs`.`gerente_id` = var_gerente_id;
+############################################
+INSERT INTO `riesgos_base`.`categoria`(
+    `categoria_id`,
+    `categoria_nombre`,
+    `categoria_descripcion`,
+    `categoria_default`,
+    `categoria_uid`,
+    `rbs_id`,
+    `proyecto_linea_base`
+)
+SELECT DISTINCT
+    c.`categoria_id`,
+    c.`categoria_nombre`,
+    c.`categoria_descripcion`,
+    c.`categoria_default`,
+    c.`categoria_uid`,
+    c.`rbs_id`,
+    c.`proyecto_linea_base`
+FROM
+    `riesgos_bd`.`categoria` c
+INNER JOIN
+	`riesgos_bd`.`sub_categoria` sc
+ON
+	c.`categoria_id` = sc.`categoria_id`
+INNER JOIN 
+	`riesgos_bd`.`riesgo` r
+ON 
+	sc.`sub_categoria_id` = r.`sub_categoria_id`
+INNER JOIN 
+	`riesgos_bd`.`proyecto_has_riesgo` phr
+ON
+	r.`riesgo_id` = phr.`riesgo_id`
+WHERE
+    phr.`proyecto_id` = var_proyecto_id;
+#######################################
+INSERT INTO `riesgos_base`.`sub_categoria`(
+    `sub_categoria_id`,
+    `sub_categoria_nombre`,
+    `sub_categoria_descripcion`,
+    `sub_categoria_default`,
+    `sub_categoria_uid`,    
+    `categoria_id`,
+    `proyecto_linea_base`
+)
+SELECT DISTINCT
+    sc.`sub_categoria_id`,
+    sc.`sub_categoria_nombre`,
+    sc.`sub_categoria_descripcion`,
+    sc.`sub_categoria_default`,
+    sc.`sub_categoria_uid`,    
+    sc.`categoria_id`,
+    sc.`proyecto_linea_base`
+FROM
+    `riesgos_bd`.`sub_categoria` sc
+INNER JOIN 
+	`riesgos_bd`.`riesgo` r
+ON 
+	sc.`sub_categoria_id` = r.`sub_categoria_id`
+INNER JOIN 
+	`riesgos_bd`.`proyecto_has_riesgo` phr
+ON
+	r.`riesgo_id` = phr.`riesgo_id`
+WHERE
+    phr.`proyecto_id` = var_proyecto_id;
+##############################################
+INSERT INTO `riesgos_base`.`clasificacion_riesgo`(
+    `clasificacion_riesgo_id`,
+    `clasificacion_riesgo_nombre`,
+    `clasificacion_riesgo_min`,
+    `clasificacion_riesgo_max`,
+    `clasificacion_color`,
+    `proyecto_id`,
+    `proyecto_linea_base`
+)
+SELECT
+    `clasificacion_riesgo_id`,
+    `clasificacion_riesgo_nombre`,
+    `clasificacion_riesgo_min`,
+    `clasificacion_riesgo_max`,
+    `clasificacion_color`,
+    `proyecto_id`,
+    `proyecto_linea_base`
+FROM
+    `riesgos_bd`.`clasificacion_riesgo`
+WHERE
+    `riesgos_bd`.`clasificacion_riesgo`.`proyecto_id` = var_proyecto_id;
+######################################
+INSERT INTO `riesgos_base`.`impacto`(
+    `impacto_id`,
+    `impacto_categoria`,
+    `impacto_valor`,
+    `proyecto_id`,
+    `proyecto_linea_base`
+)
+SELECT
+    `impacto_id`,
+    `impacto_categoria`,
+    `impacto_valor`,
+    `proyecto_id`,
+    `proyecto_linea_base`
+FROM
+    `riesgos_bd`.`impacto`
+WHERE
+    `riesgos_bd`.`impacto`.`proyecto_id` = var_proyecto_id;
+##########################################
+INSERT INTO `riesgos_base`.`propabilidad`(
+    `propabilidad_id`,
+    `propabilidad_categoria`,
+    `propabilidad_valor`,
+    `proyecto_id`,
+    `proyecto_linea_base`
+)
+SELECT
+    `propabilidad_id`,
+    `propabilidad_categoria`,
+    `propabilidad_valor`,
+    `proyecto_id`,
+    `proyecto_linea_base`
+FROM
+    `riesgos_bd`.`propabilidad`
+WHERE
+    `riesgos_bd`.`propabilidad`.`proyecto_id` = var_proyecto_id;
+#####################################
+INSERT INTO `riesgos_base`.`rol`(
+    `rol_id`,
+    `rol_nombre`,
+    `rol_descripcion`,
+    `gerente_id`,
+    `proyecto_linea_base`
+)
+SELECT
+    `rol_id`,
+    `rol_nombre`,
+    `rol_descripcion`,
+    `gerente_id`,
+    `proyecto_linea_base`
+FROM
+    `riesgos_bd`.`rol`
+WHERE
+    `riesgos_bd`.`rol`.`gerente_id` = var_gerente_id;
+##########################################
+INSERT INTO `riesgos_base`.`responsble`(
+    `responsable_id`,
+    `responsble_nombre`,
+    `responsble_descripcion`,
+    `rol_id`,
+    `proyecto_id`,
+    `proyecto_linea_base`
+)
+SELECT
+    `responsable_id`,
+    `responsble_nombre`,
+    `responsble_descripcion`,
+    `rol_id`,
+    `proyecto_id`,
+    `proyecto_linea_base`
+FROM
+    `riesgos_bd`.`responsble`
+WHERE
+    `riesgos_bd`.`responsble`.`proyecto_id` = var_proyecto_id; 
+#########################################
+INSERT INTO `riesgos_base`.`riesgo`(
+    `riesgo_id`,
+    `proyecto_linea_base`,
+    `riesgo_nombre`,
+    `riesgo_causa`,
+    `riesgo_evento`,
+    `riesgo_efecto`,
+    `riesgo_tipo`,
+    `riesgo_prom_evaluacion`,
+    `riesgo_uid`,
+    `sub_categoria_id`
+)
+SELECT
+    r.`riesgo_id`,
+    r.`proyecto_linea_base`,
+    r.`riesgo_nombre`,
+    r.`riesgo_causa`,
+    r.`riesgo_evento`,
+    r.`riesgo_efecto`,
+    r.`riesgo_tipo`,
+    r.`riesgo_prom_evaluacion`,
+    r.`riesgo_uid`,
+    r.`sub_categoria_id`
+FROM
+    `riesgos_bd`.`riesgo` r
+INNER JOIN 
+	`riesgos_bd`.`proyecto_has_riesgo` phr
+ON
+	r.`riesgo_id` = phr.`riesgo_id`
+WHERE
+    phr.`proyecto_id` = var_proyecto_id;       
+##########################################
+INSERT INTO `riesgos_base`.`proyecto_has_riesgo`(
+    `proyecto_has_riesgo_id`,
+    `riesgo_id`,
+    `is_editado`,
+    `impacto_id`,
+    `propabilidad_id`,
+    `fecha_manifestacion`,
+    `proyecto_id`,
+    `responsable_id`,
+    `proyecto_linea_base`
+)
+SELECT
+    `proyecto_has_riesgo_id`,
+    `riesgo_id`,
+    `is_editado`,
+    `impacto_id`,
+    `propabilidad_id`,
+    `fecha_manifestacion`,
+    `proyecto_id`,
+    `responsable_id`,
+    `proyecto_linea_base`
+FROM
+    `riesgos_bd`.`proyecto_has_riesgo`
+WHERE
+    `riesgos_bd`.`proyecto_has_riesgo`.`proyecto_id` = var_proyecto_id;
+###############################################
+INSERT INTO `riesgos_base`.`proyecto_has_riesgo_actividad`(
+    `proyecto_has_riesgo_actividad_id`,
+    `actividad_id`,
+    `proyecto_has_riesgo_id`,
+    `proyecto_linea_base`
+)
+SELECT
+    phra.`proyecto_has_riesgo_actividad_id`,
+    phra.`actividad_id`,
+    phra.`proyecto_has_riesgo_id`,
+    phra.`proyecto_linea_base`
+FROM
+    `riesgos_bd`.`proyecto_has_riesgo_actividad` phra
+INNER JOIN
+	`riesgos_bd`.`proyecto_has_riesgo` phr
+ON
+	phra.`proyecto_has_riesgo_id` = phr.`proyecto_has_riesgo_id`
+WHERE
+    phr.`proyecto_id` = var_proyecto_id;
+######################################################
+INSERT INTO `riesgos_base`.`tipo_recurso`(
+    `tipo_recurso_id`,
+    `tipo_recurso_nombre`,
+    `tipo_recurso_descripcion`,
+    `gerente_id`,
+    `proyecto_linea_base`
+)
+SELECT
+    `tipo_recurso_id`,
+    `tipo_recurso_nombre`,
+    `tipo_recurso_descripcion`,
+    `gerente_id`,
+    `proyecto_linea_base`
+FROM
+    `riesgos_bd`.`tipo_recurso`
+WHERE
+    `riesgos_bd`.`tipo_recurso`.`gerente_id` = var_gerente_id;
+#############################################################    
+INSERT INTO `riesgos_base`.`recurso`(
+    `recurso_id`,
+    `recurso_nombre`,
+    `recurso_costo`,
+    `proyecto_id`,
+    `tipo_recurso_id`,
+    `proyecto_linea_base`
+)
+SELECT
+    `recurso_id`,
+    `recurso_nombre`,
+    `recurso_costo`,
+    `proyecto_id`,
+    `tipo_recurso_id`,
+    `proyecto_linea_base`
+FROM
+    `riesgos_bd`.`recurso`
+WHERE
+    `riesgos_bd`.`recurso`.`proyecto_id` = var_proyecto_id;
+
+#################################################  
+INSERT INTO `riesgos_base`.`respuesta`(
+    `respuesta_id`,
+    `respuesta_nombre`,
+    `respuesta_descripcion`,
+    `respuesta_costo`,
+    `proyecto_linea_base`
+)
+SELECT DISTINCT
+    rta.`respuesta_id`,
+    rta.`respuesta_nombre`,
+    rta.`respuesta_descripcion`,
+    rta.`respuesta_costo`,
+    rta.`proyecto_linea_base`
+FROM
+    `riesgos_bd`.`respuesta` rta
+INNER JOIN 
+	`riesgos_bd`.`riesgo_has_respuesta` rhr
+ON
+	rta.`respuesta_id` = rhr.`respuesta_id`
+INNER JOIN
+	`riesgos_bd`.`riesgo` r
+ON 
+	rhr.`riesgo_id` = r.`riesgo_id`
+INNER JOIN 
+	`riesgos_bd`.`proyecto_has_riesgo` phr
+ON
+	r.`riesgo_id` = phr.`riesgo_id`
+WHERE
+    phr.`proyecto_id` = var_proyecto_id;
+####################################################  
+INSERT INTO `riesgos_base`.`riesgo_has_respuesta`(
+    `riesgo_has_respuesta_id`,
+    `riesgo_id`,
+    `respuesta_id`,
+    `proyecto_linea_base`
+)
+SELECT
+    rhr.`riesgo_has_respuesta_id`,
+    rhr.`riesgo_id`,
+    rhr.`respuesta_id`,
+    rhr.`proyecto_linea_base`
+FROM
+    `riesgos_bd`.`riesgo_has_respuesta` rhr
+INNER JOIN 
+	`riesgos_bd`.`proyecto_has_riesgo_respuesta` phrr
+ON
+	rhr.`riesgo_has_respuesta_id` = phrr.`respuesta_has_id`
+INNER JOIN 
+	`riesgos_bd`.`proyecto_has_riesgo` phr
+ON
+	phrr.`proyecto_has_id` = phr.`proyecto_has_riesgo_id`
+WHERE
+    phr.`proyecto_id` = var_proyecto_id;
+###########################################
+INSERT INTO `riesgos_base`.`proyecto_has_riesgo_respuesta`(
+    `proyecto_has_id`,
+    `respuesta_has_id`,
+    `tipo_respuesta`,
+    `proyecto_linea_base`
+)
+SELECT
+    phrr.`proyecto_has_id`,
+    phrr.`respuesta_has_id`,
+    phrr.`tipo_respuesta`,
+    phrr.`proyecto_linea_base`
+FROM
+    `riesgos_bd`.`proyecto_has_riesgo_respuesta` phrr
+INNER JOIN 
+	`riesgos_bd`.`proyecto_has_riesgo` phr
+ON
+	phrr.`proyecto_has_id` = phr.`proyecto_has_riesgo_id`
+WHERE
+    phr.`proyecto_id` = var_proyecto_id;
+######################################
+INSERT INTO `riesgos_base`.`tarea`(
+    `tarea_id`,
+    `proyecto_linea_base`,
+    `tarea_nombre`,
+    `tarea_descripcion`,
+    `proyecto_has_riesgo_id`,
+    `riesgo_has_respuesta_id`,
+    `fecha_inicio`,
+    `duracion`,
+    `fecha_fin`
+)
+SELECT DISTINCT
+    t.`tarea_id`,
+    t.`proyecto_linea_base`,
+    t.`tarea_nombre`,
+    t.`tarea_descripcion`,
+    t.`proyecto_has_riesgo_id`,
+    t.`riesgo_has_respuesta_id`,
+    t.`fecha_inicio`,
+    t.`duracion`,
+    t.`fecha_fin`
+FROM
+    `riesgos_bd`.`tarea` t
+INNER JOIN 
+	`riesgos_bd`.`tarea_has_recurso` thr
+ON 
+	t.`tarea_id` = thr.`tarea_id`
+INNER JOIN 
+	`riesgos_bd`.`recurso` r
+ON 
+	thr.`recurso_id` = r.`recurso_id`
+WHERE
+    r.`proyecto_id` = var_proyecto_id;
+############################################
+INSERT INTO `riesgos_base`.`tarea_has_recurso`(
+    `tarea_id`,
+    `recurso_id`,
+    `proyecto_linea_base`,
+    `cantidad`
+)
+SELECT
+    thr.`tarea_id`,
+    thr.`recurso_id`,
+    thr.`proyecto_linea_base`,
+    thr.`cantidad`
+FROM
+    `riesgos_bd`.`tarea_has_recurso` thr
+INNER JOIN 
+	`riesgos_bd`.`recurso` r
+ON 
+	thr.`recurso_id` = r.`recurso_id`
+WHERE
+    r.`proyecto_id` = var_proyecto_id;
+###############################################
+END$$
+
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -1596,524 +2344,524 @@ INSERT INTO `actividad` (`actividad_id`, `actividad_orden`, `actividad_uuid`, `a
 ('p_15_a_91', 23, 91, 'Definir la arquitectura ', 5, '1.1.1.2.8', 15, 0),
 ('p_15_a_93', 15, 93, 'PAQ 1.2: Diseño ', 4, '1.1.1.2', 15, 0),
 ('p_15_a_99', 42, 99, 'Verificar historias de usuario ', 5, '1.1.1.4.1', 15, 0),
-('p_2_a_0', 0, 0, 'Proyecto1', 0, '0', 2, 0),
-('p_2_a_10', 52, 10, 'SE 1.2: Modulo de trabajos, tareas y refuerzos ', 3, '1.1.2', 2, 0),
-('p_2_a_101', 43, 101, 'Identificar los casos de pruebas unitarias ', 5, '1.1.1.4.2', 2, 0),
-('p_2_a_107', 24, 107, 'Realizar el modelo conceptual de los datos ', 5, '1.1.1.2.9', 2, 0),
-('p_2_a_108', 29, 108, 'Aceptar el glosario de términos ', 5, '1.1.1.2.14', 2, 0),
-('p_2_a_1175', 332, 1175, 'SE 3.1: Capacitación a 650 docentes ', 3, '1.3.1', 2, 0),
-('p_2_a_1176', 333, 1176, 'PAQ 1.1: Planificación ', 4, '1.3.1.1', 2, 0),
-('p_2_a_1177', 334, 1177, 'Desarrollar el material multimedia para la capacitación ', 5, '1.3.1.1.1', 2, 0),
-('p_2_a_1178', 335, 1178, 'Definir logística de la capacitación ', 5, '1.3.1.1.2', 2, 0),
-('p_2_a_1184', 343, 1184, 'PAQ 1.2: Desarrollo ', 4, '1.3.1.2', 2, 0),
-('p_2_a_1185', 344, 1185, 'Realizar las capacitaciones ', 5, '1.3.1.2.1', 2, 0),
-('p_2_a_1186', 346, 1186, 'Registrar asistencia ', 5, '1.3.1.2.3', 2, 0),
-('p_2_a_1187', 345, 1187, 'Aplicar cuestionario ', 5, '1.3.1.2.2', 2, 0),
-('p_2_a_1188', 347, 1188, 'Capturar evidencias ', 5, '1.3.1.2.4', 2, 0),
-('p_2_a_1189', 348, 1189, 'Capturar correcciones y mejoras ', 5, '1.3.1.2.5', 2, 0),
-('p_2_a_1190', 349, 1190, 'Finalizar capacitación ', 5, '1.3.1.2.6', 2, 0),
-('p_2_a_1191', 350, 1191, 'PAQ 1.3: Evaluación ', 4, '1.3.1.3', 2, 0),
-('p_2_a_1192', 351, 1192, 'Analizar resultados de los cuestionarios ', 5, '1.3.1.3.1', 2, 0),
-('p_2_a_1193', 352, 1193, 'Documentar la capacitación ', 5, '1.3.1.3.2', 2, 0),
-('p_2_a_1194', 353, 1194, 'Documentar las correcciones y mejoras ', 5, '1.3.1.3.3', 2, 0),
-('p_2_a_1195', 354, 1195, 'Publicar resultados de las capacitaciones ', 5, '1.3.1.3.4', 2, 0),
-('p_2_a_1196', 355, 1196, 'Publicar las evidencias ', 5, '1.3.1.3.5', 2, 0),
-('p_2_a_1197', 356, 1197, 'Publicar contenido de las capacitaciones ', 5, '1.3.1.3.6', 2, 0),
-('p_2_a_1198', 357, 1198, 'Entregar resultados ', 5, '1.3.1.3.7', 2, 0),
-('p_2_a_120', 31, 120, 'PAQ 1.3: Codificación ', 4, '1.1.1.3', 2, 0),
-('p_2_a_123', 32, 123, 'Desarrollar las interfaces de usuario ', 5, '1.1.1.3.1', 2, 0),
-('p_2_a_1271', 385, 1271, 'SE 3.3: Correcciones y mejoras ', 3, '1.3.3', 2, 0),
-('p_2_a_1272', 386, 1272, 'PAQ 5.1: Planificación ', 4, '1.3.3.1', 2, 0),
-('p_2_a_1273', 387, 1273, 'Identificar las historias de usuario defectuosas ', 5, '1.3.3.1.1', 2, 0),
-('p_2_a_1274', 388, 1274, 'Corregir las historias de usuario defectuosas ', 5, '1.3.3.1.2', 2, 0),
-('p_2_a_1275', 389, 1275, 'Formalizar las historias de usuario ', 5, '1.3.3.1.3', 2, 0),
-('p_2_a_1276', 390, 1276, 'relacionar las historias de usuario ', 5, '1.3.3.1.4', 2, 0),
-('p_2_a_1277', 391, 1277, 'Formalizar el mapa de historias de usuario ', 5, '1.3.3.1.5', 2, 0),
-('p_2_a_1278', 392, 1278, 'PAQ 5.2: Implementación ', 4, '1.3.3.2', 2, 0),
-('p_2_a_1279', 393, 1279, 'Corregir las interfaces de usuario ', 5, '1.3.3.2.1', 2, 0),
-('p_2_a_128', 30, 128, 'Aceptar los mockups de las interfaces de usuario ', 5, '1.1.1.2.15', 2, 0),
-('p_2_a_1280', 394, 1280, 'Aplicar reingeniería al código fuente ', 5, '1.3.3.2.2', 2, 0),
-('p_2_a_1281', 395, 1281, 'Unir las características del modulo ', 5, '1.3.3.2.3', 2, 0),
-('p_2_a_1282', 396, 1282, 'Integrar el módulo al repositorio central ', 5, '1.3.3.2.4', 2, 0),
-('p_2_a_1283', 397, 1283, 'Actualizar el documento de lecciones aprendidas ', 5, '1.3.3.2.5', 2, 0),
-('p_2_a_1285', 25, 1285, 'Realizar el modelo entidad relación ', 5, '1.1.1.2.10', 2, 0),
-('p_2_a_1286', 26, 1286, 'Aceptar el modelo de datos ', 5, '1.1.1.2.11', 2, 0),
-('p_2_a_1289', 34, 1289, 'Desarrollar requerimientos funcionales del rol estudiante ', 5, '1.1.1.3.3', 2, 0),
-('p_2_a_129', 27, 129, 'Modelar los mockups de las interfaces de usuario ', 5, '1.1.1.2.12', 2, 0),
-('p_2_a_1291', 35, 1291, 'Desarrollar requerimientos funcionales del rol docente ', 5, '1.1.1.3.4', 2, 0),
-('p_2_a_1322', 36, 1322, 'Desarrollar requerimientos funcionales del rol padre de familia ', 5, '1.1.1.3.5', 2, 0),
-('p_2_a_1323', 38, 1323, 'Desarrollar requerimientos funcionales del rol administrador ', 5, '1.1.1.3.7', 2, 0),
-('p_2_a_1324', 37, 1324, 'Desarrollar requerimientos funcionales del rol coordinador ', 5, '1.1.1.3.6', 2, 0),
-('p_2_a_1325', 207, 1325, 'Crear plan de pruebas ', 5, '1.1.5.2.4', 2, 0),
-('p_2_a_1327', 219, 1327, 'Definir encuesta de satisfacción, registro de asistencia y registro de correcciones y mejoras ', 5, '1.2.1.1.3', 2, 0),
-('p_2_a_1328', 222, 1328, 'Adquirir encuestas de satisfacción, registro de asistencia y registro de correcciones y mejoras ', 5, '1.2.1.1.6', 2, 0),
-('p_2_a_1329', 223, 1329, 'Adquirir kit de capacitación, pendones y volantes de publicidad ', 5, '1.2.1.1.7', 2, 0),
-('p_2_a_1331', 230, 1331, 'Capturar correcciones y mejoras ', 5, '1.2.1.2.5', 2, 0),
-('p_2_a_1334', 227, 1334, 'Aplicar cuestionario ', 5, '1.2.1.2.2', 2, 0),
-('p_2_a_1340', 224, 1340, 'Aceptar el material trabajo  ', 5, '1.2.1.1.8', 2, 0),
-('p_2_a_1341', 336, 1341, 'Definir encuesta de satisfacción, registro de asistencia y registro de correcciones y mejoras ', 5, '1.3.1.1.3', 2, 0),
-('p_2_a_1342', 337, 1342, 'Publicar la convocatoria ', 5, '1.3.1.1.4', 2, 0),
-('p_2_a_1343', 338, 1343, 'Aceptar la documentación por parte de la secretaria de educación ', 5, '1.3.1.1.5', 2, 0),
-('p_2_a_1344', 339, 1344, 'Adquirir encuestas de satisfacción, registro de asistencia y registro de correcciones y mejoras ', 5, '1.3.1.1.6', 2, 0),
-('p_2_a_1345', 340, 1345, 'Adquirir kit de capacitación, pendones y volantes de publicidad ', 5, '1.3.1.1.7', 2, 0),
-('p_2_a_1346', 341, 1346, 'Adquirir refrigerio docentes ', 5, '1.3.1.1.8', 2, 0),
-('p_2_a_1347', 342, 1347, 'Aceptar el material trabajo ', 5, '1.3.1.1.9', 2, 0),
-('p_2_a_136', 41, 136, 'PAQ 1.4: Pruebas ', 4, '1.1.1.4', 2, 0),
-('p_2_a_137', 8, 137, 'Realizar entrega formal de historias de usuario ', 5, '1.1.1.1.4', 2, 0),
-('p_2_a_138', 9, 138, 'relacionar las historias de usuario ', 5, '1.1.1.1.5', 2, 0),
-('p_2_a_139', 10, 139, 'Mapear el Big Picture ', 5, '1.1.1.1.6', 2, 0),
-('p_2_a_140', 11, 140, 'Definir el backbone ', 5, '1.1.1.1.7', 2, 0),
-('p_2_a_141', 12, 141, 'Definir el walking skeleton ', 5, '1.1.1.1.8', 2, 0),
-('p_2_a_1410', 45, 1410, 'Realizar pruebas de aplicación ', 5, '1.1.1.4.4', 2, 0),
-('p_2_a_1411', 46, 1411, 'Realizar pruebas de integración ', 5, '1.1.1.4.5', 2, 0),
-('p_2_a_142', 7, 142, 'Formalizar las historias de usuario ', 5, '1.1.1.1.3', 2, 0),
-('p_2_a_143', 6, 143, 'Efectuar reunión con un grupo de usuarios finales ', 5, '1.1.1.1.2', 2, 0),
-('p_2_a_144', 18, 144, 'Aceptar las tarjetas crc ', 5, '1.1.1.2.3', 2, 0),
-('p_2_a_145', 19, 145, 'Describir las capas del sistema ', 5, '1.1.1.2.4', 2, 0),
-('p_2_a_146', 20, 146, 'Definir la vista estructural ', 5, '1.1.1.2.5', 2, 0),
-('p_2_a_1467', 100, 1467, 'PAQ 3.1: Planificación ', 4, '1.1.3.1', 2, 0),
-('p_2_a_1468', 101, 1468, 'Efectuar reunión con el patrocinador ', 5, '1.1.3.1.1', 2, 0),
-('p_2_a_1469', 102, 1469, 'Efectuar reunión con un grupo de usuarios finales ', 5, '1.1.3.1.2', 2, 0),
-('p_2_a_1470', 103, 1470, 'Formalizar las historias de usuario ', 5, '1.1.3.1.3', 2, 0),
-('p_2_a_1471', 104, 1471, 'Realizar entrega formal de historias de usuario ', 5, '1.1.3.1.4', 2, 0),
-('p_2_a_1472', 105, 1472, 'relacionar las historias de usuario ', 5, '1.1.3.1.5', 2, 0),
-('p_2_a_1473', 106, 1473, 'Mapear el Big Picture ', 5, '1.1.3.1.6', 2, 0),
-('p_2_a_1474', 107, 1474, 'Definir el backbone ', 5, '1.1.3.1.7', 2, 0),
-('p_2_a_1475', 108, 1475, 'Definir el walking skeleton ', 5, '1.1.3.1.8', 2, 0),
-('p_2_a_1476', 109, 1476, 'Formalizar el mapa de historias de usuario ', 5, '1.1.3.1.9', 2, 0),
-('p_2_a_1477', 110, 1477, 'Formalizar el plan de entrega ', 5, '1.1.3.1.10', 2, 0),
-('p_2_a_1478', 111, 1478, 'PAQ 3.2: Diseño ', 4, '1.1.3.2', 2, 0),
-('p_2_a_1479', 112, 1479, 'Definir las tarjetas CRC ', 5, '1.1.3.2.1', 2, 0),
-('p_2_a_148', 22, 148, 'Desarrollar la vista de implementación ', 5, '1.1.1.2.7', 2, 0),
-('p_2_a_1480', 113, 1480, 'Relacionar tarjetas ', 5, '1.1.3.2.2', 2, 0),
-('p_2_a_1481', 114, 1481, 'Aceptar las tarjetas crc ', 5, '1.1.3.2.3', 2, 0),
-('p_2_a_1482', 115, 1482, 'Describir las capas del sistema ', 5, '1.1.3.2.4', 2, 0),
-('p_2_a_1483', 116, 1483, 'Definir la vista estructural ', 5, '1.1.3.2.5', 2, 0),
-('p_2_a_1484', 117, 1484, 'Diseñar el modelo de despliegue ', 5, '1.1.3.2.6', 2, 0),
-('p_2_a_1485', 118, 1485, 'Desarrollar la vista de implementación ', 5, '1.1.3.2.7', 2, 0),
-('p_2_a_1486', 119, 1486, 'Definir la arquitectura ', 5, '1.1.3.2.8', 2, 0),
-('p_2_a_1487', 120, 1487, 'Realizar el modelo conceptual de los datos ', 5, '1.1.3.2.9', 2, 0),
-('p_2_a_1488', 121, 1488, 'Realizar el modelo entidad relación ', 5, '1.1.3.2.10', 2, 0),
-('p_2_a_1489', 122, 1489, 'Aceptar el modelo de datos ', 5, '1.1.3.2.11', 2, 0),
-('p_2_a_149', 17, 149, 'Relacionar tarjetas ', 5, '1.1.1.2.2', 2, 0),
-('p_2_a_1490', 123, 1490, 'Modelar los mockups de las interfaces de usuario ', 5, '1.1.3.2.12', 2, 0),
-('p_2_a_1491', 124, 1491, 'Construir el glosario de términos ', 5, '1.1.3.2.13', 2, 0),
-('p_2_a_1492', 125, 1492, 'Aceptar el glosario de términos ', 5, '1.1.3.2.14', 2, 0),
-('p_2_a_1493', 126, 1493, 'Aceptar los mockups de las interfaces de usuario ', 5, '1.1.3.2.15', 2, 0),
-('p_2_a_1494', 127, 1494, 'PAQ 3.3: Codificación ', 4, '1.1.3.3', 2, 0),
-('p_2_a_1495', 128, 1495, 'Desarrollar las interfaces de usuario ', 5, '1.1.3.3.1', 2, 0),
-('p_2_a_1496', 129, 1496, 'Aceptar las interfaces de usuario ', 5, '1.1.3.3.2', 2, 0),
-('p_2_a_1497', 130, 1497, 'Desarrollar requerimientos funcionales del rol estudiante ', 5, '1.1.3.3.3', 2, 0),
-('p_2_a_1498', 131, 1498, 'Desarrollar requerimientos funcionales del rol docente ', 5, '1.1.3.3.4', 2, 0),
-('p_2_a_1499', 132, 1499, 'Desarrollar requerimientos funcionales del rol padre de familia ', 5, '1.1.3.3.5', 2, 0),
-('p_2_a_150', 16, 150, 'Definir las tarjetas CRC ', 5, '1.1.1.2.1', 2, 0),
-('p_2_a_1500', 133, 1500, 'Desarrollar requerimientos funcionales del rol coordinador ', 5, '1.1.3.3.6', 2, 0),
-('p_2_a_1502', 134, 1502, 'Aceptar los requerimientos funcionales ', 5, '1.1.3.3.7', 2, 0),
-('p_2_a_1503', 135, 1503, 'Integrar el módulo al repositorio central ', 5, '1.1.3.3.8', 2, 0),
-('p_2_a_1504', 136, 1504, 'PAQ 3.4: Pruebas ', 4, '1.1.3.4', 2, 0),
-('p_2_a_155', 28, 155, 'Construir el glosario de términos ', 5, '1.1.1.2.13', 2, 0),
-('p_2_a_1555', 53, 1555, 'PAQ 2.1: Planificación ', 4, '1.1.2.1', 2, 0),
-('p_2_a_1556', 54, 1556, 'Efectuar reunión con el patrocinador ', 5, '1.1.2.1.1', 2, 0),
-('p_2_a_1557', 55, 1557, 'Efectuar reunión con un grupo de usuarios finales ', 5, '1.1.2.1.2', 2, 0),
-('p_2_a_1558', 56, 1558, 'Formalizar las historias de usuario ', 5, '1.1.2.1.3', 2, 0),
-('p_2_a_1559', 57, 1559, 'Realizar entrega formal de historias de usuario ', 5, '1.1.2.1.4', 2, 0),
-('p_2_a_1560', 58, 1560, 'relacionar las historias de usuario ', 5, '1.1.2.1.5', 2, 0),
-('p_2_a_1561', 59, 1561, 'Mapear el Big Picture ', 5, '1.1.2.1.6', 2, 0),
-('p_2_a_1562', 60, 1562, 'Definir el backbone ', 5, '1.1.2.1.7', 2, 0),
-('p_2_a_1563', 61, 1563, 'Definir el walking skeleton ', 5, '1.1.2.1.8', 2, 0),
-('p_2_a_1564', 62, 1564, 'Formalizar el mapa de historias de usuario ', 5, '1.1.2.1.9', 2, 0),
-('p_2_a_1565', 63, 1565, 'Formalizar el plan de entrega ', 5, '1.1.2.1.10', 2, 0),
-('p_2_a_1566', 64, 1566, 'PAQ 2.2: Diseño ', 4, '1.1.2.2', 2, 0),
-('p_2_a_1567', 65, 1567, 'Definir las tarjetas CRC ', 5, '1.1.2.2.1', 2, 0),
-('p_2_a_1568', 66, 1568, 'Relacionar tarjetas ', 5, '1.1.2.2.2', 2, 0),
-('p_2_a_1569', 67, 1569, 'Aceptar las tarjetas crc ', 5, '1.1.2.2.3', 2, 0),
-('p_2_a_157', 39, 157, 'Aceptar los requerimientos funcionales ', 5, '1.1.1.3.8', 2, 0),
-('p_2_a_1570', 68, 1570, 'Describir las capas del sistema ', 5, '1.1.2.2.4', 2, 0),
-('p_2_a_1571', 69, 1571, 'Definir la vista estructural ', 5, '1.1.2.2.5', 2, 0),
-('p_2_a_1572', 70, 1572, 'Diseñar el modelo de despliegue ', 5, '1.1.2.2.6', 2, 0),
-('p_2_a_1573', 71, 1573, 'Desarrollar la vista de implementación ', 5, '1.1.2.2.7', 2, 0),
-('p_2_a_1574', 72, 1574, 'Definir la arquitectura ', 5, '1.1.2.2.8', 2, 0),
-('p_2_a_1575', 73, 1575, 'Realizar el modelo conceptual de los datos ', 5, '1.1.2.2.9', 2, 0),
-('p_2_a_1576', 74, 1576, 'Realizar el modelo entidad relación ', 5, '1.1.2.2.10', 2, 0),
-('p_2_a_1577', 75, 1577, 'Aceptar el modelo de datos ', 5, '1.1.2.2.11', 2, 0),
-('p_2_a_1578', 76, 1578, 'Modelar los mockups de las interfaces de usuario ', 5, '1.1.2.2.12', 2, 0),
-('p_2_a_1579', 77, 1579, 'Construir el glosario de términos ', 5, '1.1.2.2.13', 2, 0),
-('p_2_a_1580', 78, 1580, 'Aceptar el glosario de términos ', 5, '1.1.2.2.14', 2, 0),
-('p_2_a_1581', 79, 1581, 'Aceptar los mockups de las interfaces de usuario ', 5, '1.1.2.2.15', 2, 0),
-('p_2_a_1582', 80, 1582, 'PAQ 2.3: Codificación ', 4, '1.1.2.3', 2, 0),
-('p_2_a_1583', 81, 1583, 'Desarrollar las interfaces de usuario ', 5, '1.1.2.3.1', 2, 0),
-('p_2_a_1584', 82, 1584, 'Aceptar las interfaces de usuario ', 5, '1.1.2.3.2', 2, 0),
-('p_2_a_1585', 83, 1585, 'Desarrollar requerimientos funcionales del rol estudiante ', 5, '1.1.2.3.3', 2, 0);
+('p_2_a_0', 0, 0, 'Proyecto1', 0, '0', 2, 4),
+('p_2_a_10', 52, 10, 'SE 1.2: Modulo de trabajos, tareas y refuerzos ', 3, '1.1.2', 2, 4),
+('p_2_a_101', 43, 101, 'Identificar los casos de pruebas unitarias ', 5, '1.1.1.4.2', 2, 4),
+('p_2_a_107', 24, 107, 'Realizar el modelo conceptual de los datos ', 5, '1.1.1.2.9', 2, 4),
+('p_2_a_108', 29, 108, 'Aceptar el glosario de términos ', 5, '1.1.1.2.14', 2, 4),
+('p_2_a_1175', 332, 1175, 'SE 3.1: Capacitación a 650 docentes ', 3, '1.3.1', 2, 4),
+('p_2_a_1176', 333, 1176, 'PAQ 1.1: Planificación ', 4, '1.3.1.1', 2, 4),
+('p_2_a_1177', 334, 1177, 'Desarrollar el material multimedia para la capacitación ', 5, '1.3.1.1.1', 2, 4),
+('p_2_a_1178', 335, 1178, 'Definir logística de la capacitación ', 5, '1.3.1.1.2', 2, 4),
+('p_2_a_1184', 343, 1184, 'PAQ 1.2: Desarrollo ', 4, '1.3.1.2', 2, 4),
+('p_2_a_1185', 344, 1185, 'Realizar las capacitaciones ', 5, '1.3.1.2.1', 2, 4),
+('p_2_a_1186', 346, 1186, 'Registrar asistencia ', 5, '1.3.1.2.3', 2, 4),
+('p_2_a_1187', 345, 1187, 'Aplicar cuestionario ', 5, '1.3.1.2.2', 2, 4),
+('p_2_a_1188', 347, 1188, 'Capturar evidencias ', 5, '1.3.1.2.4', 2, 4),
+('p_2_a_1189', 348, 1189, 'Capturar correcciones y mejoras ', 5, '1.3.1.2.5', 2, 4),
+('p_2_a_1190', 349, 1190, 'Finalizar capacitación ', 5, '1.3.1.2.6', 2, 4),
+('p_2_a_1191', 350, 1191, 'PAQ 1.3: Evaluación ', 4, '1.3.1.3', 2, 4),
+('p_2_a_1192', 351, 1192, 'Analizar resultados de los cuestionarios ', 5, '1.3.1.3.1', 2, 4),
+('p_2_a_1193', 352, 1193, 'Documentar la capacitación ', 5, '1.3.1.3.2', 2, 4),
+('p_2_a_1194', 353, 1194, 'Documentar las correcciones y mejoras ', 5, '1.3.1.3.3', 2, 4),
+('p_2_a_1195', 354, 1195, 'Publicar resultados de las capacitaciones ', 5, '1.3.1.3.4', 2, 4),
+('p_2_a_1196', 355, 1196, 'Publicar las evidencias ', 5, '1.3.1.3.5', 2, 4),
+('p_2_a_1197', 356, 1197, 'Publicar contenido de las capacitaciones ', 5, '1.3.1.3.6', 2, 4),
+('p_2_a_1198', 357, 1198, 'Entregar resultados ', 5, '1.3.1.3.7', 2, 4),
+('p_2_a_120', 31, 120, 'PAQ 1.3: Codificación ', 4, '1.1.1.3', 2, 4),
+('p_2_a_123', 32, 123, 'Desarrollar las interfaces de usuario ', 5, '1.1.1.3.1', 2, 4),
+('p_2_a_1271', 385, 1271, 'SE 3.3: Correcciones y mejoras ', 3, '1.3.3', 2, 4),
+('p_2_a_1272', 386, 1272, 'PAQ 5.1: Planificación ', 4, '1.3.3.1', 2, 4),
+('p_2_a_1273', 387, 1273, 'Identificar las historias de usuario defectuosas ', 5, '1.3.3.1.1', 2, 4),
+('p_2_a_1274', 388, 1274, 'Corregir las historias de usuario defectuosas ', 5, '1.3.3.1.2', 2, 4),
+('p_2_a_1275', 389, 1275, 'Formalizar las historias de usuario ', 5, '1.3.3.1.3', 2, 4),
+('p_2_a_1276', 390, 1276, 'relacionar las historias de usuario ', 5, '1.3.3.1.4', 2, 4),
+('p_2_a_1277', 391, 1277, 'Formalizar el mapa de historias de usuario ', 5, '1.3.3.1.5', 2, 4),
+('p_2_a_1278', 392, 1278, 'PAQ 5.2: Implementación ', 4, '1.3.3.2', 2, 4),
+('p_2_a_1279', 393, 1279, 'Corregir las interfaces de usuario ', 5, '1.3.3.2.1', 2, 4),
+('p_2_a_128', 30, 128, 'Aceptar los mockups de las interfaces de usuario ', 5, '1.1.1.2.15', 2, 4),
+('p_2_a_1280', 394, 1280, 'Aplicar reingeniería al código fuente ', 5, '1.3.3.2.2', 2, 4),
+('p_2_a_1281', 395, 1281, 'Unir las características del modulo ', 5, '1.3.3.2.3', 2, 4),
+('p_2_a_1282', 396, 1282, 'Integrar el módulo al repositorio central ', 5, '1.3.3.2.4', 2, 4),
+('p_2_a_1283', 397, 1283, 'Actualizar el documento de lecciones aprendidas ', 5, '1.3.3.2.5', 2, 4),
+('p_2_a_1285', 25, 1285, 'Realizar el modelo entidad relación ', 5, '1.1.1.2.10', 2, 4),
+('p_2_a_1286', 26, 1286, 'Aceptar el modelo de datos ', 5, '1.1.1.2.11', 2, 4),
+('p_2_a_1289', 34, 1289, 'Desarrollar requerimientos funcionales del rol estudiante ', 5, '1.1.1.3.3', 2, 4),
+('p_2_a_129', 27, 129, 'Modelar los mockups de las interfaces de usuario ', 5, '1.1.1.2.12', 2, 4),
+('p_2_a_1291', 35, 1291, 'Desarrollar requerimientos funcionales del rol docente ', 5, '1.1.1.3.4', 2, 4),
+('p_2_a_1322', 36, 1322, 'Desarrollar requerimientos funcionales del rol padre de familia ', 5, '1.1.1.3.5', 2, 4),
+('p_2_a_1323', 38, 1323, 'Desarrollar requerimientos funcionales del rol administrador ', 5, '1.1.1.3.7', 2, 4),
+('p_2_a_1324', 37, 1324, 'Desarrollar requerimientos funcionales del rol coordinador ', 5, '1.1.1.3.6', 2, 4),
+('p_2_a_1325', 207, 1325, 'Crear plan de pruebas ', 5, '1.1.5.2.4', 2, 4),
+('p_2_a_1327', 219, 1327, 'Definir encuesta de satisfacción, registro de asistencia y registro de correcciones y mejoras ', 5, '1.2.1.1.3', 2, 4),
+('p_2_a_1328', 222, 1328, 'Adquirir encuestas de satisfacción, registro de asistencia y registro de correcciones y mejoras ', 5, '1.2.1.1.6', 2, 4),
+('p_2_a_1329', 223, 1329, 'Adquirir kit de capacitación, pendones y volantes de publicidad ', 5, '1.2.1.1.7', 2, 4),
+('p_2_a_1331', 230, 1331, 'Capturar correcciones y mejoras ', 5, '1.2.1.2.5', 2, 4),
+('p_2_a_1334', 227, 1334, 'Aplicar cuestionario ', 5, '1.2.1.2.2', 2, 4),
+('p_2_a_1340', 224, 1340, 'Aceptar el material trabajo  ', 5, '1.2.1.1.8', 2, 4),
+('p_2_a_1341', 336, 1341, 'Definir encuesta de satisfacción, registro de asistencia y registro de correcciones y mejoras ', 5, '1.3.1.1.3', 2, 4),
+('p_2_a_1342', 337, 1342, 'Publicar la convocatoria ', 5, '1.3.1.1.4', 2, 4),
+('p_2_a_1343', 338, 1343, 'Aceptar la documentación por parte de la secretaria de educación ', 5, '1.3.1.1.5', 2, 4),
+('p_2_a_1344', 339, 1344, 'Adquirir encuestas de satisfacción, registro de asistencia y registro de correcciones y mejoras ', 5, '1.3.1.1.6', 2, 4),
+('p_2_a_1345', 340, 1345, 'Adquirir kit de capacitación, pendones y volantes de publicidad ', 5, '1.3.1.1.7', 2, 4),
+('p_2_a_1346', 341, 1346, 'Adquirir refrigerio docentes ', 5, '1.3.1.1.8', 2, 4),
+('p_2_a_1347', 342, 1347, 'Aceptar el material trabajo ', 5, '1.3.1.1.9', 2, 4),
+('p_2_a_136', 41, 136, 'PAQ 1.4: Pruebas ', 4, '1.1.1.4', 2, 4),
+('p_2_a_137', 8, 137, 'Realizar entrega formal de historias de usuario ', 5, '1.1.1.1.4', 2, 4),
+('p_2_a_138', 9, 138, 'relacionar las historias de usuario ', 5, '1.1.1.1.5', 2, 4),
+('p_2_a_139', 10, 139, 'Mapear el Big Picture ', 5, '1.1.1.1.6', 2, 4),
+('p_2_a_140', 11, 140, 'Definir el backbone ', 5, '1.1.1.1.7', 2, 4),
+('p_2_a_141', 12, 141, 'Definir el walking skeleton ', 5, '1.1.1.1.8', 2, 4),
+('p_2_a_1410', 45, 1410, 'Realizar pruebas de aplicación ', 5, '1.1.1.4.4', 2, 4),
+('p_2_a_1411', 46, 1411, 'Realizar pruebas de integración ', 5, '1.1.1.4.5', 2, 4),
+('p_2_a_142', 7, 142, 'Formalizar las historias de usuario ', 5, '1.1.1.1.3', 2, 4),
+('p_2_a_143', 6, 143, 'Efectuar reunión con un grupo de usuarios finales ', 5, '1.1.1.1.2', 2, 4),
+('p_2_a_144', 18, 144, 'Aceptar las tarjetas crc ', 5, '1.1.1.2.3', 2, 4),
+('p_2_a_145', 19, 145, 'Describir las capas del sistema ', 5, '1.1.1.2.4', 2, 4),
+('p_2_a_146', 20, 146, 'Definir la vista estructural ', 5, '1.1.1.2.5', 2, 4),
+('p_2_a_1467', 100, 1467, 'PAQ 3.1: Planificación ', 4, '1.1.3.1', 2, 4),
+('p_2_a_1468', 101, 1468, 'Efectuar reunión con el patrocinador ', 5, '1.1.3.1.1', 2, 4),
+('p_2_a_1469', 102, 1469, 'Efectuar reunión con un grupo de usuarios finales ', 5, '1.1.3.1.2', 2, 4),
+('p_2_a_1470', 103, 1470, 'Formalizar las historias de usuario ', 5, '1.1.3.1.3', 2, 4),
+('p_2_a_1471', 104, 1471, 'Realizar entrega formal de historias de usuario ', 5, '1.1.3.1.4', 2, 4),
+('p_2_a_1472', 105, 1472, 'relacionar las historias de usuario ', 5, '1.1.3.1.5', 2, 4),
+('p_2_a_1473', 106, 1473, 'Mapear el Big Picture ', 5, '1.1.3.1.6', 2, 4),
+('p_2_a_1474', 107, 1474, 'Definir el backbone ', 5, '1.1.3.1.7', 2, 4),
+('p_2_a_1475', 108, 1475, 'Definir el walking skeleton ', 5, '1.1.3.1.8', 2, 4),
+('p_2_a_1476', 109, 1476, 'Formalizar el mapa de historias de usuario ', 5, '1.1.3.1.9', 2, 4),
+('p_2_a_1477', 110, 1477, 'Formalizar el plan de entrega ', 5, '1.1.3.1.10', 2, 4),
+('p_2_a_1478', 111, 1478, 'PAQ 3.2: Diseño ', 4, '1.1.3.2', 2, 4),
+('p_2_a_1479', 112, 1479, 'Definir las tarjetas CRC ', 5, '1.1.3.2.1', 2, 4),
+('p_2_a_148', 22, 148, 'Desarrollar la vista de implementación ', 5, '1.1.1.2.7', 2, 4),
+('p_2_a_1480', 113, 1480, 'Relacionar tarjetas ', 5, '1.1.3.2.2', 2, 4),
+('p_2_a_1481', 114, 1481, 'Aceptar las tarjetas crc ', 5, '1.1.3.2.3', 2, 4),
+('p_2_a_1482', 115, 1482, 'Describir las capas del sistema ', 5, '1.1.3.2.4', 2, 4),
+('p_2_a_1483', 116, 1483, 'Definir la vista estructural ', 5, '1.1.3.2.5', 2, 4),
+('p_2_a_1484', 117, 1484, 'Diseñar el modelo de despliegue ', 5, '1.1.3.2.6', 2, 4),
+('p_2_a_1485', 118, 1485, 'Desarrollar la vista de implementación ', 5, '1.1.3.2.7', 2, 4),
+('p_2_a_1486', 119, 1486, 'Definir la arquitectura ', 5, '1.1.3.2.8', 2, 4),
+('p_2_a_1487', 120, 1487, 'Realizar el modelo conceptual de los datos ', 5, '1.1.3.2.9', 2, 4),
+('p_2_a_1488', 121, 1488, 'Realizar el modelo entidad relación ', 5, '1.1.3.2.10', 2, 4),
+('p_2_a_1489', 122, 1489, 'Aceptar el modelo de datos ', 5, '1.1.3.2.11', 2, 4),
+('p_2_a_149', 17, 149, 'Relacionar tarjetas ', 5, '1.1.1.2.2', 2, 4),
+('p_2_a_1490', 123, 1490, 'Modelar los mockups de las interfaces de usuario ', 5, '1.1.3.2.12', 2, 4),
+('p_2_a_1491', 124, 1491, 'Construir el glosario de términos ', 5, '1.1.3.2.13', 2, 4),
+('p_2_a_1492', 125, 1492, 'Aceptar el glosario de términos ', 5, '1.1.3.2.14', 2, 4),
+('p_2_a_1493', 126, 1493, 'Aceptar los mockups de las interfaces de usuario ', 5, '1.1.3.2.15', 2, 4),
+('p_2_a_1494', 127, 1494, 'PAQ 3.3: Codificación ', 4, '1.1.3.3', 2, 4),
+('p_2_a_1495', 128, 1495, 'Desarrollar las interfaces de usuario ', 5, '1.1.3.3.1', 2, 4),
+('p_2_a_1496', 129, 1496, 'Aceptar las interfaces de usuario ', 5, '1.1.3.3.2', 2, 4),
+('p_2_a_1497', 130, 1497, 'Desarrollar requerimientos funcionales del rol estudiante ', 5, '1.1.3.3.3', 2, 4),
+('p_2_a_1498', 131, 1498, 'Desarrollar requerimientos funcionales del rol docente ', 5, '1.1.3.3.4', 2, 4),
+('p_2_a_1499', 132, 1499, 'Desarrollar requerimientos funcionales del rol padre de familia ', 5, '1.1.3.3.5', 2, 4),
+('p_2_a_150', 16, 150, 'Definir las tarjetas CRC ', 5, '1.1.1.2.1', 2, 4),
+('p_2_a_1500', 133, 1500, 'Desarrollar requerimientos funcionales del rol coordinador ', 5, '1.1.3.3.6', 2, 4),
+('p_2_a_1502', 134, 1502, 'Aceptar los requerimientos funcionales ', 5, '1.1.3.3.7', 2, 4),
+('p_2_a_1503', 135, 1503, 'Integrar el módulo al repositorio central ', 5, '1.1.3.3.8', 2, 4),
+('p_2_a_1504', 136, 1504, 'PAQ 3.4: Pruebas ', 4, '1.1.3.4', 2, 4),
+('p_2_a_155', 28, 155, 'Construir el glosario de términos ', 5, '1.1.1.2.13', 2, 4),
+('p_2_a_1555', 53, 1555, 'PAQ 2.1: Planificación ', 4, '1.1.2.1', 2, 4),
+('p_2_a_1556', 54, 1556, 'Efectuar reunión con el patrocinador ', 5, '1.1.2.1.1', 2, 4),
+('p_2_a_1557', 55, 1557, 'Efectuar reunión con un grupo de usuarios finales ', 5, '1.1.2.1.2', 2, 4),
+('p_2_a_1558', 56, 1558, 'Formalizar las historias de usuario ', 5, '1.1.2.1.3', 2, 4),
+('p_2_a_1559', 57, 1559, 'Realizar entrega formal de historias de usuario ', 5, '1.1.2.1.4', 2, 4),
+('p_2_a_1560', 58, 1560, 'relacionar las historias de usuario ', 5, '1.1.2.1.5', 2, 4),
+('p_2_a_1561', 59, 1561, 'Mapear el Big Picture ', 5, '1.1.2.1.6', 2, 4),
+('p_2_a_1562', 60, 1562, 'Definir el backbone ', 5, '1.1.2.1.7', 2, 4),
+('p_2_a_1563', 61, 1563, 'Definir el walking skeleton ', 5, '1.1.2.1.8', 2, 4),
+('p_2_a_1564', 62, 1564, 'Formalizar el mapa de historias de usuario ', 5, '1.1.2.1.9', 2, 4),
+('p_2_a_1565', 63, 1565, 'Formalizar el plan de entrega ', 5, '1.1.2.1.10', 2, 4),
+('p_2_a_1566', 64, 1566, 'PAQ 2.2: Diseño ', 4, '1.1.2.2', 2, 4),
+('p_2_a_1567', 65, 1567, 'Definir las tarjetas CRC ', 5, '1.1.2.2.1', 2, 4),
+('p_2_a_1568', 66, 1568, 'Relacionar tarjetas ', 5, '1.1.2.2.2', 2, 4),
+('p_2_a_1569', 67, 1569, 'Aceptar las tarjetas crc ', 5, '1.1.2.2.3', 2, 4),
+('p_2_a_157', 39, 157, 'Aceptar los requerimientos funcionales ', 5, '1.1.1.3.8', 2, 4),
+('p_2_a_1570', 68, 1570, 'Describir las capas del sistema ', 5, '1.1.2.2.4', 2, 4),
+('p_2_a_1571', 69, 1571, 'Definir la vista estructural ', 5, '1.1.2.2.5', 2, 4),
+('p_2_a_1572', 70, 1572, 'Diseñar el modelo de despliegue ', 5, '1.1.2.2.6', 2, 4),
+('p_2_a_1573', 71, 1573, 'Desarrollar la vista de implementación ', 5, '1.1.2.2.7', 2, 4),
+('p_2_a_1574', 72, 1574, 'Definir la arquitectura ', 5, '1.1.2.2.8', 2, 4),
+('p_2_a_1575', 73, 1575, 'Realizar el modelo conceptual de los datos ', 5, '1.1.2.2.9', 2, 4),
+('p_2_a_1576', 74, 1576, 'Realizar el modelo entidad relación ', 5, '1.1.2.2.10', 2, 4),
+('p_2_a_1577', 75, 1577, 'Aceptar el modelo de datos ', 5, '1.1.2.2.11', 2, 4),
+('p_2_a_1578', 76, 1578, 'Modelar los mockups de las interfaces de usuario ', 5, '1.1.2.2.12', 2, 4),
+('p_2_a_1579', 77, 1579, 'Construir el glosario de términos ', 5, '1.1.2.2.13', 2, 4),
+('p_2_a_1580', 78, 1580, 'Aceptar el glosario de términos ', 5, '1.1.2.2.14', 2, 4),
+('p_2_a_1581', 79, 1581, 'Aceptar los mockups de las interfaces de usuario ', 5, '1.1.2.2.15', 2, 4),
+('p_2_a_1582', 80, 1582, 'PAQ 2.3: Codificación ', 4, '1.1.2.3', 2, 4),
+('p_2_a_1583', 81, 1583, 'Desarrollar las interfaces de usuario ', 5, '1.1.2.3.1', 2, 4),
+('p_2_a_1584', 82, 1584, 'Aceptar las interfaces de usuario ', 5, '1.1.2.3.2', 2, 4),
+('p_2_a_1585', 83, 1585, 'Desarrollar requerimientos funcionales del rol estudiante ', 5, '1.1.2.3.3', 2, 4);
 INSERT INTO `actividad` (`actividad_id`, `actividad_orden`, `actividad_uuid`, `actividad_nombre`, `actividad_level`, `actividad_wbs`, `proyecto_id`, `proyecto_linea_base`) VALUES
-('p_2_a_1586', 84, 1586, 'Desarrollar requerimientos funcionales del rol docente ', 5, '1.1.2.3.4', 2, 0),
-('p_2_a_1587', 85, 1587, 'Desarrollar requerimientos funcionales del rol padre de familia ', 5, '1.1.2.3.5', 2, 0),
-('p_2_a_159', 33, 159, 'Aceptar las interfaces de usuario ', 5, '1.1.1.3.2', 2, 0),
-('p_2_a_1590', 86, 1590, 'Aceptar los requerimientos funcionales ', 5, '1.1.2.3.6', 2, 0),
-('p_2_a_1591', 87, 1591, 'Integrar el módulo al repositorio central ', 5, '1.1.2.3.7', 2, 0),
-('p_2_a_1592', 88, 1592, 'PAQ 2.4: Pruebas ', 4, '1.1.2.4', 2, 0),
-('p_2_a_1599', 148, 1599, 'PAQ 4.1: Planificación ', 4, '1.1.4.1', 2, 0),
-('p_2_a_1600', 149, 1600, 'Efectuar reunión con el patrocinador ', 5, '1.1.4.1.1', 2, 0),
-('p_2_a_1601', 150, 1601, 'Efectuar reunión con un grupo de usuarios finales ', 5, '1.1.4.1.2', 2, 0),
-('p_2_a_1602', 151, 1602, 'Formalizar las historias de usuario ', 5, '1.1.4.1.3', 2, 0),
-('p_2_a_1603', 152, 1603, 'Realizar entrega formal de historias de usuario ', 5, '1.1.4.1.4', 2, 0),
-('p_2_a_1604', 153, 1604, 'relacionar las historias de usuario ', 5, '1.1.4.1.5', 2, 0),
-('p_2_a_1605', 154, 1605, 'Mapear el Big Picture ', 5, '1.1.4.1.6', 2, 0),
-('p_2_a_1606', 155, 1606, 'Definir el backbone ', 5, '1.1.4.1.7', 2, 0),
-('p_2_a_1607', 156, 1607, 'Definir el walking skeleton ', 5, '1.1.4.1.8', 2, 0),
-('p_2_a_1608', 157, 1608, 'Formalizar el mapa de historias de usuario ', 5, '1.1.4.1.9', 2, 0),
-('p_2_a_1609', 158, 1609, 'Formalizar el plan de entrega ', 5, '1.1.4.1.10', 2, 0),
-('p_2_a_1610', 159, 1610, 'PAQ 4.2: Diseño ', 4, '1.1.4.2', 2, 0),
-('p_2_a_1611', 160, 1611, 'Definir las tarjetas CRC ', 5, '1.1.4.2.1', 2, 0),
-('p_2_a_1612', 161, 1612, 'Relacionar tarjetas ', 5, '1.1.4.2.2', 2, 0),
-('p_2_a_1613', 162, 1613, 'Aceptar las tarjetas crc ', 5, '1.1.4.2.3', 2, 0),
-('p_2_a_1614', 163, 1614, 'Describir las capas del sistema ', 5, '1.1.4.2.4', 2, 0),
-('p_2_a_1615', 164, 1615, 'Definir la vista estructural ', 5, '1.1.4.2.5', 2, 0),
-('p_2_a_1616', 165, 1616, 'Diseñar el modelo de despliegue ', 5, '1.1.4.2.6', 2, 0),
-('p_2_a_1617', 166, 1617, 'Desarrollar la vista de implementación ', 5, '1.1.4.2.7', 2, 0),
-('p_2_a_1618', 167, 1618, 'Definir la arquitectura ', 5, '1.1.4.2.8', 2, 0),
-('p_2_a_1619', 168, 1619, 'Realizar el modelo conceptual de los datos ', 5, '1.1.4.2.9', 2, 0),
-('p_2_a_1620', 169, 1620, 'Realizar el modelo entidad relación ', 5, '1.1.4.2.10', 2, 0),
-('p_2_a_1621', 170, 1621, 'Aceptar el modelo de datos ', 5, '1.1.4.2.11', 2, 0),
-('p_2_a_1622', 171, 1622, 'Modelar los mockups de las interfaces de usuario ', 5, '1.1.4.2.12', 2, 0),
-('p_2_a_1623', 172, 1623, 'Construir el glosario de términos ', 5, '1.1.4.2.13', 2, 0),
-('p_2_a_1624', 173, 1624, 'Aceptar el glosario de términos ', 5, '1.1.4.2.14', 2, 0),
-('p_2_a_1625', 174, 1625, 'Aceptar los mockups de las interfaces de usuario ', 5, '1.1.4.2.15', 2, 0),
-('p_2_a_1626', 175, 1626, 'PAQ 4.3: Codificación ', 4, '1.1.4.3', 2, 0),
-('p_2_a_1627', 176, 1627, 'Desarrollar las interfaces de usuario ', 5, '1.1.4.3.1', 2, 0),
-('p_2_a_1628', 177, 1628, 'Aceptar las interfaces de usuario ', 5, '1.1.4.3.2', 2, 0),
-('p_2_a_1629', 178, 1629, 'Desarrollar requerimientos funcionales del rol estudiante ', 5, '1.1.4.3.3', 2, 0),
-('p_2_a_1630', 179, 1630, 'Desarrollar requerimientos funcionales del rol docente ', 5, '1.1.4.3.4', 2, 0),
-('p_2_a_1631', 180, 1631, 'Desarrollar requerimientos funcionales del rol padre de familia ', 5, '1.1.4.3.5', 2, 0),
-('p_2_a_1632', 181, 1632, 'Desarrollar requerimientos funcionales del rol coordinador ', 5, '1.1.4.3.6', 2, 0),
-('p_2_a_1633', 182, 1633, 'Desarrollar requerimientos funcionales del rol administrador ', 5, '1.1.4.3.7', 2, 0),
-('p_2_a_1634', 183, 1634, 'Aceptar los requerimientos funcionales ', 5, '1.1.4.3.8', 2, 0),
-('p_2_a_1635', 184, 1635, 'Integrar el módulo al repositorio central ', 5, '1.1.4.3.9', 2, 0),
-('p_2_a_1636', 185, 1636, 'PAQ 4.4: Pruebas ', 4, '1.1.4.4', 2, 0),
-('p_2_a_1643', 242, 1643, 'PAQ 2.1: Planificación ', 4, '1.2.2.1', 2, 0),
-('p_2_a_1644', 243, 1644, 'Desarrollar el material multimedia para la capacitación ', 5, '1.2.2.1.1', 2, 0),
-('p_2_a_1645', 244, 1645, 'Definir logística de la capacitación ', 5, '1.2.2.1.2', 2, 0),
-('p_2_a_1647', 245, 1647, 'Publicar la convocatoria ', 5, '1.2.2.1.3', 2, 0),
-('p_2_a_1648', 246, 1648, 'Aceptar la documentación por parte de la secretaria de educación ', 5, '1.2.2.1.4', 2, 0),
-('p_2_a_1649', 247, 1649, 'Adquirir encuestas de satisfacción, registro de asistencia y registro de correcciones y mejoras ', 5, '1.2.2.1.5', 2, 0),
-('p_2_a_1650', 248, 1650, 'Adquirir kit de capacitación, y volantes de publicidad ', 5, '1.2.2.1.6', 2, 0),
-('p_2_a_1651', 249, 1651, 'Aceptar el material trabajo  ', 5, '1.2.2.1.7', 2, 0),
-('p_2_a_1652', 250, 1652, 'PAQ 2.2: Desarrollo ', 4, '1.2.2.2', 2, 0),
-('p_2_a_1653', 251, 1653, 'Realizar las capacitaciones ', 5, '1.2.2.2.1', 2, 0),
-('p_2_a_1654', 252, 1654, 'Aplicar cuestionario ', 5, '1.2.2.2.2', 2, 0),
-('p_2_a_1655', 253, 1655, 'Registrar asistencia ', 5, '1.2.2.2.3', 2, 0),
-('p_2_a_1656', 254, 1656, 'Capturar evidencias ', 5, '1.2.2.2.4', 2, 0),
-('p_2_a_1657', 255, 1657, 'Capturar correcciones y mejoras ', 5, '1.2.2.2.5', 2, 0),
-('p_2_a_1658', 256, 1658, 'Finalizar capacitación ', 5, '1.2.2.2.6', 2, 0),
-('p_2_a_1659', 257, 1659, 'PAQ 2.3: Evaluación ', 4, '1.2.2.3', 2, 0),
-('p_2_a_1660', 258, 1660, 'Analizar resultados de los cuestionarios ', 5, '1.2.2.3.1', 2, 0),
-('p_2_a_1661', 259, 1661, 'Documentar la capacitación ', 5, '1.2.2.3.2', 2, 0),
-('p_2_a_1662', 260, 1662, 'Documentar las correcciones y mejoras ', 5, '1.2.2.3.3', 2, 0),
-('p_2_a_1663', 261, 1663, 'Publicar resultados de las capacitaciones ', 5, '1.2.2.3.4', 2, 0),
-('p_2_a_1664', 262, 1664, 'Publicar las evidencias ', 5, '1.2.2.3.5', 2, 0),
-('p_2_a_1665', 263, 1665, 'Publicar contenido de las capacitaciones ', 5, '1.2.2.3.6', 2, 0),
-('p_2_a_1666', 264, 1666, 'Entregar resultados ', 5, '1.2.2.3.7', 2, 0),
-('p_2_a_1667', 267, 1667, 'PAQ 3.1: Planificación ', 4, '1.2.3.1', 2, 0),
-('p_2_a_1668', 268, 1668, 'Desarrollar el material multimedia para la capacitación ', 5, '1.2.3.1.1', 2, 0),
-('p_2_a_1669', 269, 1669, 'Definir logística de la capacitación ', 5, '1.2.3.1.2', 2, 0),
-('p_2_a_1670', 270, 1670, 'Publicar la convocatoria ', 5, '1.2.3.1.3', 2, 0),
-('p_2_a_1671', 271, 1671, 'Aceptar la documentación por parte de la secretaria de educación ', 5, '1.2.3.1.4', 2, 0),
-('p_2_a_1672', 272, 1672, 'Adquirir encuestas de satisfacción, registro de asistencia y registro de correcciones y mejoras ', 5, '1.2.3.1.5', 2, 0),
-('p_2_a_1673', 273, 1673, 'Adquirir kit de capacitación, y volantes de publicidad ', 5, '1.2.3.1.6', 2, 0),
-('p_2_a_1674', 274, 1674, 'Aceptar el material trabajo  ', 5, '1.2.3.1.7', 2, 0),
-('p_2_a_1675', 275, 1675, 'PAQ 3.2: Desarrollo ', 4, '1.2.3.2', 2, 0),
-('p_2_a_1676', 276, 1676, 'Realizar las capacitaciones ', 5, '1.2.3.2.1', 2, 0),
-('p_2_a_1677', 277, 1677, 'Aplicar cuestionario ', 5, '1.2.3.2.2', 2, 0),
-('p_2_a_1678', 278, 1678, 'Registrar asistencia ', 5, '1.2.3.2.3', 2, 0),
-('p_2_a_1679', 279, 1679, 'Capturar evidencias ', 5, '1.2.3.2.4', 2, 0),
-('p_2_a_1680', 280, 1680, 'Capturar correcciones y mejoras ', 5, '1.2.3.2.5', 2, 0),
-('p_2_a_1681', 281, 1681, 'Finalizar capacitación ', 5, '1.2.3.2.6', 2, 0),
-('p_2_a_1682', 282, 1682, 'PAQ 3.3: Evaluación ', 4, '1.2.3.3', 2, 0),
-('p_2_a_1683', 283, 1683, 'Analizar resultados de los cuestionarios ', 5, '1.2.3.3.1', 2, 0),
-('p_2_a_1684', 284, 1684, 'Documentar la capacitación ', 5, '1.2.3.3.2', 2, 0),
-('p_2_a_1685', 285, 1685, 'Documentar las correcciones y mejoras ', 5, '1.2.3.3.3', 2, 0),
-('p_2_a_1686', 286, 1686, 'Publicar resultados de las capacitaciones ', 5, '1.2.3.3.4', 2, 0),
-('p_2_a_1687', 287, 1687, 'Publicar las evidencias ', 5, '1.2.3.3.5', 2, 0),
-('p_2_a_1688', 288, 1688, 'Publicar contenido de las capacitaciones ', 5, '1.2.3.3.6', 2, 0),
-('p_2_a_1689', 289, 1689, 'Entregar resultados ', 5, '1.2.3.3.7', 2, 0),
-('p_2_a_1690', 292, 1690, 'PAQ 4.1: Planificación ', 4, '1.2.4.1', 2, 0),
-('p_2_a_1691', 293, 1691, 'Desarrollar el material multimedia para la capacitación ', 5, '1.2.4.1.1', 2, 0),
-('p_2_a_1692', 294, 1692, 'Definir logística de la capacitación ', 5, '1.2.4.1.2', 2, 0),
-('p_2_a_1693', 295, 1693, 'Publicar la convocatoria ', 5, '1.2.4.1.3', 2, 0),
-('p_2_a_1694', 296, 1694, 'Aceptar la documentación por parte de la secretaria de educación ', 5, '1.2.4.1.4', 2, 0),
-('p_2_a_1695', 297, 1695, 'Adquirir encuestas de satisfacción, registro de asistencia y registro de correcciones y mejoras ', 5, '1.2.4.1.5', 2, 0),
-('p_2_a_1696', 298, 1696, 'Adquirir kit de capacitación, y volantes de publicidad ', 5, '1.2.4.1.6', 2, 0),
-('p_2_a_1697', 299, 1697, 'Aceptar el material trabajo ', 5, '1.2.4.1.7', 2, 0),
-('p_2_a_1698', 300, 1698, 'PAQ 4.2: Desarrollo ', 4, '1.2.4.2', 2, 0),
-('p_2_a_1699', 301, 1699, 'Realizar las capacitaciones ', 5, '1.2.4.2.1', 2, 0),
-('p_2_a_1700', 302, 1700, 'Aplicar cuestionario ', 5, '1.2.4.2.2', 2, 0),
-('p_2_a_1701', 303, 1701, 'Registrar asistencia ', 5, '1.2.4.2.3', 2, 0),
-('p_2_a_1702', 304, 1702, 'Capturar evidencias ', 5, '1.2.4.2.4', 2, 0),
-('p_2_a_1703', 305, 1703, 'Capturar correcciones y mejoras ', 5, '1.2.4.2.5', 2, 0),
-('p_2_a_1704', 306, 1704, 'Finalizar capacitación ', 5, '1.2.4.2.6', 2, 0),
-('p_2_a_1705', 307, 1705, 'PAQ 4.3: Evaluación ', 4, '1.2.4.3', 2, 0),
-('p_2_a_1706', 308, 1706, 'Analizar resultados de los cuestionarios ', 5, '1.2.4.3.1', 2, 0),
-('p_2_a_1707', 309, 1707, 'Documentar la capacitación ', 5, '1.2.4.3.2', 2, 0),
-('p_2_a_1708', 310, 1708, 'Documentar las correcciones y mejoras ', 5, '1.2.4.3.3', 2, 0),
-('p_2_a_1709', 311, 1709, 'Publicar resultados de las capacitaciones ', 5, '1.2.4.3.4', 2, 0),
-('p_2_a_1710', 312, 1710, 'Publicar las evidencias ', 5, '1.2.4.3.5', 2, 0),
-('p_2_a_1711', 313, 1711, 'Publicar contenido de las capacitaciones ', 5, '1.2.4.3.6', 2, 0),
-('p_2_a_1712', 314, 1712, 'Entregar resultados ', 5, '1.2.4.3.7', 2, 0),
-('p_2_a_1713', 400, 1713, 'E4: Capacitación a 4300 estudiantes ', 2, '1.4', 2, 0),
-('p_2_a_1714', 401, 1714, 'SE 4.1: Capacitación a 1075 estudiantes ', 3, '1.4.1', 2, 0),
-('p_2_a_1715', 402, 1715, 'PAQ 1.1: Planificación ', 4, '1.4.1.1', 2, 0),
-('p_2_a_1716', 403, 1716, 'Desarrollar el material multimedia para la capacitación ', 5, '1.4.1.1.1', 2, 0),
-('p_2_a_1717', 404, 1717, 'Definir logística de la capacitación ', 5, '1.4.1.1.2', 2, 0),
-('p_2_a_1718', 405, 1718, 'Definir encuesta de satisfacción, registro de asistencia y registro de correcciones y mejoras ', 5, '1.4.1.1.3', 2, 0),
-('p_2_a_1719', 406, 1719, 'Publicar la convocatoria ', 5, '1.4.1.1.4', 2, 0),
-('p_2_a_1720', 407, 1720, 'Aceptar la documentación por parte de la secretaria de educación ', 5, '1.4.1.1.5', 2, 0),
-('p_2_a_1721', 408, 1721, 'Adquirir encuestas de satisfacción, registro de asistencia y registro de correcciones y mejoras ', 5, '1.4.1.1.6', 2, 0),
-('p_2_a_1722', 409, 1722, 'Adquirir kit de capacitación, pendones y volantes de publicidad ', 5, '1.4.1.1.7', 2, 0),
-('p_2_a_1723', 410, 1723, 'Aceptar el material trabajo  ', 5, '1.4.1.1.8', 2, 0),
-('p_2_a_1724', 411, 1724, 'PAQ 1.2: Desarrollo ', 4, '1.4.1.2', 2, 0),
-('p_2_a_1725', 412, 1725, 'Realizar las capacitaciones ', 5, '1.4.1.2.1', 2, 0),
-('p_2_a_1726', 413, 1726, 'Aplicar cuestionario ', 5, '1.4.1.2.2', 2, 0),
-('p_2_a_1727', 414, 1727, 'Registrar asistencia ', 5, '1.4.1.2.3', 2, 0),
-('p_2_a_1728', 415, 1728, 'Capturar evidencias ', 5, '1.4.1.2.4', 2, 0),
-('p_2_a_1729', 416, 1729, 'Capturar correcciones y mejoras ', 5, '1.4.1.2.5', 2, 0),
-('p_2_a_1730', 417, 1730, 'Finalizar capacitación ', 5, '1.4.1.2.6', 2, 0),
-('p_2_a_1731', 418, 1731, 'PAQ 1.3: Evaluación ', 4, '1.4.1.3', 2, 0),
-('p_2_a_1732', 419, 1732, 'Analizar resultados de los cuestionarios ', 5, '1.4.1.3.1', 2, 0),
-('p_2_a_1733', 420, 1733, 'Documentar la capacitación ', 5, '1.4.1.3.2', 2, 0),
-('p_2_a_1734', 421, 1734, 'Documentar las correcciones y mejoras ', 5, '1.4.1.3.3', 2, 0),
-('p_2_a_1735', 422, 1735, 'Publicar resultados de las capacitaciones ', 5, '1.4.1.3.4', 2, 0),
-('p_2_a_1736', 423, 1736, 'Publicar las evidencias ', 5, '1.4.1.3.5', 2, 0),
-('p_2_a_1737', 424, 1737, 'Publicar contenido de las capacitaciones ', 5, '1.4.1.3.6', 2, 0),
-('p_2_a_1738', 425, 1738, 'Entregar resultados ', 5, '1.4.1.3.7', 2, 0),
-('p_2_a_1739', 427, 1739, 'SE 4.2: Capacitación a 1075 estudiantes ', 3, '1.4.2', 2, 0),
-('p_2_a_1740', 428, 1740, 'PAQ 2.1: Planificación ', 4, '1.4.2.1', 2, 0),
-('p_2_a_1741', 429, 1741, 'Desarrollar el material multimedia para la capacitación ', 5, '1.4.2.1.1', 2, 0),
-('p_2_a_1742', 430, 1742, 'Definir logística de la capacitación ', 5, '1.4.2.1.2', 2, 0),
-('p_2_a_1743', 431, 1743, 'Publicar la convocatoria ', 5, '1.4.2.1.3', 2, 0),
-('p_2_a_1744', 432, 1744, 'Aceptar la documentación por parte de la secretaria de educación ', 5, '1.4.2.1.4', 2, 0),
-('p_2_a_1745', 433, 1745, 'Adquirir encuestas de satisfacción, registro de asistencia y registro de correcciones y mejoras ', 5, '1.4.2.1.5', 2, 0),
-('p_2_a_1746', 434, 1746, 'Adquirir kit de capacitación, y volantes de publicidad ', 5, '1.4.2.1.6', 2, 0),
-('p_2_a_1747', 435, 1747, 'Aceptar el material trabajo ', 5, '1.4.2.1.7', 2, 0),
-('p_2_a_1748', 436, 1748, 'PAQ 2.2: Desarrollo ', 4, '1.4.2.2', 2, 0),
-('p_2_a_1749', 437, 1749, 'Realizar las capacitaciones ', 5, '1.4.2.2.1', 2, 0),
-('p_2_a_1750', 438, 1750, 'Aplicar cuestionario ', 5, '1.4.2.2.2', 2, 0),
-('p_2_a_1751', 439, 1751, 'Registrar asistencia ', 5, '1.4.2.2.3', 2, 0),
-('p_2_a_1752', 440, 1752, 'Capturar evidencias ', 5, '1.4.2.2.4', 2, 0),
-('p_2_a_1753', 441, 1753, 'Capturar correcciones y mejoras ', 5, '1.4.2.2.5', 2, 0),
-('p_2_a_1754', 442, 1754, 'Finalizar capacitación ', 5, '1.4.2.2.6', 2, 0),
-('p_2_a_1755', 443, 1755, 'PAQ 2.3: Evaluación ', 4, '1.4.2.3', 2, 0),
-('p_2_a_1756', 444, 1756, 'Analizar resultados de los cuestionarios ', 5, '1.4.2.3.1', 2, 0),
-('p_2_a_1757', 445, 1757, 'Documentar la capacitación ', 5, '1.4.2.3.2', 2, 0),
-('p_2_a_1758', 446, 1758, 'Documentar las correcciones y mejoras ', 5, '1.4.2.3.3', 2, 0),
-('p_2_a_1759', 447, 1759, 'Publicar resultados de las capacitaciones ', 5, '1.4.2.3.4', 2, 0),
-('p_2_a_1760', 448, 1760, 'Publicar las evidencias ', 5, '1.4.2.3.5', 2, 0),
-('p_2_a_1761', 449, 1761, 'Publicar contenido de las capacitaciones ', 5, '1.4.2.3.6', 2, 0),
-('p_2_a_1762', 450, 1762, 'Entregar resultados ', 5, '1.4.2.3.7', 2, 0),
-('p_2_a_1763', 452, 1763, 'SE 4.3: Capacitación a 1075 estudiantes ', 3, '1.4.3', 2, 0),
-('p_2_a_1764', 453, 1764, 'PAQ 3.1: Planificación ', 4, '1.4.3.1', 2, 0),
-('p_2_a_1765', 454, 1765, 'Desarrollar el material multimedia para la capacitación ', 5, '1.4.3.1.1', 2, 0),
-('p_2_a_1766', 455, 1766, 'Definir logística de la capacitación ', 5, '1.4.3.1.2', 2, 0),
-('p_2_a_1767', 456, 1767, 'Publicar la convocatoria ', 5, '1.4.3.1.3', 2, 0),
-('p_2_a_1768', 457, 1768, 'Aceptar la documentación por parte de la secretaria de educación ', 5, '1.4.3.1.4', 2, 0),
-('p_2_a_1769', 458, 1769, 'Adquirir encuestas de satisfacción, registro de asistencia y registro de correcciones y mejoras ', 5, '1.4.3.1.5', 2, 0),
-('p_2_a_1770', 459, 1770, 'Adquirir kit de capacitación, y volantes de publicidad ', 5, '1.4.3.1.6', 2, 0),
-('p_2_a_1771', 460, 1771, 'Aceptar el material trabajo  ', 5, '1.4.3.1.7', 2, 0),
-('p_2_a_1772', 461, 1772, 'PAQ 3.2: Desarrollo ', 4, '1.4.3.2', 2, 0),
-('p_2_a_1773', 462, 1773, 'Realizar las capacitaciones ', 5, '1.4.3.2.1', 2, 0),
-('p_2_a_1774', 463, 1774, 'Aplicar cuestionario ', 5, '1.4.3.2.2', 2, 0),
-('p_2_a_1775', 464, 1775, 'Registrar asistencia ', 5, '1.4.3.2.3', 2, 0),
-('p_2_a_1776', 465, 1776, 'Capturar evidencias ', 5, '1.4.3.2.4', 2, 0),
-('p_2_a_1777', 466, 1777, 'Capturar correcciones y mejoras ', 5, '1.4.3.2.5', 2, 0),
-('p_2_a_1778', 467, 1778, 'Finalizar capacitación ', 5, '1.4.3.2.6', 2, 0),
-('p_2_a_1779', 468, 1779, 'PAQ 3.3: Evaluación ', 4, '1.4.3.3', 2, 0),
-('p_2_a_1780', 469, 1780, 'Analizar resultados de los cuestionarios ', 5, '1.4.3.3.1', 2, 0),
-('p_2_a_1781', 470, 1781, 'Documentar la capacitación ', 5, '1.4.3.3.2', 2, 0),
-('p_2_a_1782', 471, 1782, 'Documentar las correcciones y mejoras ', 5, '1.4.3.3.3', 2, 0),
-('p_2_a_1783', 472, 1783, 'Publicar resultados de las capacitaciones ', 5, '1.4.3.3.4', 2, 0),
-('p_2_a_1784', 473, 1784, 'Publicar las evidencias ', 5, '1.4.3.3.5', 2, 0),
-('p_2_a_1785', 474, 1785, 'Publicar contenido de las capacitaciones ', 5, '1.4.3.3.6', 2, 0),
-('p_2_a_1786', 475, 1786, 'Entregar resultados ', 5, '1.4.3.3.7', 2, 0),
-('p_2_a_1787', 477, 1787, 'SE 4.4: Capacitación a 1075 estudiantes ', 3, '1.4.4', 2, 0),
-('p_2_a_1788', 478, 1788, 'PAQ 4.1: Planificación ', 4, '1.4.4.1', 2, 0),
-('p_2_a_1789', 479, 1789, 'Desarrollar el material multimedia para la capacitación ', 5, '1.4.4.1.1', 2, 0),
-('p_2_a_1790', 480, 1790, 'Definir logística de la capacitación ', 5, '1.4.4.1.2', 2, 0),
-('p_2_a_1791', 481, 1791, 'Publicar la convocatoria ', 5, '1.4.4.1.3', 2, 0),
-('p_2_a_1792', 482, 1792, 'Aceptar la documentación por parte de la secretaria de educación ', 5, '1.4.4.1.4', 2, 0),
-('p_2_a_1793', 483, 1793, 'Adquirir encuestas de satisfacción, registro de asistencia y registro de correcciones y mejoras ', 5, '1.4.4.1.5', 2, 0),
-('p_2_a_1794', 484, 1794, 'Adquirir kit de capacitación, y volantes de publicidad ', 5, '1.4.4.1.6', 2, 0),
-('p_2_a_1795', 485, 1795, 'Aceptar el material trabajo  ', 5, '1.4.4.1.7', 2, 0),
-('p_2_a_1796', 486, 1796, 'PAQ 4.2: Desarrollo ', 4, '1.4.4.2', 2, 0),
-('p_2_a_1797', 487, 1797, 'Realizar las capacitaciones ', 5, '1.4.4.2.1', 2, 0),
-('p_2_a_1798', 488, 1798, 'Aplicar cuestionario ', 5, '1.4.4.2.2', 2, 0),
-('p_2_a_1799', 489, 1799, 'Registrar asistencia ', 5, '1.4.4.2.3', 2, 0),
-('p_2_a_1800', 490, 1800, 'Capturar evidencias ', 5, '1.4.4.2.4', 2, 0),
-('p_2_a_1801', 491, 1801, 'Capturar correcciones y mejoras ', 5, '1.4.4.2.5', 2, 0),
-('p_2_a_1802', 492, 1802, 'Finalizar capacitación ', 5, '1.4.4.2.6', 2, 0),
-('p_2_a_1803', 493, 1803, 'PAQ 4.3: Evaluación ', 4, '1.4.4.3', 2, 0),
-('p_2_a_1804', 494, 1804, 'Analizar resultados de los cuestionarios ', 5, '1.4.4.3.1', 2, 0),
-('p_2_a_1805', 495, 1805, 'Documentar la capacitación ', 5, '1.4.4.3.2', 2, 0),
-('p_2_a_1806', 496, 1806, 'Documentar las correcciones y mejoras ', 5, '1.4.4.3.3', 2, 0),
-('p_2_a_1807', 497, 1807, 'Publicar resultados de las capacitaciones ', 5, '1.4.4.3.4', 2, 0),
-('p_2_a_1808', 498, 1808, 'Publicar las evidencias ', 5, '1.4.4.3.5', 2, 0),
-('p_2_a_1809', 499, 1809, 'Publicar contenido de las capacitaciones ', 5, '1.4.4.3.6', 2, 0),
-('p_2_a_1810', 500, 1810, 'Entregar resultados ', 5, '1.4.4.3.7', 2, 0),
-('p_2_a_1811', 502, 1811, 'SE 4.5: Correcciones y mejoras ', 3, '1.4.5', 2, 0),
-('p_2_a_1812', 503, 1812, 'PAQ 5.1: Planificación ', 4, '1.4.5.1', 2, 0),
-('p_2_a_1813', 504, 1813, 'Identificar las historias de usuario defectuosas ', 5, '1.4.5.1.1', 2, 0),
-('p_2_a_1814', 505, 1814, 'Corregir las historias de usuario defectuosas ', 5, '1.4.5.1.2', 2, 0),
-('p_2_a_1815', 506, 1815, 'Formalizar las historias de usuario ', 5, '1.4.5.1.3', 2, 0),
-('p_2_a_1816', 507, 1816, 'relacionar las historias de usuario ', 5, '1.4.5.1.4', 2, 0),
-('p_2_a_1817', 508, 1817, 'Formalizar el mapa de historias de usuario ', 5, '1.4.5.1.5', 2, 0),
-('p_2_a_1818', 509, 1818, 'PAQ 5.2: Implementación ', 4, '1.4.5.2', 2, 0),
-('p_2_a_1819', 510, 1819, 'Corregir las interfaces de usuario ', 5, '1.4.5.2.1', 2, 0),
-('p_2_a_1820', 511, 1820, 'Aplicar reingeniería al código fuente ', 5, '1.4.5.2.2', 2, 0),
-('p_2_a_1821', 512, 1821, 'Unir las características del modulo ', 5, '1.4.5.2.3', 2, 0),
-('p_2_a_1822', 513, 1822, 'Integrar el módulo al repositorio central ', 5, '1.4.5.2.4', 2, 0),
-('p_2_a_1823', 514, 1823, 'Actualizar el documento de lecciones aprendidas ', 5, '1.4.5.2.5', 2, 0),
-('p_2_a_1824', 359, 1824, 'SE 3.2: Capacitación a 650 docentes ', 3, '1.3.2', 2, 0),
-('p_2_a_1825', 360, 1825, 'PAQ 1.1: Planificación ', 4, '1.3.2.1', 2, 0),
-('p_2_a_1826', 361, 1826, 'Desarrollar el material multimedia para la capacitación ', 5, '1.3.2.1.1', 2, 0),
-('p_2_a_1827', 362, 1827, 'Definir logística de la capacitación ', 5, '1.3.2.1.2', 2, 0),
-('p_2_a_1829', 363, 1829, 'Publicar la convocatoria ', 5, '1.3.2.1.3', 2, 0),
-('p_2_a_1830', 364, 1830, 'Aceptar la documentación por parte de la secretaria de educación ', 5, '1.3.2.1.4', 2, 0),
-('p_2_a_1831', 365, 1831, 'Adquirir encuestas de satisfacción, registro de asistencia y registro de correcciones y mejoras ', 5, '1.3.2.1.5', 2, 0),
-('p_2_a_1832', 366, 1832, 'Adquirir kit de capacitación, y volantes de publicidad ', 5, '1.3.2.1.6', 2, 0),
-('p_2_a_1833', 367, 1833, 'Adquirir refrigerio docentes ', 5, '1.3.2.1.7', 2, 0),
-('p_2_a_1834', 368, 1834, 'Aceptar el material trabajo  ', 5, '1.3.2.1.8', 2, 0),
-('p_2_a_1835', 369, 1835, 'PAQ 1.2: Desarrollo ', 4, '1.3.2.2', 2, 0),
-('p_2_a_1836', 370, 1836, 'Realizar las capacitaciones ', 5, '1.3.2.2.1', 2, 0),
-('p_2_a_1837', 371, 1837, 'Aplicar cuestionario ', 5, '1.3.2.2.2', 2, 0),
-('p_2_a_1838', 372, 1838, 'Registrar asistencia ', 5, '1.3.2.2.3', 2, 0),
-('p_2_a_1839', 373, 1839, 'Capturar evidencias ', 5, '1.3.2.2.4', 2, 0),
-('p_2_a_1840', 374, 1840, 'Capturar correcciones y mejoras ', 5, '1.3.2.2.5', 2, 0),
-('p_2_a_1841', 375, 1841, 'Finalizar capacitación ', 5, '1.3.2.2.6', 2, 0),
-('p_2_a_1842', 376, 1842, 'PAQ 1.3: Evaluación ', 4, '1.3.2.3', 2, 0),
-('p_2_a_1843', 377, 1843, 'Analizar resultados de los cuestionarios ', 5, '1.3.2.3.1', 2, 0),
-('p_2_a_1844', 378, 1844, 'Documentar la capacitación ', 5, '1.3.2.3.2', 2, 0),
-('p_2_a_1845', 379, 1845, 'Documentar las correcciones y mejoras ', 5, '1.3.2.3.3', 2, 0),
-('p_2_a_1846', 380, 1846, 'Publicar resultados de las capacitaciones ', 5, '1.3.2.3.4', 2, 0),
-('p_2_a_1847', 381, 1847, 'Publicar las evidencias ', 5, '1.3.2.3.5', 2, 0),
-('p_2_a_1848', 382, 1848, 'Publicar contenido de las capacitaciones ', 5, '1.3.2.3.6', 2, 0),
-('p_2_a_1849', 383, 1849, 'Entregar resultados ', 5, '1.3.2.3.7', 2, 0),
-('p_2_a_1854', 47, 1854, 'Realizar reunión para la planeación de pruebas beta ', 5, '1.1.1.4.6', 2, 0),
-('p_2_a_1855', 48, 1855, 'Realizar convocatoria de usuario finales para las pruebas beta ', 5, '1.1.1.4.7', 2, 0),
-('p_2_a_1856', 49, 1856, 'Llevar a cabo las pruebas beta ', 5, '1.1.1.4.8', 2, 0),
-('p_2_a_1858', 50, 1858, 'Aceptar pruebas de software ', 5, '1.1.1.4.9', 2, 0),
-('p_2_a_1868', 89, 1868, 'Verificar historias de usuario ', 5, '1.1.2.4.1', 2, 0),
-('p_2_a_1869', 90, 1869, 'Identificar los casos de pruebas unitarias ', 5, '1.1.2.4.2', 2, 0),
-('p_2_a_1870', 91, 1870, 'Realizar las pruebas unitarias ', 5, '1.1.2.4.3', 2, 0),
-('p_2_a_1871', 92, 1871, 'Realizar pruebas de aplicación ', 5, '1.1.2.4.4', 2, 0),
-('p_2_a_1872', 93, 1872, 'Realizar pruebas de integración ', 5, '1.1.2.4.5', 2, 0),
-('p_2_a_1873', 94, 1873, 'Realizar reunión para la planeación de pruebas beta ', 5, '1.1.2.4.6', 2, 0),
-('p_2_a_1874', 95, 1874, 'Realizar convocatoria de usuario finales para las pruebas beta ', 5, '1.1.2.4.7', 2, 0),
-('p_2_a_1875', 96, 1875, 'Llevar a cabo las pruebas beta ', 5, '1.1.2.4.8', 2, 0),
-('p_2_a_1876', 97, 1876, 'Aceptar pruebas de software ', 5, '1.1.2.4.9', 2, 0),
-('p_2_a_1896', 137, 1896, 'Verificar historias de usuario ', 5, '1.1.3.4.1', 2, 0),
-('p_2_a_1897', 138, 1897, 'Identificar los casos de pruebas unitarias ', 5, '1.1.1.2', 2, 0),
-('p_2_a_1898', 139, 1898, 'Realizar las pruebas unitarias ', 5, '1.1.3.4.3', 2, 0),
-('p_2_a_1899', 140, 1899, 'Realizar pruebas de aplicación ', 5, '1.1.3.4.4', 2, 0),
-('p_2_a_1900', 141, 1900, 'Realizar pruebas de integración ', 5, '1.1.3.4.5', 2, 0),
-('p_2_a_1901', 142, 1901, 'Realizar reunión para la planeación de pruebas beta ', 5, '1.1.3.4.6', 2, 0),
-('p_2_a_1902', 143, 1902, 'Realizar convocatoria de usuario finales para las pruebas beta ', 5, '1.1.3.4.7', 2, 0),
-('p_2_a_1903', 144, 1903, 'Llevar a cabo las pruebas beta ', 5, '1.1.3.4.8', 2, 0),
-('p_2_a_1904', 145, 1904, 'Aceptar pruebas de software ', 5, '1.1.3.4.9', 2, 0),
-('p_2_a_1905', 186, 1905, 'Verificar historias de usuario ', 5, '1.1.4.4.1', 2, 0),
-('p_2_a_1906', 187, 1906, 'Identificar los casos de pruebas unitarias ', 5, '1.1.4.4.2', 2, 0),
-('p_2_a_1907', 188, 1907, 'Realizar las pruebas unitarias ', 5, '1.1.4.4.3', 2, 0),
-('p_2_a_1908', 189, 1908, 'Realizar pruebas de aplicación ', 5, '1.1.4.4.4', 2, 0),
-('p_2_a_1909', 190, 1909, 'Realizar pruebas de integración ', 5, '1.1.4.4.5', 2, 0),
-('p_2_a_1910', 191, 1910, 'Realizar reunión para la planeación de pruebas beta ', 5, '1.1.4.4.6', 2, 0),
-('p_2_a_1911', 192, 1911, 'Realizar convocatoria de usuario finales para las pruebas beta ', 5, '1.1.4.4.7', 2, 0),
-('p_2_a_1912', 193, 1912, 'Llevar a cabo las pruebas beta ', 5, '1.1.4.4.8', 2, 0),
-('p_2_a_1913', 194, 1913, 'Aceptar pruebas de software ', 5, '1.1.4.4.9', 2, 0),
-('p_2_a_1915', 98, 1915, 'Aceptar módulo de trabajo, tareas y refuerzos ', 4, '1.1.2.5', 2, 0),
-('p_2_a_1916', 51, 1916, 'Aceptar módulo de administración ', 4, '1.1.1.5', 2, 0),
-('p_2_a_1917', 146, 1917, 'Aceptar módulo de trabajo, tareas y refuerzos ', 4, '1.1.3.5', 2, 0),
-('p_2_a_1918', 195, 1918, 'Aceptar módulo de eventos y citas  ', 4, '1.1.4.5', 2, 0),
-('p_2_a_1921', 212, 1921, 'Instalar aplicación  ', 4, '1.1.5.3', 2, 0),
-('p_2_a_1922', 330, 1922, 'Capacitar a todos los padres de familia ', 3, '1.2.6', 2, 0),
-('p_2_a_1923', 399, 1923, 'Capacitar a docentes ', 3, '1.3.4', 2, 0),
-('p_2_a_1924', 516, 1924, 'Capacitar a estudiantes ', 3, '1.1.1.4', 2, 0),
-('p_2_a_1925', 213, 1925, 'Entregar aplicación web ', 3, '1.1.6', 2, 0),
-('p_2_a_1926', 240, 1926, 'Capacitar primer grupo de padres ', 4, '1.2.1.4', 2, 0),
-('p_2_a_1927', 265, 1927, 'Capacitar segundo grupo de padres ', 4, '1.2.2.4', 2, 0),
-('p_2_a_1928', 290, 1928, 'Capacitar tercer grupo de padres ', 4, '1.2.3.4', 2, 0),
-('p_2_a_1929', 315, 1929, 'Capacitar cuarto grupo de padres ', 4, '1.2.4.4', 2, 0),
-('p_2_a_1930', 329, 1930, 'Aplicar correcciones y mejoras de las capacitaciones de padres ', 4, '1.2.5.3', 2, 0),
-('p_2_a_1931', 358, 1931, 'Capacitar primer grupo de docentes ', 4, '1.3.1.4', 2, 0),
-('p_2_a_1932', 384, 1932, 'Capacitar segundo grupo de docentes ', 4, '1.3.2.4', 2, 0),
-('p_2_a_1933', 398, 1933, 'Aplicar correcciones y mejoras de las capacitaciones docente ', 4, '1.3.3.3', 2, 0),
-('p_2_a_1934', 426, 1934, 'Capacitar primer grupo de estudiantes ', 4, '1.4.1.4', 2, 0),
-('p_2_a_1935', 451, 1935, 'Capacitar segundo grupo de estudiantes ', 4, '1.4.2.4', 2, 0),
-('p_2_a_1936', 476, 1936, 'Capacitar tercer grupo de estudiantes ', 4, '1.1.1.2', 2, 0),
-('p_2_a_1937', 501, 1937, 'Capacitar cuarto grupo de estudiantes ', 4, '1.4.4.4', 2, 0),
-('p_2_a_1938', 515, 1938, 'Aplicar correcciones y mejoras de las capacitaciones estudiantes ', 4, '1.4.5.3', 2, 0),
-('p_2_a_1942', 44, 1942, 'Realizar las pruebas unitarias ', 5, '1.1.1.4.3', 2, 0),
-('p_2_a_253', 196, 253, 'SE 1.5: Transferencia tecnológica ', 3, '1.1.5', 2, 0),
-('p_2_a_254', 197, 254, 'PAQ 5.1: Integración ', 4, '1.1.5.1', 2, 0),
-('p_2_a_255', 203, 255, 'PAQ 5.2: Pruebas ', 4, '1.1.5.2', 2, 0),
-('p_2_a_257', 208, 257, 'Realizar prueba de seguridad ', 5, '1.1.5.2.5', 2, 0),
-('p_2_a_258', 209, 258, 'Realizar prueba de carga ', 5, '1.1.5.2.6', 2, 0),
-('p_2_a_259', 214, 259, 'E2: Capacitación a 4300 padres de familia ', 2, '1.2', 2, 0),
-('p_2_a_26', 99, 26, 'SE 1.3: Modulo de observaciones académicas y comportamentales ', 3, '1.1.3', 2, 0),
-('p_2_a_260', 215, 260, 'SE 2.1: Capacitación a 1075 padres de familia ', 3, '1.2.1', 2, 0),
-('p_2_a_261', 216, 261, 'PAQ 1.1: Planificación ', 4, '1.2.1.1', 2, 0),
-('p_2_a_262', 217, 262, 'Desarrollar el material multimedia para la capacitación ', 5, '1.2.1.1.1', 2, 0),
-('p_2_a_263', 225, 263, 'PAQ 1.2: Desarrollo ', 4, '1.2.1.2', 2, 0),
-('p_2_a_264', 228, 264, 'Registrar asistencia ', 5, '1.2.1.2.3', 2, 0),
-('p_2_a_265', 232, 265, 'PAQ 1.3: Evaluación ', 4, '1.2.1.3', 2, 0),
-('p_2_a_266', 236, 266, 'Publicar resultados de las capacitaciones ', 5, '1.2.1.3.4', 2, 0),
-('p_2_a_3', 1, 3, 'EduVirtual ', 1, '1', 2, 0),
-('p_2_a_314', 198, 314, 'Desarrollar reunión para solicitar credenciales y requerimientos de conexión ', 5, '1.1.5.1.1', 2, 0),
-('p_2_a_315', 199, 315, 'Cargar el software en el servidor ', 5, '1.1.5.1.2', 2, 0),
-('p_2_a_316', 200, 316, 'Migrar datos del SIMAT ', 5, '1.1.5.1.3', 2, 0),
-('p_2_a_317', 201, 317, 'Hacer entrega de los backups ', 5, '1.1.5.1.4', 2, 0),
-('p_2_a_318', 210, 318, 'Realizar prueba de rendimiento ', 5, '1.1.5.2.7', 2, 0),
-('p_2_a_319', 202, 319, 'Aceptar entrega de la aplicación ', 5, '1.1.5.1.5', 2, 0),
-('p_2_a_320', 211, 320, 'Entregar resultados de pruebas  ', 5, '1.1.5.2.8', 2, 0),
-('p_2_a_323', 218, 323, 'Definir logística de la capacitación ', 5, '1.2.1.1.2', 2, 0),
-('p_2_a_324', 220, 324, 'Publicar la convocatoria ', 5, '1.2.1.1.4', 2, 0),
-('p_2_a_326', 233, 326, 'Analizar resultados de los cuestionarios ', 5, '1.2.1.3.1', 2, 0),
-('p_2_a_327', 226, 327, 'Realizar las capacitaciones ', 5, '1.2.1.2.1', 2, 0),
-('p_2_a_330', 221, 330, 'Aceptar la documentación por parte de la secretaria de educación ', 5, '1.2.1.1.5', 2, 0),
-('p_2_a_333', 229, 333, 'Capturar evidencias ', 5, '1.2.1.2.4', 2, 0),
-('p_2_a_335', 231, 335, 'Finalizar capacitación ', 5, '1.2.1.2.6', 2, 0),
-('p_2_a_336', 234, 336, 'Documentar la capacitación ', 5, '1.2.1.3.2', 2, 0),
-('p_2_a_337', 237, 337, 'Publicar las evidencias ', 5, '1.2.1.3.5', 2, 0),
-('p_2_a_338', 238, 338, 'Publicar contenido de las capacitaciones ', 5, '1.2.1.3.6', 2, 0),
-('p_2_a_339', 239, 339, 'Entregar resultados ', 5, '1.2.1.3.7', 2, 0),
-('p_2_a_342', 235, 342, 'Documentar las correcciones y mejoras ', 5, '1.2.1.3.3', 2, 0),
-('p_2_a_366', 241, 366, 'SE 2.2: Capacitación a 1075 padres de familia ', 3, '1.2.2', 2, 0),
-('p_2_a_394', 266, 394, 'SE 2.3: Capacitación a 1075 padres de familia ', 3, '1.2.3', 2, 0),
-('p_2_a_4', 2, 4, 'E1: Aplicación web ', 2, '1.1', 2, 0),
-('p_2_a_418', 291, 418, 'SE 2.4: Capacitación a 1075 padres de familia ', 3, '1.2.4', 2, 0),
-('p_2_a_442', 316, 442, 'SE 2.5: Correcciones y mejoras ', 3, '1.2.5', 2, 0),
-('p_2_a_443', 317, 443, 'PAQ 5.1: Planificación ', 4, '1.2.5.1', 2, 0),
-('p_2_a_444', 318, 444, 'Identificar las historias de usuario defectuosas ', 5, '1.2.5.1.1', 2, 0),
-('p_2_a_445', 319, 445, 'Corregir las historias de usuario defectuosas ', 5, '1.2.5.1.2', 2, 0),
-('p_2_a_446', 320, 446, 'Formalizar las historias de usuario ', 5, '1.2.5.1.3', 2, 0),
-('p_2_a_447', 321, 447, 'relacionar las historias de usuario ', 5, '1.2.5.1.4', 2, 0),
-('p_2_a_448', 322, 448, 'Formalizar el mapa de historias de usuario ', 5, '1.2.5.1.5', 2, 0),
-('p_2_a_449', 323, 449, 'PAQ 5.2: Implementación ', 4, '1.2.5.2', 2, 0),
-('p_2_a_450', 324, 450, 'Corregir las interfaces de usuario ', 5, '1.2.5.2.1', 2, 0),
-('p_2_a_451', 325, 451, 'Aplicar reingeniería al código fuente ', 5, '1.2.5.2.2', 2, 0),
-('p_2_a_452', 326, 452, 'Unir las características del modulo ', 5, '1.2.5.2.3', 2, 0),
-('p_2_a_453', 327, 453, 'Integrar el módulo al repositorio central ', 5, '1.2.5.2.4', 2, 0),
-('p_2_a_454', 328, 454, 'Actualizar el documento de lecciones aprendidas ', 5, '1.2.5.2.5', 2, 0),
-('p_2_a_461', 331, 461, 'E3: Capacitación a 1300 docentes ', 2, '1.3', 2, 0),
-('p_2_a_5', 3, 5, 'SE 1.1: Modulo de Administración ', 3, '1.1.1', 2, 0),
-('p_2_a_6', 14, 6, 'Formalizar el plan de entrega ', 5, '1.1.1.1.10', 2, 0),
-('p_2_a_682', 206, 682, 'Identificar prueba de rendimiento ', 5, '1.1.5.2.3', 2, 0),
-('p_2_a_683', 205, 683, 'Identificar prueba de carga ', 5, '1.1.5.2.2', 2, 0),
-('p_2_a_684', 204, 684, 'Identificar pruebas de seguridad ', 5, '1.1.5.2.1', 2, 0),
-('p_2_a_74', 147, 74, 'SE 1.4 : Modulo de información de reuniones, eventos y citas con los docentes ', 3, '1.1.4', 2, 0),
-('p_2_a_8', 40, 8, 'Integrar el módulo al repositorio central ', 5, '1.1.1.3.9', 2, 0),
-('p_2_a_84', 5, 84, 'Efectuar reunión con el patrocinador ', 5, '1.1.1.1.1', 2, 0),
-('p_2_a_85', 4, 85, 'PAQ 1.1: Planificación ', 4, '1.1.1.1', 2, 0),
-('p_2_a_86', 13, 86, 'Formalizar el mapa de historias de usuario ', 5, '1.1.1.1.9', 2, 0),
-('p_2_a_90', 21, 90, 'Diseñar el modelo de despliegue ', 5, '1.1.1.2.6', 2, 0),
-('p_2_a_91', 23, 91, 'Definir la arquitectura ', 5, '1.1.1.2.8', 2, 0),
-('p_2_a_93', 15, 93, 'PAQ 1.2: Diseño ', 4, '1.1.1.2', 2, 0),
-('p_2_a_99', 42, 99, 'Verificar historias de usuario ', 5, '1.1.1.4.1', 2, 0);
+('p_2_a_1586', 84, 1586, 'Desarrollar requerimientos funcionales del rol docente ', 5, '1.1.2.3.4', 2, 4),
+('p_2_a_1587', 85, 1587, 'Desarrollar requerimientos funcionales del rol padre de familia ', 5, '1.1.2.3.5', 2, 4),
+('p_2_a_159', 33, 159, 'Aceptar las interfaces de usuario ', 5, '1.1.1.3.2', 2, 4),
+('p_2_a_1590', 86, 1590, 'Aceptar los requerimientos funcionales ', 5, '1.1.2.3.6', 2, 4),
+('p_2_a_1591', 87, 1591, 'Integrar el módulo al repositorio central ', 5, '1.1.2.3.7', 2, 4),
+('p_2_a_1592', 88, 1592, 'PAQ 2.4: Pruebas ', 4, '1.1.2.4', 2, 4),
+('p_2_a_1599', 148, 1599, 'PAQ 4.1: Planificación ', 4, '1.1.4.1', 2, 4),
+('p_2_a_1600', 149, 1600, 'Efectuar reunión con el patrocinador ', 5, '1.1.4.1.1', 2, 4),
+('p_2_a_1601', 150, 1601, 'Efectuar reunión con un grupo de usuarios finales ', 5, '1.1.4.1.2', 2, 4),
+('p_2_a_1602', 151, 1602, 'Formalizar las historias de usuario ', 5, '1.1.4.1.3', 2, 4),
+('p_2_a_1603', 152, 1603, 'Realizar entrega formal de historias de usuario ', 5, '1.1.4.1.4', 2, 4),
+('p_2_a_1604', 153, 1604, 'relacionar las historias de usuario ', 5, '1.1.4.1.5', 2, 4),
+('p_2_a_1605', 154, 1605, 'Mapear el Big Picture ', 5, '1.1.4.1.6', 2, 4),
+('p_2_a_1606', 155, 1606, 'Definir el backbone ', 5, '1.1.4.1.7', 2, 4),
+('p_2_a_1607', 156, 1607, 'Definir el walking skeleton ', 5, '1.1.4.1.8', 2, 4),
+('p_2_a_1608', 157, 1608, 'Formalizar el mapa de historias de usuario ', 5, '1.1.4.1.9', 2, 4),
+('p_2_a_1609', 158, 1609, 'Formalizar el plan de entrega ', 5, '1.1.4.1.10', 2, 4),
+('p_2_a_1610', 159, 1610, 'PAQ 4.2: Diseño ', 4, '1.1.4.2', 2, 4),
+('p_2_a_1611', 160, 1611, 'Definir las tarjetas CRC ', 5, '1.1.4.2.1', 2, 4),
+('p_2_a_1612', 161, 1612, 'Relacionar tarjetas ', 5, '1.1.4.2.2', 2, 4),
+('p_2_a_1613', 162, 1613, 'Aceptar las tarjetas crc ', 5, '1.1.4.2.3', 2, 4),
+('p_2_a_1614', 163, 1614, 'Describir las capas del sistema ', 5, '1.1.4.2.4', 2, 4),
+('p_2_a_1615', 164, 1615, 'Definir la vista estructural ', 5, '1.1.4.2.5', 2, 4),
+('p_2_a_1616', 165, 1616, 'Diseñar el modelo de despliegue ', 5, '1.1.4.2.6', 2, 4),
+('p_2_a_1617', 166, 1617, 'Desarrollar la vista de implementación ', 5, '1.1.4.2.7', 2, 4),
+('p_2_a_1618', 167, 1618, 'Definir la arquitectura ', 5, '1.1.4.2.8', 2, 4),
+('p_2_a_1619', 168, 1619, 'Realizar el modelo conceptual de los datos ', 5, '1.1.4.2.9', 2, 4),
+('p_2_a_1620', 169, 1620, 'Realizar el modelo entidad relación ', 5, '1.1.4.2.10', 2, 4),
+('p_2_a_1621', 170, 1621, 'Aceptar el modelo de datos ', 5, '1.1.4.2.11', 2, 4),
+('p_2_a_1622', 171, 1622, 'Modelar los mockups de las interfaces de usuario ', 5, '1.1.4.2.12', 2, 4),
+('p_2_a_1623', 172, 1623, 'Construir el glosario de términos ', 5, '1.1.4.2.13', 2, 4),
+('p_2_a_1624', 173, 1624, 'Aceptar el glosario de términos ', 5, '1.1.4.2.14', 2, 4),
+('p_2_a_1625', 174, 1625, 'Aceptar los mockups de las interfaces de usuario ', 5, '1.1.4.2.15', 2, 4),
+('p_2_a_1626', 175, 1626, 'PAQ 4.3: Codificación ', 4, '1.1.4.3', 2, 4),
+('p_2_a_1627', 176, 1627, 'Desarrollar las interfaces de usuario ', 5, '1.1.4.3.1', 2, 4),
+('p_2_a_1628', 177, 1628, 'Aceptar las interfaces de usuario ', 5, '1.1.4.3.2', 2, 4),
+('p_2_a_1629', 178, 1629, 'Desarrollar requerimientos funcionales del rol estudiante ', 5, '1.1.4.3.3', 2, 4),
+('p_2_a_1630', 179, 1630, 'Desarrollar requerimientos funcionales del rol docente ', 5, '1.1.4.3.4', 2, 4),
+('p_2_a_1631', 180, 1631, 'Desarrollar requerimientos funcionales del rol padre de familia ', 5, '1.1.4.3.5', 2, 4),
+('p_2_a_1632', 181, 1632, 'Desarrollar requerimientos funcionales del rol coordinador ', 5, '1.1.4.3.6', 2, 4),
+('p_2_a_1633', 182, 1633, 'Desarrollar requerimientos funcionales del rol administrador ', 5, '1.1.4.3.7', 2, 4),
+('p_2_a_1634', 183, 1634, 'Aceptar los requerimientos funcionales ', 5, '1.1.4.3.8', 2, 4),
+('p_2_a_1635', 184, 1635, 'Integrar el módulo al repositorio central ', 5, '1.1.4.3.9', 2, 4),
+('p_2_a_1636', 185, 1636, 'PAQ 4.4: Pruebas ', 4, '1.1.4.4', 2, 4),
+('p_2_a_1643', 242, 1643, 'PAQ 2.1: Planificación ', 4, '1.2.2.1', 2, 4),
+('p_2_a_1644', 243, 1644, 'Desarrollar el material multimedia para la capacitación ', 5, '1.2.2.1.1', 2, 4),
+('p_2_a_1645', 244, 1645, 'Definir logística de la capacitación ', 5, '1.2.2.1.2', 2, 4),
+('p_2_a_1647', 245, 1647, 'Publicar la convocatoria ', 5, '1.2.2.1.3', 2, 4),
+('p_2_a_1648', 246, 1648, 'Aceptar la documentación por parte de la secretaria de educación ', 5, '1.2.2.1.4', 2, 4),
+('p_2_a_1649', 247, 1649, 'Adquirir encuestas de satisfacción, registro de asistencia y registro de correcciones y mejoras ', 5, '1.2.2.1.5', 2, 4),
+('p_2_a_1650', 248, 1650, 'Adquirir kit de capacitación, y volantes de publicidad ', 5, '1.2.2.1.6', 2, 4),
+('p_2_a_1651', 249, 1651, 'Aceptar el material trabajo  ', 5, '1.2.2.1.7', 2, 4),
+('p_2_a_1652', 250, 1652, 'PAQ 2.2: Desarrollo ', 4, '1.2.2.2', 2, 4),
+('p_2_a_1653', 251, 1653, 'Realizar las capacitaciones ', 5, '1.2.2.2.1', 2, 4),
+('p_2_a_1654', 252, 1654, 'Aplicar cuestionario ', 5, '1.2.2.2.2', 2, 4),
+('p_2_a_1655', 253, 1655, 'Registrar asistencia ', 5, '1.2.2.2.3', 2, 4),
+('p_2_a_1656', 254, 1656, 'Capturar evidencias ', 5, '1.2.2.2.4', 2, 4),
+('p_2_a_1657', 255, 1657, 'Capturar correcciones y mejoras ', 5, '1.2.2.2.5', 2, 4),
+('p_2_a_1658', 256, 1658, 'Finalizar capacitación ', 5, '1.2.2.2.6', 2, 4),
+('p_2_a_1659', 257, 1659, 'PAQ 2.3: Evaluación ', 4, '1.2.2.3', 2, 4),
+('p_2_a_1660', 258, 1660, 'Analizar resultados de los cuestionarios ', 5, '1.2.2.3.1', 2, 4),
+('p_2_a_1661', 259, 1661, 'Documentar la capacitación ', 5, '1.2.2.3.2', 2, 4),
+('p_2_a_1662', 260, 1662, 'Documentar las correcciones y mejoras ', 5, '1.2.2.3.3', 2, 4),
+('p_2_a_1663', 261, 1663, 'Publicar resultados de las capacitaciones ', 5, '1.2.2.3.4', 2, 4),
+('p_2_a_1664', 262, 1664, 'Publicar las evidencias ', 5, '1.2.2.3.5', 2, 4),
+('p_2_a_1665', 263, 1665, 'Publicar contenido de las capacitaciones ', 5, '1.2.2.3.6', 2, 4),
+('p_2_a_1666', 264, 1666, 'Entregar resultados ', 5, '1.2.2.3.7', 2, 4),
+('p_2_a_1667', 267, 1667, 'PAQ 3.1: Planificación ', 4, '1.2.3.1', 2, 4),
+('p_2_a_1668', 268, 1668, 'Desarrollar el material multimedia para la capacitación ', 5, '1.2.3.1.1', 2, 4),
+('p_2_a_1669', 269, 1669, 'Definir logística de la capacitación ', 5, '1.2.3.1.2', 2, 4),
+('p_2_a_1670', 270, 1670, 'Publicar la convocatoria ', 5, '1.2.3.1.3', 2, 4),
+('p_2_a_1671', 271, 1671, 'Aceptar la documentación por parte de la secretaria de educación ', 5, '1.2.3.1.4', 2, 4),
+('p_2_a_1672', 272, 1672, 'Adquirir encuestas de satisfacción, registro de asistencia y registro de correcciones y mejoras ', 5, '1.2.3.1.5', 2, 4),
+('p_2_a_1673', 273, 1673, 'Adquirir kit de capacitación, y volantes de publicidad ', 5, '1.2.3.1.6', 2, 4),
+('p_2_a_1674', 274, 1674, 'Aceptar el material trabajo  ', 5, '1.2.3.1.7', 2, 4),
+('p_2_a_1675', 275, 1675, 'PAQ 3.2: Desarrollo ', 4, '1.2.3.2', 2, 4),
+('p_2_a_1676', 276, 1676, 'Realizar las capacitaciones ', 5, '1.2.3.2.1', 2, 4),
+('p_2_a_1677', 277, 1677, 'Aplicar cuestionario ', 5, '1.2.3.2.2', 2, 4),
+('p_2_a_1678', 278, 1678, 'Registrar asistencia ', 5, '1.2.3.2.3', 2, 4),
+('p_2_a_1679', 279, 1679, 'Capturar evidencias ', 5, '1.2.3.2.4', 2, 4),
+('p_2_a_1680', 280, 1680, 'Capturar correcciones y mejoras ', 5, '1.2.3.2.5', 2, 4),
+('p_2_a_1681', 281, 1681, 'Finalizar capacitación ', 5, '1.2.3.2.6', 2, 4),
+('p_2_a_1682', 282, 1682, 'PAQ 3.3: Evaluación ', 4, '1.2.3.3', 2, 4),
+('p_2_a_1683', 283, 1683, 'Analizar resultados de los cuestionarios ', 5, '1.2.3.3.1', 2, 4),
+('p_2_a_1684', 284, 1684, 'Documentar la capacitación ', 5, '1.2.3.3.2', 2, 4),
+('p_2_a_1685', 285, 1685, 'Documentar las correcciones y mejoras ', 5, '1.2.3.3.3', 2, 4),
+('p_2_a_1686', 286, 1686, 'Publicar resultados de las capacitaciones ', 5, '1.2.3.3.4', 2, 4),
+('p_2_a_1687', 287, 1687, 'Publicar las evidencias ', 5, '1.2.3.3.5', 2, 4),
+('p_2_a_1688', 288, 1688, 'Publicar contenido de las capacitaciones ', 5, '1.2.3.3.6', 2, 4),
+('p_2_a_1689', 289, 1689, 'Entregar resultados ', 5, '1.2.3.3.7', 2, 4),
+('p_2_a_1690', 292, 1690, 'PAQ 4.1: Planificación ', 4, '1.2.4.1', 2, 4),
+('p_2_a_1691', 293, 1691, 'Desarrollar el material multimedia para la capacitación ', 5, '1.2.4.1.1', 2, 4),
+('p_2_a_1692', 294, 1692, 'Definir logística de la capacitación ', 5, '1.2.4.1.2', 2, 4),
+('p_2_a_1693', 295, 1693, 'Publicar la convocatoria ', 5, '1.2.4.1.3', 2, 4),
+('p_2_a_1694', 296, 1694, 'Aceptar la documentación por parte de la secretaria de educación ', 5, '1.2.4.1.4', 2, 4),
+('p_2_a_1695', 297, 1695, 'Adquirir encuestas de satisfacción, registro de asistencia y registro de correcciones y mejoras ', 5, '1.2.4.1.5', 2, 4),
+('p_2_a_1696', 298, 1696, 'Adquirir kit de capacitación, y volantes de publicidad ', 5, '1.2.4.1.6', 2, 4),
+('p_2_a_1697', 299, 1697, 'Aceptar el material trabajo ', 5, '1.2.4.1.7', 2, 4),
+('p_2_a_1698', 300, 1698, 'PAQ 4.2: Desarrollo ', 4, '1.2.4.2', 2, 4),
+('p_2_a_1699', 301, 1699, 'Realizar las capacitaciones ', 5, '1.2.4.2.1', 2, 4),
+('p_2_a_1700', 302, 1700, 'Aplicar cuestionario ', 5, '1.2.4.2.2', 2, 4),
+('p_2_a_1701', 303, 1701, 'Registrar asistencia ', 5, '1.2.4.2.3', 2, 4),
+('p_2_a_1702', 304, 1702, 'Capturar evidencias ', 5, '1.2.4.2.4', 2, 4),
+('p_2_a_1703', 305, 1703, 'Capturar correcciones y mejoras ', 5, '1.2.4.2.5', 2, 4),
+('p_2_a_1704', 306, 1704, 'Finalizar capacitación ', 5, '1.2.4.2.6', 2, 4),
+('p_2_a_1705', 307, 1705, 'PAQ 4.3: Evaluación ', 4, '1.2.4.3', 2, 4),
+('p_2_a_1706', 308, 1706, 'Analizar resultados de los cuestionarios ', 5, '1.2.4.3.1', 2, 4),
+('p_2_a_1707', 309, 1707, 'Documentar la capacitación ', 5, '1.2.4.3.2', 2, 4),
+('p_2_a_1708', 310, 1708, 'Documentar las correcciones y mejoras ', 5, '1.2.4.3.3', 2, 4),
+('p_2_a_1709', 311, 1709, 'Publicar resultados de las capacitaciones ', 5, '1.2.4.3.4', 2, 4),
+('p_2_a_1710', 312, 1710, 'Publicar las evidencias ', 5, '1.2.4.3.5', 2, 4),
+('p_2_a_1711', 313, 1711, 'Publicar contenido de las capacitaciones ', 5, '1.2.4.3.6', 2, 4),
+('p_2_a_1712', 314, 1712, 'Entregar resultados ', 5, '1.2.4.3.7', 2, 4),
+('p_2_a_1713', 400, 1713, 'E4: Capacitación a 4300 estudiantes ', 2, '1.4', 2, 4),
+('p_2_a_1714', 401, 1714, 'SE 4.1: Capacitación a 1075 estudiantes ', 3, '1.4.1', 2, 4),
+('p_2_a_1715', 402, 1715, 'PAQ 1.1: Planificación ', 4, '1.4.1.1', 2, 4),
+('p_2_a_1716', 403, 1716, 'Desarrollar el material multimedia para la capacitación ', 5, '1.4.1.1.1', 2, 4),
+('p_2_a_1717', 404, 1717, 'Definir logística de la capacitación ', 5, '1.4.1.1.2', 2, 4),
+('p_2_a_1718', 405, 1718, 'Definir encuesta de satisfacción, registro de asistencia y registro de correcciones y mejoras ', 5, '1.4.1.1.3', 2, 4),
+('p_2_a_1719', 406, 1719, 'Publicar la convocatoria ', 5, '1.4.1.1.4', 2, 4),
+('p_2_a_1720', 407, 1720, 'Aceptar la documentación por parte de la secretaria de educación ', 5, '1.4.1.1.5', 2, 4),
+('p_2_a_1721', 408, 1721, 'Adquirir encuestas de satisfacción, registro de asistencia y registro de correcciones y mejoras ', 5, '1.4.1.1.6', 2, 4),
+('p_2_a_1722', 409, 1722, 'Adquirir kit de capacitación, pendones y volantes de publicidad ', 5, '1.4.1.1.7', 2, 4),
+('p_2_a_1723', 410, 1723, 'Aceptar el material trabajo  ', 5, '1.4.1.1.8', 2, 4),
+('p_2_a_1724', 411, 1724, 'PAQ 1.2: Desarrollo ', 4, '1.4.1.2', 2, 4),
+('p_2_a_1725', 412, 1725, 'Realizar las capacitaciones ', 5, '1.4.1.2.1', 2, 4),
+('p_2_a_1726', 413, 1726, 'Aplicar cuestionario ', 5, '1.4.1.2.2', 2, 4),
+('p_2_a_1727', 414, 1727, 'Registrar asistencia ', 5, '1.4.1.2.3', 2, 4),
+('p_2_a_1728', 415, 1728, 'Capturar evidencias ', 5, '1.4.1.2.4', 2, 4),
+('p_2_a_1729', 416, 1729, 'Capturar correcciones y mejoras ', 5, '1.4.1.2.5', 2, 4),
+('p_2_a_1730', 417, 1730, 'Finalizar capacitación ', 5, '1.4.1.2.6', 2, 4),
+('p_2_a_1731', 418, 1731, 'PAQ 1.3: Evaluación ', 4, '1.4.1.3', 2, 4),
+('p_2_a_1732', 419, 1732, 'Analizar resultados de los cuestionarios ', 5, '1.4.1.3.1', 2, 4),
+('p_2_a_1733', 420, 1733, 'Documentar la capacitación ', 5, '1.4.1.3.2', 2, 4),
+('p_2_a_1734', 421, 1734, 'Documentar las correcciones y mejoras ', 5, '1.4.1.3.3', 2, 4),
+('p_2_a_1735', 422, 1735, 'Publicar resultados de las capacitaciones ', 5, '1.4.1.3.4', 2, 4),
+('p_2_a_1736', 423, 1736, 'Publicar las evidencias ', 5, '1.4.1.3.5', 2, 4),
+('p_2_a_1737', 424, 1737, 'Publicar contenido de las capacitaciones ', 5, '1.4.1.3.6', 2, 4),
+('p_2_a_1738', 425, 1738, 'Entregar resultados ', 5, '1.4.1.3.7', 2, 4),
+('p_2_a_1739', 427, 1739, 'SE 4.2: Capacitación a 1075 estudiantes ', 3, '1.4.2', 2, 4),
+('p_2_a_1740', 428, 1740, 'PAQ 2.1: Planificación ', 4, '1.4.2.1', 2, 4),
+('p_2_a_1741', 429, 1741, 'Desarrollar el material multimedia para la capacitación ', 5, '1.4.2.1.1', 2, 4),
+('p_2_a_1742', 430, 1742, 'Definir logística de la capacitación ', 5, '1.4.2.1.2', 2, 4),
+('p_2_a_1743', 431, 1743, 'Publicar la convocatoria ', 5, '1.4.2.1.3', 2, 4),
+('p_2_a_1744', 432, 1744, 'Aceptar la documentación por parte de la secretaria de educación ', 5, '1.4.2.1.4', 2, 4),
+('p_2_a_1745', 433, 1745, 'Adquirir encuestas de satisfacción, registro de asistencia y registro de correcciones y mejoras ', 5, '1.4.2.1.5', 2, 4),
+('p_2_a_1746', 434, 1746, 'Adquirir kit de capacitación, y volantes de publicidad ', 5, '1.4.2.1.6', 2, 4),
+('p_2_a_1747', 435, 1747, 'Aceptar el material trabajo ', 5, '1.4.2.1.7', 2, 4),
+('p_2_a_1748', 436, 1748, 'PAQ 2.2: Desarrollo ', 4, '1.4.2.2', 2, 4),
+('p_2_a_1749', 437, 1749, 'Realizar las capacitaciones ', 5, '1.4.2.2.1', 2, 4),
+('p_2_a_1750', 438, 1750, 'Aplicar cuestionario ', 5, '1.4.2.2.2', 2, 4),
+('p_2_a_1751', 439, 1751, 'Registrar asistencia ', 5, '1.4.2.2.3', 2, 4),
+('p_2_a_1752', 440, 1752, 'Capturar evidencias ', 5, '1.4.2.2.4', 2, 4),
+('p_2_a_1753', 441, 1753, 'Capturar correcciones y mejoras ', 5, '1.4.2.2.5', 2, 4),
+('p_2_a_1754', 442, 1754, 'Finalizar capacitación ', 5, '1.4.2.2.6', 2, 4),
+('p_2_a_1755', 443, 1755, 'PAQ 2.3: Evaluación ', 4, '1.4.2.3', 2, 4),
+('p_2_a_1756', 444, 1756, 'Analizar resultados de los cuestionarios ', 5, '1.4.2.3.1', 2, 4),
+('p_2_a_1757', 445, 1757, 'Documentar la capacitación ', 5, '1.4.2.3.2', 2, 4),
+('p_2_a_1758', 446, 1758, 'Documentar las correcciones y mejoras ', 5, '1.4.2.3.3', 2, 4),
+('p_2_a_1759', 447, 1759, 'Publicar resultados de las capacitaciones ', 5, '1.4.2.3.4', 2, 4),
+('p_2_a_1760', 448, 1760, 'Publicar las evidencias ', 5, '1.4.2.3.5', 2, 4),
+('p_2_a_1761', 449, 1761, 'Publicar contenido de las capacitaciones ', 5, '1.4.2.3.6', 2, 4),
+('p_2_a_1762', 450, 1762, 'Entregar resultados ', 5, '1.4.2.3.7', 2, 4),
+('p_2_a_1763', 452, 1763, 'SE 4.3: Capacitación a 1075 estudiantes ', 3, '1.4.3', 2, 4),
+('p_2_a_1764', 453, 1764, 'PAQ 3.1: Planificación ', 4, '1.4.3.1', 2, 4),
+('p_2_a_1765', 454, 1765, 'Desarrollar el material multimedia para la capacitación ', 5, '1.4.3.1.1', 2, 4),
+('p_2_a_1766', 455, 1766, 'Definir logística de la capacitación ', 5, '1.4.3.1.2', 2, 4),
+('p_2_a_1767', 456, 1767, 'Publicar la convocatoria ', 5, '1.4.3.1.3', 2, 4),
+('p_2_a_1768', 457, 1768, 'Aceptar la documentación por parte de la secretaria de educación ', 5, '1.4.3.1.4', 2, 4),
+('p_2_a_1769', 458, 1769, 'Adquirir encuestas de satisfacción, registro de asistencia y registro de correcciones y mejoras ', 5, '1.4.3.1.5', 2, 4),
+('p_2_a_1770', 459, 1770, 'Adquirir kit de capacitación, y volantes de publicidad ', 5, '1.4.3.1.6', 2, 4),
+('p_2_a_1771', 460, 1771, 'Aceptar el material trabajo  ', 5, '1.4.3.1.7', 2, 4),
+('p_2_a_1772', 461, 1772, 'PAQ 3.2: Desarrollo ', 4, '1.4.3.2', 2, 4),
+('p_2_a_1773', 462, 1773, 'Realizar las capacitaciones ', 5, '1.4.3.2.1', 2, 4),
+('p_2_a_1774', 463, 1774, 'Aplicar cuestionario ', 5, '1.4.3.2.2', 2, 4),
+('p_2_a_1775', 464, 1775, 'Registrar asistencia ', 5, '1.4.3.2.3', 2, 4),
+('p_2_a_1776', 465, 1776, 'Capturar evidencias ', 5, '1.4.3.2.4', 2, 4),
+('p_2_a_1777', 466, 1777, 'Capturar correcciones y mejoras ', 5, '1.4.3.2.5', 2, 4),
+('p_2_a_1778', 467, 1778, 'Finalizar capacitación ', 5, '1.4.3.2.6', 2, 4),
+('p_2_a_1779', 468, 1779, 'PAQ 3.3: Evaluación ', 4, '1.4.3.3', 2, 4),
+('p_2_a_1780', 469, 1780, 'Analizar resultados de los cuestionarios ', 5, '1.4.3.3.1', 2, 4),
+('p_2_a_1781', 470, 1781, 'Documentar la capacitación ', 5, '1.4.3.3.2', 2, 4),
+('p_2_a_1782', 471, 1782, 'Documentar las correcciones y mejoras ', 5, '1.4.3.3.3', 2, 4),
+('p_2_a_1783', 472, 1783, 'Publicar resultados de las capacitaciones ', 5, '1.4.3.3.4', 2, 4),
+('p_2_a_1784', 473, 1784, 'Publicar las evidencias ', 5, '1.4.3.3.5', 2, 4),
+('p_2_a_1785', 474, 1785, 'Publicar contenido de las capacitaciones ', 5, '1.4.3.3.6', 2, 4),
+('p_2_a_1786', 475, 1786, 'Entregar resultados ', 5, '1.4.3.3.7', 2, 4),
+('p_2_a_1787', 477, 1787, 'SE 4.4: Capacitación a 1075 estudiantes ', 3, '1.4.4', 2, 4),
+('p_2_a_1788', 478, 1788, 'PAQ 4.1: Planificación ', 4, '1.4.4.1', 2, 4),
+('p_2_a_1789', 479, 1789, 'Desarrollar el material multimedia para la capacitación ', 5, '1.4.4.1.1', 2, 4),
+('p_2_a_1790', 480, 1790, 'Definir logística de la capacitación ', 5, '1.4.4.1.2', 2, 4),
+('p_2_a_1791', 481, 1791, 'Publicar la convocatoria ', 5, '1.4.4.1.3', 2, 4),
+('p_2_a_1792', 482, 1792, 'Aceptar la documentación por parte de la secretaria de educación ', 5, '1.4.4.1.4', 2, 4),
+('p_2_a_1793', 483, 1793, 'Adquirir encuestas de satisfacción, registro de asistencia y registro de correcciones y mejoras ', 5, '1.4.4.1.5', 2, 4),
+('p_2_a_1794', 484, 1794, 'Adquirir kit de capacitación, y volantes de publicidad ', 5, '1.4.4.1.6', 2, 4),
+('p_2_a_1795', 485, 1795, 'Aceptar el material trabajo  ', 5, '1.4.4.1.7', 2, 4),
+('p_2_a_1796', 486, 1796, 'PAQ 4.2: Desarrollo ', 4, '1.4.4.2', 2, 4),
+('p_2_a_1797', 487, 1797, 'Realizar las capacitaciones ', 5, '1.4.4.2.1', 2, 4),
+('p_2_a_1798', 488, 1798, 'Aplicar cuestionario ', 5, '1.4.4.2.2', 2, 4),
+('p_2_a_1799', 489, 1799, 'Registrar asistencia ', 5, '1.4.4.2.3', 2, 4),
+('p_2_a_1800', 490, 1800, 'Capturar evidencias ', 5, '1.4.4.2.4', 2, 4),
+('p_2_a_1801', 491, 1801, 'Capturar correcciones y mejoras ', 5, '1.4.4.2.5', 2, 4),
+('p_2_a_1802', 492, 1802, 'Finalizar capacitación ', 5, '1.4.4.2.6', 2, 4),
+('p_2_a_1803', 493, 1803, 'PAQ 4.3: Evaluación ', 4, '1.4.4.3', 2, 4),
+('p_2_a_1804', 494, 1804, 'Analizar resultados de los cuestionarios ', 5, '1.4.4.3.1', 2, 4),
+('p_2_a_1805', 495, 1805, 'Documentar la capacitación ', 5, '1.4.4.3.2', 2, 4),
+('p_2_a_1806', 496, 1806, 'Documentar las correcciones y mejoras ', 5, '1.4.4.3.3', 2, 4),
+('p_2_a_1807', 497, 1807, 'Publicar resultados de las capacitaciones ', 5, '1.4.4.3.4', 2, 4),
+('p_2_a_1808', 498, 1808, 'Publicar las evidencias ', 5, '1.4.4.3.5', 2, 4),
+('p_2_a_1809', 499, 1809, 'Publicar contenido de las capacitaciones ', 5, '1.4.4.3.6', 2, 4),
+('p_2_a_1810', 500, 1810, 'Entregar resultados ', 5, '1.4.4.3.7', 2, 4),
+('p_2_a_1811', 502, 1811, 'SE 4.5: Correcciones y mejoras ', 3, '1.4.5', 2, 4),
+('p_2_a_1812', 503, 1812, 'PAQ 5.1: Planificación ', 4, '1.4.5.1', 2, 4),
+('p_2_a_1813', 504, 1813, 'Identificar las historias de usuario defectuosas ', 5, '1.4.5.1.1', 2, 4),
+('p_2_a_1814', 505, 1814, 'Corregir las historias de usuario defectuosas ', 5, '1.4.5.1.2', 2, 4),
+('p_2_a_1815', 506, 1815, 'Formalizar las historias de usuario ', 5, '1.4.5.1.3', 2, 4),
+('p_2_a_1816', 507, 1816, 'relacionar las historias de usuario ', 5, '1.4.5.1.4', 2, 4),
+('p_2_a_1817', 508, 1817, 'Formalizar el mapa de historias de usuario ', 5, '1.4.5.1.5', 2, 4),
+('p_2_a_1818', 509, 1818, 'PAQ 5.2: Implementación ', 4, '1.4.5.2', 2, 4),
+('p_2_a_1819', 510, 1819, 'Corregir las interfaces de usuario ', 5, '1.4.5.2.1', 2, 4),
+('p_2_a_1820', 511, 1820, 'Aplicar reingeniería al código fuente ', 5, '1.4.5.2.2', 2, 4),
+('p_2_a_1821', 512, 1821, 'Unir las características del modulo ', 5, '1.4.5.2.3', 2, 4),
+('p_2_a_1822', 513, 1822, 'Integrar el módulo al repositorio central ', 5, '1.4.5.2.4', 2, 4),
+('p_2_a_1823', 514, 1823, 'Actualizar el documento de lecciones aprendidas ', 5, '1.4.5.2.5', 2, 4),
+('p_2_a_1824', 359, 1824, 'SE 3.2: Capacitación a 650 docentes ', 3, '1.3.2', 2, 4),
+('p_2_a_1825', 360, 1825, 'PAQ 1.1: Planificación ', 4, '1.3.2.1', 2, 4),
+('p_2_a_1826', 361, 1826, 'Desarrollar el material multimedia para la capacitación ', 5, '1.3.2.1.1', 2, 4),
+('p_2_a_1827', 362, 1827, 'Definir logística de la capacitación ', 5, '1.3.2.1.2', 2, 4),
+('p_2_a_1829', 363, 1829, 'Publicar la convocatoria ', 5, '1.3.2.1.3', 2, 4),
+('p_2_a_1830', 364, 1830, 'Aceptar la documentación por parte de la secretaria de educación ', 5, '1.3.2.1.4', 2, 4),
+('p_2_a_1831', 365, 1831, 'Adquirir encuestas de satisfacción, registro de asistencia y registro de correcciones y mejoras ', 5, '1.3.2.1.5', 2, 4),
+('p_2_a_1832', 366, 1832, 'Adquirir kit de capacitación, y volantes de publicidad ', 5, '1.3.2.1.6', 2, 4),
+('p_2_a_1833', 367, 1833, 'Adquirir refrigerio docentes ', 5, '1.3.2.1.7', 2, 4),
+('p_2_a_1834', 368, 1834, 'Aceptar el material trabajo  ', 5, '1.3.2.1.8', 2, 4),
+('p_2_a_1835', 369, 1835, 'PAQ 1.2: Desarrollo ', 4, '1.3.2.2', 2, 4),
+('p_2_a_1836', 370, 1836, 'Realizar las capacitaciones ', 5, '1.3.2.2.1', 2, 4),
+('p_2_a_1837', 371, 1837, 'Aplicar cuestionario ', 5, '1.3.2.2.2', 2, 4),
+('p_2_a_1838', 372, 1838, 'Registrar asistencia ', 5, '1.3.2.2.3', 2, 4),
+('p_2_a_1839', 373, 1839, 'Capturar evidencias ', 5, '1.3.2.2.4', 2, 4),
+('p_2_a_1840', 374, 1840, 'Capturar correcciones y mejoras ', 5, '1.3.2.2.5', 2, 4),
+('p_2_a_1841', 375, 1841, 'Finalizar capacitación ', 5, '1.3.2.2.6', 2, 4),
+('p_2_a_1842', 376, 1842, 'PAQ 1.3: Evaluación ', 4, '1.3.2.3', 2, 4),
+('p_2_a_1843', 377, 1843, 'Analizar resultados de los cuestionarios ', 5, '1.3.2.3.1', 2, 4),
+('p_2_a_1844', 378, 1844, 'Documentar la capacitación ', 5, '1.3.2.3.2', 2, 4),
+('p_2_a_1845', 379, 1845, 'Documentar las correcciones y mejoras ', 5, '1.3.2.3.3', 2, 4),
+('p_2_a_1846', 380, 1846, 'Publicar resultados de las capacitaciones ', 5, '1.3.2.3.4', 2, 4),
+('p_2_a_1847', 381, 1847, 'Publicar las evidencias ', 5, '1.3.2.3.5', 2, 4),
+('p_2_a_1848', 382, 1848, 'Publicar contenido de las capacitaciones ', 5, '1.3.2.3.6', 2, 4),
+('p_2_a_1849', 383, 1849, 'Entregar resultados ', 5, '1.3.2.3.7', 2, 4),
+('p_2_a_1854', 47, 1854, 'Realizar reunión para la planeación de pruebas beta ', 5, '1.1.1.4.6', 2, 4),
+('p_2_a_1855', 48, 1855, 'Realizar convocatoria de usuario finales para las pruebas beta ', 5, '1.1.1.4.7', 2, 4),
+('p_2_a_1856', 49, 1856, 'Llevar a cabo las pruebas beta ', 5, '1.1.1.4.8', 2, 4),
+('p_2_a_1858', 50, 1858, 'Aceptar pruebas de software ', 5, '1.1.1.4.9', 2, 4),
+('p_2_a_1868', 89, 1868, 'Verificar historias de usuario ', 5, '1.1.2.4.1', 2, 4),
+('p_2_a_1869', 90, 1869, 'Identificar los casos de pruebas unitarias ', 5, '1.1.2.4.2', 2, 4),
+('p_2_a_1870', 91, 1870, 'Realizar las pruebas unitarias ', 5, '1.1.2.4.3', 2, 4),
+('p_2_a_1871', 92, 1871, 'Realizar pruebas de aplicación ', 5, '1.1.2.4.4', 2, 4),
+('p_2_a_1872', 93, 1872, 'Realizar pruebas de integración ', 5, '1.1.2.4.5', 2, 4),
+('p_2_a_1873', 94, 1873, 'Realizar reunión para la planeación de pruebas beta ', 5, '1.1.2.4.6', 2, 4),
+('p_2_a_1874', 95, 1874, 'Realizar convocatoria de usuario finales para las pruebas beta ', 5, '1.1.2.4.7', 2, 4),
+('p_2_a_1875', 96, 1875, 'Llevar a cabo las pruebas beta ', 5, '1.1.2.4.8', 2, 4),
+('p_2_a_1876', 97, 1876, 'Aceptar pruebas de software ', 5, '1.1.2.4.9', 2, 4),
+('p_2_a_1896', 137, 1896, 'Verificar historias de usuario ', 5, '1.1.3.4.1', 2, 4),
+('p_2_a_1897', 138, 1897, 'Identificar los casos de pruebas unitarias ', 5, '1.1.1.2', 2, 4),
+('p_2_a_1898', 139, 1898, 'Realizar las pruebas unitarias ', 5, '1.1.3.4.3', 2, 4),
+('p_2_a_1899', 140, 1899, 'Realizar pruebas de aplicación ', 5, '1.1.3.4.4', 2, 4),
+('p_2_a_1900', 141, 1900, 'Realizar pruebas de integración ', 5, '1.1.3.4.5', 2, 4),
+('p_2_a_1901', 142, 1901, 'Realizar reunión para la planeación de pruebas beta ', 5, '1.1.3.4.6', 2, 4),
+('p_2_a_1902', 143, 1902, 'Realizar convocatoria de usuario finales para las pruebas beta ', 5, '1.1.3.4.7', 2, 4),
+('p_2_a_1903', 144, 1903, 'Llevar a cabo las pruebas beta ', 5, '1.1.3.4.8', 2, 4),
+('p_2_a_1904', 145, 1904, 'Aceptar pruebas de software ', 5, '1.1.3.4.9', 2, 4),
+('p_2_a_1905', 186, 1905, 'Verificar historias de usuario ', 5, '1.1.4.4.1', 2, 4),
+('p_2_a_1906', 187, 1906, 'Identificar los casos de pruebas unitarias ', 5, '1.1.4.4.2', 2, 4),
+('p_2_a_1907', 188, 1907, 'Realizar las pruebas unitarias ', 5, '1.1.4.4.3', 2, 4),
+('p_2_a_1908', 189, 1908, 'Realizar pruebas de aplicación ', 5, '1.1.4.4.4', 2, 4),
+('p_2_a_1909', 190, 1909, 'Realizar pruebas de integración ', 5, '1.1.4.4.5', 2, 4),
+('p_2_a_1910', 191, 1910, 'Realizar reunión para la planeación de pruebas beta ', 5, '1.1.4.4.6', 2, 4),
+('p_2_a_1911', 192, 1911, 'Realizar convocatoria de usuario finales para las pruebas beta ', 5, '1.1.4.4.7', 2, 4),
+('p_2_a_1912', 193, 1912, 'Llevar a cabo las pruebas beta ', 5, '1.1.4.4.8', 2, 4),
+('p_2_a_1913', 194, 1913, 'Aceptar pruebas de software ', 5, '1.1.4.4.9', 2, 4),
+('p_2_a_1915', 98, 1915, 'Aceptar módulo de trabajo, tareas y refuerzos ', 4, '1.1.2.5', 2, 4),
+('p_2_a_1916', 51, 1916, 'Aceptar módulo de administración ', 4, '1.1.1.5', 2, 4),
+('p_2_a_1917', 146, 1917, 'Aceptar módulo de trabajo, tareas y refuerzos ', 4, '1.1.3.5', 2, 4),
+('p_2_a_1918', 195, 1918, 'Aceptar módulo de eventos y citas  ', 4, '1.1.4.5', 2, 4),
+('p_2_a_1921', 212, 1921, 'Instalar aplicación  ', 4, '1.1.5.3', 2, 4),
+('p_2_a_1922', 330, 1922, 'Capacitar a todos los padres de familia ', 3, '1.2.6', 2, 4),
+('p_2_a_1923', 399, 1923, 'Capacitar a docentes ', 3, '1.3.4', 2, 4),
+('p_2_a_1924', 516, 1924, 'Capacitar a estudiantes ', 3, '1.1.1.4', 2, 4),
+('p_2_a_1925', 213, 1925, 'Entregar aplicación web ', 3, '1.1.6', 2, 4),
+('p_2_a_1926', 240, 1926, 'Capacitar primer grupo de padres ', 4, '1.2.1.4', 2, 4),
+('p_2_a_1927', 265, 1927, 'Capacitar segundo grupo de padres ', 4, '1.2.2.4', 2, 4),
+('p_2_a_1928', 290, 1928, 'Capacitar tercer grupo de padres ', 4, '1.2.3.4', 2, 4),
+('p_2_a_1929', 315, 1929, 'Capacitar cuarto grupo de padres ', 4, '1.2.4.4', 2, 4),
+('p_2_a_1930', 329, 1930, 'Aplicar correcciones y mejoras de las capacitaciones de padres ', 4, '1.2.5.3', 2, 4),
+('p_2_a_1931', 358, 1931, 'Capacitar primer grupo de docentes ', 4, '1.3.1.4', 2, 4),
+('p_2_a_1932', 384, 1932, 'Capacitar segundo grupo de docentes ', 4, '1.3.2.4', 2, 4),
+('p_2_a_1933', 398, 1933, 'Aplicar correcciones y mejoras de las capacitaciones docente ', 4, '1.3.3.3', 2, 4),
+('p_2_a_1934', 426, 1934, 'Capacitar primer grupo de estudiantes ', 4, '1.4.1.4', 2, 4),
+('p_2_a_1935', 451, 1935, 'Capacitar segundo grupo de estudiantes ', 4, '1.4.2.4', 2, 4),
+('p_2_a_1936', 476, 1936, 'Capacitar tercer grupo de estudiantes ', 4, '1.1.1.2', 2, 4),
+('p_2_a_1937', 501, 1937, 'Capacitar cuarto grupo de estudiantes ', 4, '1.4.4.4', 2, 4),
+('p_2_a_1938', 515, 1938, 'Aplicar correcciones y mejoras de las capacitaciones estudiantes ', 4, '1.4.5.3', 2, 4),
+('p_2_a_1942', 44, 1942, 'Realizar las pruebas unitarias ', 5, '1.1.1.4.3', 2, 4),
+('p_2_a_253', 196, 253, 'SE 1.5: Transferencia tecnológica ', 3, '1.1.5', 2, 4),
+('p_2_a_254', 197, 254, 'PAQ 5.1: Integración ', 4, '1.1.5.1', 2, 4),
+('p_2_a_255', 203, 255, 'PAQ 5.2: Pruebas ', 4, '1.1.5.2', 2, 4),
+('p_2_a_257', 208, 257, 'Realizar prueba de seguridad ', 5, '1.1.5.2.5', 2, 4),
+('p_2_a_258', 209, 258, 'Realizar prueba de carga ', 5, '1.1.5.2.6', 2, 4),
+('p_2_a_259', 214, 259, 'E2: Capacitación a 4300 padres de familia ', 2, '1.2', 2, 4),
+('p_2_a_26', 99, 26, 'SE 1.3: Modulo de observaciones académicas y comportamentales ', 3, '1.1.3', 2, 4),
+('p_2_a_260', 215, 260, 'SE 2.1: Capacitación a 1075 padres de familia ', 3, '1.2.1', 2, 4),
+('p_2_a_261', 216, 261, 'PAQ 1.1: Planificación ', 4, '1.2.1.1', 2, 4),
+('p_2_a_262', 217, 262, 'Desarrollar el material multimedia para la capacitación ', 5, '1.2.1.1.1', 2, 4),
+('p_2_a_263', 225, 263, 'PAQ 1.2: Desarrollo ', 4, '1.2.1.2', 2, 4),
+('p_2_a_264', 228, 264, 'Registrar asistencia ', 5, '1.2.1.2.3', 2, 4),
+('p_2_a_265', 232, 265, 'PAQ 1.3: Evaluación ', 4, '1.2.1.3', 2, 4),
+('p_2_a_266', 236, 266, 'Publicar resultados de las capacitaciones ', 5, '1.2.1.3.4', 2, 4),
+('p_2_a_3', 1, 3, 'EduVirtual ', 1, '1', 2, 4),
+('p_2_a_314', 198, 314, 'Desarrollar reunión para solicitar credenciales y requerimientos de conexión ', 5, '1.1.5.1.1', 2, 4),
+('p_2_a_315', 199, 315, 'Cargar el software en el servidor ', 5, '1.1.5.1.2', 2, 4),
+('p_2_a_316', 200, 316, 'Migrar datos del SIMAT ', 5, '1.1.5.1.3', 2, 4),
+('p_2_a_317', 201, 317, 'Hacer entrega de los backups ', 5, '1.1.5.1.4', 2, 4),
+('p_2_a_318', 210, 318, 'Realizar prueba de rendimiento ', 5, '1.1.5.2.7', 2, 4),
+('p_2_a_319', 202, 319, 'Aceptar entrega de la aplicación ', 5, '1.1.5.1.5', 2, 4),
+('p_2_a_320', 211, 320, 'Entregar resultados de pruebas  ', 5, '1.1.5.2.8', 2, 4),
+('p_2_a_323', 218, 323, 'Definir logística de la capacitación ', 5, '1.2.1.1.2', 2, 4),
+('p_2_a_324', 220, 324, 'Publicar la convocatoria ', 5, '1.2.1.1.4', 2, 4),
+('p_2_a_326', 233, 326, 'Analizar resultados de los cuestionarios ', 5, '1.2.1.3.1', 2, 4),
+('p_2_a_327', 226, 327, 'Realizar las capacitaciones ', 5, '1.2.1.2.1', 2, 4),
+('p_2_a_330', 221, 330, 'Aceptar la documentación por parte de la secretaria de educación ', 5, '1.2.1.1.5', 2, 4),
+('p_2_a_333', 229, 333, 'Capturar evidencias ', 5, '1.2.1.2.4', 2, 4),
+('p_2_a_335', 231, 335, 'Finalizar capacitación ', 5, '1.2.1.2.6', 2, 4),
+('p_2_a_336', 234, 336, 'Documentar la capacitación ', 5, '1.2.1.3.2', 2, 4),
+('p_2_a_337', 237, 337, 'Publicar las evidencias ', 5, '1.2.1.3.5', 2, 4),
+('p_2_a_338', 238, 338, 'Publicar contenido de las capacitaciones ', 5, '1.2.1.3.6', 2, 4),
+('p_2_a_339', 239, 339, 'Entregar resultados ', 5, '1.2.1.3.7', 2, 4),
+('p_2_a_342', 235, 342, 'Documentar las correcciones y mejoras ', 5, '1.2.1.3.3', 2, 4),
+('p_2_a_366', 241, 366, 'SE 2.2: Capacitación a 1075 padres de familia ', 3, '1.2.2', 2, 4),
+('p_2_a_394', 266, 394, 'SE 2.3: Capacitación a 1075 padres de familia ', 3, '1.2.3', 2, 4),
+('p_2_a_4', 2, 4, 'E1: Aplicación web ', 2, '1.1', 2, 4),
+('p_2_a_418', 291, 418, 'SE 2.4: Capacitación a 1075 padres de familia ', 3, '1.2.4', 2, 4),
+('p_2_a_442', 316, 442, 'SE 2.5: Correcciones y mejoras ', 3, '1.2.5', 2, 4),
+('p_2_a_443', 317, 443, 'PAQ 5.1: Planificación ', 4, '1.2.5.1', 2, 4),
+('p_2_a_444', 318, 444, 'Identificar las historias de usuario defectuosas ', 5, '1.2.5.1.1', 2, 4),
+('p_2_a_445', 319, 445, 'Corregir las historias de usuario defectuosas ', 5, '1.2.5.1.2', 2, 4),
+('p_2_a_446', 320, 446, 'Formalizar las historias de usuario ', 5, '1.2.5.1.3', 2, 4),
+('p_2_a_447', 321, 447, 'relacionar las historias de usuario ', 5, '1.2.5.1.4', 2, 4),
+('p_2_a_448', 322, 448, 'Formalizar el mapa de historias de usuario ', 5, '1.2.5.1.5', 2, 4),
+('p_2_a_449', 323, 449, 'PAQ 5.2: Implementación ', 4, '1.2.5.2', 2, 4),
+('p_2_a_450', 324, 450, 'Corregir las interfaces de usuario ', 5, '1.2.5.2.1', 2, 4),
+('p_2_a_451', 325, 451, 'Aplicar reingeniería al código fuente ', 5, '1.2.5.2.2', 2, 4),
+('p_2_a_452', 326, 452, 'Unir las características del modulo ', 5, '1.2.5.2.3', 2, 4),
+('p_2_a_453', 327, 453, 'Integrar el módulo al repositorio central ', 5, '1.2.5.2.4', 2, 4),
+('p_2_a_454', 328, 454, 'Actualizar el documento de lecciones aprendidas ', 5, '1.2.5.2.5', 2, 4),
+('p_2_a_461', 331, 461, 'E3: Capacitación a 1300 docentes ', 2, '1.3', 2, 4),
+('p_2_a_5', 3, 5, 'SE 1.1: Modulo de Administración ', 3, '1.1.1', 2, 4),
+('p_2_a_6', 14, 6, 'Formalizar el plan de entrega ', 5, '1.1.1.1.10', 2, 4),
+('p_2_a_682', 206, 682, 'Identificar prueba de rendimiento ', 5, '1.1.5.2.3', 2, 4),
+('p_2_a_683', 205, 683, 'Identificar prueba de carga ', 5, '1.1.5.2.2', 2, 4),
+('p_2_a_684', 204, 684, 'Identificar pruebas de seguridad ', 5, '1.1.5.2.1', 2, 4),
+('p_2_a_74', 147, 74, 'SE 1.4 : Modulo de información de reuniones, eventos y citas con los docentes ', 3, '1.1.4', 2, 4),
+('p_2_a_8', 40, 8, 'Integrar el módulo al repositorio central ', 5, '1.1.1.3.9', 2, 4),
+('p_2_a_84', 5, 84, 'Efectuar reunión con el patrocinador ', 5, '1.1.1.1.1', 2, 4),
+('p_2_a_85', 4, 85, 'PAQ 1.1: Planificación ', 4, '1.1.1.1', 2, 4),
+('p_2_a_86', 13, 86, 'Formalizar el mapa de historias de usuario ', 5, '1.1.1.1.9', 2, 4),
+('p_2_a_90', 21, 90, 'Diseñar el modelo de despliegue ', 5, '1.1.1.2.6', 2, 4),
+('p_2_a_91', 23, 91, 'Definir la arquitectura ', 5, '1.1.1.2.8', 2, 4),
+('p_2_a_93', 15, 93, 'PAQ 1.2: Diseño ', 4, '1.1.1.2', 2, 4),
+('p_2_a_99', 42, 99, 'Verificar historias de usuario ', 5, '1.1.1.4.1', 2, 4);
 
 -- --------------------------------------------------------
 
@@ -2141,7 +2889,7 @@ INSERT INTO `categoria` (`categoria_id`, `categoria_nombre`, `categoria_descripc
 (11, 'Riesgo comercial', '', 0, 98872370386698282, 6, 0),
 (12, 'Riesgo externo', '', 0, 98872370386698289, 6, 0),
 (13, 'Riesgo comercial', NULL, 1, 98872370386698296, 6, 0),
-(15, 'Riesgo técnico', '', 0, 98873742091878402, 8, 0),
+(15, 'Riesgo técnico', '', 0, 98873742091878402, 8, 4),
 (16, 'Riesgo de gestión', '', 0, 98873742091878409, 8, 0),
 (17, 'Riesgo comercial', '', 0, 98873742091878416, 8, 0),
 (18, 'Riesgo externo', '', 0, 98873742091878423, 8, 0),
@@ -2334,7 +3082,7 @@ CREATE TABLE `gerente` (
 
 INSERT INTO `gerente` (`gerente_id`, `gerente_nombre`, `gerente_usuario`, `gerente_correo`, `gerente_fecha_creacion`, `gerente_correo_institucional`, `gerente_profesion`, `gerente_empresa`, `gerente_metodologias`, `gerente_certificaciones`, `sector_id`, `pais_id`, `proyecto_linea_base`) VALUES
 (24, NULL, 'user', NULL, '2020-08-24 12:10:16', NULL, NULL, NULL, NULL, NULL, 12, 44, 0),
-(28, 'Diego Villa', 'ppp', 'pppq@fdf.com', NULL, NULL, 'ppp', 'ppp', NULL, NULL, 10, 17, 0),
+(28, 'Diego Villa', 'ppp', 'pppq@fdf.com', NULL, NULL, 'ppp', 'ppp', NULL, NULL, 10, 17, 4),
 (29, 'nnn', 'nnn', 'nnn@nnn.com', NULL, NULL, 'nnnn', 'nnn', NULL, NULL, 9, 15, 0),
 (31, 'rrr', 'rrr', 'rr@rr.com', NULL, NULL, 'rr', 'rr', NULL, NULL, 9, 9, 0),
 (32, 'www', 'www', 'ww@ww.com', NULL, NULL, 'ww', 'ww', NULL, NULL, 9, 16, 0),
@@ -2372,11 +3120,11 @@ CREATE TABLE `impacto` (
 --
 
 INSERT INTO `impacto` (`impacto_id`, `impacto_categoria`, `impacto_valor`, `proyecto_id`, `proyecto_linea_base`) VALUES
-(1, 'Catastrófico', 5, 2, 0),
-(2, 'Mayor', 6, 2, 0),
-(3, 'Moderado', 3, 2, 0),
-(4, 'Menor', 2, 2, 0),
-(5, 'Insignificante', 1, 2, 0),
+(1, 'Catastrófico', 5, 2, 4),
+(2, 'Mayor', 6, 2, 4),
+(3, 'Moderado', 3, 2, 4),
+(4, 'Menor', 2, 2, 4),
+(5, 'Insignificante', 1, 2, 4),
 (40, 'a', 1, 15, 0),
 (41, 'b', 2, 15, 0),
 (42, 'c', 3, 15, 0),
@@ -2691,11 +3439,11 @@ CREATE TABLE `propabilidad` (
 --
 
 INSERT INTO `propabilidad` (`propabilidad_id`, `propabilidad_categoria`, `propabilidad_valor`, `proyecto_id`, `proyecto_linea_base`) VALUES
-(1, 'Certeza', 5, 2, 0),
-(2, 'Probable', 4, 2, 0),
-(3, 'Moderada', 3, 2, 0),
-(4, 'improbable', 2, 2, 0),
-(5, 'raro', 1, 2, 0),
+(1, 'Certeza', 5, 2, 4),
+(2, 'Probable', 4, 2, 4),
+(3, 'Moderada', 3, 2, 4),
+(4, 'improbable', 2, 2, 4),
+(5, 'raro', 1, 2, 4),
 (19, 'bb', 2, 15, 0),
 (20, 'cc', 2, 15, 0),
 (21, 'dd', 2, 15, 0),
@@ -2749,7 +3497,7 @@ CREATE TABLE `proyecto` (
 --
 
 INSERT INTO `proyecto` (`proyecto_id`, `proyecto_nombre`, `proyecto_objetivo`, `proyecto_alcance`, `proyecto_descripcion`, `proyecto_presupuesto`, `proyecto_fecha_inicio`, `proyecto_fecha_finl`, `proyecto_evaluacion_general`, `proyecto_evaluacion`, `proyecto_rbs_status`, `proyecto_fin_status`, `gerente_id`, `sector_id`, `proyecto_linea_base`) VALUES
-(2, 'Proyecto test', 'Modificar las pesos de venta', 'adsfsd', 'Subieron los maslo', 333334, '2020-08-27', NULL, NULL, NULL, 0, 0, 28, 9, 0),
+(2, 'Proyecto test', 'Modificar las pesos de venta', 'adsfsd', 'Subieron los maslo', 333334, '2020-08-27', NULL, NULL, NULL, 0, 0, 28, 9, 4),
 (4, 'nuevopp', 'dsgdg', NULL, NULL, NULL, '0000-00-00', NULL, NULL, NULL, 0, 0, 28, 9, 0),
 (6, 'Proyecto nuevo', 'dfgdg', 'dfgdfg', 'fdgdfg', 566666, '2020-09-25', NULL, NULL, NULL, 0, 0, 33, 9, 0),
 (7, 'qqq', 'qqq', 'qqq', 'qqq', 2222, '2020-09-30', NULL, NULL, NULL, 0, 0, 34, 9, 0),
@@ -2808,39 +3556,39 @@ CREATE TABLE `proyecto_has_riesgo` (
 --
 
 INSERT INTO `proyecto_has_riesgo` (`proyecto_has_riesgo_id`, `proyecto_id`, `riesgo_id`, `is_editado`, `responsable_id`, `impacto_id`, `propabilidad_id`, `fecha_manifestacion`, `proyecto_linea_base`) VALUES
-(6, 2, 22, 0, NULL, NULL, NULL, NULL, 0),
-(19, 2, 5, 0, 3, NULL, NULL, NULL, 0),
-(20, 2, 25, 0, NULL, NULL, NULL, NULL, 0),
-(21, 2, 26, 0, NULL, NULL, NULL, NULL, 0),
-(25, 2, 30, 0, NULL, NULL, NULL, NULL, 0),
-(28, 2, 31, 0, NULL, NULL, NULL, NULL, 0),
+(6, 2, 22, 0, 7, NULL, NULL, NULL, 4),
+(19, 2, 5, 0, 7, NULL, NULL, NULL, 4),
+(20, 2, 25, 0, 7, NULL, NULL, NULL, 4),
+(21, 2, 26, 0, 7, NULL, NULL, NULL, 4),
+(25, 2, 30, 0, 7, NULL, NULL, NULL, 4),
+(28, 2, 31, 0, 7, NULL, NULL, NULL, 4),
 (30, 4, 22, 0, NULL, NULL, NULL, NULL, 0),
 (31, 6, 33, 0, NULL, NULL, NULL, NULL, 0),
 (37, 7, 36, 0, NULL, NULL, NULL, NULL, 0),
 (38, 7, 39, 0, NULL, NULL, NULL, NULL, 0),
-(40, 2, 4, 1, NULL, NULL, NULL, NULL, 0),
-(42, 2, 24, 1, NULL, NULL, NULL, NULL, 0),
-(44, 2, 29, 1, NULL, NULL, NULL, NULL, 0),
-(45, 2, 32, 1, NULL, NULL, NULL, NULL, 0),
-(46, 2, 47, 0, NULL, NULL, NULL, NULL, 0),
-(47, 2, 48, 0, NULL, NULL, NULL, NULL, 0),
-(48, 2, 49, 0, NULL, NULL, NULL, NULL, 0),
-(50, 2, 50, 1, NULL, NULL, NULL, NULL, 0),
-(51, 2, 51, 0, NULL, NULL, NULL, NULL, 0),
-(52, 2, 53, 1, NULL, NULL, NULL, NULL, 0),
-(54, 2, 55, 0, NULL, NULL, NULL, NULL, 0),
-(55, 2, 56, 1, NULL, NULL, NULL, NULL, 0),
-(56, 2, 3, 0, NULL, NULL, NULL, NULL, 0),
+(40, 2, 4, 1, 7, NULL, NULL, NULL, 4),
+(42, 2, 24, 1, 7, NULL, NULL, NULL, 4),
+(44, 2, 29, 1, 7, NULL, NULL, NULL, 4),
+(45, 2, 32, 1, 7, NULL, NULL, NULL, 4),
+(46, 2, 47, 0, 7, NULL, NULL, NULL, 4),
+(47, 2, 48, 0, 7, NULL, NULL, NULL, 4),
+(48, 2, 49, 0, 7, NULL, NULL, NULL, 4),
+(50, 2, 50, 1, 7, NULL, NULL, NULL, 4),
+(51, 2, 51, 0, 7, NULL, NULL, NULL, 4),
+(52, 2, 53, 1, 7, NULL, NULL, NULL, 4),
+(54, 2, 55, 0, 7, NULL, NULL, NULL, 4),
+(55, 2, 56, 1, 7, NULL, NULL, NULL, 4),
+(56, 2, 3, 0, 7, NULL, NULL, NULL, 4),
 (57, 16, 57, 1, NULL, NULL, NULL, NULL, 0),
 (58, 16, 58, 1, NULL, NULL, NULL, NULL, 0),
-(59, 2, 6, 0, NULL, NULL, NULL, NULL, 0),
-(60, 2, 7, 0, NULL, NULL, NULL, NULL, 0),
-(61, 2, 8, 0, NULL, NULL, NULL, NULL, 0),
-(62, 2, 59, 0, NULL, NULL, NULL, NULL, 0),
-(63, 2, 21, 0, NULL, NULL, NULL, NULL, 0),
-(64, 2, 54, 0, NULL, NULL, NULL, NULL, 0),
-(65, 2, 28, 0, NULL, NULL, NULL, NULL, 0),
-(66, 2, 63, 0, NULL, NULL, NULL, NULL, 0),
+(59, 2, 6, 0, 7, NULL, NULL, NULL, 4),
+(60, 2, 7, 0, 7, NULL, NULL, NULL, 4),
+(61, 2, 8, 0, 7, NULL, NULL, NULL, 4),
+(62, 2, 59, 0, 7, NULL, NULL, NULL, 4),
+(63, 2, 21, 0, 7, NULL, NULL, NULL, 4),
+(64, 2, 54, 0, 7, NULL, NULL, NULL, 4),
+(65, 2, 28, 0, 7, NULL, NULL, NULL, 4),
+(66, 2, 63, 0, 7, NULL, NULL, NULL, 4),
 (68, 17, 22, 0, NULL, 52, 29, NULL, 0),
 (69, 17, 28, 0, 3, 52, 32, NULL, 0),
 (72, 17, 4, 0, NULL, 50, 28, NULL, 0),
@@ -2885,7 +3633,7 @@ CREATE TABLE `proyecto_has_riesgo_actividad` (
 --
 
 INSERT INTO `proyecto_has_riesgo_actividad` (`proyecto_has_riesgo_actividad_id`, `proyecto_has_riesgo_id`, `actividad_id`, `proyecto_linea_base`) VALUES
-(2, 56, 'p_2_a_140', 0);
+(2, 56, 'p_2_a_140', 4);
 
 -- --------------------------------------------------------
 
@@ -2905,7 +3653,7 @@ CREATE TABLE `proyecto_has_riesgo_respuesta` (
 --
 
 INSERT INTO `proyecto_has_riesgo_respuesta` (`proyecto_has_id`, `respuesta_has_id`, `tipo_respuesta`, `proyecto_linea_base`) VALUES
-(19, 32, '', 0),
+(19, 32, '', 4),
 (37, 4, '', 0),
 (37, 8, '', 0),
 (37, 9, '', 0),
@@ -2913,9 +3661,9 @@ INSERT INTO `proyecto_has_riesgo_respuesta` (`proyecto_has_id`, `respuesta_has_i
 (37, 11, '', 0),
 (37, 12, '', 0),
 (37, 13, '', 0),
-(40, 30, '', 0),
-(40, 31, '', 0),
-(56, 33, '', 0),
+(40, 30, '', 4),
+(40, 31, '', 4),
+(56, 33, '', 4),
 (68, 35, '', 0),
 (69, 34, '', 0),
 (73, 36, '', 0),
@@ -2945,7 +3693,7 @@ CREATE TABLE `rbs` (
 
 INSERT INTO `rbs` (`rbs_id`, `rbs_default`, `gerente_id`, `proyecto_linea_base`) VALUES
 (6, 0, 24, 0),
-(8, 0, 28, 0),
+(8, 0, 28, 4),
 (9, 0, 29, 0),
 (30, 1, 33, 0),
 (31, 0, 34, 0),
@@ -3021,7 +3769,8 @@ INSERT INTO `responsble` (`responsable_id`, `responsble_nombre`, `responsble_des
 (3, 'Don comedia', 'Viene a matarnos de la risa.', 17, 1, 0),
 (4, 'Gerardo Buenavidez', 'Diferenciador', 20, 2, 0),
 (5, 'kilometraje', 'huilense', 20, 2, 0),
-(6, 'plablo', 'pinguino que trae zapatos', 20, 2, 0);
+(6, 'plablo', 'pinguino que trae zapatos', 20, 2, 0),
+(7, 'BUG', 'bbbbb', 2, 1, 4);
 
 -- --------------------------------------------------------
 
@@ -3045,14 +3794,14 @@ INSERT INTO `respuesta` (`respuesta_id`, `respuesta_nombre`, `respuesta_descripc
 (1, 'respuesta a', 'sd', NULL, 0),
 (2, 'respuesta b', 'as', NULL, 0),
 (3, 'respuesta a', 'as', NULL, 0),
-(4, 'respuesta b', 'sd', NULL, 0),
+(4, 'respuesta b', 'sd', NULL, 4),
 (5, 'ss', 'sdsd', NULL, 0),
 (6, 'asda', 'sda', NULL, 0),
 (7, 'sdfd', 'sdfsd', NULL, 0),
 (8, 'sad', 'dsda', NULL, 0),
 (9, 'sdfsdf', 'dsfsd', NULL, 0),
 (10, 'jljl', 'jkljl', NULL, 0),
-(11, 'dsada', 'asda', NULL, 0),
+(11, 'dsada', 'asda', NULL, 4),
 (12, 'sdfsd', 'sdfs', NULL, 0),
 (13, 'asdasd', 'sada', NULL, 0),
 (14, 'asdasd', 'sada', NULL, 0),
@@ -3070,28 +3819,28 @@ INSERT INTO `respuesta` (`respuesta_id`, `respuesta_nombre`, `respuesta_descripc
 (26, 'Aliviar la presion social del regimen libano', 'XD', NULL, 0),
 (27, 'Aliviar la presion social del regimen libano', 'XD', NULL, 0),
 (28, 'Aliviar la presion social del regimen libano', 'XD', NULL, 0),
-(29, 'sdfsd', 'sdfd', NULL, 0),
-(30, 'sdfsd', 'sdfd', NULL, 0),
-(31, 'responder por la bendicion', 'pagar pañales y demás cosas', NULL, 0),
-(32, 'gre', 'frr', NULL, 0),
-(33, 'gre', 'frr', NULL, 0),
-(34, 'gre', 'frr', NULL, 0),
-(35, 'gre', 'frr', NULL, 0),
-(36, 'gre', 'frr', NULL, 0),
-(37, 'gre', 'frr', NULL, 0),
-(38, 'gre', 'frr', NULL, 0),
-(39, 'gre', 'frr', NULL, 0),
-(40, 'gre', 'frr', NULL, 0),
-(41, 'repuesta uno', 'varias vidas', NULL, 0),
-(42, 'posibles', 'dfsfdsf', NULL, 0),
-(43, 'posibles', 'dfsfdsf', NULL, 0),
-(44, 'posibles', 'dfsfdsf', NULL, 0),
-(45, 'Repuesta franca', 'no sirve para nada, ! OJO Y LA VARIABRE REsPUESTA_PRECIO!\r\n', NULL, 0),
-(46, 'Repuesta franca', 'no sirve para nada, ! OJO Y LA VARIABRE REsPUESTA_PRECIO!\r\n', NULL, 0),
-(47, 'REspuesat sorpresa', 'sin sorpresa\r\n', NULL, 0),
-(48, 'res', 'dddd', NULL, 0),
-(49, 'sdfsdf', 'dsfsdfsd', NULL, 0),
-(50, 'fghgf', 'fghfh', NULL, 0),
+(29, 'sdfsd', 'sdfd', NULL, 4),
+(30, 'sdfsd', 'sdfd', NULL, 4),
+(31, 'responder por la bendicion', 'pagar pañales y demás cosas', NULL, 4),
+(32, 'gre', 'frr', NULL, 4),
+(33, 'gre', 'frr', NULL, 4),
+(34, 'gre', 'frr', NULL, 4),
+(35, 'gre', 'frr', NULL, 4),
+(36, 'gre', 'frr', NULL, 4),
+(37, 'gre', 'frr', NULL, 4),
+(38, 'gre', 'frr', NULL, 4),
+(39, 'gre', 'frr', NULL, 4),
+(40, 'gre', 'frr', NULL, 4),
+(41, 'repuesta uno', 'varias vidas', NULL, 4),
+(42, 'posibles', 'dfsfdsf', NULL, 4),
+(43, 'posibles', 'dfsfdsf', NULL, 4),
+(44, 'posibles', 'dfsfdsf', NULL, 4),
+(45, 'Repuesta franca', 'no sirve para nada, ! OJO Y LA VARIABRE REsPUESTA_PRECIO!\r\n', NULL, 4),
+(46, 'Repuesta franca', 'no sirve para nada, ! OJO Y LA VARIABRE REsPUESTA_PRECIO!\r\n', NULL, 4),
+(47, 'REspuesat sorpresa', 'sin sorpresa\r\n', NULL, 4),
+(48, 'res', 'dddd', NULL, 4),
+(49, 'sdfsdf', 'dsfsdfsd', NULL, 4),
+(50, 'fghgf', 'fghfh', NULL, 4),
 (51, 'Accion prueba _ 2', 'llll', NULL, 0),
 (52, 'Accion prueba _ 1', 'llll', NULL, 0),
 (53, 'hhh', 'hgghg', NULL, 0),
@@ -3100,8 +3849,8 @@ INSERT INTO `respuesta` (`respuesta_id`, `respuesta_nombre`, `respuesta_descripc
 (56, 'Accion prueba _ 1', 'llll', NULL, 0),
 (57, 'Accion prueba _ 2', 'llll', NULL, 0),
 (58, 'Accion prueba _ 1', 'llll', NULL, 0),
-(59, 'Respuesta prueba', 'ddd', NULL, 0),
-(60, 'lll', 'ss', NULL, 0),
+(59, 'Respuesta prueba', 'ddd', NULL, 4),
+(60, 'lll', 'ss', NULL, 4),
 (61, 'Dibujar una sonrisa', '', NULL, 0),
 (62, 'Establecer nuevas marcas', 'Crear una moda\r\n', NULL, 0);
 
@@ -3130,12 +3879,12 @@ CREATE TABLE `riesgo` (
 
 INSERT INTO `riesgo` (`riesgo_id`, `riesgo_nombre`, `riesgo_causa`, `riesgo_evento`, `riesgo_efecto`, `riesgo_tipo`, `riesgo_prom_evaluacion`, `riesgo_uid`, `sub_categoria_id`, `proyecto_linea_base`) VALUES
 (2, '', '', '', '', 0, NULL, 98875189428748316, 77, 0),
-(3, '  Nuevo riesgo extrasss', 'razones desconicidas', '  acciones catastroficas', '  destruccion de la ciudad', 0, NULL, 98875189428748317, 74, 0),
-(4, 'wwwww', 'razones desconicidas', ' acciones catastroficas', ' destruccion de la ciudad', 0, NULL, 98875189428748318, 74, 0),
-(5, 'Nuevo riesgo', 'razones desconicidas', 'acciones catastroficas', 'destruccion de la ciudad', 0, NULL, 98875189428748319, 74, 0),
-(6, 'test', 'dsf', ' dsfds', ' dsfsdf', 0, NULL, 98875189428748320, 74, 0),
-(7, 'dsf', 'dsf', 'dsfds', 'dsfsdf', 0, NULL, 98875189428748321, 74, 0),
-(8, 'dsf', 'dsf', 'dsfds', 'dsfsdf', 0, NULL, 98875189428748322, 74, 0),
+(3, '  Nuevo riesgo extrasss', 'razones desconicidas', '  acciones catastroficas', '  destruccion de la ciudad', 0, NULL, 98875189428748317, 74, 4),
+(4, 'wwwww', 'razones desconicidas', ' acciones catastroficas', ' destruccion de la ciudad', 0, NULL, 98875189428748318, 74, 4),
+(5, 'Nuevo riesgo', 'razones desconicidas', 'acciones catastroficas', 'destruccion de la ciudad', 0, NULL, 98875189428748319, 74, 4),
+(6, 'test', 'dsf', ' dsfds', ' dsfsdf', 0, NULL, 98875189428748320, 74, 4),
+(7, 'dsf', 'dsf', 'dsfds', 'dsfsdf', 0, NULL, 98875189428748321, 74, 4),
+(8, 'dsf', 'dsf', 'dsfds', 'dsfsdf', 0, NULL, 98875189428748322, 74, 4),
 (9, 'sdfds', 'sdcsd', 'ddscd', 'dcsd', 0, NULL, 98875189428748323, 74, 0),
 (10, 'dgf', 'fdgdf', 'fdgdf', 'gfd', 0, NULL, 98875189428748324, 74, 0),
 (11, 'dgf', 'fdgdf', 'fdgdf', 'gfd', 0, NULL, 98875189428748325, 74, 0),
@@ -3148,18 +3897,18 @@ INSERT INTO `riesgo` (`riesgo_id`, `riesgo_nombre`, `riesgo_causa`, `riesgo_even
 (18, 'asdad', 'sadas', 'asdasd', 'adasd', 0, NULL, 98875189428748332, 74, 0),
 (19, 'sfsdf', 'sdfsf', 'sdfsdf', '', 0, NULL, 98875189428748333, 74, 0),
 (20, 'sfsdf', 'sdfsf', 'sdfsdf', '', 0, NULL, 98875189428748334, 74, 0),
-(21, 'dsfsdf', 'sdfs', 'sdf', 'dsf', 0, NULL, 98876683959926784, 75, 0),
-(22, 'dsfsdf', 'sdfs', 'sdf', 'dsf', 0, NULL, 98876683959926785, 75, 0),
+(21, 'dsfsdf', 'sdfs', 'sdf', 'dsf', 0, NULL, 98876683959926784, 75, 4),
+(22, 'dsfsdf', 'sdfs', 'sdf', 'dsf', 0, NULL, 98876683959926785, 75, 4),
 (23, 'fdgdfg', 'dfgdf', 'dfgdfg', 'dfgdfg', 0, NULL, 98876683959926786, 74, 0),
-(24, 'dsfd', 'dfdf', 'dfgd', 'dfgdfg', 0, NULL, 98877097719627776, 74, 0),
-(25, '¡ por favor, que funcione ! :(', 'sdfds', 'dsfdsf', 'sdfds', 0, NULL, 98879902534598656, 74, 0),
-(26, '¡ por favor, que funcione ! :(', 'sdfds', 'dsfdsf', 'sdfds', 0, NULL, 98879902534598657, 74, 0),
+(24, 'dsfd', 'dfdf', 'dfgd', 'dfgdfg', 0, NULL, 98877097719627776, 74, 4),
+(25, '¡ por favor, que funcione ! :(', 'sdfds', 'dsfdsf', 'sdfds', 0, NULL, 98879902534598656, 74, 4),
+(26, '¡ por favor, que funcione ! :(', 'sdfds', 'dsfdsf', 'sdfds', 0, NULL, 98879902534598657, 74, 4),
 (27, 'hhhhh', 'hhh', 'hh', '', 0, NULL, 98879902534598658, 76, 0),
-(28, 'dfdfv', 'dfdf', '', '', 0, NULL, 98879902534598659, 75, 0),
-(29, 'SIPER', 'dfdf', ' ', ' ', 0, NULL, 98879902534598660, 74, 0),
-(30, 'Super RIesgo 2', '', '', '', 0, NULL, 98879902534598661, 74, 0),
-(31, 'riesgottttt', 'sdfsdf', 'dsfsdf', 'dsf', 0, NULL, 98881319102054400, 74, 0),
-(32, 'fsdf', 'sdfs', 'dsfsdf', 'sdf', 0, NULL, 98881319102054401, 74, 0),
+(28, 'dfdfv', 'dfdf', '', '', 0, NULL, 98879902534598659, 75, 4),
+(29, 'SIPER', 'dfdf', ' ', ' ', 0, NULL, 98879902534598660, 74, 4),
+(30, 'Super RIesgo 2', '', '', '', 0, NULL, 98879902534598661, 74, 4),
+(31, 'riesgottttt', 'sdfsdf', 'dsfsdf', 'dsf', 0, NULL, 98881319102054400, 74, 4),
+(32, 'fsdf', 'sdfs', 'dsfsdf', 'sdf', 0, NULL, 98881319102054401, 74, 4),
 (33, 'Nuevo riesgo', '', '', '', 0, NULL, 98883849273999368, 130, 0),
 (36, 'Nuevo riesgo', '', '', '', 0, NULL, 98883849273999406, 131, 0),
 (37, 'Nuevo riesgo', '', '', '', 0, NULL, 98883849273999407, 131, 0),
@@ -3172,23 +3921,23 @@ INSERT INTO `riesgo` (`riesgo_id`, `riesgo_nombre`, `riesgo_causa`, `riesgo_even
 (44, ' soplar botellas', 'sdfsdf', ' dsfsdf', ' sdfsf', 0, NULL, 98885402156335108, 76, 0),
 (45, 'SIPER', 'dfdf', ' ', ' ', 0, NULL, 98885402156335109, 74, 0),
 (46, 'NUEV 1', 'sdfs', ' dsfsdf', ' sdf', 0, NULL, 98885402156335110, 74, 0),
-(47, 'sdfsdf', '', '', '', 0, NULL, 98885402156335111, 75, 0),
-(48, 'riesgo 0', '', '', '', 0, NULL, 98885402156335112, 74, 0),
-(49, 'riesgo00', '', '', '', 0, NULL, 98885402156335113, 74, 0),
-(50, ' RIesgo1', 'desafortunadas', ' catastrofico', ' terrible', 0, NULL, 98885402156335114, 74, 0),
-(51, ' RIesgo1', 'desafortunadas', ' catastrofico', ' terrible', 0, NULL, 98885402156335115, 74, 0),
+(47, 'sdfsdf', '', '', '', 0, NULL, 98885402156335111, 75, 4),
+(48, 'riesgo 0', '', '', '', 0, NULL, 98885402156335112, 74, 4),
+(49, 'riesgo00', '', '', '', 0, NULL, 98885402156335113, 74, 4),
+(50, ' RIesgo1', 'desafortunadas', ' catastrofico', ' terrible', 0, NULL, 98885402156335114, 74, 4),
+(51, ' RIesgo1', 'desafortunadas', ' catastrofico', ' terrible', 0, NULL, 98885402156335115, 74, 4),
 (52, ' FINAL TEST', 'hhh', ' hh', ' PASAR DE NIVEL', 0, NULL, 98885402156335116, 76, 0),
-(53, ' TEST FINAL', 'dfdf', ' ', ' ganar', 0, NULL, 98885402156335117, 75, 0),
-(54, 'JEFE FINAL', 'UN MALO', 'DESTRUCION', 'CAOS Y MISERIA EN TODO EL MUNDO', 0, NULL, 98885402156335118, 75, 0),
-(55, 'JEFE ', 'dsfsd', 'sdfsdf', 'dsfsdf', 0, NULL, 98885402156335119, 75, 0),
-(56, ' JEFE FINAL _Caido', 'UN MALO', ' DESTRUCION', ' CAOS Y MISERIA EN TODO EL MUNDO', 0, NULL, 98885402156335120, 75, 0),
+(53, ' TEST FINAL', 'dfdf', ' ', ' ganar', 0, NULL, 98885402156335117, 75, 4),
+(54, 'JEFE FINAL', 'UN MALO', 'DESTRUCION', 'CAOS Y MISERIA EN TODO EL MUNDO', 0, NULL, 98885402156335118, 75, 4),
+(55, 'JEFE ', 'dsfsd', 'sdfsdf', 'dsfsdf', 0, NULL, 98885402156335119, 75, 4),
+(56, ' JEFE FINAL _Caido', 'UN MALO', ' DESTRUCION', ' CAOS Y MISERIA EN TODO EL MUNDO', 0, NULL, 98885402156335120, 75, 4),
 (57, '  Nuevo riesgo extrasss', '', '', '', 0, NULL, 98889951147458588, 157, 0),
 (58, ' JEFE FINAL _Caido', '', '', '', 0, NULL, 98889951147458589, 158, 0),
-(59, 'riesgo 8 septiemve', 'sdf', 'dsfds', 'fsdf', 0, NULL, 98894425144426496, 75, 0),
+(59, 'riesgo 8 septiemve', 'sdf', 'dsfds', 'fsdf', 0, NULL, 98894425144426496, 75, 4),
 (60, 'sdfsdf', 'proro', 'dekldls', 'sdfdsf', 0, NULL, 98894425144426497, 95, 0),
 (61, 'riesgo novedoso', 'dfds', 'sdfsd', 'fsdf', 0, NULL, 98894425144426498, 74, 0),
 (62, 'novedosox3', 'sdf', 'sdfsd', 'dsfsdf', 0, NULL, 98894425144426499, 77, 0),
-(63, 'riesgo nuevo ', 'ddd', 'dd', 'dd', 0, NULL, 98895409027481600, 78, 0),
+(63, 'riesgo nuevo ', 'ddd', 'dd', 'dd', 0, NULL, 98895409027481600, 78, 4),
 (64, 'probar acciones', 'aaa', 'aa', 'aaa', 0, NULL, 98906083078176768, 86, 0),
 (65, 'probar acciones', 'liop', ' aa´sdfsd', ' aaa', 0, NULL, 98906083078176769, 86, 0),
 (66, 'novedosox3', 'francia invadio polonia', ' sdfsd', ' dsfsdf', 0, NULL, 98906083078176770, 77, 0),
@@ -3250,10 +3999,10 @@ INSERT INTO `riesgo_has_respuesta` (`riesgo_has_respuesta_id`, `riesgo_id`, `res
 (27, 3, 42, 0),
 (28, 3, 43, 0),
 (29, 3, 44, 0),
-(30, 4, 45, 0),
-(31, 4, 46, 0),
-(32, 5, 47, 0),
-(33, 3, 48, 0),
+(30, 4, 45, 4),
+(31, 4, 46, 4),
+(32, 5, 47, 4),
+(33, 3, 48, 4),
 (34, 28, 49, 0),
 (35, 22, 50, 0),
 (36, 64, 51, 0),
@@ -3288,7 +4037,7 @@ CREATE TABLE `rol` (
 --
 
 INSERT INTO `rol` (`rol_id`, `rol_nombre`, `rol_descripcion`, `gerente_id`, `proyecto_linea_base`) VALUES
-(1, 'Comediantes', 'Se encargan de divertirnos.', 28, 0),
+(1, 'Comediantes', 'Se encargan de divertirnos.', 28, 4),
 (2, 'Comediante', 'Encargado de matarnos de la risa.', 37, 0);
 
 -- --------------------------------------------------------
@@ -3361,11 +4110,11 @@ INSERT INTO `sub_categoria` (`sub_categoria_id`, `sub_categoria_nombre`, `sub_ca
 (70, 'Ambiental/clima', '', 0, 98872370386698293, 12, 0),
 (71, 'Competencia', '', 0, 98872370386698294, 12, 0),
 (72, 'Normativo', '', 0, 98872370386698295, 12, 0),
-(74, 'Definición del alcance', '', 0, 98873742091878403, 15, 0),
-(75, 'Definición de los requisitos', '', 0, 98873742091878404, 15, 0),
+(74, 'Definición del alcance', '', 0, 98873742091878403, 15, 4),
+(75, 'Definición de los requisitos', '', 0, 98873742091878404, 15, 4),
 (76, 'Estimaciones, supuestos y restricciones', '', 0, 98873742091878405, 15, 0),
 (77, 'Procesos técnicos', '', 0, 98873742091878406, 15, 0),
-(78, 'Tecnología', '', 0, 98873742091878407, 15, 0),
+(78, 'Tecnología', '', 0, 98873742091878407, 15, 4),
 (79, 'Interfaces técnicas', '', 0, 98873742091878408, 15, 0),
 (80, 'Dirección de proyectos', '', 0, 98873742091878410, 16, 0),
 (81, 'Dirección del programa/portafolio', '', 0, 98873742091878411, 16, 0),
@@ -3582,9 +4331,9 @@ INSERT INTO `tipo_recurso` (`tipo_recurso_id`, `tipo_recurso_nombre`, `tipo_recu
 (4, 'Material', 'Este tipo de recurso se refiere a los suministros, materiales y cualquier otro consumible necesario para completar las tareas.', 24, 0),
 (5, 'Trabajo', 'Se trata de los miembros de tu equipo de trabajo. La dedicación de cada individuo se mide en horas de trabajo.', 24, 0),
 (6, 'Costo', 'Este tipo de recurso implica un gasto para el proyecto, pero no dependen del trabajo o la duración de una tarea. Pueden tratarse de gastos de representación (comidas, viajes…).', 24, 0),
-(7, 'Material', 'Este tipo de recurso se refiere a los suministros, materiales y cualquier otro consumible necesario para completar las tareas.', 28, 0),
-(8, 'Trabajo', 'Se trata de los miembros de tu equipo de trabajo. La dedicación de cada individuo se mide en horas de trabajo.', 28, 0),
-(9, 'Costo', 'Este tipo de recurso implica un gasto para el proyecto, pero no dependen del trabajo o la duración de una tarea. Pueden tratarse de gastos de representación (comidas, viajes…).', 28, 0),
+(7, 'Material', 'Este tipo de recurso se refiere a los suministros, materiales y cualquier otro consumible necesario para completar las tareas.', 28, 4),
+(8, 'Trabajo', 'Se trata de los miembros de tu equipo de trabajo. La dedicación de cada individuo se mide en horas de trabajo.', 28, 4),
+(9, 'Costo', 'Este tipo de recurso implica un gasto para el proyecto, pero no dependen del trabajo o la duración de una tarea. Pueden tratarse de gastos de representación (comidas, viajes…).', 28, 4),
 (10, 'Material', 'Este tipo de recurso se refiere a los suministros, materiales y cualquier otro consumible necesario para completar las tareas.', 29, 0),
 (11, 'Trabajo', 'Se trata de los miembros de tu equipo de trabajo. La dedicación de cada individuo se mide en horas de trabajo.', 29, 0),
 (12, 'Costo', 'Este tipo de recurso implica un gasto para el proyecto, pero no dependen del trabajo o la duración de una tarea. Pueden tratarse de gastos de representación (comidas, viajes…).', 29, 0),
@@ -3864,7 +4613,7 @@ ALTER TABLE `recurso`
 -- AUTO_INCREMENT de la tabla `responsble`
 --
 ALTER TABLE `responsble`
-  MODIFY `responsable_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `responsable_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `respuesta`

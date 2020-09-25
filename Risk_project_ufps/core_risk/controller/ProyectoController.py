@@ -21,9 +21,9 @@ class ProyectoController:
         proyecto_dao = ProyectoDao()
         return proyecto_dao.obtener_proyecto(id)
 
-    def validar_proyecto(self, nombre):
+    def validar_proyecto(self, nombre, gerente_id):
         proyecto_dao = ProyectoDao()
-        return proyecto_dao.validar_proyecto(nombre)
+        return proyecto_dao.validar_proyecto(nombre, gerente_id)
 
     def editar_proyecto(self, proyecto, nombre, objetivo, alcance, descripcion, presupuesto, fecha_inicio, sector):
         proyecto_dao = ProyectoDao()
@@ -145,4 +145,7 @@ class ProyectoController:
                 p_h_r_aux.propabilidad_id = valores[key]['id']
             p_h_r_aux.save()
 
-
+    def crear_linea_base(self, gerente_id, proyecto_id):
+        proyecto_dao = ProyectoDao()
+        proyecto = proyecto_dao.obtener_proyecto(proyecto_id)
+        return proyecto_dao.crear_linea_base(gerente_id, proyecto)
