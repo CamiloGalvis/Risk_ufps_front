@@ -111,7 +111,9 @@ def mi_perfil(request):
         mensaje = gerente_controller.actualizar_gerente(gerente, request.POST["gerente_nombre"],
                                                         request.POST["gerente_correo"],
                                                         request.POST["gerente_profesion"],
-                                                        request.POST["gerente_empresa"], sector)
+                                                        request.POST["gerente_empresa"], sector,
+                                                        request.POST["certificacion"],
+                                                        request.POST["metodologia"])
         return render(request, "mi_perfil.html",
                       {"gerente": gerente, "lista_sectores": lista_sectores, "mensaje": mensaje})
 
@@ -149,6 +151,7 @@ def nuevo_proyecto(request):
     if (request.method == "POST"):
         proyecto_controller = ProyectoController()
         aux = proyecto_controller.validar_proyecto(request.POST["proyecto_nombre"])
+        print(aux)
         if aux == None:            
             try:
                 gerente_controller = GerenteController()
