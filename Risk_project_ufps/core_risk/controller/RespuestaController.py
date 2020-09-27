@@ -92,6 +92,36 @@ class RespuestaController:
                 )
         return aux
 
+    def listar_riesgos_respuesta_linea(self, proyecto_id, linea_base):
+        p_r_r= ProyectoHasRiesgo_RespuestaDao()
+        respuestas = p_r_r.listar_riesgos_respuesta_linea(proyecto_id, linea_base)
+        aux = {}
+        for respuesta in respuestas:
+            key = "riesgo_"+str(respuesta.riesgo_id)
+            riesgo_aux = aux.get(key)
+            if(riesgo_aux):
+                riesgo_aux.append(
+                    dict(
+                        respuesta_id=respuesta.respuesta_id,
+                        respuesta_nombre=respuesta.respuesta_nombre,
+                        respuesta_descripcion=respuesta.respuesta_descripcion,
+                        tipo_respuesta= respuesta.tipo_respuesta,
+                        riesgo_has_respuesta=respuesta.riesgo_has_respuesta_id
+                    )
+                )
+            else:
+                aux[key] = []
+                aux[key].append(
+                    dict(
+                        respuesta_id=respuesta.respuesta_id,
+                        respuesta_nombre=respuesta.respuesta_nombre,
+                        respuesta_descripcion=respuesta.respuesta_descripcion,
+                        tipo_respuesta= respuesta.tipo_respuesta,
+                        riesgo_has_respuesta=respuesta.riesgo_has_respuesta_id
+                    )
+                )
+        return aux
+
     def get_datetime(self, now):
         try:
 

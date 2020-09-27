@@ -12,6 +12,17 @@ class ProbabilidadDao():
         finally:      
             return probabilidades
 
+    def listar_probabilidades_by_proyecto_linea(self, proyecto, linea_base):
+        probabilidades = {}
+        try:      
+            probabilidades = Propabilidad.objects.using('base').filter(proyecto = proyecto, proyecto_linea_base=linea_base).order_by("propabilidad_valor")
+        except Exception as e:
+            raise e
+        finally:      
+            return probabilidades
+
+
+
 
     def crear_probabilidad(self, propabilidad_categoria, propabilidad_valor, proyecto):
         probabilidad = None

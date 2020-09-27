@@ -36,6 +36,25 @@ class ProyectoHasRiesgo_RespuestaDao():
         finally:
             return respuestas
 
+    def listar_riesgos_respuesta_linea(self, proyecto_id, linea_base):
+        respuestas = {}
+        try:
+            sql = 'SELECT * FROM respuesta re ' \
+                  'INNER JOIN riesgo_has_respuesta ri ' \
+                  'ON re.respuesta_id=ri.respuesta_id ' \
+                  'INNER JOIN proyecto_has_riesgo_respuesta tr ' \
+                  'ON ri.riesgo_has_respuesta_id=tr.respuesta_has_id ' \
+                  'INNER JOIN proyecto_has_riesgo qr ' \
+                  'ON tr.proyecto_has_id=qr.proyecto_has_riesgo_id ' \
+                  'WHERE qr.proyecto_id = %s AND re.proyecto_linea_base = %s AND ri.proyecto_linea_base = %s AND tr.proyecto_linea_base = %s AND qr.proyecto_linea_base = %s'
+            respuestas = Respuesta.objects.using('base').raw(sql, [proyecto_id, linea_base, linea_base, linea_base, linea_base])
+
+        except Exception as e:
+            print(e)
+
+        finally:
+            return respuestas
+
     def get_riesgo_respuesta_by_id(self, proyecto_riesgo, riesgo_respuesta):
         respuesta = None
         try:

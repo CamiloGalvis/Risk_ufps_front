@@ -104,6 +104,16 @@ class ProyectoHasRiesgoDao():
         finally:
             return proyecto_riesgo
 
+    def get_by_riesgo_and_proyecto_2_linea(self, riesgo, proyecto, linea_base):
+        
+        proyecto_riesgo = None
+        try:
+            proyecto_riesgo = ProyectoHasRiesgo.objects.using('base').get(riesgo=riesgo, proyecto=proyecto, proyecto_linea_base=linea_base)
+        except Exception as e:
+            print(e)
+        finally:
+            return proyecto_riesgo
+
     def eliminar_by_riesgo_and_proyecto(self, proyecto_riesgo):
         proyecto_riesgo = proyecto_riesgo
         try:

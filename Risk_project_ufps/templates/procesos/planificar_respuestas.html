@@ -16,9 +16,8 @@
       <h1>
         {% if proyecto %}
         {{ proyecto.proyecto_nombre }}
-        {% endif %}
-        <small>Planificar Respuestas  borrar esto: linea_base: {{ proyecto.proyecto_linea_base }}</small>
-        <button onclick="crear_linea_base();">Guardar linea base</button>
+         <small>Planificar Respuestas</small>
+        {% endif %}       
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-folder-open"></i> Proyecto</a></li>
@@ -129,6 +128,21 @@
 	            </tr>
 	          </tfoot>
 	        </table>
+        </div>
+      </div>
+
+
+        <div class="box box-primary">
+        <div class="box-header with-border">
+          <h3 class="box-title">
+            <label data-toggle="tooltip" data-placement="top" title="En esta sección podra encontrar información de la linea base de la gestión de riesgos del proyecto y como guardarla."><strong>Linea Base de la Adiministración de Riesgos Proyecto {{ proyecto.proyecto_nombre }}</strong></label>
+          </h3>
+        </div>
+        <div class="box-body" style="text-align: justify;">
+          La linea base de la gestión de riesgos del proyecto es toda la información relacionada a la fase de planificación de los riesgos del proyecto, que va desde el proceso de planificar la gestión de riesgos hasta planificar respuestas. Al hacer clic se guardara un respaldo de esta información, la cual podra ser consultada en el historico ubicado en la parte superior del proceso planificar respuestas, o en controlar siempre y cuando se trate de la ultima linea base generada.
+
+          <button class="btn btn-primary" onclick="crear_linea_base();">Guardar linea base</button>
+
         </div>
       </div>
   </div>

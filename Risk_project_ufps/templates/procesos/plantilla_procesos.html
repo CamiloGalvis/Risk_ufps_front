@@ -82,9 +82,21 @@
 
               </ul>
             </li>
+            {% if linea_base %}
+              <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Histórico Lineas Base<span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                {% for linea in linea_base %}
+                <li><a href="/mi_proyecto/{{ proyecto.proyecto_id }}/linea_base/{{ linea }}/">Linea Base de la Gestión de Riesgos {{ linea }}</a></li>
+                <li class="divider"></li>
+                {% endfor %}
+              </ul>
+            </li>
+            {% endif %}
           </ul>
-        </div>
+        </div>        
         <!-- /.navbar-collapse -->
+
         <!-- Navbar Right Menu -->
         <div class="navbar-custom-menu">
           <ul class="nav navbar-nav">

@@ -45,6 +45,21 @@ class TareaDao():
 		finally:
 			return tareas
 
+	def listar_tareas_linea(self, proyecto, linea_base):
+		tareas = {}
+		try:
+			sql = "SELECT t.tarea_id, t.tarea_nombre, t.tarea_descripcion, rp.riesgo_id FROM tarea t " \
+						"INNER JOIN proyecto_has_riesgo_respuesta pr " \
+						"ON t.proyecto_has_riesgo_id=pr.proyecto_has_id " \
+						"AND t.riesgo_has_respuesta_id=pr.respuesta_has_id " \
+						"INNER JOIN proyecto_has_riesgo rp ON pr.proyecto_has_id = rp.proyecto_has_riesgo_id " \
+						"WHERE rp.proyecto_id = %s AND t.proyecto_linea_base = %s AND pr.proyecto_linea_base = %s AND rp.proyecto_linea_base = %s"
+			tareas = Tarea.objects.using('base').raw(sql, [proyecto.proyecto_id, linea_base, linea_base, linea_base])
+		except Exception as e:
+			print(e)
+		finally:
+			return tareas
+
 	def listar_tareas_with_recursos(self, proyecto):
 		tareas = {}
 		try:
