@@ -10,6 +10,10 @@ class TareaController():
 		tarea_dao = TareaDao()
 		return tarea_dao.registrar_tarea(proyecto_riesgo_respuesta, nombre, descripcion, fecha_inicio, fecha_fin)
 
+	def validar_tarea(self, nombre, respuesta_id):
+		tarea_dao = TareaDao()
+		return tarea_dao.validar_tarea(nombre, respuesta_id)
+
 	def get_tarea_by_id(self, id):
 		tarea_dao = TareaDao()
 		return tarea_dao.get_tarea_by_id(id)

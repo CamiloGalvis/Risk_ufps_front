@@ -29,6 +29,28 @@ class RespuestaDao():
             print(e)
             return None
 
+    def validar_respuesta(self, nombre, proyecto_id):
+
+        respuesta = None       
+        try:
+            sql = 'SELECT * FROM respuesta re ' \
+                  'INNER JOIN riesgo_has_respuesta ri ' \
+                  'ON re.respuesta_id=ri.respuesta_id ' \
+                  'INNER JOIN proyecto_has_riesgo_respuesta tr ' \
+                  'ON ri.riesgo_has_respuesta_id=tr.respuesta_has_id ' \
+                  'INNER JOIN proyecto_has_riesgo qr ' \
+                  'ON tr.proyecto_has_id=qr.proyecto_has_riesgo_id ' \
+                  'WHERE qr.proyecto_id = %s AND re.respuesta_nombre = %s'
+            respuesta = Respuesta.objects.raw(sql, [proyecto_id, nombre])
+
+        except Exception as e:
+            print(e)
+
+        finally:
+            return respuesta
+
+
+
     def editar_respuesta(self, respuesta, nombre, descripcion):
         respuesta = respuesta
         try:

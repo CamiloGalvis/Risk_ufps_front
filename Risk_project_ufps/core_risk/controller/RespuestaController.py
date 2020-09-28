@@ -12,6 +12,10 @@ class RespuestaController:
         respuesta_dao = RespuestaDao()
         return respuesta_dao.registrar_respuesta(nombre, descripcion)
 
+    def validar_respuesta(self, nombre, proyecto_id):
+        respuesta_dao = RespuestaDao()
+        return respuesta_dao.validar_respuesta(nombre, proyecto_id)
+
     def obtener_respuesta(self, id):
         respuesta_dao = RespuestaDao()
         return respuesta_dao.obtener_respuesta(id)
