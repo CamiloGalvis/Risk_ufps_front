@@ -17,11 +17,11 @@
         {% if proyecto %}
         {{ proyecto.proyecto_nombre }}
         {% endif %}
-        <small>Planificar Respuestas</small>
+        <small>Cierre del proyecto</small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-folder-open"></i> Proyecto</a></li>
-        <li class="active">Planificar Respuestas</li>
+        <li class="active">Cierre del Proyecto</li>
       </ol>
       {% if mensaje %}
       <div class="callout callout-info">
@@ -49,7 +49,7 @@
                 <div class="box-header with-border">
                   	<h4 class="box-title">
                     	<a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" style="color:#444444";>
-                      		<label data-toggle="tooltip" data-placement="top" title="Presione aqui para ver mas información del proceso y generar su informe."><strong>Comunicar riesgos proyecto: {{ proyecto.proyecto_nombre }}  
+                      		<label data-toggle="tooltip" data-placement="top" title="Información del proceso."><strong>Cierre del Proyecto {{ proyecto.proyecto_nombre }}  
                       			<i class="fa fa-sort-desc"></i>
                       		</strong></label>
                     </a>
@@ -58,7 +58,7 @@
                 <div id="collapseThree" class="panel-collapse collapse">
                   <div class="box-body">
                       INSERTAR CONTENIDO
-                    <a href="/mi_proyecto/{{ proyecto.proyecto_id }}/planificar_respuestas/informe/">Generar informe</a>
+                    
                   </div>
                 </div>
               </div>

@@ -16,7 +16,8 @@ class ProyectoDao:
                 proyecto_fecha_inicio=fecha_inicio,
                 gerente=gerente,
                 sector=sector,
-                proyecto_rbs_status=0)
+                proyecto_rbs_status=0,
+                proyecto_linea_base=0)
         except Exception as e:
             print(e)
         finally:
@@ -33,10 +34,10 @@ class ProyectoDao:
 
 
 
-    def validar_proyecto(self, nombre):
+    def validar_proyecto(self, nombre, gerente_id):
         proyecto = None
         try:
-            proyecto = Proyecto.objects.get(proyecto_nombre=nombre)
+            proyecto = Proyecto.objects.get(proyecto_nombre=nombre, gerente_id=gerente_id)
         except Error as e:
             print(e)
         finally:

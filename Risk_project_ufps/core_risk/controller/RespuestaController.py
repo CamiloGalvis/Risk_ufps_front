@@ -13,6 +13,10 @@ class RespuestaController:
         respuesta_dao = RespuestaDao()
         return respuesta_dao.registrar_respuesta(nombre, descripcion)
 
+    def validar_respuesta(self, nombre, proyecto_id):
+        respuesta_dao = RespuestaDao()
+        return respuesta_dao.validar_respuesta(nombre, proyecto_id)
+
     def obtener_respuesta(self, id):
         respuesta_dao = RespuestaDao()
         return respuesta_dao.obtener_respuesta(id)
@@ -93,6 +97,7 @@ class RespuestaController:
                 )
         return aux
 
+
     def listar_riesgos_respuesta_base(self, proyecto_id):
 
         proyecto_dao = ProyectoDao()
@@ -100,6 +105,38 @@ class RespuestaController:
 
         proyecto = proyecto_dao.obtener_proyecto(proyecto_id)
         respuestas = p_r_r.listar_riesgos_respuesta_base(proyecto)
+
+        aux = {}
+        for respuesta in respuestas:
+            key = "riesgo_"+str(respuesta.riesgo_id)
+            riesgo_aux = aux.get(key)
+            if(riesgo_aux):
+                riesgo_aux.append(
+                    dict(
+                        respuesta_id=respuesta.respuesta_id,
+                        respuesta_nombre=respuesta.respuesta_nombre,
+                        respuesta_descripcion=respuesta.respuesta_descripcion,
+                        tipo_respuesta= respuesta.tipo_respuesta,
+                        riesgo_has_respuesta=respuesta.riesgo_has_respuesta_id
+                    )
+                )
+            else:
+                aux[key] = []
+                aux[key].append(
+                    dict(
+                        respuesta_id=respuesta.respuesta_id,
+                        respuesta_nombre=respuesta.respuesta_nombre,
+                        respuesta_descripcion=respuesta.respuesta_descripcion,
+                        tipo_respuesta= respuesta.tipo_respuesta,
+                        riesgo_has_respuesta=respuesta.riesgo_has_respuesta_id
+                    )
+                )
+        return aux
+
+
+    def listar_riesgos_respuesta_linea(self, proyecto_id, linea_base):
+        p_r_r= ProyectoHasRiesgo_RespuestaDao()
+        respuestas = p_r_r.listar_riesgos_respuesta_linea(proyecto_id, linea_base)
         aux = {}
         for respuesta in respuestas:
             key = "riesgo_"+str(respuesta.riesgo_id)

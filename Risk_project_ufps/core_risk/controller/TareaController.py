@@ -11,6 +11,10 @@ class TareaController():
 		tarea_dao = TareaDao()
 		return tarea_dao.registrar_tarea(proyecto_riesgo_respuesta, nombre, descripcion, fecha_inicio, fecha_fin)
 
+	def validar_tarea(self, nombre, respuesta_id):
+		tarea_dao = TareaDao()
+		return tarea_dao.validar_tarea(nombre, respuesta_id)
+
 	def get_tarea_by_id(self, id):
 		tarea_dao = TareaDao()
 		return tarea_dao.get_tarea_by_id(id)
@@ -50,6 +54,10 @@ class TareaController():
 	def listar_tareas_group_by_riesgo_base(self, proyecto):
 		tarea_dao = TareaDao()
 		return self.raw_queryset_of_tareas_as_values_list_base(tarea_dao.listar_tareas_base(proyecto), proyecto)
+
+	def listar_tareas_group_by_riesgo_linea(self, proyecto, linea_base):
+		tarea_dao = TareaDao()
+		return self.raw_queryset_of_tareas_as_values_list_linea(tarea_dao.listar_tareas_linea(proyecto, linea_base), proyecto, linea_base)
 
 	def listar_tareas_with_recursos(self, proyecto):
 		tarea_dao = TareaDao()
@@ -96,6 +104,22 @@ class TareaController():
 				aux[llave] = [aa,]
 		return aux
 
+	def raw_queryset_of_tareas_as_values_list_linea(self, raw_qs, proyecto, linea_base):
+		recurso_dao = RecursoDao()
+		recursos = recurso_dao.listar_recursos_tareas_linea(proyecto, linea_base)
+		aux = {}
+
+		for row in raw_qs:
+			llave = 'riesgo_'+str(row.riesgo_id)
+			elemento = aux.get(llave)
+			aa = model_to_dict(row)
+			aa["riesgo_id"] = row.riesgo_id
+			aa["recursos"] = self.filtrar_recursos(row.tarea_id, recursos)
+			if elemento:
+				elemento.append(aa)
+			else:
+				aux[llave] = [aa,]
+		return aux
 
 	def filtrar_recursos(self, tarea_id, recursos):
 		"""

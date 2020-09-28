@@ -11,6 +11,10 @@ class RecursoController:
 		recurso_dao = RecursoDao()
 		return recurso_dao.listar_recursos(id)
 
+	def listar_recursos_linea(self, id, linea_base):
+		recurso_dao = RecursoDao()
+		return recurso_dao.listar_recursos_linea(id, linea_base)
+
 	def obtener_recurso(self, id):
 		recurso_dao = RecursoDao()
 		return recurso_dao.obtener_recurso(id)

@@ -54,13 +54,15 @@ class GerenteDao():
 		finally:
 			return gerente
 
-	def actualizar_gerente(self, gerente, nombre, correo, profesion, empresa, sector):
+	def actualizar_gerente(self, gerente, nombre, correo, profesion, empresa, sector, certificacion, metodologia):
 		gerente = gerente
 		gerente.gerente_nombre = nombre
 		gerente.gerente_correo = correo
 		gerente.gerente_profesion = profesion
 		gerente.gerente_empresa = empresa
 		gerente.sector = sector
+		gerente.gerente_certificaciones = certificacion
+		gerente.gerente_metodologias = metodologia
 		try:
 			gerente.save()
 		except Error as e:

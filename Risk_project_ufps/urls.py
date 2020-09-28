@@ -101,6 +101,7 @@ urlpatterns = [
     path('mi_proyecto/<int:proyecto_id>/nuevo_recurso_tarea/', nuevo_recurso_tarea, name='nuevo_recurso_tarea'),
     path('mi_proyecto/<int:proyecto_id>/desvincular_recurso_tarea/', desvincular_recurso_tarea, name='desvincular_recurso_tarea'),
     path('mi_proyecto/<int:proyecto_id>/planificar_respuestas/informe/', generar_informe_planificar_respuesta, name='generar_informe_planificar_respuesta'),
+    path('mi_proyecto/<int:proyecto_id>/linea_base/<int:numero_linea>/', linea_base, name='linea_base'),
 
     #####################################################
     # Controlar riesgos
@@ -109,10 +110,8 @@ urlpatterns = [
     path('mi_proyecto/<int:proyecto_id>/crear_linea_base/', crear_linea_base, name='crear_linea_base'),
     path('mi_proyecto/<int:proyecto_id>/actualizar_gantt/', actualizar_gantt, name='actualizar_gantt'),
     #####################################################
-    # Comunicar riesgos
+    # Cierre del Proyecto
     #####################################################
-    path('mi_proyecto/<int:proyecto_id>/comunicar_riesgos/', comunicar_riesgos, name='comunicar_riesgos'),
-    #path('gantt/', gantt, name='gantt'),
-
+    path('mi_proyecto/<int:proyecto_id>/cerrar_proyecto/', cerrar_proyecto, name='cerrar_proyecto'),
 
 ]

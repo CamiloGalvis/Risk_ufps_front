@@ -13,6 +13,17 @@ class ImpactoDao:
         finally:
             return impactos
 
+    def listar_impactos_by_proyecto_linea(self, proyecto, linea_base):
+        impactos = {}
+        try:
+            impactos = Impacto.objects.using('base').filter(proyecto=proyecto, proyecto_linea_base=linea_base).order_by('impacto_valor')
+        except Exception as e:
+            raise e
+        finally:
+            return impactos
+
+
+
     def crear_impacto(self, impacto_categoria, impacto_valor, proyecto):
         impacto = None
         try:

@@ -12,6 +12,15 @@ class ClasificacionRiesgoDao:
         finally:
             return clasificaciones
 
+    def listar_clasificaciones_by_proyecto_linea(self, proyecto, linea_base):
+        clasificaciones = {}
+        try:
+            clasificaciones = ClasificacionRiesgo.objects.using('base').filter(proyecto=proyecto, proyecto_linea_base=linea_base).order_by('clasificacion_riesgo_min')
+        except Exception as e:
+            print(e)
+        finally:
+            return clasificaciones
+
     def eliminar_clasificaciones_by_proyecto(self, proyecto):
         result = None
         try:

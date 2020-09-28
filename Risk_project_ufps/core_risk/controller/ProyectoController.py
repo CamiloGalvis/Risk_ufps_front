@@ -24,9 +24,9 @@ class ProyectoController:
         proyecto_dao = ProyectoDao()
         return proyecto_dao.obtener_proyecto(id)
 
-    def validar_proyecto(self, nombre):
+    def validar_proyecto(self, nombre, gerente_id):
         proyecto_dao = ProyectoDao()
-        return proyecto_dao.validar_proyecto(nombre)
+        return proyecto_dao.validar_proyecto(nombre, gerente_id)
 
     def editar_proyecto(self, proyecto, nombre, objetivo, alcance, descripcion, presupuesto, fecha_inicio, sector):
         proyecto_dao = ProyectoDao()
@@ -90,16 +90,35 @@ class ProyectoController:
         impactos = impacto_dao.listar_impactos_by_proyecto(proyecto)
         return self.parsear_impactos(impactos)
 
+
+    def obtener_impactos_parseados_by_proyecto_id_linea(self, proyecto_id, linea_base):
+        impacto_dao = ImpactoDao()
+        proyecto = Proyecto.objects.using('base').get(proyecto_id=proyecto_id, proyecto_linea_base=linea_base)
+        impactos = impacto_dao.listar_impactos_by_proyecto_linea(proyecto, linea_base)
+        return self.parsear_impactos(impactos)
+
     def obtener_probabilidades_parseados_by_proyecto_id(self, proyecto_id):
         probabilidad_dao = ProbabilidadDao()
         proyecto = Proyecto(proyecto_id=proyecto_id)
         r = probabilidad_dao.listar_probabilidades_by_proyecto(proyecto)
         return self.parsear_probabilidades(r)
 
+    def obtener_probabilidades_parseados_by_proyecto_id_linea(self, proyecto_id, linea_base):
+        probabilidad_dao = ProbabilidadDao()
+        proyecto = Proyecto.objects.using('base').get(proyecto_id=proyecto_id, proyecto_linea_base=linea_base)
+        r = probabilidad_dao.listar_probabilidades_by_proyecto_linea(proyecto, linea_base)
+        return self.parsear_probabilidades(r)
+
     def obtener_rangos_parseados_by_proyecto_id(self, proyecto_id):
         clasificacion_riesgo_dao = ClasificacionRiesgoDao()
         proyecto = Proyecto(proyecto_id=proyecto_id)
         rangos = clasificacion_riesgo_dao.listar_clasificaciones_by_proyecto(proyecto)
+        return self.parsear_rangos(rangos)
+
+    def obtener_rangos_parseados_by_proyecto_id_linea(self, proyecto_id, linea_base):
+        clasificacion_riesgo_dao = ClasificacionRiesgoDao()
+        proyecto = Proyecto.objects.using('base').get(proyecto_id=proyecto_id, proyecto_linea_base=linea_base)
+        rangos = clasificacion_riesgo_dao.listar_clasificaciones_by_proyecto_linea(proyecto, linea_base)
         return self.parsear_rangos(rangos)
 
     def parsear_impactos(self, impactos: "list of Impacto"):

@@ -15,6 +15,6 @@ class GerenteController:
 		gerente_dao = GerenteDao()
 		return gerente_dao.validar_gerente(usuario)
 
-	def actualizar_gerente(self, gerente, nombre, correo, profesion, empresa, sector):
+	def actualizar_gerente(self, gerente, nombre, correo, profesion, empresa, sector, certificacion, metodologia):
 		gerente_dao = GerenteDao()
-		return gerente_dao.actualizar_gerente(gerente, nombre, correo, profesion, empresa, sector)
+		return gerente_dao.actualizar_gerente(gerente, nombre, correo, profesion, empresa, sector, certificacion, metodologia)
