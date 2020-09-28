@@ -3,8 +3,11 @@ from Risk_project_ufps.core_risk.dao.ImpactoDao import *
 from Risk_project_ufps.core_risk.dao.ProbabilidadDao import *
 from Risk_project_ufps.core_risk.dao.ClasificacionRiesgoDao import *
 from Risk_project_ufps.core_risk.dao.ProyectoHasRiesgoDao import *
+from Risk_project_ufps.core_risk.dao.TareaDao import *
+
 from Risk_project_ufps.core_risk.dto.models import *
 
+from datetime import datetime
 
 class ProyectoController:
 
@@ -149,3 +152,31 @@ class ProyectoController:
         proyecto_dao = ProyectoDao()
         proyecto = proyecto_dao.obtener_proyecto(proyecto_id)
         return proyecto_dao.crear_linea_base(gerente_id, proyecto)
+
+    def actualizar_gantt(self, proyecto_id, gantt):
+        tarea_dao = TareaDao()
+        proyecto_dao = ProyectoDao()
+        proyecto = proyecto_dao.obtener_proyecto(proyecto_id)
+        flag = False
+        for tarea in gantt['data']:
+            if tarea['is_tarea']:
+                if tarea['tarea_estado'] == '3' and tarea['tarea_estado_old'] != '3':
+                    tarea['fecha_fin_real'] = self.get_datetime()
+                tarea_aux = Tarea(
+                    tarea_id=tarea['tarea_id'],
+                    fecha_inicio_real=tarea['fecha_inicio_real'],
+                    fecha_fin_real=tarea['fecha_fin_real'],
+                    tarea_estado=tarea['tarea_estado'],
+                    tarea_observacion=tarea['tarea_observacion']
+                )
+                flag = tarea_dao.actualizar_tarea_base(tarea_aux, proyecto)
+        return flag
+
+    def get_datetime(self):
+        now = datetime.now()
+        date_time = now.strftime("%Y-%m-%d")
+        #print("date and time:",date_time)
+        return date_time
+
+
+

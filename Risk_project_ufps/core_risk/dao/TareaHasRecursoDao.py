@@ -1,14 +1,14 @@
 from Risk_project_ufps.core_risk.dto.models import *
 from contextlib import closing
-from django.db import connection
+from django.db import connections
 
 
 class TareaHasRecursoDao():
 
     def agregar_recurso_tarea(self, tarea, recurso, cantidad):
-        with closing(connection.cursor()) as cursor:
+        with closing(connections['riesgos'].cursor()) as cursor:
             cursor.execute(
-                'INSERT INTO riesgos_bd.`tarea_has_recurso`(`tarea_id`, `recurso_id`, `cantidad` )'
+                'INSERT INTO `tarea_has_recurso`(`tarea_id`, `recurso_id`, `cantidad` )'
                 'VALUES (%s, %s, %s)',
                 (tarea.tarea_id, recurso.recurso_id, cantidad),
             )
@@ -35,8 +35,8 @@ class TareaHasRecursoDao():
 
     def eliminar_recurso_tarea_2(self, recurso_id, tarea_id):
         try:
-            with closing(connection.cursor()) as cursor:
-                sql = 'DELETE FROM riesgos_bd.tarea_has_recurso ' \
+            with closing(connections['riesgos'].cursor()) as cursor:
+                sql = 'DELETE FROM tarea_has_recurso ' \
                       'WHERE recurso_id = %s ' \
                       'AND tarea_id = %s'
                 cursor.execute(

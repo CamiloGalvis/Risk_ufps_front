@@ -3,6 +3,7 @@ from Risk_project_ufps.core_risk.dao.TareaHasRecursoDao import *
 from Risk_project_ufps.core_risk.dao.RecursoDao import *
 from Risk_project_ufps.core_risk.dto.models import *
 from django.forms.models import model_to_dict
+import datetime
 
 class TareaController():
 
@@ -46,6 +47,10 @@ class TareaController():
 		tarea_dao = TareaDao()
 		return self.raw_queryset_of_tareas_as_values_list(tarea_dao.listar_tareas(proyecto), proyecto)
 
+	def listar_tareas_group_by_riesgo_base(self, proyecto):
+		tarea_dao = TareaDao()
+		return self.raw_queryset_of_tareas_as_values_list_base(tarea_dao.listar_tareas_base(proyecto), proyecto)
+
 	def listar_tareas_with_recursos(self, proyecto):
 		tarea_dao = TareaDao()
 		return tarea_dao.listar_tareas(proyecto)
@@ -55,10 +60,12 @@ class TareaController():
 		recursos = recurso_dao.listar_recursos_tareas(proyecto)
 		aux = {}
 
-		for row in raw_qs:
+		for row in raw_qs: 
 			llave = 'riesgo_'+str(row.riesgo_id)
 			elemento = aux.get(llave)
 			aa = model_to_dict(row)
+			aa['fecha_inicio'] = aa['fecha_inicio'].strftime('%Y-%m-%d %H:%M')
+			aa['fecha_fin'] = aa['fecha_fin'].strftime('%Y-%m-%d %H:%M')			
 			aa["riesgo_id"] = row.riesgo_id
 			aa["recursos"] = self.filtrar_recursos(row.tarea_id, recursos)
 			if elemento:
@@ -66,6 +73,29 @@ class TareaController():
 			else:
 				aux[llave] = [aa,]
 		return aux
+
+
+	def raw_queryset_of_tareas_as_values_list_base(self, raw_qs, proyecto):
+		recurso_dao = RecursoDao()
+		recursos = recurso_dao.listar_recursos_tareas_base(proyecto)
+		aux = {}
+
+		for row in raw_qs:
+			llave = 'riesgo_'+str(row.riesgo_id)
+			elemento = aux.get(llave)
+			aa = model_to_dict(row)
+			aa['fecha_inicio'] = aa['fecha_inicio'].strftime('%Y-%m-%d %H:%M')
+			aa['fecha_fin'] = aa['fecha_fin'].strftime('%Y-%m-%d %H:%M')
+			aa['fecha_inicio_real'] = aa['fecha_inicio_real'].strftime('%Y-%m-%d %H:%M')
+			aa['fecha_fin_real'] = aa['fecha_fin_real'].strftime('%Y-%m-%d %H:%M')
+			aa["riesgo_id"] = row.riesgo_id
+			aa["recursos"] = self.filtrar_recursos(row.tarea_id, recursos)
+			if elemento:
+				elemento.append(aa)
+			else:
+				aux[llave] = [aa,]
+		return aux
+
 
 	def filtrar_recursos(self, tarea_id, recursos):
 		"""

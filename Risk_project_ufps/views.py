@@ -18,6 +18,7 @@ from datetime import date
 from datetime import datetime
 
 
+
 import json
 import os
 
@@ -136,7 +137,7 @@ def inicio(request):
 def nuevo_proyecto(request):
     sector_controller = SectorController()
     lista_sectores = sector_controller.listar_sectores()
-    fecha_actual = datetime.now()
+    fecha_actual = datetime.datetime.now()
     formato = "%Y-%m-%d"
     today = fecha_actual.strftime(formato)
     data = {"lista_sectores": lista_sectores, "today":today}
@@ -587,9 +588,9 @@ def mi_proyecto(request, id):
     sector_controller = SectorController()
     lista_sectores = sector_controller.listar_sectores()
     duracion = ""
-    fecha_actual = datetime.now()
+    fecha_actual = datetime.datetime.now()
 
-    fecha_proyecto = datetime(proyecto.proyecto_fecha_inicio.year, proyecto.proyecto_fecha_inicio.month,
+    fecha_proyecto = datetime.datetime(proyecto.proyecto_fecha_inicio.year, proyecto.proyecto_fecha_inicio.month,
                               proyecto.proyecto_fecha_inicio.day, 00, 00, 00, 000000)
     if proyecto.proyecto_fecha_finl != None:
         fecha_proyecto_final = datetime(proyecto.proyecto_fecha_finl.year, proyecto.proyecto_fecha_finl.month,
@@ -1404,8 +1405,8 @@ def nueva_tarea(request, proyecto_id):
         tarea = tarea_controller.registrar_tarea(proyecto_riesgo_respuesta, request.POST["tarea_nombre"],
                                                  request.POST["tarea_descripcion"], request.POST["tarea_fecha_inicio"],
                                                  request.POST["tarea_fecha_fin"])
-        fecha_ini = datetime.strptime(request.POST["tarea_fecha_inicio"], '%Y-%m-%d')
-        fecha_final = datetime.strptime(request.POST["tarea_fecha_fin"], '%Y-%m-%d')
+        fecha_ini = datetime.datetime.strptime(request.POST["tarea_fecha_inicio"], '%Y-%m-%d')
+        fecha_final = datetime.datetime.strptime(request.POST["tarea_fecha_fin"], '%Y-%m-%d')
         semanas = abs((fecha_ini - fecha_final).days)/7
         tarea.duracion = semanas
         tarea.save()        
@@ -1537,8 +1538,9 @@ def editar_tarea(request, proyecto_id):
                                                       request.POST["descripcion_tarea"],
                                                       request.POST["tarea_fecha_inicio"],
                                                       request.POST["tarea_fecha_fin"] )
-        fecha_ini = datetime.strptime(request.POST["tarea_fecha_inicio"], '%Y-%m-%d')
-        fecha_final = datetime.strptime(request.POST["tarea_fecha_fin"], '%Y-%m-%d')
+
+        fecha_ini = datetime.datetime.strptime(request.POST["tarea_fecha_inicio"], '%Y-%m-%d')
+        fecha_final = datetime.datetime.strptime(request.POST["tarea_fecha_fin"], '%Y-%m-%d')
         semanas = abs((fecha_ini - fecha_final).days)/7
         tarea_editada.duracion = semanas
         tarea_editada.save()
@@ -1640,11 +1642,25 @@ def desvincular_recurso_tarea(request, proyecto_id):
 /////////////////////////////////////////////////////////////////////////////
 """
 
-
+@login_required(login_url='/accounts/login/')
 def controlar_riesgos(request, proyecto_id):
+    proyecto_controller = ProyectoController()
+    riesgo_controller = RiesgoController()
+    respuesta_controller = RespuestaController()
+    tarea_controller = TareaController()
+
+    proyecto = proyecto_controller.obtener_proyecto(proyecto_id)
+    respuestas_riesgo = dumps(respuesta_controller.listar_riesgos_respuesta_base(proyecto_id))
+    lista_tareas = dumps(tarea_controller.listar_tareas_group_by_riesgo_base(proyecto))
+
     return render(
         request,
         "procesos/controlar_riesgos.html",
+        dict(
+            proyecto=proyecto,
+            respuestas_riesgo=respuestas_riesgo,
+            lista_tareas=lista_tareas
+        )
     )
 
 
@@ -1657,6 +1673,14 @@ def crear_linea_base(request, proyecto_id):
     else:
         return HttpResponse({'rta': rta}, status=500)
 
+def actualizar_gantt(request, proyecto_id):
+    proyecto_controller = ProyectoController()
+    gantt = json.loads(request.POST['gantt'])
+    rta = proyecto_controller.actualizar_gantt(proyecto_id, gantt)
+    if rta:
+        return HttpResponse({'rta': rta}, status=200)
+    else:
+        return HttpResponse({'rta': rta}, status=500)
 
 """
 ////////////////////////////////////////////////////////////////////////////
@@ -1666,12 +1690,17 @@ def crear_linea_base(request, proyecto_id):
 
 
 def comunicar_riesgos(request, proyecto_id):
+
     return render(
         request,
         "procesos/comunicar_riesgos.html",
     )
 
-
+def gantt(request):
+    return render(
+        request,
+        "procesos/gantt.html",
+    )
 """
 ////////////////////////////////////////////////////////////////////////////
     METODOS DE INFORMES

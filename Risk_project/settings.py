@@ -93,6 +93,7 @@ DATABASES = {
             'OPTIONS': {
             'sql_mode': 'STRICT_ALL_TABLES',
             },
+            #'NAME': 'test_riesgo_bd',
             'NAME': 'riesgos_bd',
             'USER': 'root',
             'PASSWORD': 'Soporte',
@@ -104,6 +105,7 @@ DATABASES = {
             'OPTIONS': {
             'sql_mode': 'STRICT_ALL_TABLES',
             },
+            #'NAME': 'test_riesgo_base',
             'NAME': 'riesgos_base',
             'USER': 'root',
             'PASSWORD': 'Soporte',

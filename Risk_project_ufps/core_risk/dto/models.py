@@ -290,7 +290,12 @@ class Tarea(models.Model):
     fecha_inicio = models.DateTimeField(blank=True, null=True)
     duracion = models.IntegerField(blank=True, null=True)
     fecha_fin = models.DateTimeField(blank=True, null=True)
+    fecha_inicio_real = models.DateTimeField(blank=True, null=True)
+    fecha_fin_real = models.DateTimeField(blank=True, null=True)
+    tarea_observacion = models.TextField(blank=True, null=True)
+    tarea_estado = models.IntegerField(blank=True, null=True)
     proyecto_linea_base = models.IntegerField(blank=True, null=True)
+    proyecto_id = int()
 
     class Meta:
         managed = False

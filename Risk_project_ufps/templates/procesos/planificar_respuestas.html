@@ -1412,10 +1412,10 @@ function crear_linea_base() {
       headers: {'X-CSRFToken': csrftoken},      
       success: function(data) {
         alert("Registro exitoso "+data);
-        location.reload();
+        window.location.href = "/mi_proyecto/{{proyecto.proyecto_id}}/planificar_respuestas/";
       }, error: function (jqXhr, textStatus, errorMessage) {
         alert("Fallo Registro " + textStatus + errorMessage);
-        location.reload();
+        window.location.href = "/mi_proyecto/{{proyecto.proyecto_id}}/planificar_respuestas/";
       }
   });
 }

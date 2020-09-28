@@ -1,4 +1,5 @@
 from Risk_project_ufps.core_risk.dto.models import *
+from contextlib import closing
 from django.db import connections
 
 class ProyectoDao:
@@ -80,7 +81,7 @@ class ProyectoDao:
 
     def crear_linea_base(self, gerente_id: int, proyecto):
         try:
-            with connections['riesgos'].cursor() as cursor:
+            with closing(connections['riesgos'].cursor()) as cursor:
                 cursor.callproc('crear_linea_base',
                                 [gerente_id, proyecto.proyecto_id, proyecto.proyecto_linea_base + 1])
             flag = True

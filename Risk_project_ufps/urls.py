@@ -107,11 +107,12 @@ urlpatterns = [
     #####################################################
     path('mi_proyecto/<int:proyecto_id>/controlar_riesgos/', controlar_riesgos, name='controlar_riesgos'),
     path('mi_proyecto/<int:proyecto_id>/crear_linea_base/', crear_linea_base, name='crear_linea_base'),
-
+    path('mi_proyecto/<int:proyecto_id>/actualizar_gantt/', actualizar_gantt, name='actualizar_gantt'),
     #####################################################
     # Comunicar riesgos
     #####################################################
     path('mi_proyecto/<int:proyecto_id>/comunicar_riesgos/', comunicar_riesgos, name='comunicar_riesgos'),
+    #path('gantt/', gantt, name='gantt'),
 
 
 ]

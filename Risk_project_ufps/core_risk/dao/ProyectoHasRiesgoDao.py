@@ -1,6 +1,7 @@
 from contextlib import closing
 
 from django.db import connection
+from django.db import connections
 
 from Risk_project_ufps.core_risk.dto.models import *
 
@@ -20,25 +21,26 @@ class ProyectoHasRiesgoDao():
             return proyecto_riesgo"""
 
     def registrar_proyecto_riesgo(self, proyecto, riesgo):
-        with closing(connection.cursor()) as cursor:
+        with closing(connections['riesgos'].cursor()) as cursor:
             cursor.execute(
-                'INSERT INTO riesgos_bd.`proyecto_has_riesgo`(`proyecto_id`, `riesgo_id`)'
+                'INSERT INTO `proyecto_has_riesgo`(`proyecto_id`, `riesgo_id`)'
                 'VALUES (%s, %s)',
                 (proyecto.proyecto_id, riesgo.riesgo_id),
             )
 
 
     def registrar_proyecto_riesgo_editado(self, proyecto, riesgo):
-        with closing(connection.cursor()) as cursor:
+        with closing(connections['riesgos'].cursor()) as cursor:
             cursor.execute(
-                'INSERT INTO riesgos_bd.`proyecto_has_riesgo`(`proyecto_id`, `riesgo_id`, `is_editado`)'
+                'INSERT INTO `proyecto_has_riesgo`(`proyecto_id`, `riesgo_id`, `is_editado`)'
                 'VALUES (%s, %s, 1)',
                 (proyecto.proyecto_id, riesgo.riesgo_id),
             )
 
     def actualizar_fecha(self, proyecto_riesgo, fecha):
-        with closing(connection.cursor()) as cursor:
-            sql = 'UPDATE riesgos_bd.proyecto_has_riesgo SET fecha_manifestacion = %s' \
+        with closing(connections['riesgos'].cursor()) as cursor:
+            sql = 'UPDATE proyecto_has_riesgo ' \
+                  'SET fecha_manifestacion = %s' \
                   'WHERE proyecto_has_riesgo_id = %s '
             cursor.execute(
                 sql,
@@ -62,7 +64,7 @@ class ProyectoHasRiesgoDao():
             #Revisar esta consulta
             responsables_riesgo = Responsble.objects.raw("SELECT * FROM responsble re INNER JOIN proyecto_has_riesgo pr ON re.responsable_id=pr.responsable_id WHERE pr.proyecto_id = %s", [proyecto_id])
 
-        except Error as e:
+        except Exception as e:
             print(e)
 
         finally:
@@ -79,7 +81,17 @@ class ProyectoHasRiesgoDao():
         :return:
         """
         try:
-            sql = "SELECT * FROM proyecto_has_riesgo phr INNER JOIN responsble res ON phr.responsable_id = res.responsable_id INNER JOIN impacto i ON phr.impacto_id = i.impacto_id INNER JOIN propabilidad p ON phr.propabilidad_id = p.propabilidad_id INNER JOIN riesgo r ON phr.riesgo_id = r.riesgo_id WHERE phr.proyecto_id = %s ORDER BY phr.riesgo_id ASC"
+            sql = "SELECT * FROM proyecto_has_riesgo phr " \
+                  "INNER JOIN responsble res " \
+                  "ON phr.responsable_id = res.responsable_id " \
+                  "INNER JOIN impacto i " \
+                  "ON phr.impacto_id = i.impacto_id " \
+                  "INNER JOIN propabilidad p " \
+                  "ON phr.propabilidad_id = p.propabilidad_id " \
+                  "INNER JOIN riesgo r " \
+                  "ON phr.riesgo_id = r.riesgo_id " \
+                  "WHERE phr.proyecto_id = %s " \
+                  "ORDER BY phr.riesgo_id ASC"
             return ProyectoHasRiesgo.objects.raw(sql, [proyecto.proyecto_id])
 
         except Exception as e:
