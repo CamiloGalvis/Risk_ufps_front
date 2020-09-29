@@ -109,6 +109,7 @@ urlpatterns = [
     path('mi_proyecto/<int:proyecto_id>/controlar_riesgos/', controlar_riesgos, name='controlar_riesgos'),
     path('mi_proyecto/<int:proyecto_id>/crear_linea_base/', crear_linea_base, name='crear_linea_base'),
     path('mi_proyecto/<int:proyecto_id>/actualizar_gantt/', actualizar_gantt, name='actualizar_gantt'),
+    path('mi_proyecto/<int:proyecto_id>/controlar_riesgos/informe/', generar_informe_controlar, name='generar_informe_controlar'),
     #####################################################
     # Cierre del Proyecto
     #####################################################

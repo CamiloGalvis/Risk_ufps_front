@@ -6,6 +6,7 @@ from Risk_project_ufps.core_risk.dao.ProbabilidadDao import *
 from Risk_project_ufps.core_risk.controller.RiesgoController import *
 from Risk_project_ufps.core_risk.controller.RespuestaController import *
 from Risk_project_ufps.core_risk.controller.ResponsableController import *
+from Risk_project_ufps.core_risk.controller.TareaController import *
 
 from Risk_project_ufps.core_risk.dto.models import Proyecto
 
@@ -108,6 +109,31 @@ class ReporteController:
         reporte.exportar_planificar_respuesta(proyecto.proyecto_objetivo, proyecto.proyecto_alcance)
         return nombre_excel + ".xlsx"
 
+    def generar_reporte_controlar_riesgos(self, proyecto):
+        """
+                :type proyecto: Proyecto
+                """
+        propietario = proyecto.gerente.gerente_nombre
+        titulo = "REPORTE PROYECTO " + proyecto.proyecto_nombre
+        cabecera = ("RIESGO", "ACCION", "TIPO ACCION", "TAREA", "FECHAS PLANEADAS", "FECHAS REALES", "ESTADO", "OBSERVACIONES")
+
+        riesgo_controller = RiesgoController()
+        respuesta_controller = RespuestaController()
+        tarea_controller = TareaController()
+
+        riesgos = riesgo_controller.get_riesgos_by_proyecto_linea(proyecto, proyecto.proyecto_linea_base)
+        respuestas_riesgo = respuesta_controller.listar_riesgos_respuesta_base(proyecto.proyecto_id)
+        lista_tareas = tarea_controller.listar_tareas_group_by_riesgo_base(proyecto)
+
+        mezcla = self.mezclar_respuestas_with_tareas(riesgos, respuestas_riesgo, lista_tareas)
+
+        #print('mezcla', mezcla)
+        registros = self.convertir_array(mezcla)
+        nombre_excel = "reporte_" + self.get_datetime()
+        reporte = reporteEXCEL(titulo, cabecera, registros, nombre_excel, propietario)
+        reporte.exportar_controlar_riesgos(proyecto.proyecto_objetivo, proyecto.proyecto_alcance)
+        return nombre_excel + ".xlsx"
+
     def filtrar_respuestas_riesgo(self, respuestas, riesgo_id):
         key = "riesgo_"+str(riesgo_id)
         aux = respuestas.get(key)
@@ -174,3 +200,82 @@ class ReporteController:
                 responsable['responsble_descripcion']
             ])
         return aux
+
+    def mezclar_respuestas_with_tareas(self, riesgos, respuestas_riesgo, lista_tareas):
+        riesgo_aux = {}
+        for riesgo in riesgos:
+            llave = 'riesgo_'+str(riesgo.riesgo_id)
+            riesgo_aux[llave] = dict(
+                riesgo_id=riesgo.riesgo_id,
+                riesgo_nombre=riesgo.riesgo_nombre
+            )
+            respuestas = respuestas_riesgo[llave]
+            for respuesta in respuestas:
+                riesgo_has_respuesta = respuesta['riesgo_has_respuesta']
+                tareas = lista_tareas[llave]
+                for tarea in tareas:
+                    if tarea['riesgo_has_respuesta'] == riesgo_has_respuesta:
+                        if respuesta.get('tareas'):
+                            respuesta['tareas'].append(tarea)
+                        else:
+                            respuesta['tareas'] = []
+                            respuesta['tareas'].append(tarea)
+                if riesgo_aux[llave].get('respuestas'):
+                    riesgo_aux[llave]['respuestas'].append(respuesta)
+                else:
+                    riesgo_aux[llave]['respuestas'] = []
+                    riesgo_aux[llave]['respuestas'].append(respuesta)
+        return riesgo_aux
+
+    def convertir_array(self, mezcla):
+        array_final = []
+        for key, aux in mezcla.items():
+            respuestas = aux['respuestas']
+            if len(respuestas) > 0:
+                for aux_2 in respuestas:
+                    tareas = aux_2['tareas']
+                    if len(tareas) > 0:
+                        for aux_3 in tareas:
+                            array_final.append([
+                                aux['riesgo_nombre'],
+                                aux_2['respuesta_nombre'],
+                                aux_2['tipo_respuesta'],
+                                aux_3['tarea_nombre'],
+                                aux_3['fecha_inicio'] + ' - ' + aux_3['fecha_fin'],
+                                aux_3['fecha_inicio_real'] + ' - ' + aux_3['fecha_fin_real'],
+                                self.get_estado(aux_3['tarea_estado']),
+                                aux_3['tarea_observacion'],
+                            ])
+                    else:
+                        array_final.append([
+                            aux['riesgo_nombre'],
+                            aux_2['respuesta_nombre'],
+                            aux_2['tipo_respuesta'],
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                        ])
+            else:
+                array_final.append([
+                    aux['riesgo_nombre'],
+                    'riesgo no posee acciones',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                ])
+        return array_final
+
+    def get_estado(self, valor):
+        if valor == 1:
+            return 'No iniciado'
+        elif valor == 2:
+            return 'Iniciado'
+        elif valor == 3:
+            return 'Completado'
+        else:
+            return 'Retrasado'

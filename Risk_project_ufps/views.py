@@ -1888,7 +1888,23 @@ def generar_informe_planificar_respuesta(request, proyecto_id):
         print("The file does not exist", reporte)
     return response
 
+def generar_informe_controlar(request, proyecto_id):
+    proyecto_controller = ProyectoController()
+    proyecto = proyecto_controller.obtener_proyecto(proyecto_id)
 
+    reporte_controller = ReporteController()
+    reporte = reporte_controller.generar_reporte_controlar_riesgos(proyecto)
+
+    zip_file = open(reporte, 'rb')
+    t = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    response = HttpResponse(zip_file, content_type=t)
+    response['Content-Disposition'] = 'attachment; filename="%s"' % reporte
+
+    if os.path.exists(reporte):
+        os.remove(reporte)
+    else:
+        print("The file does not exist", reporte)
+    return response
 """
 ////////////////////////////////////////////////////////////////////////////
     METODO PARA GENERAR REPORTES EN EXCEL
