@@ -118,6 +118,10 @@ class TareaController():
 			elemento = aux.get(llave)
 			aa = model_to_dict(row)
 			aa["riesgo_id"] = row.riesgo_id
+			aa['fecha_inicio'] = aa['fecha_inicio'].strftime('%Y-%m-%d %H:%M')
+			aa['fecha_fin'] = aa['fecha_fin'].strftime('%Y-%m-%d %H:%M')
+			aa['fecha_inicio_real'] = aa['fecha_inicio_real'].strftime('%Y-%m-%d %H:%M')
+			aa['fecha_fin_real'] = aa['fecha_fin_real'].strftime('%Y-%m-%d %H:%M')
 			aa["recursos"] = self.filtrar_recursos(row.tarea_id, recursos)
 			if elemento:
 				elemento.append(aa)
