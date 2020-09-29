@@ -90,7 +90,13 @@
                   </select>
                 </div>           
               </div>
+              {% if proyecto.proyecto_fin_status %}
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default" disabled="true"><i class="fa fa-plus"></i> Nuevo Riesgo</button>
+              {% else %}
               <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default"><i class="fa fa-plus"></i> Nuevo Riesgo</button>
+              {% endif %}        
+
+
               <div class="box-body">
                 <div class="box-body">
 
@@ -205,14 +211,18 @@
             </div>
             <div class="form-group">
               <div class="row no-print">
-                <div class="col-md-11">   
-                  <button type="button" onclick="asosiar_riesgos('{{ proyecto.proyecto_id }}');" class="btn btn-success pull-right"><i class="fa fa-plus"></i> Agregar
-                  </button>   
+                <div class="col-md-11">
+                  {% if proyecto.proyecto_fin_status %}
+                  <button type="button" onclick="asosiar_riesgos('{{ proyecto.proyecto_id }}');" class="btn btn-success pull-right" disabled="true"><i class="fa fa-plus"></i> Agregar
+                  </button>  
+                  {% else %}
+                 <button type="button" onclick="asosiar_riesgos('{{ proyecto.proyecto_id }}');" class="btn btn-success pull-right"><i class="fa fa-plus"></i> Agregar
+                  </button>  
+                  {% endif %}                   
                 </div>
               </div>
               <br>
             </div>
-
           </div>
 
         </div>
@@ -258,12 +268,25 @@
               <td>
                 <button type="button" class="btn btn-info" data-toggle="modal" onclick="abrir_modal_informacion_riesgo(' {{ riesgo.riesgo_nombre }}', '{{ riesgo.riesgo_causa }}',' {{ riesgo.riesgo_evento }}', ' {{ riesgo.riesgo_efecto }}', '{{ riesgo.riesgo_tipo }}', '{{ riesgo.fecha_manifestacion }}')">&nbsp<i   class="fa fa-info">&nbsp</i>
                 </button>
-                <button type="button" class="btn btn-default" data-toggle="modal" onclick="abrir_modal_editar_riesgo('{{ riesgo.riesgo_id }}','{{ riesgo.riesgo_nombre }}', '{{ riesgo.riesgo_causa }}','{{ riesgo.riesgo_evento }}', '{{ riesgo.riesgo_efecto }}',   '{{ riesgo.riesgo_tipo }}')"><i   class="fa fa-edit"></i>
+
+                {% if proyecto.proyecto_fin_status %}
+                 <button type="button" class="btn btn-default" data-toggle="modal" onclick="abrir_modal_editar_riesgo('{{ riesgo.riesgo_id }}','{{ riesgo.riesgo_nombre }}', '{{ riesgo.riesgo_causa }}','{{ riesgo.riesgo_evento }}', '{{ riesgo.riesgo_efecto }}',   '{{ riesgo.riesgo_tipo }}')" disabled="true"><i   class="fa fa-edit"></i>
+                </button>
+
+
+                <button type="button" class="btn btn-danger" data-toggle="#modal" onclick="abrir_modal_eliminar('{{ riesgo.riesgo_id }}',' {{ riesgo.riesgo_nombre }}')" data-target="#modal_eliminar" disabled="true"><i class="fa fa-trash-o danger"></i>
+                </button>
+                {% else %}
+                 <button type="button" class="btn btn-default" data-toggle="modal" onclick="abrir_modal_editar_riesgo('{{ riesgo.riesgo_id }}','{{ riesgo.riesgo_nombre }}', '{{ riesgo.riesgo_causa }}','{{ riesgo.riesgo_evento }}', '{{ riesgo.riesgo_efecto }}',   '{{ riesgo.riesgo_tipo }}')"><i   class="fa fa-edit"></i>
                 </button>
 
 
                 <button type="button" class="btn btn-danger" data-toggle="#modal" onclick="abrir_modal_eliminar('{{ riesgo.riesgo_id }}',' {{ riesgo.riesgo_nombre }}')" data-target="#modal_eliminar"><i class="fa fa-trash-o danger"></i>
                 </button>
+                {% endif %}  
+
+
+               
               </td>                   
               
             </tr>
@@ -473,8 +496,13 @@
                   <textarea class="form-control" rows="3" placeholder="Descripción de la acción de respuesta preliminar" name="respuesta_descripcion"></textarea>
                 </div>
                 <div class="box-footer">
-                  <button type="submit" class="btn btn-default">Cancelar</button>
+
+                  {% if proyecto.proyecto_fin_status %}
+                  <button type="submit" class="btn btn-primary pull-right" disabled="true">Registrar</button> 
+                  {% else %}
                   <button type="submit" class="btn btn-primary pull-right">Registrar</button>
+                  {% endif %} 
+                  
                 </div>
               </div>
               <!-- /.col -->
@@ -552,7 +580,12 @@
                </div>
                <!-- / input para pasar el id del riesgo al asociarle la actividad -->
                <input type="text" class="form-control" id="riesgo_id_ac" name="riesgo_id" style="visibility:hidden">
+               {% if proyecto.proyecto_fin_status %}
+               <button type="submit" class="btn btn-primary pull-right" disabled="true">Agregar</button>  
+               {% else %}
                <button type="submit" class="btn btn-primary pull-right">Agregar</button>
+               {% endif %}   
+               
              </div>
              <!-- /.col -->
            </div>
@@ -652,7 +685,12 @@
                </div>
                <!-- / input para pasar el id del riesgo al asociarle la actividad -->
                <input type="text" class="form-control" id="riesgo_id_re" name="riesgo_id" style="visibility:hidden">
+               {% if proyecto.proyecto_fin_status %}
+               <button type="submit" class="btn btn-primary pull-right" disabled="true">Agregar</button>  
+               {% else %}
                <button type="submit" class="btn btn-primary pull-right">Agregar</button>
+               {% endif %} 
+               
              </div>
              <!-- /.col -->
            </div>
@@ -714,8 +752,8 @@
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-primary pull-left" data-dismiss="modal">Cerrar</button>
-              <button type="submit" class="btn btn-primary pull-right">Actualizar</button>
+              <button type="button" class="btn btn-primary pull-right" data-dismiss="modal">Cerrar</button>
+              
             </div>
             <!-- /.row -->
           </form>
@@ -1041,11 +1079,17 @@ function asosiar_riesgos(proyecto_id){
         let boton = document.createElement("button");
         boton.setAttribute("type", "button");
         boton.setAttribute("class", "btn btn-danger");
+        
         boton.setAttribute("data-toggle", "#modal_eliminar");//NO SE LE OLVIDE CAMBIAR EL MODAL
         boton.setAttribute("onclick", "abrir_modal_eliminar('"+respuestas[i]["respuesta_nombre"]+"', '"+respuestas[i]["respuesta_id"]+"')" );
         boton.setAttribute("data-target", "#modal_eliminar");//NO SE LE OLVIDE CAMBIAR EL MODAL
         let mi_icon = document.createElement("i");
         mi_icon.setAttribute("class", "fa fa-trash-o danger")
+        if("{{proyecto.proyecto_fin_status}}"==1){
+          boton.setAttribute("disabled", "true");
+        }
+
+
         boton.appendChild(mi_icon);
         td_acciones.appendChild(boton);
         tr.appendChild(td_nombre);

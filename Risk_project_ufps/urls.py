@@ -113,5 +113,8 @@ urlpatterns = [
     # Cierre del Proyecto
     #####################################################
     path('mi_proyecto/<int:proyecto_id>/cerrar_proyecto/', cerrar_proyecto, name='cerrar_proyecto'),
-
+    path('mi_proyecto/<int:proyecto_id>/registrar_leccion/', registrar_leccion, name='registrar_leccion'),
+    path('mi_proyecto/<int:proyecto_id>/eliminar_leccion/', eliminar_leccion, name='eliminar_leccion'),
+    path('mi_proyecto/<int:proyecto_id>/editar_leccion/', editar_leccion, name='editar_leccion'),
+  
 ]

@@ -37,6 +37,7 @@ from Risk_project_ufps.core_risk.controller.ActividadController import *
 from Risk_project_ufps.core_risk.controller.ReporteController import *
 from Risk_project_ufps.core_risk.controller.RolController import *
 from Risk_project_ufps.core_risk.controller.TareaController import *
+from Risk_project_ufps.core_risk.controller.LeccionController import *
 
 """
 ////////////////////////////////////////////////////////////////////////////
@@ -595,7 +596,7 @@ def mi_proyecto(request, id):
     fecha_proyecto = datetime.datetime(proyecto.proyecto_fecha_inicio.year, proyecto.proyecto_fecha_inicio.month,
                               proyecto.proyecto_fecha_inicio.day, 00, 00, 00, 000000)
     if proyecto.proyecto_fecha_finl != None:
-        fecha_proyecto_final = datetime(proyecto.proyecto_fecha_finl.year, proyecto.proyecto_fecha_finl.month,
+        fecha_proyecto_final = datetime.datetime(proyecto.proyecto_fecha_finl.year, proyecto.proyecto_fecha_finl.month,
                                         proyecto.proyecto_fecha_finl.day, 00, 00, 00, 000000)
 
         dias = dias = abs((fecha_proyecto - fecha_proyecto_final).days)
@@ -1458,8 +1459,8 @@ def nueva_tarea(request, proyecto_id):
             tarea = tarea_controller.registrar_tarea(proyecto_riesgo_respuesta, request.POST["tarea_nombre"],
                                                      request.POST["tarea_descripcion"], request.POST["tarea_fecha_inicio"],
                                                      request.POST["tarea_fecha_fin"])
-            fecha_ini = datetime.strptime(request.POST["tarea_fecha_inicio"], '%Y-%m-%d')
-            fecha_final = datetime.strptime(request.POST["tarea_fecha_fin"], '%Y-%m-%d')
+            fecha_ini = datetime.datetime.strptime(request.POST["tarea_fecha_inicio"], '%Y-%m-%d')
+            fecha_final = datetime.datetime.strptime(request.POST["tarea_fecha_fin"], '%Y-%m-%d')
             semanas = abs((fecha_ini - fecha_final).days)/7
             tarea.duracion = semanas
             tarea.save()        
@@ -1799,10 +1800,140 @@ def actualizar_gantt(request, proyecto_id):
 """
 
 def cerrar_proyecto(request, proyecto_id):
+    
+    proyecto_controller = ProyectoController()
+    proyecto = proyecto_controller.obtener_proyecto(proyecto_id)
+    tarea_controller = TareaController()
+    tareas = tarea_controller.listar_tareas_no_iniciadas(proyecto)
+    leccion_controller = LeccionController()
+    lista_lecciones =  leccion_controller.listar_lecciones(proyecto)
+    data = dict(
+        proyecto=proyecto,
+        tareas_no_iniciadas = tareas,
+        lista_lecciones = lista_lecciones
+        
+    )
+
+    if request.method == 'POST':
+        fecha_actual = datetime.datetime.now()
+        aux = proyecto_controller.cerrar_proyecto(proyecto, fecha_actual)
+        data['mensaje_eliminar'] = "Se ha finalizado la gestión de riesgos de forma exitosa."
+
+
     return render(
         request,
-        "procesos/cerrar_proyecto.html",
+        "procesos/cerrar_proyecto.html", data
     )
+
+
+def registrar_leccion(request, proyecto_id):
+
+    proyecto_controller = ProyectoController()
+    proyecto = proyecto_controller.obtener_proyecto(proyecto_id)
+    leccion_controller = LeccionController()
+    tarea_controller = TareaController()
+    tareas = tarea_controller.listar_tareas_no_iniciadas(proyecto)    
+    lista_lecciones =  leccion_controller.listar_lecciones(proyecto)
+
+    data = dict(
+        proyecto=proyecto,
+        tareas_no_iniciadas = tareas,
+        lista_lecciones = lista_lecciones         
+        ) 
+
+    if request.method == 'POST':
+
+        leccion = leccion_controller.registrar_leccion(proyecto, request.POST["descripcion_leccion"])
+        if leccion == True:
+            data['mensaje'] = "lección aprendida registrada exitosamente."
+            return render(request, "procesos/cerrar_proyecto.html", data)
+        
+        data['mensaje_editar'] = "No se pudo registrar la lección aprendida."
+        return render(
+            request,
+            "procesos/cerrar_proyecto.html", data
+        )
+
+    return render(
+            request,
+            "procesos/cerrar_proyecto.html", data
+        )
+
+def eliminar_leccion(request, proyecto_id):
+
+    proyecto_controller = ProyectoController()
+    proyecto = proyecto_controller.obtener_proyecto(proyecto_id)
+    tarea_controller = TareaController()
+    tareas = tarea_controller.listar_tareas_no_iniciadas(proyecto)
+    leccion_controller = LeccionController()
+    lista_lecciones =  leccion_controller.listar_lecciones(proyecto)
+
+    data = dict(
+        proyecto=proyecto,
+        tareas_no_iniciadas = tareas,
+        lista_lecciones = lista_lecciones          
+        ) 
+
+    if request.method == 'POST':
+
+        leccion = leccion_controller.get_leccion_by_id(request.POST["leccion_id"])
+        if leccion != None:
+
+            data['mensaje_eliminar'] = leccion_controller.eliminar_leccion(leccion)
+            return render(
+                request,
+                "procesos/cerrar_proyecto.html", data
+            )
+
+        data['mensaje_editar'] = "Esta lección ya ha sido eliminada."
+        return render(
+                request,
+                "procesos/cerrar_proyecto.html", data
+            )
+
+    return render(
+            request,
+            "procesos/cerrar_proyecto.html", data
+        )
+
+def editar_leccion(request, proyecto_id):
+
+    proyecto_controller = ProyectoController()
+    proyecto = proyecto_controller.obtener_proyecto(proyecto_id)
+    tarea_controller = TareaController()
+    tareas = tarea_controller.listar_tareas_no_iniciadas(proyecto)
+    leccion_controller = LeccionController()
+    lista_lecciones =  leccion_controller.listar_lecciones(proyecto)
+
+    data = dict(
+        proyecto=proyecto,
+        tareas_no_iniciadas = tareas,
+        lista_lecciones = lista_lecciones          
+        ) 
+
+    if request.method == 'POST':
+
+        leccion = leccion_controller.get_leccion_by_id(request.POST["leccion_id"])
+        if leccion != None:
+
+            data['mensaje_editar'] = leccion_controller.editar_leccion(leccion, request.POST["descripcion_leccion"])
+            return render(
+                request,
+                "procesos/cerrar_proyecto.html", data
+            )
+
+        data['mensaje_editar'] = "No se ha encontrado la lección que se intenta editar."
+        return render(
+                request,
+                "procesos/cerrar_proyecto.html", data
+            )
+
+    return render(
+            request,
+            "procesos/cerrar_proyecto.html", data
+        )
+
+
 
 def gantt(request):
     return render(

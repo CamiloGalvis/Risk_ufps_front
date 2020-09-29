@@ -205,12 +205,20 @@
             {% else %}
             <div class="form-group">
               <label class="col-sm-2 control-label">Cronograma del proyecto</label>
+              {% if proyecto.proyecto_fin_status %}
+              <input type="file" id="fileForUpload" accept="text/xml" disabled="true" />
+              {% else %}
               <input type="file" id="fileForUpload" accept="text/xml" />
+              {% endif %}              
             </div> 
             {% endif %}
             <div class="form-group">
               <div class="col-sm-offset-2 col-sm-10">
+                {% if proyecto.proyecto_fin_status %}
+                <button type="submit" class="btn btn-warning" disabled="true">Actualizar</button>
+                {% else %}
                 <button type="submit" class="btn btn-warning">Actualizar</button>
+                {% endif %}                
               </div>
             </div>
           </form>

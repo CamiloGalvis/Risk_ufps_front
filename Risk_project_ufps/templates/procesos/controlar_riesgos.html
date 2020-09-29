@@ -68,7 +68,13 @@
             <div class="box-body">
               <button onclick="obtener_mi_json()">obtener json</button>
               <button class="btn btn-primary pull-right" onclick="registrar_observaciones();">Observar estado</button>
+              {% if proyecto.proyecto_fin_status %}
+              <button class="btn btn-primary pull-right" onclick="confirmar_cambios();" disabled="true">Confirmar cambios</button>
+              {% else %}
               <button class="btn btn-primary pull-right" onclick="confirmar_cambios();">Confirmar cambios</button>
+              {% endif %}  
+
+              
               <div id="gantt_here" style='width:100%; height:50vh;'></div>
             </div>
           </div>

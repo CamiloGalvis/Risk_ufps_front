@@ -197,5 +197,9 @@ class ProyectoController:
         #print("date and time:",date_time)
         return date_time
 
+    def cerrar_proyecto(self, proyecto, fecha):        
+        proyecto_dao = ProyectoDao()        
+        return proyecto_dao. cerrar_proyecto(proyecto, fecha)
+
 
 

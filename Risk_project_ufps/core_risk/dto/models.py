@@ -82,6 +82,16 @@ class Impacto(models.Model):
         managed = False
         db_table = 'impacto'
 
+class Leccion(models.Model):
+    leccion_id = models.AutoField(primary_key=True)
+    leccion_descripcion = models.TextField(blank=True, null=True)    
+    proyecto = models.ForeignKey('Proyecto', models.DO_NOTHING)
+    proyecto_linea_base = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'leccion'
+
 
 class Pais(models.Model):
     pais_id = models.AutoField(primary_key=True)

@@ -63,6 +63,10 @@ class TareaController():
 		tarea_dao = TareaDao()
 		return tarea_dao.listar_tareas(proyecto)
 
+	def listar_tareas_no_iniciadas(self, proyecto):
+		tarea_dao = TareaDao()
+		return tarea_dao.listar_tareas_no_iniciadas(proyecto)
+
 	def raw_queryset_of_tareas_as_values_list(self, raw_qs, proyecto):
 		recurso_dao = RecursoDao()
 		recursos = recurso_dao.listar_recursos_tareas(proyecto)

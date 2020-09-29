@@ -79,6 +79,18 @@ class TareaDao():
     finally:
       return tareas
 
+  def listar_tareas_no_iniciadas(self, proyecto):
+    tareas = {}
+    try:
+      sql = "SELECT t.tarea_id, t.tarea_nombre FROM tarea t " \
+            "WHERE t.proyecto_id = %s AND t.proyecto_linea_base = %s AND NOT t.tarea_estado = %s "
+
+      tareas = Tarea.objects.using('base').raw(sql, [proyecto.proyecto_id, proyecto.proyecto_linea_base, 3])
+    except Exception as e:
+      print(e)
+    finally:
+      return tareas
+
   def listar_tareas_base(self, proyecto):
       tareas = {}
       try:
