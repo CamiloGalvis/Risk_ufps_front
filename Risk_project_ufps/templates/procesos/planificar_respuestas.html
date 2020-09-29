@@ -142,8 +142,11 @@
         <div class="box-body" style="text-align: justify;">
           La linea base de la gestión de riesgos del proyecto es toda la información relacionada a la fase de planificación de los riesgos del proyecto, que va desde el proceso de planificar la gestión de riesgos hasta planificar respuestas. Al hacer clic se guardara un respaldo de esta información, la cual podra ser consultada en el historico ubicado en la parte superior del proceso planificar respuestas, o en controlar siempre y cuando se trate de la ultima linea base generada.
           <br/>          
-          <button class="btn btn-primary  pull-right" onclick="crear_linea_base();">Guardar linea base</button>
-
+          {% if proyecto.proyecto_fin_status %}
+          <button class="btn btn-primary" onclick="crear_linea_base();" disabled="true">Guardar linea base</button>
+          {% else %}
+          <button class="btn btn-primary" onclick="crear_linea_base();">Guardar linea base</button>
+          {% endif %}         
         </div>
       </div>
   </div>
@@ -242,9 +245,13 @@
               </div>
               <div class="form-group">                  
               </div>
-              <!-- / input para pasar el id del riesgo al asociarle la actividad -->
-              
+              {% if proyecto.proyecto_fin_status %}
+              <button type="submit" class="btn btn-primary pull-right" disabled="true">Agregar</button>
+              {% else %}
               <button type="submit" class="btn btn-primary pull-right">Agregar</button>
+              {% endif %}  
+              
+              
             </div>
             <!-- /.col -->
           </div>
@@ -358,8 +365,12 @@
 
               <input type="text" class="form-control" id="riesgo_id_re" name="riesgo_id" style="visibility:hidden">
               <!-- / input para pasar el id del riesgo al asociarle la actividad -->
-              
+              {% if proyecto.proyecto_fin_status %}
+              <button type="submit" class="btn btn-primary pull-right" disabled="true">Agregar</button>
+              {% else %}
               <button type="submit" class="btn btn-primary pull-right">Agregar</button>
+              {% endif %} 
+              
             </div>
             <!-- /.col -->
           </div>
@@ -471,11 +482,13 @@
               <input type="text" name="riesgo_id_rta" id="riesgo_id_rta" hidden="true"/>
                <div class="form-group">
                 <div class="row no-print">
-                  <div class="col-md-11">   
-                    <button type="submit" class="btn btn-success pull-right">
-                      <i class="fa fa-plus"></i>
-                      Agregar
-                    </button>   
+                  <div class="col-md-11">
+                    {% if proyecto.proyecto_fin_status %}                    
+                    <button type="submit" class="btn btn-success pull-right" disabled="true"><i class="fa fa-plus"></i>Agregar</button>
+                    {% else %}                    
+                    <button type="submit" class="btn btn-success pull-right"><i class="fa fa-plus"></i>Agregar</button>
+                    {% endif %}  
+   
                   </div>
                 </div>
                 <br>
@@ -537,8 +550,12 @@
                   <label>Descripción</label>
                   <textarea class="form-control" rows="5" placeholder="Descripción de la accion" name="respuesta_descripcion"></textarea>
                 </div>
-                <div class="box-footer">                 
+                <div class="box-footer">
+                  {% if proyecto.proyecto_fin_status %}
+                  <button type="submit" class="btn btn-primary pull-right" disabled="´true">Registrar</button>
+                  {% else %}
                   <button type="submit" class="btn btn-primary pull-right">Registrar</button>
+                  {% endif %}                    
                 </div>
               </div>
               <!-- /.col -->
@@ -1144,6 +1161,11 @@
         mi_iconE.setAttribute("class", "fa fa-edit")
         botonE.appendChild(mi_iconE);
 
+        if("{{proyecto.proyecto_fin_status}}"==1){
+          boton.setAttribute("disabled", "true");
+          botonE.setAttribute("disabled", "true");
+        }
+
         td_acciones.appendChild(botonE);
         td_acciones.appendChild(boton);        
         tr.appendChild(td_nombre);
@@ -1289,7 +1311,14 @@
       let tareas = lista_tareas[key];
       for (var i = 0; i < tareas.length; i++) {
         let tarea = tareas[i];
-        let temp = '<tr><td>'+tarea["tarea_nombre"]+'</td><td>'+tarea["tarea_descripcion"]+'</td><td><button type="button" class="btn btn-default" data-toggle="#modal_eliminar" onclick="abrir_modal_editar_tarea(\''+tarea["tarea_id"]+'\', \''+tarea["tarea_nombre"]+'\', \''+tarea["tarea_descripcion"]+'\')" data-target="#modal_eliminar"><i class="fa fa-edit"></i></button><button type="button" class="btn btn-danger" data-toggle="#modal_eliminar" onclick="abrir_modal_eliminar_tarea(\''+tarea["tarea_id"]+'\', \''+tarea["tarea_nombre"]+'\',\''+tarea["tarea_descripcion"]+'\')" data-target="#modal_eliminar"><i class="fa fa-trash-o danger"></i></button></td></tr>';       
+        let temp = '<tr><td>'+tarea["tarea_nombre"]+'</td><td>'+tarea["tarea_descripcion"];
+        if("{{proyecto.proyecto_fin_status}}"==1){
+          temp+=
+          '</td><td><button type="button" class="btn btn-default" disabled = "true" data-toggle="#modal_eliminar" onclick="abrir_modal_editar_tarea(\''+tarea["tarea_id"]+'\', \''+tarea["tarea_nombre"]+'\', \''+tarea["tarea_descripcion"]+'\')" data-target="#modal_eliminar"><i class="fa fa-edit"></i></button><button type="button" class="btn btn-danger" disabled = "true" data-toggle="#modal_eliminar" onclick="abrir_modal_eliminar_tarea(\''+tarea["tarea_id"]+'\', \''+tarea["tarea_nombre"]+'\',\''+tarea["tarea_descripcion"]+'\')" data-target="#modal_eliminar"><i class="fa fa-trash-o danger"></i></button></td></tr>';          
+        }else{
+          temp+=
+        '</td><td><button type="button" class="btn btn-default" data-toggle="#modal_eliminar" onclick="abrir_modal_editar_tarea(\''+tarea["tarea_id"]+'\', \''+tarea["tarea_nombre"]+'\', \''+tarea["tarea_descripcion"]+'\')" data-target="#modal_eliminar"><i class="fa fa-edit"></i></button><button type="button" class="btn btn-danger" data-toggle="#modal_eliminar" onclick="abrir_modal_eliminar_tarea(\''+tarea["tarea_id"]+'\', \''+tarea["tarea_nombre"]+'\',\''+tarea["tarea_descripcion"]+'\')" data-target="#modal_eliminar"><i class="fa fa-trash-o danger"></i></button></td></tr>';
+        }       // 
         let gg = $.parseHTML(temp) 
         $(tareas_riesgo).append(gg);
       }
@@ -1390,7 +1419,14 @@ function construir_listado_recursos(id_riesgo) {
         for(let j = 0; j < tarea["recursos"].length; j++){
 
           let recurso = tarea["recursos"][j];
-          let temp = '<tr><td>'+tarea["tarea_nombre"]+'</td><td>'+recurso["recurso_nombre"]+'</td><td>'+recurso["cantidad"]+'</td><td><button type="button" class="btn btn-danger" data-toggle="#modal_eliminar" onclick="abrir_modal_desvincular_recurso(\''+recurso["recurso_id"]+'\', \''+recurso["recurso_nombre"]+'\', \''+tarea["tarea_nombre"]+'\', \''+tarea["tarea_id"]+'\')" data-target="#modal_eliminar"><i class="fa fa-trash-o danger"></i></button></td></tr>';
+          let temp = '<tr><td>'+tarea["tarea_nombre"]+'</td><td>'+recurso["recurso_nombre"]+'</td><td>'+recurso["cantidad"];
+
+          if("{{proyecto.proyecto_fin_status}}"==1){
+            temp+=
+          '</td><td><button type="button" class="btn btn-danger" disabled = "true" data-toggle="#modal_eliminar" onclick="abrir_modal_desvincular_recurso(\''+recurso["recurso_id"]+'\', \''+recurso["recurso_nombre"]+'\', \''+tarea["tarea_nombre"]+'\', \''+tarea["tarea_id"]+'\')" data-target="#modal_eliminar"><i class="fa fa-trash-o danger"></i></button></td></tr>';
+          }else{
+          temp+=
+          '</td><td><button type="button" class="btn btn-danger" data-toggle="#modal_eliminar" onclick="abrir_modal_desvincular_recurso(\''+recurso["recurso_id"]+'\', \''+recurso["recurso_nombre"]+'\', \''+tarea["tarea_nombre"]+'\', \''+tarea["tarea_id"]+'\')" data-target="#modal_eliminar"><i class="fa fa-trash-o danger"></i></button></td></tr>';}
           let gg = $.parseHTML(temp); 
           $(listado_recursos).append(gg);
         }

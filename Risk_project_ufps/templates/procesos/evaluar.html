@@ -126,7 +126,11 @@
         </table>
         </div>
         <div class="box-footer">
+          {% if proyecto.proyecto_fin_status %}
+          <button class="btn btn-primary pull-right" onclick="actualizar_valores();" disabled="true">Confirmar</button>
+          {% else %}
           <button class="btn btn-primary pull-right" onclick="actualizar_valores();">Confirmar</button>
+          {% endif %}
         </div>
       </div>
 
@@ -327,7 +331,7 @@
               //columnas[j].appendChild(document.createTextNode(riesgos[r]["riesgo_nombre"]));
               let x = riesgos_clasificados[key].length;
               var y = x > 1 ? "riesgos" : "riesgo";              
-              let icon = $.parseHTML('&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;<i class="fa fa-fw fa-info-circle" onclick="mostrar_riesgos();" title="Hay '+x+' '+y+' en este cuadrante" data-toggle="tooltip" data-placement="top"></i>') 
+              let icon = $.parseHTML('&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;<i class="fa fa-fw fa-info-circle" style="color: white;" onclick="mostrar_riesgos();" title="Hay '+x+' '+y+' en este cuadrante" data-toggle="tooltip" data-placement="top"></i>') 
               $(columnas[j]).append(icon);
               $('[data-toggle="tooltip"]').tooltip();
             }          
@@ -426,7 +430,7 @@
                 //columnas[j].appendChild(document.createTextNode(riesgos[r]["riesgo_nombre"]));
                 let x = riesgos_clasificados[key].length;
                 var y = x > 1 ? "riesgos" : "riesgo";              
-                let icon = $.parseHTML('&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;<i class="fa fa-fw fa-info-circle" onclick="mostrar_riesgos();" title="Hay '+x+' '+y+' en este cuadrante" data-toggle="tooltip" data-placement="top"></i>') 
+                let icon = $.parseHTML('&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;<i class="fa fa-fw fa-info-circle" style="color: white;" onclick="mostrar_riesgos();" title="Hay '+x+' '+y+' en este cuadrante" data-toggle="tooltip" data-placement="top"></i>') 
                 $(columnas[j]).append(icon);
                 $('[data-toggle="tooltip"]').tooltip();
               }   
