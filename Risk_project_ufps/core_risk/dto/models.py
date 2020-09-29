@@ -17,6 +17,10 @@ class Actividad(models.Model):
     actividad_wbs = models.CharField(max_length=100, blank=True, null=True)
     proyecto = models.ForeignKey('Proyecto', models.DO_NOTHING)
     proyecto_linea_base = models.IntegerField(blank=True, null=True)
+    actividad_fecha_inicio = models.DateTimeField(blank=True, null=True)
+    actividad_fecha_fin = models.DateTimeField(blank=True, null=True)
+    duracion = models.IntegerField(blank=True, null=True)
+
 
     class Meta:
         managed = False

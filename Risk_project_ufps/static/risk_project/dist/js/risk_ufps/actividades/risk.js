@@ -52,13 +52,13 @@ function obtenerTasks(myJson){
 	for(let i in myTasks){
 		tasks.push({
 			"uid":myTasks[i].UID,
-			"id":myTasks[i].ID,
+			"id":myTasks[i].ID, 
 			"name":myTasks[i].Name,
 			"level":myTasks[i].OutlineLevel,
 			"WBS": myTasks[i].WBS,
-			"start":parsearFecha(myTasks[i].Start),
+			"start":parsear_fecha(new Date(myTasks[i].Start)),
 			"duration":calcularDiferencia(myTasks[i].Start, myTasks[i].Finish),
-			"end":parsearFecha(myTasks[i].Finish),
+			"end":parsear_fecha(new Date(myTasks[i].Finish)),
 			"uid_predecessor":predecessor(myTasks[i].PredecessorLink)
 		});
 	}
@@ -83,6 +83,13 @@ function parsearFecha(fecha) {
 	var exampleDate = new Date(fecha);
 	return exampleDate.valueOf();
 }
+
+function parsear_fecha(now){    
+    var day = ("0" + now.getDate()).slice(-2);
+    var month = ("0" + (now.getMonth() + 1)).slice(-2);
+    var today = now.getFullYear()+"-"+(month)+"-"+(day) ;
+    return today;
+  }
 
 function calcularDiferencia(fechaInicio, fechaFinal){
 	var fFecha1 = new Date(fechaInicio);

@@ -184,7 +184,11 @@ def nuevo_proyecto(request):
                                 actividad_nombre=actividad["name"],
                                 actividad_level=actividad["level"],
                                 actividad_wbs=actividad["WBS"],
-                                proyecto=proyecto)
+                                proyecto=proyecto,
+                                actividad_fecha_inicio=actividad["start"],
+                                actividad_fecha_fin=actividad["end"],
+                                duracion=actividad["duration"],
+                        )
                         act.save()
                         orden = orden + 1
                 return render(request, "nuevo_proyecto.html", data)

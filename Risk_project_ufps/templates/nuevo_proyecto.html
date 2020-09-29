@@ -111,7 +111,7 @@
               </div>
 
               <div class="box-footer">
-               <button type="submit" class="btn btn-primary pull-right">Registrar</button>
+               <button type="submit" id="boton_nuevo_riesgo" class="btn btn-primary pull-right">Registrar</button>
               </div>
             </div>
             <!-- /.col -->
@@ -155,9 +155,10 @@ $("#form_proyecto").submit(function(e) {
     var actionurl = e.currentTarget.action;
     var file = document.getElementById("fileForUpload").files[0];
     if(file){
+      document.getElementById("boton_nuevo_riesgo").disabled = true;
       obtenerJson(file, function(myJson){
         setJsonMpp(myJson);
-      });
+      });      
     }else{
       console.log("no hay");
       $.ajax({
