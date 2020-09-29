@@ -1458,8 +1458,8 @@ def nueva_tarea(request, proyecto_id):
             tarea = tarea_controller.registrar_tarea(proyecto_riesgo_respuesta, request.POST["tarea_nombre"],
                                                      request.POST["tarea_descripcion"], request.POST["tarea_fecha_inicio"],
                                                      request.POST["tarea_fecha_fin"])
-            fecha_ini = datetime.strptime(request.POST["tarea_fecha_inicio"], '%Y-%m-%d')
-            fecha_final = datetime.strptime(request.POST["tarea_fecha_fin"], '%Y-%m-%d')
+            fecha_ini = datetime.datetime.strptime(request.POST["tarea_fecha_inicio"], '%Y-%m-%d')
+            fecha_final = datetime.datetime.strptime(request.POST["tarea_fecha_fin"], '%Y-%m-%d')
             semanas = abs((fecha_ini - fecha_final).days)/7
             tarea.duracion = semanas
             tarea.save()        

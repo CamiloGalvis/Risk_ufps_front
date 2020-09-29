@@ -8,12 +8,13 @@
 {% load static %}
 {% block organigrama_up %}
 <style type="text/css">
-  table, th, td {
+  .mitabla > table,td {
     border-top: 1px solid black !important;
     border: 1px solid black;
     
   }
-  td { 
+
+  .mitabla > td { 
     width: 50px !important;
     height: 50px !important;   
   }
@@ -30,7 +31,7 @@
         {% endif %}
         <small>Identificar riesgos</small>
       </h1>
-      <ol class="breadcrumb">
+      <ol class="breadcrumb" >
         <li><a href="#"><i class="fa fa-folder-open"></i> Proyecto</a></li>
         <li class="active">Identificar Riesgos</li>
       </ol>
@@ -148,7 +149,7 @@
           <div class="row justify-content-md-center">
             <div class="col col-lg-2"></div>
             <div class="col-md-8">
-              <table class="table">
+              <table class="table" style="border-top: 1px solid black !important; border: 1px solid black;">
                 <tbody id="matriz_calor">                 
                 </tbody>
               </table>
@@ -169,13 +170,13 @@
           <div class="row justify-content-md-center">
             <div class="col col-lg-3"></div>
             <div class="col-md-6">
-              <table class="table">
+              <table class="mitabla table ">
                 <thead>
                   <tr>
-                    <th>
+                    <th style=" border: 1px solid black;">
                       Clasificación del Riesgo
                     </th>
-                    <th>
+                    <th style=" border: 1px solid black;">
                       Rango de P * I
                     </th>
                   </tr>
@@ -213,6 +214,42 @@
       </div>
     </div>
   </div>
+
+  <div class="modal fade" id="modal_riesgos"> 
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Riesgos</h4>
+        </div>
+          <div class="box-body">    
+            <div class="col-sm-12"><table id="example2" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
+                <thead>
+                <tr role="row">
+                  <th>Riesgo</th>
+                  <th>Causa</th>
+                  <th>Evento</th>
+                  <th>Efecto</th>
+                </tr>
+                </thead>
+                <tbody id="riesgo_body">
+                </tbody>
+                <tfoot>
+                <tr>
+                  <th>Riesgo</th>
+                  <th>Causa</th>
+                  <th>Evento</th>
+                  <th>Efecto</th>
+                </tr>
+                </tfoot>
+              </table></div>
+          </div>
+        </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
 {% endblock %}
 {% block organigrama_down %}
 <!-- DataTables -->
@@ -232,17 +269,34 @@
 
   var cambios_riesgos = {};
 
+  var riesgos_clasificados = {};
+
   const csrftoken = getCookie('csrftoken');
 
   console.log(rangos_riesgos);
   console.log(valores);
+
+  function clasificar_riesgos(){
+    for(let r = 0; r<riesgos.length; r++){
+      p = get_valor_probabilidad_id(riesgos[r]["propabilidad_id"]);
+      ii = get_valor_impacto_id(riesgos[r]["impacto_id"]);
+      let rango_nombre = 'p_'+p+'_ii_'+ii;           
+      if(riesgos_clasificados.hasOwnProperty(rango_nombre)){
+        riesgos_clasificados[rango_nombre].push(riesgos[r]);
+      }else{
+        riesgos_clasificados[rango_nombre] = [];
+        riesgos_clasificados[rango_nombre].push(riesgos[r]);
+      }      
+    }      
+  }
 
   function construir_matriz_calor(anchura, altura) {
     let matriz_calor = document.getElementById('matriz_calor');
     for (let i = 0; i < altura ; i++) {
       let tr = document.createElement("tr");
       for (let j = 0; j < anchura; j++) {
-        tr.appendChild(document.createElement("td"));        
+        let td = document.createElement("td")        
+        tr.appendChild(td);        
       }
       matriz_calor.appendChild(tr);
     }
@@ -262,24 +316,25 @@
       for (let j = 1; j < columnas.length; j++) {
         let p = probabilidades[i-1];
         let ii = impactos[j-1];
-        columnas[j].setAttribute("style", "background-color:"+get_rango(p*ii)+";");
-
+        columnas[j].setAttribute("style", "background-color:"+get_rango(p*ii)+"; width: 50px !important; height: 50px !important; ");
+        columnas[j].setAttribute("onclick", "mostrar_riesgos("+p+","+ii+");");
         for (let r = 0; r<riesgos.length; r++){
           probabilidad = get_valor_probabilidad_id(riesgos[r]["propabilidad_id"])
           impacto = get_valor_impacto_id(riesgos[r]["impacto_id"])
-
-          if(probabilidad == p && impacto == ii){            
-            
-            columnas[j].appendChild(document.createTextNode(riesgos[r]["riesgo_nombre"]));
-
-          }
-          
-        }
-       
-       
+          if(probabilidad == p && impacto == ii){
+            let key = 'p_'+p+'_ii_'+ii;
+            if(riesgos_clasificados.hasOwnProperty(key)){
+              //columnas[j].appendChild(document.createTextNode(riesgos[r]["riesgo_nombre"]));
+              let x = riesgos_clasificados[key].length;
+              var y = x > 1 ? "riesgos" : "riesgo";              
+              let icon = $.parseHTML('&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;<i class="fa fa-fw fa-info-circle" onclick="mostrar_riesgos();" title="Hay '+x+' '+y+' en este cuadrante" data-toggle="tooltip" data-placement="top"></i>') 
+              $(columnas[j]).append(icon);
+              $('[data-toggle="tooltip"]').tooltip();
+            }          
+          }        
+        }            
       }
     }
-
   }
 
   function agregarOpciones(evaluaciones){
@@ -295,6 +350,35 @@
       select.appendChild(opcion);
     }
 
+  }
+
+  function mostrar_riesgos(p, i){
+    let key = 'p_'+p+'_ii_'+i;
+    if(riesgos_clasificados.hasOwnProperty(key)){
+      table = $("#example2").DataTable();
+      table.destroy();      
+      $("#modal_riesgos").modal('show');
+      let riesgo_body = document.getElementById('riesgo_body');
+      riesgo_body.innerHTML = '';
+      for (let r = 0; r < riesgos_clasificados[key].length; r++){
+        let mi_rie = riesgos_clasificados[key][r];
+        let tr = document.createElement("tr");
+        let td_1 = document.createElement("td");
+        let td_2 = document.createElement("td");
+        let td_3 = document.createElement("td");
+        let td_4 = document.createElement("td");
+        td_1.appendChild(document.createTextNode(mi_rie["riesgo_nombre"]));
+        td_2.appendChild(document.createTextNode(mi_rie["riesgo_causa"]));
+        td_3.appendChild(document.createTextNode(mi_rie["riesgo_evento"]));
+        td_4.appendChild(document.createTextNode(mi_rie["riesgo_efecto"]));
+        tr.appendChild(td_1);
+        tr.appendChild(td_2);
+        tr.appendChild(td_3);
+        tr.appendChild(td_4);
+        riesgo_body.appendChild(tr);
+      }
+      trasnformar_tabla('example2');
+    }
   }
 
   function cargar_riesgos(){
@@ -325,10 +409,27 @@
             evaluacion = get_evaluacion_nombre(impacto, probabilidad)
 
             if(v=="Todos"){
-              columnas[j].appendChild(document.createTextNode(riesgos[r]["riesgo_nombre"]));
-            }else if(v==evaluacion){              
-              
-              columnas[j].appendChild(document.createTextNode(riesgos[r]["riesgo_nombre"]));
+              //columnas[j].appendChild(document.createTextNode(riesgos[r]["riesgo_nombre"]));
+              let key = 'p_'+p+'_ii_'+ii;
+              if(riesgos_clasificados.hasOwnProperty(key)){
+                //columnas[j].appendChild(document.createTextNode(riesgos[r]["riesgo_nombre"]));
+                let x = riesgos_clasificados[key].length;
+                var y = x > 1 ? "riesgos" : "riesgo";              
+                let icon = $.parseHTML('&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;<i class="fa fa-fw fa-info-circle" onclick="mostrar_riesgos();" title="Hay '+x+' '+y+' en este cuadrante" data-toggle="tooltip" data-placement="top"></i>') 
+                $(columnas[j]).append(icon);
+                $('[data-toggle="tooltip"]').tooltip();
+              }          
+            }else if(v==evaluacion){                            
+              //columnas[j].appendChild(document.createTextNode(riesgos[r]["riesgo_nombre"]));
+              let key = 'p_'+p+'_ii_'+ii;
+              if(riesgos_clasificados.hasOwnProperty(key)){
+                //columnas[j].appendChild(document.createTextNode(riesgos[r]["riesgo_nombre"]));
+                let x = riesgos_clasificados[key].length;
+                var y = x > 1 ? "riesgos" : "riesgo";              
+                let icon = $.parseHTML('&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;<i class="fa fa-fw fa-info-circle" onclick="mostrar_riesgos();" title="Hay '+x+' '+y+' en este cuadrante" data-toggle="tooltip" data-placement="top"></i>') 
+                $(columnas[j]).append(icon);
+                $('[data-toggle="tooltip"]').tooltip();
+              }   
             } 
 
           }
@@ -369,14 +470,14 @@
       let columnas = filas[i].getElementsByTagName("td");
       for (let j = 1; j < columnas.length; j++) {
         columnas[j].appendChild(document.createTextNode(""+impactos[j-1]["nombre"]));             
-        columnas[j].setAttribute("style", "background-color:#F6F4F3; font-weight:bold;");
+        columnas[j].setAttribute("style", "background-color:#F6F4F3; font-weight:bold; width: 50px !important; height: 50px !important;");
       }
     }
     for (let i = 1; i < filas.length; i++) {
       let columnas = filas[i].getElementsByTagName("td");      
       for (let j = 0; j < 1; j++) {
         columnas[j].appendChild(document.createTextNode(""+probabilidades[aux-1]["nombre"]));            
-        columnas[j].setAttribute("style", "background-color:#F6F4F3; font-weight:bold;");
+        columnas[j].setAttribute("style", "background-color:#F6F4F3; font-weight:bold;width: 50px !important; height: 50px !important;");
         aux = aux-1;
       }
     }
@@ -405,6 +506,22 @@
     }
     if(color == 0){
       return rangos_riesgos[n-1]["color"];
+    }
+    return color;
+  }
+
+  function get_rango_nombre(valor){
+    color = 0
+    n = rangos_riesgos.length
+    for (let i = 0; i < n - 1; i++) {
+      let rango = rangos_riesgos[i]["rango"];
+      if(valor >= rango[0] && valor <= rango[1] ){      
+        color = rangos_riesgos[i]["nombre"];
+        break;
+      }
+    }
+    if(color == 0){
+      return rangos_riesgos[n-1]["nombre"];
     }
     return color;
   }
@@ -589,6 +706,7 @@ function construir_tabla_clasificacion_riesgos(){
   
 
   $(function() {
+    clasificar_riesgos();
     construir_matriz_calor(valores["impactos"].length + 1, valores["probabilidades"].length + 1);
     llenar_matriz_calor(valores["impactos_valores"], valores["probabilidades_valores"], riesgos);
     llenar_encabezado(valores["impactos"], valores["probabilidades"]);
@@ -627,6 +745,36 @@ function construir_tabla_clasificacion_riesgos(){
     */    
     $('[data-toggle="tooltip"]').tooltip();
   });
+
+  function trasnformar_tabla(id_tabla) {
+    $("#"+id_tabla).DataTable({
+     "language": {
+         "sProcessing":    "Procesando...",
+         "sLengthMenu":    "Mostrar _MENU_ registros",
+         "sZeroRecords":   "No se encontraron resultados",
+         "sEmptyTable":    "Ningún dato disponible en esta tabla",
+         "sInfo":          "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+         "sInfoEmpty":     "Mostrando registros del 0 al 0 de un total de 0 registros",
+         "sInfoFiltered":  "(filtrado de un total de _MAX_ registros)",
+         "sInfoPostFix":   "",
+         "sSearch":        "Buscar:",
+         "sUrl":           "",
+         "sInfoThousands":  ",",
+         "sLoadingRecords": "Cargando...",
+         "oPaginate": {
+             "sFirst":    "Primero",
+             "sLast":    "Último",
+             "sNext":    "Siguiente",
+             "sPrevious": "Anterior"
+         },
+         "oAria": {
+             "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+             "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+         }
+     }
+    }); 
+  }
+
 </script>
 
 
