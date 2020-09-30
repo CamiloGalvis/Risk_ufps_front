@@ -11,23 +11,33 @@ var my_json_gex = {};
  * Manipula la variable global
  */
 function setJsonMpp(data, actionurl) {
-	my_json_mpp = data;
+	my_json_mpp = data;	
 	adaptarJson(my_json_mpp, function(my_json_ge) {
-		console.log(my_json_ge)
+		//console.log(my_json_ge);
 		$.ajax({
-          url: actionurl,
-          type: 'POST',
-					headers: {'X-CSRFToken': csrftoken},
-          data: $("#form_proyecto").serialize()+"&actividades=1&actividades_data="+JSON.stringify(my_json_ge),
-					success: function(data) {
-							alert("Registro exitoso");
-							location.reload();
-					}, error: function (jqXhr, textStatus, errorMessage) {
-						console.log(errorMessage);
-						alert("Fallo Registro");
-						 location.reload();
-					}
-      });
+	        	url: actionurl,
+	        	type: 'POST',
+				headers: {'X-CSRFToken': csrftoken},
+	          	data: $("#form_proyecto").serialize()+"&actividades=1&actividades_data="+JSON.stringify(my_json_ge),
+				success: function(data) {
+					Swal.fire(
+		                '¡ Registro exitoso !',
+		                'el proyecto se ha registrado',
+		                'success'
+	              	).then(function () {
+	                	window.location.href = "/nuevoproyecto/";
+	              	});     				
+				},error: function (jqXhr, textStatus, errorMessage) {
+					console.log(errorMessage);
+					Swal.fire({
+		                icon: 'error',
+		                title: 'Oops...',
+		                text: '¡ No se pudo registrar el proyecto !',             
+		              }).then(function () {
+		                window.location.href = "/nuevoproyecto/";
+		              });
+				}
+      		});
 	});
 }
 

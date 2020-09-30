@@ -118,6 +118,7 @@
           </div>
           <!-- /.row -->
         </form>
+        <button onclick="algo();">sdfsd</button>
         {% else %}
         <div class="pad margin no-print">
           <div class="callout callout-info" style="margin-bottom: 0!important;">
@@ -146,19 +147,53 @@
 <!-- FastClick -->
 <script src="{% static 'risk_project/bower_components/fastclick/lib/fastclick.js' %}"></script>
 <script src="{% static 'risk_project/dist/js/risk_ufps/nuevo_proyecto.js' %}"></script>
+<script src="{% static 'risk_project/plugins/sweetalert/sweetalert.js' %}"></script>
 
 <script type="text/javascript">
-
+function algo() {
+    let timerInterval;
+Swal.fire({
+  title: 'Creando proyecto',
+  html: 'subiendo actividades',
+  timerProgressBar: true,
+  willOpen: () => {
+    Swal.showLoading()
+    timerInterval = setInterval(() => {
+      const content = Swal.getContent()
+      if (content) {
+        const b = content.querySelector('b')
+        if (b) {
+          b.textContent = Swal.getTimerLeft()
+        }
+      }
+    }, 100)
+  },
+}).then((result) => {
+  /* Read more about handling dismissals below */
+  if (result.dismiss === Swal.DismissReason.timer) {
+    console.log('I was closed by the timer')
+  }
+});
+}
 $(function() {
 $("#form_proyecto").submit(function(e) {
-    e.preventDefault();
+    e.preventDefault();    
     var actionurl = e.currentTarget.action;
     var file = document.getElementById("fileForUpload").files[0];
-    if(file){
-      document.getElementById("boton_nuevo_riesgo").disabled = true;
-      obtenerJson(file, function(myJson){
-        setJsonMpp(myJson);
-      });      
+    document.getElementById("boton_nuevo_riesgo").disabled = true;
+  
+    if(file){    
+    Swal.fire({
+      title: 'Creando proyecto',
+      html: 'subiendo actividades',
+      timerProgressBar: true,
+      willOpen: () => {
+        Swal.showLoading();
+        obtenerJson(file, function(myJson){
+          setJsonMpp(myJson);
+        });  
+       }
+    });          
     }else{
       console.log("no hay");
       $.ajax({
@@ -167,19 +202,29 @@ $("#form_proyecto").submit(function(e) {
             headers: {'X-CSRFToken': csrftoken},
             data: $("#form_proyecto").serialize()+"&actividades=False",
             success: function(data) {
-                alert("Registro exitoso");
-                window.location.href = "/nuevoproyecto/";                
+              Swal.fire(
+                '¡ Registro exitoso !',
+                'el proyecto se ha registrado',
+                'success'
+              ).then(function () {
+                window.location.href = "/nuevoproyecto/";
+              });                
             }, error: function (jqXhr, textStatus, errorMessage) {
               console.log(errorMessage);
-              alert("Fallo Registro");
-              window.location.href = "/nuevoproyecto/";
+              Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: '¡ No se pudo registrar el proyecto !',             
+              }).then(function () {
+                window.location.href = "/nuevoproyecto/";
+              });
             }
         });
     }
 
 });
-
 });
+
 
 function getCookie(name) {
   let cookieValue = null;
