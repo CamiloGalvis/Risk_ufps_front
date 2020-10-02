@@ -51,6 +51,7 @@
         <li><a href="#"><i class="fa fa-folder-open"></i> Proyecto</a></li>
         <li class="active">Planificar la Gestión de Riesgos</li>
       </ol>
+    </br>
       {% if mensaje %}
     <div class="callout callout-info">
       <h4>Registro Exitoso</h4>
@@ -80,16 +81,17 @@
                 <div class="box-header with-border">
                   <h4 class="box-title">
                     <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" style="color:#444444";>
-                      <label data-toggle="tooltip" data-placement="top" title="Presione aqui para ver mas información del proceso y generar su informe."><strong>Plan de Gestión de Riesgos Proyecto {{ proyecto.proyecto_nombre }}  <i class="fa fa-sort-desc"></i></strong></label>
+                      <label data-toggle="tooltip" data-placement="top" title="Presione aqui para ver mas información del proceso y generar su informe."><strong>Plan de Gestión de Riesgos - Proyecto: {{ proyecto.proyecto_nombre }}  <i class="fa fa-sort-desc"></i></strong></label>
                       
                       
                     </a>
                   </h4>
                 </div>
-                <div id="collapseThree" class="panel-collapse collapse">
+                <div id="collapseThree" class="panel-collapse collapse in">
                   <div class="box-body">
                    Durante este proceso se busca preparar un plan estratégico que permita definir la importancia del proyecto, la manera en que intervendrán la administración de riesgos, el equipo de gestión de riesgos, los criterios de evaluación, entre otros. A continuación podras descargar un informe de gestión de riesgos actualizado.
-                   <a href="/mi_proyecto/{{ proyecto.proyecto_id }}/generar_informe_planificar/">Generar informe</a>
+                    </br>
+                    <a href="/mi_proyecto/{{ proyecto.proyecto_id }}/generar_informe_planificar/" class="btn btn-primary pull-right">Generar informe</a>
                  </div>
                </div>
              </div>
@@ -100,12 +102,12 @@
      <div class="box box-primary">
       <div class="box-header">
         <h3 class="box-title">
-          <strong>Estructura Desglosada de Riesgos Proyecto {{ proyecto.proyecto_nombre }}</strong> 
+          <strong>Estructura Desglosada de Riesgos - Proyecto: {{ proyecto.proyecto_nombre }}</strong> 
         </h3>         
       </div>
       {% if rbs %}
 
-      {% else %}  
+      {% else %}        
       <div class="pad margin no-print">
         <div class="callout callout-info" style="margin-bottom: 0!important;">
           <h4>Nota:</h4>
@@ -137,9 +139,10 @@
                   <span class="label label-success pull-right">Categorías</span> 
                   <span class="label label-primary pull-right">EDR General</span>                      
                 </ul>
-              </div>
+              </div>              
               <div class="col-md-11">
                 <div id="chart-container_1" ></div>
+                <br>
                 <div class="callout callout-warning" id="cartel_propio" hidden="true">
                   <h4>No existe una EDR propia del proyecto.</h4>
                   <p>A medida que agrege riesgos al proyecto la EDR se construira automaticamente.</p>
@@ -158,9 +161,10 @@
               </div>
               <div class="col-md-11">
                 <div id="chart-container_2"></div>
+                <br>
                 <div class="callout callout-warning" id="cartel_sugerido" hidden="true">
                   <h4>No existe una EDR sugeridad para este proyecto.</h4>
-                  <p>Las EDR sugeridas se construyen a partir de proyectos del mismo sector, en este caso no existen proyectos dentro del mismo sector al suyo.</p>
+                  <p>Las EDR sugeridas se construyen a partir de proyectos del mismo sector, en este caso no existen proyectos de su mismo sector.</p>
                 </div>
               </div>
             </div>               
@@ -199,13 +203,13 @@
 
   <div class="box box-primary">
       <div class="box-header">
-        <label data-toggle="tooltip" data-placement="top" title="En esta sección podrá administrar su equipo de gestión de riesgos."><h3 class="box-title"><strong>Equipo de Gestión de Riesgos Proyecto {{ proyecto.proyecto_nombre }}&nbsp  &nbsp</strong></h3></label>        
+        <label data-toggle="tooltip" data-placement="top" title="En esta sección podrá administrar su equipo de gestión de riesgos."><h3 class="box-title"><strong>Equipo de Gestión de Riesgos - Proyecto: {{ proyecto.proyecto_nombre }}&nbsp  &nbsp</strong></h3></label>        
 
         {% if proyecto.proyecto_fin_status %}
-        <button type="button" class="btn btn-primary" data-toggle="modal"  data-target="#modal-agregar" disabled="true">Nuevo Miembro</i>
+        <button type="button" class="btn btn-primary pull-right" data-toggle="modal"  data-target="#modal-agregar" disabled="true">Nuevo Miembro</i>
         </button>
         {% else %}
-        <button type="button" class="btn btn-primary" data-toggle="modal"  data-target="#modal-agregar" >Nuevo Miembro</i>
+        <button type="button" class="btn btn-primary pull-right" data-toggle="modal"  data-target="#modal-agregar" >Nuevo Miembro</i>
         </button>
         {% endif %}  
 
@@ -286,7 +290,7 @@
                 {% for impacto in impactos %}
                 <div class="form-group">
                   <div class="col-xs-5">
-                    <input type="text" class="form-control" name="impacto_nombre_{{ forloop.counter }}" value="{{impacto.impacto_categoria}}" required />
+                    <input type="text" class="form-control" name="impacto_nombre_{{ forloop.counter }}" value="{{impacto.impacto_categoria}}" maxlength="70" required />
                   </div>
                   <div class="col-xs-3">
                     <input type="number" class="form-control" name="impacto_valor_{{ forloop.counter }}" value="{{impacto.impacto_valor}}" min="1" required />
@@ -307,7 +311,7 @@
                 {% for propabilidad in probabilidades %}
                 <div class="form-group">
                   <div class="col-xs-5">
-                    <input type="text" class="form-control" name="propabilida_nombre_{{ forloop.counter }}" value="{{propabilidad.propabilidad_categoria}}" required />
+                    <input type="text" class="form-control" name="propabilida_nombre_{{ forloop.counter }}" value="{{propabilidad.propabilidad_categoria}}" maxlength="70"  required />
                   </div>
                   <div class="col-xs-3">
                     <input type="number" class="form-control" name="propabilida_valor_{{ forloop.counter }}" value="{{propabilidad.propabilidad_valor}}" min="1" required />
@@ -348,11 +352,11 @@
           {% for clasificacion in clasificacion_riesgo %}
           <div class="row" >
             <div class="col-md-3">
-              <input type="text" class="form-control" name="clasificacion_nombre_{{ forloop.counter }}" value="{{clasificacion.clasificacion_riesgo_nombre}}"/>
+              <input type="text" class="form-control" name="clasificacion_nombre_{{ forloop.counter }}" value="{{clasificacion.clasificacion_riesgo_nombre}}" maxlength="70" required />
             </div>   
             <div class="col-md-4">
               <div class="input-group my-colorpicker2 colorpicker-element">
-              <input type="text" class="form-control" name="clasificacion_color_{{ forloop.counter }}" value="{{clasificacion.clasificacion_color}}" />
+              <input type="text" class="form-control" name="clasificacion_color_{{ forloop.counter }}" value="{{clasificacion.clasificacion_color}}" required />
               <div class="input-group-addon">
                 <i style="background-color: {{clasificacion.clasificacion_color}} "></i>
               </div>
@@ -362,7 +366,7 @@
               <div class="form-group">
                 <label for="input_min_{{ forloop.counter }}" class="col-sm-2 control-label">De</label>
                 <div class="col-sm-10">
-                <input type="number" id="input_min_{{ forloop.counter }}" class="form-control" name="clasificacion_min_{{ forloop.counter }}" value="{{clasificacion.clasificacion_riesgo_min}}" />
+                <input type="number" id="input_min_{{ forloop.counter }}" class="form-control" name="clasificacion_min_{{ forloop.counter }}" value="{{clasificacion.clasificacion_riesgo_min}}" required />
                 </div>              
               </div>          
             </div>
@@ -370,7 +374,7 @@
               <div class="form-group">
                 <label for="input_max_{{ forloop.counter }}" class="col-sm-2 control-label">a</label>
                 <div class="col-sm-10">
-                  <input type="number" class="form-control" id="input_max_{{ forloop.counter }}" name="clasificacion_max_{{ forloop.counter }}" value="{{clasificacion.clasificacion_riesgo_max}}" />
+                  <input type="number" class="form-control" id="input_max_{{ forloop.counter }}" name="clasificacion_max_{{ forloop.counter }}" value="{{clasificacion.clasificacion_riesgo_max}}" required />
                 </div>
               </div>
             </div>
@@ -403,29 +407,26 @@
           <span aria-hidden="true">&times;</span></button>
           <h4 class="modal-title">Agregar Miembro del equipo de gestión de riesgos</h4>
         </div>
+
         <div class="box-body">
-         <form  action="/mi_proyecto/registrar_responsable/" method="post">
+          <form  action="/mi_proyecto/registrar_responsable/" method="post">
           {% csrf_token %}
           <div class="row">
             <div class="col-md-6">
               <div class="form-group">
                 <label >Nombre </label>
-                <input type="text" class="form-control" id="nombre_responsable" name="nombre_responsable">
+                <input type="text" class="form-control" id="nombre_responsable" name="nombre_responsable" required>
               </div>
-              <div class="form-group">
+               <div class="form-group">
                 <label >Rol </label>
                 {% if lista_roles %}
-              <select class="form-control select2" id="rol_id" name="rol_id">
+                <select class="form-control select2" id="rol_id" name="rol_id">
                 {% for rol in lista_roles %}
                 <option value="{{ rol.rol_id }}">
                   {{ rol.rol_nombre }}
                 </option>
-                {% endfor %}
-                {% else %}
-                  <p>Aun no cuentas con roles asociados.</p>
-                 
+                {% endfor %} 
               </select>
-
               {% endif %} 
               </div>                
             </div>
@@ -433,14 +434,14 @@
             <div class="col-md-6">             
               <div class="form-group">
                 <label>Descripción</label>
-                <textarea class="form-control" rows="4"  id="descripcion_responsable" name="descripcion_responsable"></textarea>
-              </div> 
-              <input type="text" class="form-control" id="proyecto_id" name="proyecto_id" value="{{ proyecto.proyecto_id }}" style="visibility:hidden">               
-            </div>
-          </div>          
+               <textarea class="form-control" rows="4"  id="descripcion_responsable" name="descripcion_responsable"></textarea>
+              </div>
+              <input type="text" class="form-control" id="proyecto_id" name="proyecto_id" value="{{ proyecto.proyecto_id }}" style="visibility:hidden">                
+            </div>            
+          </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary pull-left" data-dismiss="modal">Cerrar</button>
-            <button type="submit" class="btn btn-primary pull-right">Agregar</button>
+            <button type="submit" class="btn btn-primary pull-right">Actualizar</button>
           </div>
           <!-- /.row -->
         </form>
@@ -733,7 +734,7 @@ function pintar_edr_sugerida() {
     if(cant_impactos < max_fields){
       cant_impactos++;
       cant_impactos_index++;
-      let str = '<div class="form-group"><div class="col-xs-5"><input type="text" class="form-control" name="impacto_nombre_'+cant_impactos_index+'" placeholder="Nombre de impacto" required /></div><div class="col-xs-3"><input type="number" class="form-control" name="impacto_valor_'+cant_impactos_index+'" min="1" required /></div><a href="#" class="remove_field">Eliminar</a></div>';
+      let str = '<div class="form-group"><div class="col-xs-5"><input type="text" class="form-control" name="impacto_nombre_'+cant_impactos_index+'" placeholder="Nombre de impacto" maxlength="70"  required /></div><div class="col-xs-3"><input type="number" class="form-control" name="impacto_valor_'+cant_impactos_index+'" min="1" required /></div><a href="#" class="remove_field">Eliminar</a></div>';
       let html = $.parseHTML(str);
       $(div_impactos).append(html);
     }else{
@@ -746,7 +747,7 @@ function pintar_edr_sugerida() {
     if(cant_probabilidades < max_fields){
       cant_probabilidades++;
       cant_probabilidades_index++;
-      let str = '<div class="form-group"><div class="col-xs-5"><input type="text" class="form-control" name="propabilida_nombre_'+cant_probabilidades_index+'" placeholder="Nombre de probabilidad" required /></div><div class="col-xs-3"><input type="number" class="form-control" name="propabilida_valor_'+cant_probabilidades_index+'" min="1" required /></div><a href="#" class="remove_field">Eliminar</a></div>';
+      let str = '<div class="form-group"><div class="col-xs-5"><input type="text" class="form-control" name="propabilida_nombre_'+cant_probabilidades_index+'" placeholder="Nombre de probabilidad" maxlength="70" required /></div><div class="col-xs-3"><input type="number" class="form-control" name="propabilida_valor_'+cant_probabilidades_index+'" min="1" required /></div><a href="#" class="remove_field">Eliminar</a></div>';
       let html = $.parseHTML(str);
       $(div_probabilidades).append(html);
     }else{
@@ -761,7 +762,7 @@ function pintar_edr_sugerida() {
       cant_clasificaion++;
       cant_clasificaion_index++;
       let randomColor = Math.floor(Math.random()*16777215).toString(16);
-      let str = '<div class="row" ><div class="col-md-3"><input type="text" class="form-control" name="clasificacion_nombre_'+cant_clasificaion_index+'" placeholder="Nueva clasificación" required/></div><div class="col-md-4"><div class="input-group my-colorpicker2 colorpicker-element"><input type="text" class="form-control" name="clasificacion_color_'+cant_clasificaion_index+'" value="#'+randomColor+'" required/><div class="input-group-addon"><i style="background-color:#'+randomColor+'"></i></div></div> </div> <div class="col-md-2"> <div class="form-group"> <label for="input_min_'+cant_clasificaion_index+'" class="col-sm-2 control-label">De</label> <div class="col-sm-10"> <input type="number" id="input_min_'+cant_clasificaion_index+'" class="form-control" name="clasificacion_min_'+cant_clasificaion_index+'" required /> </div> </div> </div> <div class="col-md-2"> <div class="form-group"> <label for="input_max_'+cant_clasificaion_index+'" class="col-sm-2 control-label">a</label> <div class="col-sm-10"> <input type="number" class="form-control" id="input_max_'+cant_clasificaion_index+'" name="clasificacion_max_'+cant_clasificaion_index+'" required /> </div> </div> </div> <a href="#" class="remove_field" align="left">Eliminar</a> </div>';
+      let str = '<div class="row" ><div class="col-md-3"><input type="text" class="form-control" name="clasificacion_nombre_'+cant_clasificaion_index+'" placeholder="Nueva clasificación" maxlength="70" required/></div><div class="col-md-4"><div class="input-group my-colorpicker2 colorpicker-element"><input type="text" class="form-control" name="clasificacion_color_'+cant_clasificaion_index+'" value="#'+randomColor+'" required/><div class="input-group-addon"><i style="background-color:#'+randomColor+'"></i></div></div> </div> <div class="col-md-2"> <div class="form-group"> <label for="input_min_'+cant_clasificaion_index+'" class="col-sm-2 control-label">De</label> <div class="col-sm-10"> <input type="number" id="input_min_'+cant_clasificaion_index+'" class="form-control" name="clasificacion_min_'+cant_clasificaion_index+'" required /> </div> </div> </div> <div class="col-md-2"> <div class="form-group"> <label for="input_max_'+cant_clasificaion_index+'" class="col-sm-2 control-label">a</label> <div class="col-sm-10"> <input type="number" class="form-control" id="input_max_'+cant_clasificaion_index+'" name="clasificacion_max_'+cant_clasificaion_index+'" required /> </div> </div> </div> <a href="#" class="remove_field" align="left">Eliminar</a> </div>';
         let html = $.parseHTML(str);
       $(div_clasificaciones).append(html);
     }else{

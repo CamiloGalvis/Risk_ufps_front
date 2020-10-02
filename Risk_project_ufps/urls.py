@@ -40,7 +40,10 @@ urlpatterns = [
 
     #urls mi proyecto
     path('mi_proyecto/<int:id>/', mi_proyecto, name='mi_proyecto'),     
+
     path('mi_proyecto/<int:proyecto_id>/planificar/', planificar_proyecto, name='mi_proyecto'),
+    path('mi_proyecto/<int:proyecto_id>/planificar/<str:mensaje>/', planificar_proyecto_2, name='planificar_proyecto_2'),
+
     path('mi_proyecto/registrar_responsable/', registrar_responsable, name='registrar_responsable'),    
     path('mi_proyecto/editar_responsable/', editar_responsable, name='editar_responsable'),
     path('mi_proyecto/eliminar_responsable/', eliminar_responsable, name='eliminar_responsable'),
@@ -91,6 +94,7 @@ urlpatterns = [
     # Planificar respuestas
     #####################################################
     path('mi_proyecto/<int:proyecto_id>/planificar_respuestas/', planificar_respuestas, name='planificar_respuestas'),
+    path('mi_proyecto/<int:proyecto_id>/planificar_respuestas_2/<str:mensaje>/<str:mensaje_editar>', planificar_respuestas_2, name='planificar_respuestas_2'),
     path('mi_proyecto/<int:proyecto_id>/nueva_respuesta_planificar/', nueva_respuesta_planificar, name='nueva_respuesta_planificar'),
     path('mi_proyecto/<int:proyecto_id>/asociar_respuesta_sugeridas/', asociar_respuesta_sugeridas, name='asociar_respuesta_sugeridas'),
     path('mi_proyecto/<int:proyecto_id>/editar_respuesta_planificar/', editar_respuesta_planificar, name='editar_respuesta_planificar'),    

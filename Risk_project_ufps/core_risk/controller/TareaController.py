@@ -7,9 +7,9 @@ import datetime
 
 class TareaController():
 
-	def registrar_tarea(self, proyecto_riesgo_respuesta, nombre, descripcion, fecha_inicio, fecha_fin):
+	def registrar_tarea(self, proyecto_riesgo_respuesta, nombre, descripcion, fecha_inicio, fecha_fin, fecha_inicio_real, fecha_fin_real):
 		tarea_dao = TareaDao()
-		return tarea_dao.registrar_tarea(proyecto_riesgo_respuesta, nombre, descripcion, fecha_inicio, fecha_fin)
+		return tarea_dao.registrar_tarea(proyecto_riesgo_respuesta, nombre, descripcion, fecha_inicio, fecha_fin, fecha_inicio_real, fecha_fin_real)
 
 	def validar_tarea(self, nombre, respuesta_id):
 		tarea_dao = TareaDao()
@@ -77,7 +77,9 @@ class TareaController():
 			elemento = aux.get(llave)
 			aa = model_to_dict(row)
 			aa['fecha_inicio'] = aa['fecha_inicio'].strftime('%Y-%m-%d %H:%M')
-			aa['fecha_fin'] = aa['fecha_fin'].strftime('%Y-%m-%d %H:%M')			
+			aa['fecha_fin'] = aa['fecha_fin'].strftime('%Y-%m-%d %H:%M')
+			aa['fecha_inicio_real'] = aa['fecha_inicio_real'].strftime('%Y-%m-%d %H:%M')
+			aa['fecha_fin_real'] = aa['fecha_fin_real'].strftime('%Y-%m-%d %H:%M')
 			aa["riesgo_id"] = row.riesgo_id
 			aa["recursos"] = self.filtrar_recursos(row.tarea_id, recursos)
 			if elemento:

@@ -185,7 +185,7 @@
                 </div>
                 <input type="date" class="form-control pull-right" name="proyecto_fecha_inicio" 
                  value="{{proyecto.proyecto_fecha_inicio|date:'Y-m-d'}}" required>
-              </div>
+                  </div>
                 </div>
               </div>  
               <div class="form-group">
@@ -201,13 +201,13 @@
                 {% endif %}
               </div>
             </div>  
-            {% if actividades %}
-            
+            {% if actividades %}            
+
             {% else %}
             <div class="form-group">
               <label class="col-sm-2 control-label">Cronograma del proyecto</label>
               {% if proyecto.proyecto_fin_status %}
-              <input type="file" id="fileForUpload" accept="text/xml" disabled="true" />
+              <!--<input type="file" id="fileForUpload" accept="text/xml" disabled="true" />-->
               {% else %}
               <input type="file" id="fileForUpload" accept="text/xml" />
               {% endif %}              
@@ -216,9 +216,9 @@
             <div class="form-group">
               <div class="col-sm-offset-2 col-sm-10">
                 {% if proyecto.proyecto_fin_status %}
-                <button type="submit" class="btn btn-warning" disabled="true">Actualizar</button>
+                <button type="submit" class="btn btn-warning pull-right" disabled="true">Actualizar</button>
                 {% else %}
-                <button type="submit" class="btn btn-warning">Actualizar</button>
+                <button type="submit" class="btn btn-warning pull-right">Actualizar</button>
                 {% endif %}                
               </div>
             </div>
@@ -242,39 +242,71 @@
 
 {% block mis_scrtips_riesgos %}
 
+<script src="{% static 'risk_project/plugins/sweetalert/sweetalert.js' %}"></script>
 
 <script type="text/javascript">
+
+  {% if actividades %}                                    
+  var flag_actividades = 1;
+  {% else %}
+  var flag_actividades = 0;
+  {% endif %}
 
 $(function() {
 $("#form_proyecto").submit(function(e) {
     e.preventDefault();
     var actionurl = "/mi_proyecto/{{ proyecto.proyecto_id }}/";
-    var file = document.getElementById("fileForUpload").files[0];
-    if(file){
-      obtenerJson(file, function(myJson){
-        setJsonMpp(myJson);
-      });
+    if(flag_actividades == 1){
+      actualizar_proyecto_normal(actionurl);
     }else{
-      console.log("no hay");
-      $.ajax({
-            url: actionurl ,
-            type: 'POST',
-            headers: {'X-CSRFToken': csrftoken},
-            data: $("#form_proyecto").serialize()+"&actividades=False",
-            success: function(data) {
-              alert("Registro exitoso");
-              location.reload();
-            }, error: function (jqXhr, textStatus, errorMessage) {
-              console.log(errorMessage);
-              alert("Fallo Registro");
-              location.reload();
-            }
-        });
+      var file = document.getElementById("fileForUpload").files[0];
+      if(file){
+        Swal.fire({
+          title: 'Creando proyecto',
+          html: 'subiendo actividades',
+          timerProgressBar: true,
+          willOpen: () => {
+            Swal.showLoading();
+            obtenerJson(file, function(myJson){
+              setJsonMpp(myJson);
+            });  
+           }
+        });         
+      }else{
+        actualizar_proyecto_normal(actionurl);
+      }
+    }    
+  });
+});
+
+function actualizar_proyecto_normal(actionurl){
+  $.ajax({
+    url: actionurl ,
+    type: 'POST',
+    headers: {'X-CSRFToken': csrftoken},
+    data: $("#form_proyecto").serialize()+"&actividades=False",
+    success: function(data) {
+      Swal.fire(
+        '¡ Registro exitoso !',
+        'el proyecto se ha actualizado',
+        'success'
+      ).then(function () {
+        location.reload();
+      });                             
+    },
+    error: function (jqXhr, textStatus, errorMessage) {
+      console.log(errorMessage);
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: '¡ No se pudo registrar el proyecto !',             
+      }).then(function () {
+        location.reload();
+      });                            
     }
+  });
+}
 
-});
-
-});
 
 function getCookie(name) {
   let cookieValue = null;

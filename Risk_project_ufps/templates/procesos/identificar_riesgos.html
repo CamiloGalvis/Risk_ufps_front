@@ -56,7 +56,7 @@
                     </a>
                   </h4>
                 </div>
-                <div id="collapseThree" class="panel-collapse collapse">
+                <div id="collapseThree" class="panel-collapse collapse in">
                   <div class="box-body">
                     Este proceso permite identificar los riesgos individuales y generales del proyecto para documentar sus características y las fuentes de riesgo que los generan. También, establece un punto en común donde el equipo del proyecto puede acudir para atender adecuadamente a los riesgos identificados. A continuación podras descargar un informe del proceso identificar riesgos actualizado.
                   </br>
@@ -174,7 +174,7 @@
                   <div class="pad margin no-print">
                     <div class="callout callout-info" style="margin-bottom: 0!important;">
                       <h4>Nota:</h4>
-                      Hasta el momento no existen proyectos que se relacionen con el sector del proyecto actual. 
+                      Hasta el momento no existen riesgos asociados al sector <strong>{{ proyecto.sector.sector_nombre }}</strong> en nuestro catalogo de riesgos. Por tal razón no podemos sugerirle riesgos para su proyecto. 
                     </div>
                   </div>
                   <table class="table table-bordered table-striped">
@@ -271,14 +271,14 @@
                 </button>
 
                 {% if proyecto.proyecto_fin_status %}
-                 <button type="button" class="btn btn-default" data-toggle="modal" onclick="abrir_modal_editar_riesgo('{{ riesgo.riesgo_id }}','{{ riesgo.riesgo_nombre }}', '{{ riesgo.riesgo_causa }}','{{ riesgo.riesgo_evento }}', '{{ riesgo.riesgo_efecto }}',   '{{ riesgo.riesgo_tipo }}')" disabled="true"><i   class="fa fa-edit"></i>
+                 <button type="button" class="btn btn-default" data-toggle="modal" onclick="abrir_modal_editar_riesgo('{{ riesgo.riesgo_id }}','{{ riesgo.riesgo_nombre }}', '{{ riesgo.riesgo_causa }}','{{ riesgo.riesgo_evento }}', '{{ riesgo.riesgo_efecto }}',   '{{ riesgo.riesgo_tipo }}', '{{riesgo.fecha_manifestacion}}')" disabled="true"><i   class="fa fa-edit"></i>
                 </button>
 
 
                 <button type="button" class="btn btn-danger" data-toggle="#modal" onclick="abrir_modal_eliminar('{{ riesgo.riesgo_id }}',' {{ riesgo.riesgo_nombre }}')" data-target="#modal_eliminar" disabled="true"><i class="fa fa-trash-o danger"></i>
                 </button>
                 {% else %}
-                 <button type="button" class="btn btn-default" data-toggle="modal" onclick="abrir_modal_editar_riesgo('{{ riesgo.riesgo_id }}','{{ riesgo.riesgo_nombre }}', '{{ riesgo.riesgo_causa }}','{{ riesgo.riesgo_evento }}', '{{ riesgo.riesgo_efecto }}',   '{{ riesgo.riesgo_tipo }}')"><i   class="fa fa-edit"></i>
+                 <button type="button" class="btn btn-default" data-toggle="modal" onclick="abrir_modal_editar_riesgo('{{ riesgo.riesgo_id }}','{{ riesgo.riesgo_nombre }}', '{{ riesgo.riesgo_causa }}','{{ riesgo.riesgo_evento }}', '{{ riesgo.riesgo_efecto }}',   '{{ riesgo.riesgo_tipo }}', '{{riesgo.fecha_manifestacion}}')"><i   class="fa fa-edit"></i>
                 </button>
 
 
@@ -819,7 +819,7 @@
                   <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>
                   </div>
-                  <input type="date" class="form-control pull-right" name="riesgo_fecha_manifestacion">
+                  <input type="date" class="form-control pull-right" id="riesgo_fecha_manifestacion_id" name="riesgo_fecha_manifestacion">
                 </div>
                 </div>
                 <input type="text" class="form-control" id="riesgo_id_editar" name="riesgo_id_editar" style="visibility: hidden;">
@@ -936,7 +936,9 @@
   // Variables globales
   /////////////////////////////////////////
 
-  var data = JSON.parse("{{rbs|escapejs}}");   
+  var data = JSON.parse("{{rbs|escapejs}}"); 
+
+  console.log(data);  
 
   var respuestas_riesgo = JSON.parse("{{respuestas_riesgo|escapejs}}");   
 
@@ -1151,11 +1153,12 @@ function asosiar_riesgos(proyecto_id){
   function abrir_modal_informacion_riesgo(nombre, causa, evento, efecto, tipo, fecha) {        
 
         $("#modal-informacion").modal('show');
+        tipo_nombre = tipo == 0 ? 'Riesgo':'Oportunidad';
         document.getElementById("nombre_riesgo_info").innerHTML = " "+nombre;
         document.getElementById("causa_riesgo_info").innerHTML = " "+causa;
         document.getElementById("evento_riesgo_info").innerHTML = " "+evento;
         document.getElementById("efecto_riesgo_info").innerHTML = " "+efecto;
-        document.getElementById("tipo_riesgo_info").innerHTML = " "+tipo;
+        document.getElementById("tipo_riesgo_info").innerHTML = " "+tipo_nombre;
         document.getElementById("fecha_riesgo_info").innerHTML = " "+ fecha;
         
         
@@ -1165,15 +1168,15 @@ function asosiar_riesgos(proyecto_id){
 
 
 
-  function abrir_modal_editar_riesgo(riesgo_id, riesgo_nombre, riesgo_causa, riesgo_evento, riesgo_efecto, riesgo_tipo){
-    
+  function abrir_modal_editar_riesgo(riesgo_id, riesgo_nombre, riesgo_causa, riesgo_evento, riesgo_efecto, riesgo_tipo, fecha_manifestacion){
+    console.log("MUCHA FECHA", parsear_fecha(new Date(fecha_manifestacion)));
     $("#riesgo_id_editar").val(riesgo_id);
      $("#riesgo_nombre").val(riesgo_nombre);
       $("#riesgo_causa").val(riesgo_causa);
        $("#riesgo_evento").val(riesgo_evento);
         $("#riesgo_efecto").val(riesgo_efecto);
          $("#riesgo_tipo").val(riesgo_tipo);
-
+         $("#riesgo_fecha_manifestacion_id").val(fecha_manifestacion);
     $("#modal-editar").modal('show');
         
   }
@@ -1321,6 +1324,13 @@ function trasnformar_tabla(id_tabla) {
      }
     }); 
 }
+
+  function parsear_fecha(now){    
+    var day = ("0" + now.getDate()).slice(-2);
+    var month = ("0" + (now.getMonth() + 1)).slice(-2);
+    var today = now.getFullYear()+"-"+(month)+"-"+(day) ;
+    return today;
+  }
 
 </script>
 {% endblock %}

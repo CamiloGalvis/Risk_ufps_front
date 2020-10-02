@@ -8,7 +8,7 @@ from django.db import connections
 
 class TareaDao():
 
-  def registrar_tarea(self, proyecto_riesgo_respuesta, nombre, descripcion, fecha_inicio, fecha_fin):
+  def registrar_tarea(self, proyecto_riesgo_respuesta, nombre, descripcion, fecha_inicio, fecha_fin, fecha_inicio_real, fecha_fin_real):
     tarea = Tarea(
         proyecto_has_riesgo_id=proyecto_riesgo_respuesta.proyecto_has_id,
         riesgo_has_respuesta_id=proyecto_riesgo_respuesta.respuesta_has_id,
@@ -16,6 +16,10 @@ class TareaDao():
         tarea_descripcion=descripcion,
         fecha_inicio=fecha_inicio,
         fecha_fin=fecha_fin,
+        fecha_inicio_real=fecha_inicio_real,
+        fecha_fin_real=fecha_fin_real,
+        tarea_estado=1,
+        tarea_observacion=''
     )
     try:
         tarea.save()

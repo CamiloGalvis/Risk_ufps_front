@@ -49,14 +49,15 @@
               <div class="panel box box-primary">
                 <div class="box-header with-border">
                   <h4 class="box-title">
+                    
                     <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" style="color:#444444";>
-                      <label data-toggle="tooltip" data-placement="top" title="Presione aqui para ver mas información del proceso y generar su informe."><strong>Plan de Respuestas Proyecto {{ proyecto.proyecto_nombre }}  <i class="fa fa-sort-desc"></i></strong></label>
+                      <label data-toggle="tooltip" data-placement="top" title="Presione aqui para ver mas información del proceso y generar su informe."><strong>Plan de Respuestas - Proyecto: {{ proyecto.proyecto_nombre }}  <i class="fa fa-sort-desc"></i></strong></label>
                       
                       
                     </a>
                   </h4>
                 </div>
-                <div id="collapseThree" class="panel-collapse collapse">
+                <div id="collapseThree" class="panel-collapse collapse in">
                   <div class="box-body">
                       Este proceso permite desarrollar y establecer estrategias junto con sus recursos para las acciones a ejecutar cuando un riesgo logre materializarse a lo largo de todo el proyecto. A continuación podras descargar un informe del proceso planificar respuestas actualizado.
                       <br/>
@@ -70,7 +71,7 @@
       <div class="box box-primary">
         <div class="box-header with-border">
           <h3 class="box-title">
-            <label data-toggle="tooltip" data-placement="top" title="En esta sección podra administrar toda la información de las acciones de respuesta asociadas a los riesgos del proyecto."><strong>Planificar Respuestas Proyecto {{ proyecto.proyecto_nombre }}</strong></label>
+            <label data-toggle="tooltip" data-placement="top" title="En esta sección podra administrar toda la información de las acciones de respuesta asociadas a los riesgos del proyecto."><strong>Planificar Respuestas - Proyecto: {{ proyecto.proyecto_nombre }}</strong></label>
           </h3>
         </div>
         <div class="box-body">
@@ -136,16 +137,16 @@
         <div class="box box-primary">
         <div class="box-header with-border">
           <h3 class="box-title">
-            <label data-toggle="tooltip" data-placement="top" title="En esta sección podra encontrar información de la linea base de la gestión de riesgos del proyecto y como guardarla."><strong>Linea Base de la Adiministración de Riesgos Proyecto {{ proyecto.proyecto_nombre }}</strong></label>
+            <label data-toggle="tooltip" data-placement="top" title="En esta sección podra encontrar información de la linea base de la gestión de riesgos del proyecto y como guardarla."><strong>Linea Base de la Administración de Riesgos - Proyecto: {{ proyecto.proyecto_nombre }}</strong></label>
           </h3>
         </div>
         <div class="box-body" style="text-align: justify;">
           La linea base de la gestión de riesgos del proyecto es toda la información relacionada a la fase de planificación de los riesgos del proyecto, que va desde el proceso de planificar la gestión de riesgos hasta planificar respuestas. Al hacer clic se guardara un respaldo de esta información, la cual podra ser consultada en el historico ubicado en la parte superior del proceso planificar respuestas, o en controlar siempre y cuando se trate de la ultima linea base generada.
           <br/>          
           {% if proyecto.proyecto_fin_status %}
-          <button class="btn btn-primary" onclick="crear_linea_base();" disabled="true">Guardar linea base</button>
+          <button class="btn btn-primary pull-right" onclick="crear_linea_base();" disabled="true">Guardar linea base</button>
           {% else %}
-          <button class="btn btn-primary" onclick="crear_linea_base();">Guardar linea base</button>
+          <button class="btn btn-primary pull-right" onclick="crear_linea_base();">Guardar linea base</button>
           {% endif %}         
         </div>
       </div>
@@ -156,7 +157,7 @@
 
 <!-- /.modal tareas -->
 <div class="modal fade" id="modal_tareas">
-  <div class="modal-dialog">
+  <div class="modal-dialog  modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -199,8 +200,15 @@
             </div>  
 
         </div>
-        <div class="chart tab-pane" id="nueva-tarea" style="position: relative; height: 300px;">
+        <div class="chart tab-pane" id="nueva-tarea" style="position: relative; height: 300px; overflow-y:auto;">
          <div class="box-body" id="tab_nueva_tarea">
+          <div class="alert alert-info alert-dismissible">
+            <h4><i class="icon fa fa-info"></i> Atencion!</h4>
+                Tenga en cuenta las siguientes fechas:
+                <div id="fechas_noti">
+                  
+                </div>
+          </div>
           <form action="/mi_proyecto/{{ proyecto.proyecto_id }}/nueva_tarea/" method="post">
             {% csrf_token %}
             <div class="row">
@@ -208,11 +216,11 @@
                 <div class="form-group">
                   <div id="" class="form-group">
                     <label>Nombre Tarea</label>
-                    <input type="text" class="form-control" id="tarea_nombre" placeholder="Nombre tarea" name="tarea_nombre">                   
+                    <input type="text" class="form-control" id="tarea_nombre" placeholder="Nombre tarea" name="tarea_nombre" required>                   
                   </div>
                   <div id="" class="form-group">
                     <label>Accion Asociada</label>                                        
-                    <select class="form-control select2" id="respuesta_id" name="respuesta_id">    
+                    <select class="form-control select2" id="respuesta_id" name="respuesta_id" required>    
                       <option >                      
                      </option>                      
                    </select>
@@ -223,10 +231,10 @@
                     <div class="input-group-addon">
                       <i class="fa fa-calendar"></i>
                     </div>
-                    <input type="date" class="form-control pull-right" name="tarea_fecha_inicio">
+                    <input type="date" class="form-control pull-right" name="tarea_fecha_inicio" required>
                   </div>
                 </div>
-                <input type="text" class="form-control" id="riesgo_id_ta" name="riesgo_id" style="visibility:hidden">
+                <input type="text" class="form-control" id="riesgo_id_ta" name="riesgo_id" style="visibility:hidden" />
               </div>            
             </div>
             <div class="col-md-6">
@@ -236,7 +244,7 @@
                   <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>
                   </div>
-                  <input type="date" class="form-control pull-right" name="tarea_fecha_fin">
+                  <input type="date" class="form-control pull-right" name="tarea_fecha_fin" required>
                 </div>                  
               </div>
               <div class="form-group">
@@ -872,14 +880,32 @@
 </div>
 
 <!-- /.modal costos -->
-
+<div class="modal modal-info fade" id="modal-info" style="display: none;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span></button>
+        <h4 class="modal-title">Advertencia</h4>
+      </div>
+      <div class="modal-body">
+        <p>No puede crear una "Linea Base de la Administración de Riesgos" hasta que haya definido al menos una tarea</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
 
 {% endblock %}
 {% block organigrama_down %}
 <!-- DataTables -->
 <script src="{% static 'risk_project/bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
 <script src="{% static 'risk_project/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
-
+<script src="{% static 'risk_project/plugins/sweetalert/sweetalert.js' %}"></script>
 <script type="text/javascript">
   //////////////////////////////////////////
   //  Variables globales
@@ -902,6 +928,8 @@
   console.log("respuestas");
   console.log(respuestas_sugeridas);
 
+  var actividades_by_riesgos = JSON.parse("{{actividades_by_riesgos|escapejs}}");
+  console.log("actividades_by_riesgos", actividades_by_riesgos);
   //Contiene la cantidad de recursos que tiene el proyecto.
   //Con esta variable puedo controlar el tipo de mensaje
   //en el modal de nuevo recursos
@@ -1271,11 +1299,46 @@
   function abrir_modal_tareas(id_riesgo) {                
     construir_select_respuesta_for_tareas(id_riesgo);
     construir_listado_tareas(id_riesgo);
-    $("#modal_tareas").modal('show');
     var input_id = document.getElementById("riesgo_id_ta");
     input_id.value = id_riesgo;
+    cambiar_fechas();
+    $("#modal_tareas").modal('show');
+    
 
 };
+
+
+  function cambiar_fechas() {
+    let riesgo_id = document.getElementById("riesgo_id_ta").value;
+    let fechas_noti = document.getElementById("fechas_noti");
+    fechas_noti.innerHTML = "";  
+    var ul = document.createElement('ul');
+    var li = document.createElement('li');
+    li.append(document.createTextNode("Fecha de planeada del riesgo: " +get_fecha_by_riesgo_id(riesgo_id)));
+    ul.append(li);
+    if(actividades_by_riesgos.hasOwnProperty("riesgo_"+riesgo_id)){
+      let riesgo = actividades_by_riesgos["riesgo_"+riesgo_id];
+      console.log(riesgo);
+      for (var i = 0; i < riesgo.length; i++) {
+        var li_2 = document.createElement('li');
+        li_2.append(document.createTextNode("Fecha de planeada de la actividad: " +riesgo[i]['actividad_nombre']));
+        var ul_aux = document.createElement('ul');
+        var li_a = document.createElement('li');
+        li_a.append("Fecha inicio: "+riesgo[i]['actividad_fecha_inicio']+" - "+"Fecha fin: "+riesgo[i]['actividad_fecha_fin']);
+        ul_aux.append(li_a);
+        li_2.append(ul_aux);
+        ul.append(li_2);
+        fechas_noti.append(ul);
+      }
+    }
+  }
+
+ function get_fecha_by_riesgo_id(riesgo_id) {
+    let key = "riesgo_"+riesgo_id;
+    if(riesgos_evaluados.hasOwnProperty(key)){
+      return riesgos_evaluados[key]['fecha_manifestacion'];
+    }
+ }
 
   function construir_select_respuesta_for_tareas(id_riesgo){  
     let tab_nueva_tarea = document.getElementById('tab_nueva_tarea');
@@ -1456,19 +1519,38 @@ function construir_listado_recursos(id_riesgo) {
    
 };
 
+function mostrar_modal_informativo() {
+  $('#modal-info').modal('show');
+}
+
 function crear_linea_base() {
-   $.ajax({
-      url: "/mi_proyecto/{{proyecto.proyecto_id}}/crear_linea_base/",
-      type: 'POST',
-      headers: {'X-CSRFToken': csrftoken},      
-      success: function(data) {
-        alert("Registro exitoso "+data);
-        window.location.href = "/mi_proyecto/{{proyecto.proyecto_id}}/planificar_respuestas/";
-      }, error: function (jqXhr, textStatus, errorMessage) {
-        alert("Fallo Registro " + textStatus + errorMessage);
-        window.location.href = "/mi_proyecto/{{proyecto.proyecto_id}}/planificar_respuestas/";
-      }
-  });
+  if(Object.keys(lista_tareas).length > 0){
+     $.ajax({
+        url: "/mi_proyecto/{{proyecto.proyecto_id}}/crear_linea_base/",
+        type: 'POST',
+        headers: {'X-CSRFToken': csrftoken},      
+        success: function(data) {
+          Swal.fire(
+            '¡ Registro exitoso !',
+            'La linea base se ha creado',
+            'success'
+          ).then(function () {
+            window.location.href = "/mi_proyecto/{{proyecto.proyecto_id}}/planificar_respuestas/";
+          });              
+        }, error: function (jqXhr, textStatus, errorMessage) {
+          console.log("Fallo Registro " + textStatus + errorMessage);
+          Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: '¡ No se pudo crear la linea base !',             
+              }).then(function () {
+                window.location.href = "/mi_proyecto/{{proyecto.proyecto_id}}/planificar_respuestas/";
+              });
+        }
+      });
+  }else{
+    mostrar_modal_informativo();
+  }
 }
   
 function getCookie(name) {

@@ -25,7 +25,7 @@ function setJsonMpp(data, actionurl) {
 		                'el proyecto se ha registrado',
 		                'success'
 	              	).then(function () {
-	                	window.location.href = "/nuevoproyecto/";
+	                	location.reload();
 	              	});     				
 				},error: function (jqXhr, textStatus, errorMessage) {
 					console.log(errorMessage);
@@ -34,7 +34,7 @@ function setJsonMpp(data, actionurl) {
 		                title: 'Oops...',
 		                text: '¡ No se pudo registrar el proyecto !',             
 		              }).then(function () {
-		                window.location.href = "/nuevoproyecto/";
+		                location.reload();
 		              });
 				}
       		});

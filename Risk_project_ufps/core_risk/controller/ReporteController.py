@@ -78,31 +78,19 @@ class ReporteController:
         """
         propietario = proyecto.gerente.gerente_nombre
         titulo = "REPORTE PROYECTO " + proyecto.proyecto_nombre
-        cabecera = ("CÓDIGO", "RIESGO", "TOTAL", "ACCIONES", "RESPONSABLE", "CRONOGRAMA")
+        cabecera = ("CÓDIGO", "RIESGO", "ACCIONES", "TAREAS", "RECURSOS")
 
         riesgo_controller = RiesgoController()
         respuesta_controller = RespuestaController()
-        responsable_controller = ResponsableController()
+        tarea_controller = TareaController()
 
-        #son las respuestas de los riesgos del proyecto
-        respuestas = respuesta_controller.listar_riesgos_respuesta(proyecto.proyecto_id)
-        #Este es un consulta sql que contienetodo de la tabla proyecto_has_riesgo
-        responsables = responsable_controller.obtener_responsables_by_proyecto_group_for_riesgos(proyecto.proyecto_id)
-        # A continuacion voy hacer un merge detodo lo de arriba
-        registros=[]
-        for responsable in responsables:
+        riesgos = riesgo_controller.get_riesgos_by_proyecto_linea(proyecto, proyecto.proyecto_linea_base)
+        respuestas_riesgo = respuesta_controller.listar_riesgos_respuesta_base(proyecto.proyecto_id)
+        lista_tareas = tarea_controller.listar_tareas_group_by_riesgo_base(proyecto)
 
-            total = responsable.impacto.impacto_valor * responsable.propabilidad.propabilidad_valor
+        mezcla = self.mezclar_respuestas_with_tareas(riesgos, respuestas_riesgo, lista_tareas)
 
-            aux=(
-                'R_'+str(responsable.riesgo_id),
-                responsable.riesgo.riesgo_nombre,
-                self.filtrar_respuestas_riesgo(respuestas, responsable.riesgo_id),
-                total,
-                responsable.responsable.responsble_nombre,
-                responsable.fecha_manifestacion,
-            )
-            registros.append(aux);
+        registros = self.convertir_array_2(mezcla)
 
         nombre_excel = "reporte_" + self.get_datetime()
         reporte = reporteEXCEL(titulo, cabecera, registros, nombre_excel, propietario)
@@ -230,11 +218,12 @@ class ReporteController:
     def convertir_array(self, mezcla):
         array_final = []
         for key, aux in mezcla.items():
-            respuestas = aux['respuestas']
-            if len(respuestas) > 0:
+            respuestas = aux.get('respuestas')
+            if respuestas and len(respuestas) > 0:
                 for aux_2 in respuestas:
-                    tareas = aux_2['tareas']
-                    if len(tareas) > 0:
+                    #print("ARRAY", aux_2)
+                    tareas = aux_2.get('tareas')
+                    if tareas and len(tareas) > 0:
                         for aux_3 in tareas:
                             array_final.append([
                                 aux['riesgo_nombre'],
@@ -267,6 +256,39 @@ class ReporteController:
                     '',
                     '',
                     '',
+                ])
+        return array_final
+
+    def convertir_array_2(self, mezcla):
+        array_final = []
+        for key, aux in mezcla.items():
+            respuestas = aux.get('respuestas')
+            if respuestas and len(respuestas) > 0:
+                for aux_2 in respuestas:
+                    # print("ARRAY", aux_2)
+                    tareas = aux_2.get('tareas')
+                    if tareas and len(tareas) > 0:
+                        for aux_3 in tareas:
+                            array_final.append([
+                                "R"+str(aux['riesgo_id']),
+                                aux['riesgo_nombre'],
+                                aux_2['respuesta_nombre'],
+                                aux_2['tipo_respuesta'],
+                                aux_3['tarea_nombre'],
+                            ])
+                    else:
+                        array_final.append([
+                            "R" + str(aux['riesgo_id']),
+                            aux['riesgo_nombre'],
+                            aux_2['respuesta_nombre'],
+                            aux_2['tipo_respuesta'],
+                            'No hay tareas',
+                        ])
+            else:
+                array_final.append([
+                    "R" + str(aux['riesgo_id']),
+                    aux['riesgo_nombre'],
+                    'riesgo no posee acciones',
                 ])
         return array_final
 

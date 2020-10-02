@@ -57,7 +57,7 @@
       <!-- /.box-header -->
 
       <div class="box-body">
-        <form role="form"  action="/nuevo_rol/" method="post">
+        <form role="form"  action="/nuevo_rol/" method="post" autocomplete="Nope">
         {% csrf_token %}
         <div class="row">
           <div class="col-md-6">
@@ -65,7 +65,7 @@
 
               <div class="form-group">
                 <label >Nombre Rol</label>
-                <input type="text" class="form-control" maxlength="59" placeholder="Ingrese Nombre del rol a registrar" name="rol_nombre">
+                <input type="text" class="form-control" maxlength="59" placeholder="Ingrese Nombre del rol a registrar" name="rol_nombre" required>
               </div>
 
             </div>
@@ -74,7 +74,7 @@
           <div class="col-md-6">
             <div class="form-group">
               <label>Descripción</label>
-              <textarea class="form-control" rows="3" maxlength="254" placeholder="Descripción del rol a registrar..." name="rol_descripcion"></textarea>
+              <textarea class="form-control" rows="3" maxlength="254" placeholder="Descripción del rol a registrar..." name="rol_descripcion" required></textarea>
             </div>
             <div class="box-footer">             
               <button type="submit" class="btn btn-primary pull-right">Registrar</button>
@@ -250,17 +250,9 @@
 <!-- AdminLTE for demo purposes -->
 <script src="{% static 'risk_project/dist/js/demo.js' %}"></script>
 
-  <script>
-  $(function () {
-    $('#example1').DataTable()
-    $('#example2').DataTable({
-      'paging'      : true,
-      'lengthChange': false,
-      'searching'   : false,
-      'ordering'    : true,
-      'info'        : true,
-      'autoWidth'   : false
-    })
+<script>
+  $(function () {    
+    trasnformar_tabla('example1');
   })
 </script>
 
@@ -290,6 +282,34 @@ function abrir_modal_editar(nombre, descripcion, id) {
         return false;
     };
 
+function trasnformar_tabla(id_tabla) {
+  $("#"+id_tabla).DataTable({
+     "language": {
+         "sProcessing":    "Procesando...",
+         "sLengthMenu":    "Mostrar _MENU_ registros",
+         "sZeroRecords":   "No se encontraron resultados",
+         "sEmptyTable":    "Ningún dato disponible en esta tabla",
+         "sInfo":          "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+         "sInfoEmpty":     "Mostrando registros del 0 al 0 de un total de 0 registros",
+         "sInfoFiltered":  "(filtrado de un total de _MAX_ registros)",
+         "sInfoPostFix":   "",
+         "sSearch":        "Buscar:",
+         "sUrl":           "",
+         "sInfoThousands":  ",",
+         "sLoadingRecords": "Cargando...",
+         "oPaginate": {
+             "sFirst":    "Primero",
+             "sLast":    "Último",
+             "sNext":    "Siguiente",
+             "sPrevious": "Anterior"
+         },
+         "oAria": {
+             "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+             "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+         }
+     }
+    }); 
+}
 
 </script>
 

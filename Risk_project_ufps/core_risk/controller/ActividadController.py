@@ -12,7 +12,18 @@ class ActividadController:
 		actividades = actividad_dao.listar_actividades_proyecto(proyecto_id)
 		aux = []
 		for actividad in actividades:
-			aux.append(model_to_dict(actividad))
+			actividad_aux = dict(
+				actividad_id=actividad.actividad_id,
+				actividad_orden=actividad.actividad_orden,
+				actividad_uuid=actividad.actividad_uuid,
+				actividad_nombre=actividad.actividad_nombre,
+				actividad_level=actividad.actividad_level,
+				actividad_wbs=actividad.actividad_wbs,
+				actividad_fecha_inicio=actividad.actividad_fecha_inicio.strftime("%Y-%m-%d"),
+				actividad_fecha_fin=actividad.actividad_fecha_fin.strftime("%Y-%m-%d"),
+				duracion=actividad.duracion
+				)
+			aux.append(actividad_aux)
 		return aux
 
 	def obtener_actividad(self, actividad_id):
@@ -36,7 +47,9 @@ class ActividadController:
 			aux[key].append({
 				"actividad_id" : actividad.actividad_id,
 				"actividad_nombre" : actividad.actividad_nombre,
-				"actividad_level" : actividad.actividad_level
+				"actividad_level" : actividad.actividad_level,
+				"actividad_fecha_inicio":actividad.actividad_fecha_inicio.strftime("%Y-%m-%d"),
+				"actividad_fecha_fin":actividad.actividad_fecha_fin.strftime("%Y-%m-%d")
 			})
 		return aux	
 

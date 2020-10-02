@@ -120,19 +120,28 @@
 
       <!-- /.Tabla -->
       <div class="col-md-12">
-        <div class="box box-primary">
+        <div class="box box-primary">          
           <div class="row">
+
            <div class="col-md-11" style="align-items:  center;"><br>
+
             <span class="label label-warning pull-right">Subcategorías</span>
             <span class="label label-success pull-right">Categorías</span> 
-            <span class="label label-primary pull-right">EDR General</span>    
-            
-            
+            <span class="label label-primary pull-right">EDR General</span>      
 
+          </div>    
+          <div class="row">
+
+           <div class="col-md-10" style="align-items:  center;"><br>
             
-          </div>
+            <button type="button" name="button" class="btn btn-primary pull-right" onclick="confirmar_cambios();">confirmar cambios</button>        
+
+          </div>  
+              
         </div>
+
         <div class="box-body pad">
+
           <div class="row">
 
             <div class="col-md-12">
@@ -141,8 +150,7 @@
           </div> 
           
           
-        </div>
-        <button type="button" name="button" class="btn btn-primary pull-right" onclick="confirmar_cambios();">confirmar cambios</button> 
+        </div>        
       </div>
       <!-- /. box -->
     </div>
@@ -287,6 +295,7 @@
 
 <script type="text/javascript" src="{% static 'risk_project/plugins/org-chart/js/jquery.mockjax.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'risk_project/plugins/org-chart/js/jquery.orgchart.js' %}"></script>
+<script src="{% static 'risk_project/plugins/sweetalert/sweetalert.js' %}"></script>
 
 <script type="text/javascript">
   /* ############################
@@ -718,21 +727,30 @@
   }
   const csrftoken = getCookie('csrftoken');
 
-
   function confirmar_cambios(){
     $.ajax({
       type: 'POST',
       url: "/rbs/confirmar_cambios/",
       headers: {'X-CSRFToken': csrftoken},
       data:{'acciones':  JSON.stringify(acciones)},
-      success: function (data, status, xhr) {        
-        alert("cambios guardados");
-        window.location.href = "/mi_rbs/";
+      success: function (data, status, xhr) {              
+         Swal.fire(
+          '¡ Registro exitoso !',
+          'los cambios se han efectuado',
+          'success'
+        ).then(function () {
+          window.location.href = "/mi_rbs/";
+        });     
       },
       error: function (jqXhr, textStatus, errorMessage) {
         console.log(errorMessage);
-        alert("No se pudieron completar los cambios");
-        window.location.href = "/mi_rbs/";
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: '¡ No se pudo realizar los cambios !',             
+        }).then(function () {
+          window.location.href = "/mi_rbs/";
+        });        
       }
     });
   }

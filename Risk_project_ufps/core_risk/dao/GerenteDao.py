@@ -1,4 +1,5 @@
 from Risk_project_ufps.core_risk.dto.models import *
+import datetime
 
 class GerenteDao():
 
@@ -6,7 +7,7 @@ class GerenteDao():
 		gerente = None
 		try:
 			gerente = Gerente.objects.get(gerente_id = gerente_id)
-		except Error as e:
+		except Exception as e:
 			print(e)
 		finally:      
 			return gerente
@@ -15,29 +16,30 @@ class GerenteDao():
 		gerente = None
 		try:
 			gerente = Gerente.objects.get(gerente_usuario = usuario)
-		except Error as e:
+		except Exception as e:
 			print(e)
 		finally:      
 			return gerente
 
 		
-	def registrar_gerente(self, id, usuario, correo, nombre, sector, profesion, empresa, pais, metodologia, certificacion):
+	def registrar_gerente(self, id, usuario, correo, nombre, sector, profesion, empresa, pais, metodologia, certificacion, fecha_creacion):
 
 		gerente = Gerente(
-			gerente_id = id,
-				gerente_usuario = usuario,
-				gerente_correo = correo,
-				gerente_nombre = nombre,
-				sector = sector,
-				gerente_profesion = profesion,
-				gerente_empresa  = empresa,
-				pais_id = pais,
-				gerente_metodologias = metodologia,
-				gerente_certificaciones = certificacion
+			gerente_id=id,
+			gerente_usuario=usuario,
+			gerente_correo=correo,
+			gerente_nombre=nombre,
+			sector=sector,
+			gerente_profesion=profesion,
+			gerente_empresa=empresa,
+			pais_id=pais,
+			gerente_metodologias=metodologia,
+			gerente_certificaciones=certificacion,
+			gerente_fecha_creacion=fecha_creacion
 		)	
 		try:
 			gerente.save()      
-		except Error as e:
+		except Exception as e:
 			print(e)
 		finally:      
 			return "Se registro el gerente exitosamente."
@@ -49,7 +51,7 @@ class GerenteDao():
 
 		try:
 			gerente = Gerente.objects.get(gerente_id=id)
-		except Error as e:
+		except Exception as e:
 			print(e)
 		finally:
 			return gerente
@@ -65,9 +67,8 @@ class GerenteDao():
 		gerente.gerente_metodologias = metodologia
 		try:
 			gerente.save()
-		except Error as e:
+		except Exception as e:
 			print(e)
 		finally:
 			
 				return "Se actualizó la información del gerente exitosamente."
-

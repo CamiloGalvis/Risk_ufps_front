@@ -92,7 +92,15 @@ class RiesgoController():
 		devuleve como un objeto raw query
 		"""
 		riesgo_dao = RiesgoDao()
-		return riesgo_dao.get_riesgos_by_proyecto(proyecto)
+		riesgos = riesgo_dao.get_riesgos_by_proyecto(proyecto)
+		aa = []
+		for riesgo in riesgos:
+			riesgo_aux = model_to_dict(riesgo)
+			#print("RRRRR", riesgo_aux)
+			riesgo_aux['fecha_manifestacion'] = riesgo.fecha_manifestacion.strftime("%Y-%m-%d")
+			aa.append(riesgo_aux)
+			#riesgo['fecha_manifestacion'] = riesgo['fecha_manifestacion'].strftime("%Y-%m-%d")
+		return aa
 
 
 	def get_riesgos_by_proyecto_linea(self, proyecto, linea_base):        
@@ -156,10 +164,11 @@ class RiesgoController():
 
 		riesgo = riesgo_dao.obtener_riesgo(riesgo_id)
 		proyecto = proyecto_dao.obtener_proyecto(proyecto_id)
+		#print("VARIABLES", riesgo, proyecto)
 		proyecto_has_riesgo = proyecto_has_riesgo_dao.get_by_riesgo_and_proyecto_2(riesgo, proyecto)
-
+		#print("MI OBJETO", proyecto_has_riesgo)
 		if proyecto_has_riesgo.is_editado == 1:
-			proyecto_has_riesgo.actualizar_fecha(proyecto_has_riesgo, fecha)          
+			proyecto_has_riesgo_dao.actualizar_fecha(proyecto_has_riesgo, fecha)
 
 			return riesgo_dao.editar_riesgo(riesgo, nombre, causa, evento, efecto, tipo, riesgo.sub_categoria)
 		else:
@@ -190,10 +199,13 @@ class RiesgoController():
 		proyecto = Proyecto(proyecto_id=proyecto_id)
 		aux = {}
 		for riesgo in riesgos:
-			proyecto_has_riesgo = proyecto_has_riesgo_dao.get_by_riesgo_and_proyecto_2(riesgo, proyecto)
-			aux['riesgo_' + str(riesgo.riesgo_id)] = dict(
+			#print("SUPER IMPRESIONS", riesgo)
+			aa = Riesgo(riesgo_id=riesgo.get('riesgo_id'))
+			proyecto_has_riesgo = proyecto_has_riesgo_dao.get_by_riesgo_and_proyecto_2(aa, proyecto)
+			aux['riesgo_' + str(aa.riesgo_id)] = dict(
 				impacto_id=proyecto_has_riesgo.impacto_id,
-				propabilidad_id=proyecto_has_riesgo.propabilidad_id
+				propabilidad_id=proyecto_has_riesgo.propabilidad_id,
+				fecha_manifestacion=riesgo['fecha_manifestacion']
 			)
 		return aux
 
