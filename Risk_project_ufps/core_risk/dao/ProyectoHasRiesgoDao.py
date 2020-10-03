@@ -136,6 +136,20 @@ class ProyectoHasRiesgoDao():
             return "Se eliminó riesgo del proyecto de forma exitosa."
 
 
+    def set_responsable_null(self, responsable_id, riesgo_id, proyecto_id):
+        with closing(connections['riesgos'].cursor()) as cursor:
+            try:
+                sql = 'UPDATE `proyecto_has_riesgo` ' \
+                      'SET `responsable_id` = NULL  ' \
+                      'WHERE `proyecto_id` = %s ' \
+                      'AND `riesgo_id` = %s ' \
+                      'AND `responsable_id` = %s;'
+                cursor.execute(
+                    sql,
+                    [proyecto_id, riesgo_id, responsable_id],
+                )
+            except Exception as e:
+                print(e)
 
 
 

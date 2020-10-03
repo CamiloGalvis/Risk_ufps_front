@@ -1,7 +1,7 @@
 {% extends "procesos/plantilla_procesos.html" %}
 
 {% block title %} RiskProject UFPS | {{ proyecto.proyecto_nombre }} {% endblock %}
-
+ 
 
 {% block content %}
 
@@ -265,16 +265,8 @@
 <script src="{% static 'risk_project/dist/js/demo.js' %}"></script>
 
   <script>
-  $(function () {
-    $('#example1').DataTable()
-    $('#example2').DataTable({
-      'paging'      : true,
-      'lengthChange': true,
-      'searching'   : true,
-      'ordering'    : true,
-      'info'        : true,
-      'autoWidth'   : false
-    })
+  $(function () {    
+    trasnformar_tabla('example1');
   })
 </script>
 
@@ -322,6 +314,34 @@ function abrir_modal_editar(nombre, id) {
         return false;
     };
 
+function trasnformar_tabla(id_tabla) {
+  $("#"+id_tabla).DataTable({
+     "language": {
+         "sProcessing":    "Procesando...",
+         "sLengthMenu":    "Mostrar _MENU_ registros",
+         "sZeroRecords":   "No se encontraron resultados",
+         "sEmptyTable":    "Ningún dato disponible en esta tabla",
+         "sInfo":          "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+         "sInfoEmpty":     "Mostrando registros del 0 al 0 de un total de 0 registros",
+         "sInfoFiltered":  "(filtrado de un total de _MAX_ registros)",
+         "sInfoPostFix":   "",
+         "sSearch":        "Buscar:",
+         "sUrl":           "",
+         "sInfoThousands":  ",",
+         "sLoadingRecords": "Cargando...",
+         "oPaginate": {
+             "sFirst":    "Primero",
+             "sLast":    "Último",
+             "sNext":    "Siguiente",
+             "sPrevious": "Anterior"
+         },
+         "oAria": {
+             "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+             "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+         }
+     }
+    }); 
+}
 
 </script>
 

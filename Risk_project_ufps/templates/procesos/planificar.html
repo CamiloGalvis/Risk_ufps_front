@@ -222,7 +222,8 @@
             <tr>                    
               <th>Miembro</th>
               <th>Descripción</th>
-              <th>Acciones</th>                                       
+              <th>Rol</th>
+              <th>Opciones</th>                                       
             </tr>
           </thead>
           <tbody>
@@ -231,17 +232,18 @@
             <tr>                  
               <td>{{ responsable.responsble_nombre }}</td>
               <td>{{ responsable.responsble_descripcion }}</td>
+              <td>{{ responsable.rol.rol_nombre }}</td>
               <td>
 
                 {% if proyecto.proyecto_fin_status %}
-                <button type="button" class="btn btn-default" data-toggle="modal-editar" onclick="abrir_modal_editar('{{ responsable.responsable_id }}','{{ responsable.responsble_nombre }}', '{{ responsable.responsble_descripcion }}')" data-target="#modal-editar" disabled="true"><i   class="fa fa-edit"></i>
+                <button type="button" class="btn btn-default" data-toggle="modal-editar" onclick="abrir_modal_editar('{{ responsable.responsable_id }}','{{ responsable.responsble_nombre }}', '{{ responsable.responsble_descripcion }}','{{ responsable.rol.rol_id }}');" data-target="#modal-editar" disabled="true"><i class="fa fa-edit"></i>
                 </button>
 
 
                 <button type="button" class="btn btn-danger" data-toggle="#modal_eliminar" onclick="abrir_modal_eliminar('{{ responsable.responsble_nombre }}', '{{ responsable.responsable_id }}')" data-target="#modal_eliminar" disabled="true"><i class="fa fa-trash-o danger"></i>
                 </button>
                 {% else %}
-                <button type="button" class="btn btn-default" data-toggle="modal-editar" onclick="abrir_modal_editar('{{ responsable.responsable_id }}','{{ responsable.responsble_nombre }}', '{{ responsable.responsble_descripcion }}')" data-target="#modal-editar"><i   class="fa fa-edit"></i>
+                <button type="button" class="btn btn-default" data-toggle="modal-editar" onclick="abrir_modal_editar('{{ responsable.responsable_id }}','{{ responsable.responsble_nombre }}', '{{ responsable.responsble_descripcion }}','{{ responsable.rol.rol_id }}');" data-target="#modal-editar"><i class="fa fa-edit"></i>
                 </button>
 
 
@@ -257,6 +259,7 @@
             {% endfor %}
             {% else %}
             <tr>
+              <td></td>
               <td>Aun no cuentas con un equipo de gestión de riesgos.</td>
               <td></td>
               <td></td>                  
@@ -267,7 +270,8 @@
             <tr>                 
               <th>Miembro</th>
               <th>Descripción</th>
-              <th>Acciones</th>    
+              <th>Rol</th>
+              <th>Opciones</th>    
             </tr>
           </tfoot>
         </table>
@@ -407,45 +411,50 @@
           <span aria-hidden="true">&times;</span></button>
           <h4 class="modal-title">Agregar Miembro del equipo de gestión de riesgos</h4>
         </div>
-
         <div class="box-body">
+        {% if lista_roles|length > 0 %}
           <form  action="/mi_proyecto/registrar_responsable/" method="post">
-          {% csrf_token %}
-          <div class="row">
-            <div class="col-md-6">
-              <div class="form-group">
-                <label >Nombre </label>
-                <input type="text" class="form-control" id="nombre_responsable" name="nombre_responsable" required>
-              </div>
-               <div class="form-group">
-                <label >Rol </label>
-                {% if lista_roles %}
-                <select class="form-control select2" id="rol_id" name="rol_id">
-                {% for rol in lista_roles %}
-                <option value="{{ rol.rol_id }}">
-                  {{ rol.rol_nombre }}
-                </option>
-                {% endfor %} 
-              </select>
-              {% endif %} 
-              </div>                
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group"> 
+                  <label >Nombre </label>
+                  <input type="text" class="form-control" id="nombre_responsable" name="nombre_responsable" required>
+                </div>
+                 <div class="form-group">
+                  <label >Rol </label>
+                  {% if lista_roles %}
+                  <select class="form-control select2" id="rol_id" name="rol_id">
+                  {% for rol in lista_roles %}
+                  <option value="{{ rol.rol_id }}">
+                    {{ rol.rol_nombre }}
+                  </option>
+                  {% endfor %} 
+                </select>
+                {% endif %} 
+                </div>                
             </div>
             <!-- /.col -->
             <div class="col-md-6">             
               <div class="form-group">
                 <label>Descripción</label>
                <textarea class="form-control" rows="4"  id="descripcion_responsable" name="descripcion_responsable"></textarea>
-              </div>
-              <input type="text" class="form-control" id="proyecto_id" name="proyecto_id" value="{{ proyecto.proyecto_id }}" style="visibility:hidden">                
-            </div>            
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary pull-left" data-dismiss="modal">Cerrar</button>
-            <button type="submit" class="btn btn-primary pull-right">Actualizar</button>
-          </div>
+                </div>
+                <input type="text" class="form-control" id="proyecto_id" name="proyecto_id" value="{{ proyecto.proyecto_id }}" style="visibility:hidden">                
+              </div>            
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary pull-left" data-dismiss="modal">Cerrar</button>
+              <button type="submit" class="btn btn-primary pull-right">Agregar</button>
+            </div>
           <!-- /.row -->
-        </form>
+        </form>      
+        {% else %}
+        <div class="alert alert-info alert-dismissible">                
+          <h4><i class="icon fa fa-info"></i>  Atencion</h4> Hasta el momento no has definido roles para los miembros de tu equipo<br/>Para definir los roles dale clic <a href="/roles_equipo/">aqui</a>
       </div>
+        {% endif %} 
+        </div>       
     </div>
     <!-- /.modal-content -->
   </div>
@@ -473,7 +482,7 @@
                <div class="form-group">
                 <label >Rol </label>
                 {% if lista_roles %}
-              <select class="form-control select2" id="rol_id" name="rol_id">
+              <select class="form-control select2" id="rol_id_e" name="rol_id">
                 {% for rol in lista_roles %}
                 <option value="{{ rol.rol_id }}">
                   {{ rol.rol_nombre }}
@@ -490,6 +499,7 @@
                 <textarea class="form-control" rows="4"  id="responsable_descripcion" name="responsable_descripcion"></textarea>
               </div>
               <input type="text" class="form-control" id="responsable_id" name="responsable_id" style="visibility:hidden">                
+              <input type="text" class="form-control" id="proyecto_id_editar" name="proyecto_id_editar" value="{{ proyecto.proyecto_id }}" style="visibility:hidden">                
             </div>            
           </div>
           <div class="modal-footer">
@@ -522,6 +532,7 @@
             <p id="contenido_modal">&hellip;</p>
             <h2 id="responsable"></h2>           
             <input type="text" class="form-control" id="responsable_id_e" name="responsable_id" style="visibility:hidden">
+            <input type="text" class="form-control" id="proyecto_id_el" name="proyecto_id_el" value="{{ proyecto.proyecto_id}}" style="visibility:hidden">
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Cerrar</button>
@@ -828,17 +839,17 @@ function abrir_modal_eliminar(nombre, id) {
         return false;
     };
 
-function abrir_modal_editar(id, nombre, descripcion) {
-            
-        $("#modal-editar").modal('show');
-        var input_id = document.getElementById("responsable_id");
-        var input_nombre = document.getElementById("responsable_nombre");
-        document.getElementById("responsable_descripcion").innerHTML = ""+descripcion;
-        input_id.value = id;
-        input_nombre.value = nombre;
-        
-        return false;
-    };
+function abrir_modal_editar(id, nombre, descripcion, rol_id_e) {            
+  $("#modal-editar").modal('show');
+  var input_id = document.getElementById("responsable_id");
+  var input_nombre = document.getElementById("responsable_nombre");
+  var input_rol = document.getElementById("rol_id_e");
+  document.getElementById("responsable_descripcion").innerHTML = ""+descripcion;
+  input_id.value = id;
+  input_nombre.value = nombre;      
+  input_rol.value = rol_id_e;
+  return false;
+};
 
 
 

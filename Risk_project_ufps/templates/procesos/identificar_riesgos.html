@@ -134,18 +134,19 @@
               </div>          
             </div>
             <div class="chart tab-pane " id="sales-chart" style="position: relative; height: 300px; overflow:auto;">
-              <div class="box-body">
-                <div class="box-body">
-                  {% if lista_riesgos_sugeridos %}
 
-                  <table class="table table-bordered table-striped">
+              <!--<div class="box-body">-->
+                <div class="box-body">
+                  {% if lista_riesgos_sugeridos %}            
+
+                    <table class="table table-bordered table-striped">
                     <thead>
                       <tr>
                         <th></th>
                         <th>Nombre</th>
-                        <th>Causa</th>
+                        <!--<th>Causa</th>
                         <th>Evento</th>
-                        <th>Efecto</th>
+                        <th>Efecto</th>-->
                       </tr>
                     </thead>
                     <tbody>
@@ -153,9 +154,9 @@
                       <tr>
                         <td><input type="checkbox" value="{{riesgo.riesgo_id}}" name="riesgo_sugerido"></td>
                         <td>{{riesgo.riesgo_nombre}}</td> 
-                        <td>{{riesgo.riesgo_causa}}</td>
+                        <!--<td>{{riesgo.riesgo_causa}}</td>
                         <td>{{riesgo.riesgo_evento}}</td>
-                        <td>{{riesgo.riesgo_efecto}}</td>                
+                        <td>{{riesgo.riesgo_efecto}}</td>-->
                       </tr>
                       {% endfor %}
                     </tbody>
@@ -163,9 +164,9 @@
                       <tr>
                         <th></th>
                         <th>Nombre</th>
-                        <th>Causa</th>
+                        <!--<th>Causa</th>
                         <th>Evento</th>
-                        <th>Efecto</th>
+                        <th>Efecto</th>-->
                       </tr>
                     </tfoot>
                   </table>
@@ -208,7 +209,7 @@
                   </table>
                   {% endif %}
                 </div>
-              </div> 
+              <!--</div> -->
             </div>
             <div class="form-group">
               <div class="row no-print">
@@ -330,7 +331,7 @@
         <h4 class="modal-title">Riesgo</h4>
       </div>
       <div class="modal-body">
-        <div class="box-body">
+        <div class="box-body" id="body_nuevo_riesgo">
         <form id="nuevo_riesgo">
           {% csrf_token %}
           <div class="row">
@@ -338,28 +339,28 @@
               <div class="form-group">
                 <div class="form-group">
                   <label >Nombre Riesgo</label>
-                  <input type="text" class="form-control" id="nombre" placeholder="Ingrese Nombre del riesgo" name="riesgo_nombre">
+                  <input type="text" class="form-control" id="nombre" placeholder="Ingrese Nombre del riesgo" maxlength="45" name="riesgo_nombre" required>
                 </div>
                 <div class="form-group">
                   <label>Subcategoría a la que pertence</label>              
-                  <select class="form-control" name="sub_categoria_id" id="sub_categoria_id">    
+                  <select class="form-control" name="sub_categoria_id" id="sub_categoria_id" required="">    
                   </select>
                 </div>
                 <div class="form-group">
                   <label>Causa</label>
-                  <textarea class="form-control" rows="3" placeholder="Descripción de la causa..." name="riesgo_causa"></textarea>
+                  <textarea class="form-control" rows="3" placeholder="Descripción de la causa..." name="riesgo_causa" maxlength="200" required></textarea>
                 </div> 
                 <div class="form-group">
                   <label>Evento</label>
-                  <textarea class="form-control" rows="3" placeholder="Descripción del evento..." name="riesgo_evento"></textarea>
+                  <textarea class="form-control" rows="3" placeholder="Descripción del evento..." name="riesgo_evento" maxlength="200" required></textarea>
                 </div>
               </div>
             </div>
             <!-- /.col -->
-            <div class="col-md-6">
+            <div class="col-md-6">             
               <div class="form-group">
                 <label>Tipo</label>
-                <select class="form-control select2" style="width: 100%;" name="riesgo_tipo">
+                <select class="form-control select2" style="width: 100%;" name="riesgo_tipo" required>
                   <option selected="selected" value="0">Riesgo</option>
                   <option value="1">Oportunidad</option>
 
@@ -367,7 +368,7 @@
               </div> 
               <div class="form-group">
                 <label>Efecto</label>
-                <textarea class="form-control" rows="3" placeholder="Descripción del efecto..." name="riesgo_efecto"></textarea>
+                <textarea class="form-control" rows="3" placeholder="Descripción del efecto..." name="riesgo_efecto" maxlength="200" required></textarea>
               </div>
               {% if proyecto %}
                 <input type="text" name="proyecto_id" value="{{ proyecto.proyecto_id }}" hidden>
@@ -379,7 +380,7 @@
             <!-- /.col -->
           </div>
           <!-- /.row -->
-        </form>
+        </form>        
       </div>
       </div>
       <div class="modal-footer">
@@ -443,7 +444,7 @@
         </div>
         <div class="chart tab-pane" id="nueva-respuesta" style="position: relative; height: 300px;">
          <div class="box-body">
-          <form action="/proyecto/{{ proyecto.proyecto_id }}/nueva_respuesta/" method="post">
+          <form action="/proyecto/{{ proyecto.proyecto_id }}/nueva_respuesta_identificar/" method="post">
             {% csrf_token %}
             <div class="row">
               <div class="col-md-6">
@@ -584,7 +585,7 @@
                {% if proyecto.proyecto_fin_status %}
                <button type="submit" class="btn btn-primary pull-right" disabled="true">Agregar</button>  
                {% else %}
-               <button type="submit" class="btn btn-primary pull-right">Agregar</button>
+               <button type="submit" id="btn_agregar_actividad" class="btn btn-primary pull-right">Agregar</button>
                {% endif %}   
                
              </div>
@@ -626,7 +627,6 @@
             <div class="chart tab-pane active" id="listado-responsables" style="position: relative; height: 300px;">
 
              <div class="box-body">
-
                <table id="tabla_responsables" class="table table-bordered table-striped">
                 <thead>
                   <tr>
@@ -634,23 +634,8 @@
                     <th>Acciones</th>                                      
                   </tr>
                 </thead>
-                <tbody >         
-                  {% if responsables_riesgo %}
-                  {% for responsable in responsables_riesgo %}
+                <tbody id="responsables_by_riesgo">         
                   
-                  <tr>
-                    <td>{{ responsable.responsble_nombre }}</td>                                       
-                    <td>
-                      <button type="button" class="btn btn-danger" data-toggle="#modal_eliminar" onclick="abrir_modal_eliminar('{{ riesgo.riesgo_nombre }}', '{{ riesgo.riesgo_id }}')" data-target="#modal_eliminar"><i class="fa fa-trash-o danger"></i>
-                      </button>
-                    </td>
-                  </tr>
-                    
-                  {% endfor %}
-                  {% else %}
-                    <td>No cuentas con responsables asociados a este riesgo.</td>
-                    <td></td>
-                  {% endif %} 
                 </tbody>
                 <tfoot>
                   <tr>
@@ -679,7 +664,8 @@
                      </option>
                      {% endfor %}
                      {% else %}
-                     <p>No cuentas con responsables asociados al proyecto.</p>
+                     <div class="alert alert-info alert-dismissible"><h4><i class="icon fa fa-info"></i>  Atencion</h4> Hasta el momento este proyecto no cuenta con un equipo de gestion de riesgos para poder asignar reponsables<br/></br> Si usted lo desea, puede definir su equipo de gestion de riesgos dando clic 
+                  <a href="/mi_proyecto/{{proyecto.proyecto_id}}/planificar/">aqui</a></div>
                      {% endif %} 
                    </select>
                  </div>
@@ -746,10 +732,11 @@
                   <label>Efecto</label>
                   <p id="efecto_riesgo_info"></p>
                 </div>
+                <!--
                 <div class="form-group">
                   <label>Fecha manifestación</label>
                   <p id="fecha_riesgo_info"></p>
-                </div>
+                </div> -->
               </div>
             </div>
             <div class="modal-footer">
@@ -813,7 +800,7 @@
                   <label>Efecto</label>
                   <textarea class="form-control" rows="3"  id="riesgo_efecto" name="riesgo_efecto"></textarea>
                 </div>
-                <div class="form-group">
+                <!--<div class="form-group">
                   <label>Fecha de Manifestación</label>
                   <div class="input-group date">
                   <div class="input-group-addon">
@@ -821,7 +808,7 @@
                   </div>
                   <input type="date" class="form-control pull-right" id="riesgo_fecha_manifestacion_id" name="riesgo_fecha_manifestacion">
                 </div>
-                </div>
+                </div>-->
                 <input type="text" class="form-control" id="riesgo_id_editar" name="riesgo_id_editar" style="visibility: hidden;">
 
               </div>
@@ -868,7 +855,32 @@
       <!-- /.modal-dialog -->
     </div>
 <!-- /.modal-eliminar -->
-
+  <div class="modal modal-danger fade" id="modal_eliminar_responsable" >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title"> Eliminar </h4>
+          </div>
+          <form  action="/proyecto/{{ proyecto.proyecto_id }}/eliminar_responsable_riesgo/" method="post">
+            {% csrf_token %}
+          <div class="modal-body">
+            <p id="contenido_modal_re">&hellip;</p>
+            <h2 id="nombre_riesgo_re">rrrr</h2>            
+            <input type="text" class="form-control" id="riesgo_id_e_r" name="riesgo_id" style="visibility: hidden;">      
+            <input type="text" class="form-control" id="responsable_id_e_r" name="responsable_id" style="visibility: hidden;">       
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Cerrar</button>
+            <button type="submit" class="btn btn-outline">Eliminar</button>
+          </div>
+          </form>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+    </div>
 <!-- modal eliminar actividad -->
   <div class="modal modal-danger fade" id="modal_eliminar_actividad" >
     <div class="modal-dialog">
@@ -897,7 +909,34 @@
       <!-- /.modal-dialog -->
     </div>
 <!-- modal eliminar actividad -->
-</div>
+
+  <div class="modal modal-danger fade" id="modal_eliminar_respuesta" >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title"> Eliminar </h4>
+        </div>
+        <form  action="/mi_proyecto/{{ proyecto.proyecto_id }}/desasociar_respuesta_identificar/" method="post">
+          {% csrf_token %}
+          <div class="modal-body">
+            <p id="contenido_modal_actividad">&hellip;</p>
+            <h2 id="nombre_rta_me"></h2>
+            <input type="text" class="form-control" id="respuesta_id_eliminar" name="respuesta_id_eliminar" style="visibility: hidden;" />         
+            <input type="text" class="form-control" id="riesgo_id_eliminar" name="riesgo_id_eliminar" style="visibility: hidden;" />               
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Cerrar</button>
+            <button type="submit" class="btn btn-outline">Eliminar</button>
+          </div>
+        </form>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+    </div>
+
 
 
 
@@ -927,6 +966,7 @@
 {% block organigrama_down %}
 {% load static %}
 <script src="{% static 'risk_project/dist/js/risk_ufps/risk_config.js' %}"></script>
+<script src="{% static 'risk_project/plugins/sweetalert/sweetalert.js' %}"></script>
 
 
 
@@ -944,7 +984,7 @@
 
   var actividades = JSON.parse("{{lista_actividades|escapejs}}");   
 
-  var actividades_riesgo = JSON.parse("{{actividades_riesgo|escapejs}}")
+  var actividades_riesgo = JSON.parse("{{actividades_riesgo|escapejs}}");
 
   console.log(respuestas_riesgo);
 
@@ -952,6 +992,9 @@
 
   var diccionario = {};
 
+  var responsables_riesgo = JSON.parse("{{responsables_riesgo|escapejs}}");
+
+  console.log('responsables_riesgo',responsables_riesgo);
 
 function formatear_data(){  
   data.forEach(function(element){
@@ -968,7 +1011,7 @@ function cargarCategorias() {
 //Función para agregar opciones a un <select>.
 function addOptions(domElement, mi_array) {
     var selector = document.getElementsByName(domElement)[0];
-    selector.innerHTML = '<option value="-1">Seleccione una Categoria...</option>'
+    selector.innerHTML = '<option value="">Seleccione una Categoria...</option>'
     for (var i = 0; i < mi_array.length; i++) {
         var optgroup = document.createElement("optgroup");
         optgroup.setAttribute("label", mi_array[i]["categoria"]["categoria_nombre"]);
@@ -1039,7 +1082,8 @@ function asosiar_riesgos(proyecto_id){
   console.log(riesgos_sugeridos);
   let aux = [];
   let aux_sugeridos = [];
-  for (var i = 0; i < riesgos_seleccionados.length; i++) {
+  if( riesgos_seleccionados.length > 0 || riesgos_sugeridos.length > 0){
+    for (var i = 0; i < riesgos_seleccionados.length; i++) {
     aux.push(riesgos_seleccionados[i].value);
   }
   for (var i = 0; i < riesgos_sugeridos.length; i++) {
@@ -1052,16 +1096,26 @@ function asosiar_riesgos(proyecto_id){
     //contentType:'json',   
     data: {"riesgos_seleccionados":JSON.stringify(aux), "riesgos_sugeridos": JSON.stringify(aux_sugeridos)},
     success: function(data, status, xhr) {
-      alert("Asignados correctamente");
-      location.reload();
-       console.log(xhr);
+       Swal.fire(
+          '¡ Registro exitoso !',
+          'los riesgos se han agregado',
+          'success'
+        ).then(function () {
+          location.reload();
+        });          
     },
     error: function(jqXhr, textStatus, errorMessage) {
-      alert("ha ocurrido un error");
-      location.reload();
       console.log(errorMessage);
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: '¡ No se pudo registrar los riesgos  !',             
+      }).then(function () {
+        location.reload();
+      });
     }
   });
+  }  
 }
 </script>
 <script >
@@ -1083,9 +1137,11 @@ function asosiar_riesgos(proyecto_id){
         boton.setAttribute("type", "button");
         boton.setAttribute("class", "btn btn-danger");
         
-        boton.setAttribute("data-toggle", "#modal_eliminar");//NO SE LE OLVIDE CAMBIAR EL MODAL
-        boton.setAttribute("onclick", "abrir_modal_eliminar('"+respuestas[i]["respuesta_nombre"]+"', '"+respuestas[i]["respuesta_id"]+"')" );
-        boton.setAttribute("data-target", "#modal_eliminar");//NO SE LE OLVIDE CAMBIAR EL MODAL
+        boton.setAttribute("data-toggle", "#modal_eliminar_respuesta");
+        boton.setAttribute(
+          "onclick", 
+          "abrir_modal_eliminar_respuesta('"+id_riesgo+"','"+respuestas[i]["respuesta_id"]+"','"+respuestas[i]["respuesta_nombre"]+"');" );
+        boton.setAttribute("data-target", "#modal_eliminar_respuesta");
         let mi_icon = document.createElement("i");
         mi_icon.setAttribute("class", "fa fa-trash-o danger")
         if("{{proyecto.proyecto_fin_status}}"==1){
@@ -1129,19 +1185,26 @@ function asosiar_riesgos(proyecto_id){
         return false;
     };
 
-  function abrir_modal_responsables(id_riesgo, responsables) {        
-
-        
-        $("#modal_responsables").modal('show');
-        var input_id = document.getElementById("riesgo_id_re");
-        input_id.value = id_riesgo;
-       
-        
-          
-
-                
-                return false;
-    };
+  function abrir_modal_responsables(id_riesgo, responsables) {               
+    var input_id = document.getElementById("riesgo_id_re");
+    input_id.value = id_riesgo;
+    var responsables_by_riesgo = document.getElementById("responsables_by_riesgo");
+    responsables_by_riesgo.innerHTML = '';
+    if(responsables_riesgo.length > 0){
+      for (var i = 0; i < responsables_riesgo.length; i++) {
+        if(responsables_riesgo[i]['riesgo_id'] == id_riesgo){
+          let str = '<tr><td>'+responsables_riesgo[i]["responsble_nombre"]+'</td><td><button type="button" class="btn btn-danger" data-toggle="#modal_eliminar_responsable_" onclick="abrir_modal_eliminar_responsable(\''+responsables_riesgo[i]["responsable_id"]+'\', \''+responsables_riesgo[i]["responsble_nombre"]+'\', \''+id_riesgo+'\')" data-target="#modal_eliminar"><i class="fa fa-trash-o danger"></i></button></td></tr>';
+          let html = $.parseHTML(str);
+          $(responsables_by_riesgo).append(html);
+        }
+      }
+    }else{
+      let str = '<td>No cuentas con responsables asociados a este riesgo.</td><td></td>';
+      let html = $.parseHTML(str);
+      $(responsables_by_riesgo).append(html);
+    }
+     $("#modal_responsables").modal('show');
+  };
 
   function abrir_modal_editar() {        
 
@@ -1159,7 +1222,7 @@ function asosiar_riesgos(proyecto_id){
         document.getElementById("evento_riesgo_info").innerHTML = " "+evento;
         document.getElementById("efecto_riesgo_info").innerHTML = " "+efecto;
         document.getElementById("tipo_riesgo_info").innerHTML = " "+tipo_nombre;
-        document.getElementById("fecha_riesgo_info").innerHTML = " "+ fecha;
+        //document.getElementById("fecha_riesgo_info").innerHTML = " "+ fecha;
         
         
         return false;
@@ -1181,14 +1244,26 @@ function asosiar_riesgos(proyecto_id){
         
   }
 
-    function abrir_modal_eliminar(id, nombre) {        
-        $("#modal_eliminar").modal('show');
-        document.getElementById("contenido_modal").innerHTML = "Estas seguro que desea eliminar el riesgo del proyecto? Esta acción no se podra reversar.";
-        document.getElementById("nombre_riesgo_me").innerHTML = " "+nombre;
-        var input_id = document.getElementById("riesgo_id_e");
-        input_id.value = id;        
-        return false;
-    };
+  function abrir_modal_eliminar(id, nombre) {        
+    console.log("id", id);
+    console.log("nombre", nombre);
+    $("#modal_eliminar").modal('show');
+    document.getElementById("contenido_modal").innerHTML = "Estas seguro que desea eliminar el riesgo del proyecto? Esta acción no se podra reversar.";
+    document.getElementById("nombre_riesgo_me").innerHTML = " "+nombre;
+    var input_id = document.getElementById("riesgo_id_e");
+    input_id.value = id;        
+  };
+
+  function abrir_modal_eliminar_responsable(id_responsable, nombre, id_riesgo) {        
+    //console.log("id", id);
+    //console.log("nombre", nombre);
+    $("#modal_eliminar_responsable").modal('show');
+    document.getElementById("contenido_modal_re").innerHTML = "¿Estas seguro que desea eliminar este responsable del riesgo?";
+    document.getElementById("nombre_riesgo_re").innerHTML = " "+nombre;
+    var input_id = document.getElementById("riesgo_id_e_r");
+    input_id.value = id_riesgo;        
+    document.getElementById('responsable_id_e_r').value = id_responsable;        
+  };
 
   function abrir_modal_eliminar_actividad(riesgo_id, actividad_id, actividad_nombre) {        
     $("#modal_eliminar_actividad").modal('show');
@@ -1197,6 +1272,16 @@ function asosiar_riesgos(proyecto_id){
     document.getElementById("riesgo_id_actividad").value = riesgo_id;        
     document.getElementById("actividad_id_riesgo").value = actividad_id;
   };
+
+  function abrir_modal_eliminar_respuesta(riesgo_id, respuesta_id, respuesta_nombre) {            
+    document.getElementById("contenido_modal_actividad").innerHTML = "¿Estas seguro que desea eliminar la siguiente accion del riesgo?";
+    document.getElementById("nombre_rta_me").innerHTML = " "+respuesta_nombre;
+    document.getElementById("riesgo_id_eliminar").value = riesgo_id;        
+    document.getElementById("respuesta_id_eliminar").value = respuesta_id;
+    $("#modal_eliminar_respuesta").modal('show');   
+  };
+
+  
 </script>
 <script type="text/javascript">
   //////////////////////////////////////
@@ -1227,11 +1312,27 @@ function asosiar_riesgos(proyecto_id){
 
   construir_listado_actividades();
   trasnformar_tabla("tabla_riesgos"); 
-    
+
+  if(data.length == 0 || contar_subcategorias() == 0){
+    body_nuevo_riesgo = document.getElementById('body_nuevo_riesgo');
+    body_nuevo_riesgo.innerHTML = '';
+    let str = '<div class="alert alert-info alert-dismissible"><h4><i class="icon fa fa-info"></i>  Atencion</h4> Hasta el momento usted no cuenta con subcategorias para asignar riesgos<br/>Para definir nuevas subcategorias dale clic <a href="/mi_rbs/">aqui</a></div>';
+      let html = $.parseHTML(str);
+      $(body_nuevo_riesgo).append(html);
+  }
 });
+
+function contar_subcategorias() {
+  let cont = 0;
+  for (var i = 0; i < data.length; i++) {
+    cont += data[i]['subcategorias'].length;
+  }
+  return cont;
+}
 
 function construir_listado_actividades() {
   let div_actividades = document.getElementById("bloq_subcategorias");
+  div_actividades.innerHTML = '';
   let select_actividades = document.createElement("select");
   select_actividades.setAttribute("class", "form-control select2");
   select_actividades.setAttribute("id", "actividad_id");
@@ -1248,12 +1349,15 @@ function construir_listado_actividades() {
       opcion.appendChild(document.createTextNode(actividades[i]["actividad_nombre"]));
       select_actividades.appendChild(opcion);
     }
+    div_actividades.appendChild(select_actividades);
   }else{
-    let p = document.createElement("p");
-    p.appendChild(document.createTextNode("No cuentas con actividades asociadas al proyecto."));
-    select_actividades.appendChild(p);     
+    body_nuevo_riesgo.innerHTML = '';
+    let str = '<div class="alert alert-info alert-dismissible"><h4><i class="icon fa fa-info"></i>  Atencion</h4> Hasta el momento este proyecto no cuenta con actividades del cronograma<br/> Si usted lo desea, puede subir las actividades dando clic <a href="/mi_proyecto/{{proyecto.proyecto_id}}/">aqui</a></div>';
+      let html = $.parseHTML(str);
+      $(div_actividades).append(html); 
+      let bbb = document.getElementById("btn_agregar_actividad");
+      bbb.setAttribute('style',"visibility: hidden;");
   }
-  div_actividades.appendChild(select_actividades);
 }
 
 function construir_listado_actividades_riesgos(riesgo_id) {  

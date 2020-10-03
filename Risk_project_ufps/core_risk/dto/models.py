@@ -216,6 +216,7 @@ class Responsble(models.Model):
     proyecto = models.ForeignKey(Proyecto, models.DO_NOTHING)
     rol = models.ForeignKey('Rol', models.DO_NOTHING)
     proyecto_linea_base = models.IntegerField(blank=True, null=True)
+    riesgo_id = int()
 
     class Meta:
         managed = False
@@ -230,6 +231,7 @@ class Respuesta(models.Model):
     fecha_inicio_respuesta = str()
     riesgo_has_respuesta_id = int()
     proyecto_linea_base = models.IntegerField(blank=True, null=True)
+    respuesta_tipo = models.CharField(max_length=30)
 
     class Meta:
         managed = False
@@ -249,7 +251,7 @@ class Riesgo(models.Model):
     riesgo_is_proyecto = int()
     impacto_id = int()
     propabilidad_id = int()
-    fecha_manifestacion = str
+    #fecha_manifestacion = str
     proyecto_linea_base = models.IntegerField(blank=True, null=True)
 
     class Meta:

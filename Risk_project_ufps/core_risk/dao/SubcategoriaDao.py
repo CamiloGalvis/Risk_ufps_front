@@ -74,19 +74,18 @@ class SubcategoriaDao():
         """Aqui la subcategoria es un Models"""
         sub_categoria = None        
         try:
-            sub_categoria_aux = SubCategoria.objects.get(sub_categoria_nombre = subcategoria.sub_categoria_nombre, categoria = categoria)
-            if(sub_categoria_aux):
-                sub_categoria = sub_categoria_aux
-            else:
-                sub_categoria = SubCategoria.objects.create(
-                    sub_categoria_nombre = subcategoria.sub_categoria_nombre,
-                    sub_categoria_descripcion = subcategoria.sub_categoria_descripcion,
-                    sub_categoria_default = 2,
-                    sub_categoria_uid = subcategoria.sub_categoria_uid,
-                    categoria = categoria
-                )
-        except Exception as e:
-            raise e        
+            sub_categoria = SubCategoria.objects.get(
+                sub_categoria_nombre=subcategoria.sub_categoria_nombre,
+                categoria=categoria
+            )
+        except SubCategoria.DoesNotExist:
+            sub_categoria = SubCategoria.objects.create(
+                sub_categoria_nombre=subcategoria.sub_categoria_nombre,
+                sub_categoria_descripcion=subcategoria.sub_categoria_descripcion,
+                sub_categoria_default=2,
+                sub_categoria_uid=subcategoria.sub_categoria_uid,
+                categoria=categoria
+            )
         finally:
             return sub_categoria
 

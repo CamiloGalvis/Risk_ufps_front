@@ -41,4 +41,8 @@ class ResponsableController():
 		responsable_dao = ResponsableDao()
 		return responsable_dao.eliminar_responsable(responsable)
 
+	def eliminar_responsable_riesgo(self, responsable_id, riesgo_id, proyecto_id):
+		responsable_dao = ResponsableDao()
+		responsable_dao.eliminar_responsable_riesgo(responsable_id, riesgo_id, proyecto_id)
+
 	

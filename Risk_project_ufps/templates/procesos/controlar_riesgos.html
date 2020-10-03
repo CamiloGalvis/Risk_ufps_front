@@ -5,7 +5,7 @@
 {% load static %}
 
 {% block organigrama_up %}
-
+  
 {% endblock %}
 
 {% block content %}
@@ -81,7 +81,12 @@
             </div>
             <div class="box-body">
               <!--<button onclick="obtener_mi_json()">obtener json</button>-->
-              
+              <ul class="chart-legend clearfix">               
+                <span class="label pull-left" style="background-color:#E75A10; ">Riesgo</span>       
+                <span class="label pull-left" style="background-color:#65B225;">Acciones</span>
+                <span class="label pull-left"style="background-color:#2585B2;">Tareas</span>
+              </ul>
+              <br>
               <div id="gantt_here" style='width:100%; height:50vh;'></div>
             </div>
           </div>
@@ -199,7 +204,8 @@
         parent:0, 
         progress: 0, 
         open: true,  
-        is_tarea:false,        
+        is_tarea:false,   
+        color:"#E75A10",     
       }
     ];
     Object.keys(respuestas_riesgo).forEach(function(key) {
@@ -217,6 +223,7 @@
           progress: 0, 
           open: true,
           is_tarea:false,
+          color:"#65B225",
         });
         let tareas = get_tareas_by_riesgo_and_respuesta(key, respuestas[i]);        
         tareas = tareas.sort(function(a, b) {
@@ -233,6 +240,7 @@
             duration: tareas[j]['duracion'], 
             parent:padre, 
             progress: 0, 
+            color:"#2585B2", 
             tarea_id:tareas[j]['tarea_id'],
             fecha_inicio:tareas[j]['fecha_inicio'],
             fecha_fin:tareas[j]['fecha_fin'],

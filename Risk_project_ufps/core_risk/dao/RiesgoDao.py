@@ -15,7 +15,7 @@ class RiesgoDao():
 				riesgo_tipo = tipo,             
 				sub_categoria = subcategoria)
 			riesgo.save()       
-		except Error as e:
+		except Exception as e:
 			print(e)
 		finally:
 			return "Se registró un riesgo exitosamente."
@@ -95,7 +95,14 @@ class RiesgoDao():
 			return riesgos
 
 	def registrar_riesgo_proyecto(self, nombre, causa, evento, efecto, tipo, subcategoria, proyecto):
-		riesgo = Riesgo(riesgo_nombre = nombre, riesgo_causa = causa, riesgo_evento = evento, riesgo_efecto = efecto, riesgo_tipo = tipo, sub_categoria = subcategoria)
+		riesgo = Riesgo(
+			riesgo_nombre=nombre,
+			riesgo_causa=causa,
+			riesgo_evento=evento,
+			riesgo_efecto=efecto,
+			riesgo_tipo=tipo,
+			sub_categoria=subcategoria
+		)
 		riesgo.save()   
 		p_h_r_dao = ProyectoHasRiesgoDao()
 		return p_h_r_dao.registrar_proyecto_riesgo(proyecto, riesgo)
@@ -109,7 +116,7 @@ class RiesgoDao():
 	def get_riesgos_by_proyecto(self, proyecto):
 		riesgos = []
 		try:
-			sql = "SELECT r.`riesgo_id`, r.`riesgo_nombre`, r.`riesgo_causa`, r.`riesgo_evento`, r.`riesgo_efecto`,r.`riesgo_tipo`,r.`riesgo_prom_evaluacion`, r.`riesgo_uid`,r.`sub_categoria_id`, p_h_r.impacto_id, p_h_r.propabilidad_id, p_h_r.fecha_manifestacion FROM `riesgo` r INNER JOIN proyecto_has_riesgo p_h_r ON r.`riesgo_id` = p_h_r.riesgo_id WHERE p_h_r.proyecto_id = %s"
+			sql = "SELECT r.`riesgo_id`, r.`riesgo_nombre`, r.`riesgo_causa`, r.`riesgo_evento`, r.`riesgo_efecto`,r.`riesgo_tipo`,r.`riesgo_prom_evaluacion`, r.`riesgo_uid`,r.`sub_categoria_id`, p_h_r.impacto_id, p_h_r.propabilidad_id FROM `riesgo` r INNER JOIN proyecto_has_riesgo p_h_r ON r.`riesgo_id` = p_h_r.riesgo_id WHERE p_h_r.proyecto_id = %s"
 			riesgos = Riesgo.objects.raw(sql, [proyecto.proyecto_id,])
 		except Exception as e:
 			print(e)
@@ -153,13 +160,14 @@ class RiesgoDao():
 		riesgo = None
 		try:
 			riesgo = Riesgo.objects.create(
-				riesgo_nombre = nombre,
-				riesgo_causa = "",
-				riesgo_evento = "",
-				riesgo_efecto = "",
-				riesgo_tipo = 0,    
-				riesgo_uid = riesgo_uid,         
-				sub_categoria = subcategoria)           
+				riesgo_nombre= nombre,
+				riesgo_causa="Sin Causa definida",
+				riesgo_evento="Sin Evento definido",
+				riesgo_efecto="Sin efecto definido",
+				riesgo_tipo=0,
+				riesgo_uid=riesgo_uid,
+				sub_categoria=subcategoria
+			)
 		except Exception as e:
 			raise e
 		finally:

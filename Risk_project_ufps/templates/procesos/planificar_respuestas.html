@@ -202,12 +202,8 @@
         </div>
         <div class="chart tab-pane" id="nueva-tarea" style="position: relative; height: 300px; overflow-y:auto;">
          <div class="box-body" id="tab_nueva_tarea">
-          <div class="alert alert-info alert-dismissible">
-            <h4><i class="icon fa fa-info"></i> Atencion!</h4>
-                Tenga en cuenta las siguientes fechas:
-                <div id="fechas_noti">
-                  
-                </div>
+          <div id="fechas_noti_content">
+            
           </div>
           <form action="/mi_proyecto/{{ proyecto.proyecto_id }}/nueva_tarea/" method="post">
             {% csrf_token %}
@@ -1309,14 +1305,18 @@
 
 
   function cambiar_fechas() {
-    let riesgo_id = document.getElementById("riesgo_id_ta").value;
-    let fechas_noti = document.getElementById("fechas_noti");
-    fechas_noti.innerHTML = "";  
-    var ul = document.createElement('ul');
-    var li = document.createElement('li');
+    let riesgo_id = document.getElementById("riesgo_id_ta").value;    
+    let fechas_noti_content = document.getElementById("fechas_noti_content");
+    fechas_noti_content.innerHTML = '';
+    /*var li = document.createElement('li');
     li.append(document.createTextNode("Fecha de planeada del riesgo: " +get_fecha_by_riesgo_id(riesgo_id)));
-    ul.append(li);
+    ul.append(li);*/
     if(actividades_by_riesgos.hasOwnProperty("riesgo_"+riesgo_id)){
+      let str = '<div class="alert alert-info alert-dismissible" id="fechas_noti_content"><h4><i class="icon fa fa-info"></i> Atencion!</h4>Tenga en cuenta las siguientes fechas:<div id="fechas_noti"></div></div>';
+      let html = $.parseHTML(str);
+      $(fechas_noti_content).append(html);
+      let fechas_noti = document.getElementById("fechas_noti");
+      var ul = document.createElement('ul');
       let riesgo = actividades_by_riesgos["riesgo_"+riesgo_id];
       console.log(riesgo);
       for (var i = 0; i < riesgo.length; i++) {
@@ -1333,12 +1333,12 @@
     }
   }
 
- function get_fecha_by_riesgo_id(riesgo_id) {
+ /*function get_fecha_by_riesgo_id(riesgo_id) {
     let key = "riesgo_"+riesgo_id;
     if(riesgos_evaluados.hasOwnProperty(key)){
       return riesgos_evaluados[key]['fecha_manifestacion'];
     }
- }
+ }*/
 
   function construir_select_respuesta_for_tareas(id_riesgo){  
     let tab_nueva_tarea = document.getElementById('tab_nueva_tarea');

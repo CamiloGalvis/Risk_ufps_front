@@ -13,11 +13,11 @@
   <section class="content-header">
 
     <h1>
-      Respuestas
+      Acciones
       <small>Nueva Acción de Respuesta</small>
     </h1>
     <ol class="breadcrumb">
-      <li><a href="#"><i class="fa fa-dashboard"></i> Respuesta</a></li>
+      <li><a href="#"><i class="fa fa-dashboard"></i> Accion</a></li>
       <li class="active">Nueva Acción de Respuesta</li>
     </ol>
 
@@ -32,12 +32,26 @@
 
 
   <section class="content">
+    <div class="box box-primary">
+      <div class="box-header with-border">
+        <h3 class="box-title">Acciones de respuesta</h3>
+        <div class="box-tools pull-right">
+          <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+          </button>
+        </div>
+      </div>        
+      <div class="box-body" style="">
+        <p>Un plan de respuesta a los riesgos propone una serie de acciones y estrategias para poder dar una solución a cada uno de los riesgos identificados.<br><br>
+        En esta seccion, se podran visualizar todas las acciones de respuestas definidas para todos los riesgos definidos dentro de sus proyectos.<br></p>
+      </div>
+    </div>
     <!-- SELECT2 EXAMPLE -->
     <div class="box box-primary">
       <div class="box-header with-border">
         <h3 class="box-title">Registrar Acción de Respuesta</h3>        
       </div>     
       <div class="box-body">
+        {% if lista_riesgos|length > 0 %}
         <form action="{% url 'nueva_respuesta' %}" method="post">
           {% csrf_token %}
           <div class="row">
@@ -77,6 +91,11 @@
           </div>
           <!-- /.row -->
         </form>
+        {% else %}
+        <div class="alert alert-info alert-dismissible">                
+          <h4><i class="icon fa fa-info"></i>  Atencion</h4> Hasta el momento no cuentas con un ningun riesgo definido dentro de su historial de riesgos.<br/>Para crear nuevas acciones de respuesta primero debe identificar riesgos a cualquiera de sus proyectos.
+      </div>
+        {% endif %}
       </div><!-- /.box-body -->
 
     </div>  

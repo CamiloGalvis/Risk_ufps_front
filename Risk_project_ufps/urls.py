@@ -48,15 +48,17 @@ urlpatterns = [
     path('mi_proyecto/editar_responsable/', editar_responsable, name='editar_responsable'),
     path('mi_proyecto/eliminar_responsable/', eliminar_responsable, name='eliminar_responsable'),
     
-    path('mi_proyecto/<int:proyecto_id>/identificar/', identificar_proyecto, name='mi_proyecto'),
+    path('mi_proyecto/<int:proyecto_id>/identificar/', identificar_proyecto, name='identificar'),
     path('proyecto/riesgo/insertar/', registrar_riesgo_proyecto, name='mi_proyecto'),
     path('proyecto/<int:proyecto_id>/eliminar_riesgo/', eliminar_riesgo_proyecto, name='eliminar_riesgo_proyecto'),
     path('proyecto/<int:proyecto_id>/nueva_respuesta/', proyecto_nueva_respuesta, name='proyecto_nueva_respuesta'),
     path('proyecto/<int:proyecto_id>/responsable_riesgo/', nuevo_responsable_riesgo, name='nuevo_responsable_riesgo'),
+    path('proyecto/<int:proyecto_id>/eliminar_responsable_riesgo/', eliminar_responsable_riesgo, name='eliminar_responsable_riesgo'),
     path('proyecto/<int:proyecto_id>/actividad_riesgo/', nueva_actividad_riesgo, name='nueva_actividad_riesgo'),
     path('proyecto/<int:proyecto_id>/eliminar_actividad_proyecto/', eliminar_actividad_proyecto, name='eliminar_actividad_proyecto'),
     path('proyecto/<int:proyecto_id>/editar_riesgo/', editar_riesgo_proyecto, name='editar_riesgo_proyecto'),
-    
+    path('proyecto/<int:proyecto_id>/nueva_respuesta_identificar/', nueva_respuesta_identificar, name='nueva_respuesta_identificar'),
+    path('mi_proyecto/<int:proyecto_id>/desasociar_respuesta_identificar/', desasociar_respuesta_identificar, name='desasociar_respuesta_identificar'),
 
     path('mi_proyecto/<int:proyecto_id>/identificar/asociar_riesgo/', asociar_riesgo, name='asociar_riesgo'),
     path('mi_proyecto/<int:proyecto_id>/generar_informe/', generar_informe_identificar, name='generar_informe_identificar'),

@@ -4,6 +4,7 @@ from Risk_project_ufps.core_risk.dao.SubcategoriaDao import *
 from Risk_project_ufps.core_risk.dao.ProyectoDao import *
 from Risk_project_ufps.core_risk.dao.ProyectoHasRiesgoDao import *
 from Risk_project_ufps.core_risk.dao.RbsDao import *
+from Risk_project_ufps.core_risk.controller.RbsController import *
 
 from Risk_project_ufps.core_risk.dto.models import *
 
@@ -36,9 +37,15 @@ class RiesgoController():
 		riesgo_dao = RiesgoDao()
 		subcategoria_dao = SubcategoriaDao()
 		proyecto_dao = ProyectoDao()
-		return riesgo_dao.registrar_riesgo_proyecto(nombre, causa, evento, efecto, tipo,
-													subcategoria_dao.obtener_subcategoria(subcategoria_id),
-													proyecto_dao.obtener_proyecto(proyecto_id))
+		return riesgo_dao.registrar_riesgo_proyecto(
+			nombre,
+			causa,
+			evento,
+			efecto,
+			tipo,
+			subcategoria_dao.obtener_subcategoria(subcategoria_id),
+			proyecto_dao.obtener_proyecto(proyecto_id),
+		)
 
 	def asosiar_riesgos_proyecto(self, riesgos, proyecto):
 		p_h_r = ProyectoHasRiesgoDao()
@@ -48,31 +55,40 @@ class RiesgoController():
 
 	def asosiar_riesgos_sugeridos_proyecto(self, riesgos, proyecto):
 		p_h_r = ProyectoHasRiesgoDao()
-		riesgo_dao = RiesgoDao()
 
-		rbs = {}
+		riesgo_dao = RiesgoDao()
 
 		subcategoria_dao = SubcategoriaDao()
 
 		categoria_dao = CategoriaDao()
 
 		rbs_dao = RbsDao()
+		rbs_controller = RbsController()
+		rbs = rbs_controller.obtener_rbs_general(proyecto.gerente.gerente_id)
+		rbs_model = rbs_dao.get_rbs_gerente_id(proyecto.gerente)
 
 		for riesgo in riesgos:
-
 			aux = riesgo_dao.obtener_riesgo(riesgo)
 			sub_categoria_aux = aux.sub_categoria
 			try:
-				key = 'sub_' + str(sub_categoria_aux.sub_categoria_id)
-				sub_aux = rbs.get(key)
-				if (sub_aux):
-					riesgo_nuevo = riesgo_dao.registrar_riesgo(aux.riesgo_nombre, "", "", "", 0, 0, rbs[key])
+				sub_aux = self.buscar_sub_categoria_by_uid(rbs, sub_categoria_aux)
+				if sub_aux:
+					riesgo_nuevo = riesgo_dao.registrar_riesgo(
+						aux.riesgo_nombre,
+						"Sin Causa definida",
+						"Sin Evento definido",
+						"Sin efecto definido", 0, 0, sub_aux)
 				else:
-					rbs_model = rbs_dao.get_rbs_gerente_id(proyecto.gerente)
+					print("EEEEEEEEEEEE", sub_categoria_aux.categoria, rbs_model)
+					print("CATENOMBRE", sub_categoria_aux.categoria.categoria_nombre)
 					categoria_aux = categoria_dao.duplicar_categoria_2(sub_categoria_aux.categoria, rbs_model)
+					print("CCCC", categoria_aux)
 					sub_categoria_aux = subcategoria_dao.duplicar_sub_categoria_2(categoria_aux, sub_categoria_aux)
-					rbs[key] = sub_categoria_aux
+					print("SSSSSSS", sub_categoria_aux)
+					rbs = rbs_controller.obtener_rbs_general(proyecto.gerente.gerente_id)
+					print("RBSSSSS", rbs)
 					riesgo_nuevo = riesgo_dao.clonar_riesgo(aux.riesgo_nombre, aux.riesgo_uid, sub_categoria_aux)
+					print("RRRRRRRR", riesgo_nuevo)
 				p_h_r.registrar_proyecto_riesgo_editado(proyecto, riesgo_nuevo)
 			except Exception as e:
 				raise e
@@ -80,6 +96,14 @@ class RiesgoController():
 				pass
 
 		return True
+
+	def buscar_sub_categoria_by_uid(self, rbs, sub_categoria):
+		for fila in rbs:
+			subcategorias = fila['subcategorias']
+			for aux in subcategorias:
+				if aux['sub_categoria_uid'] == sub_categoria.sub_categoria_uid:
+					return aux['sub_categoria_uid']
+		return None
 
 	def get_riesgo_by_proyecto(self, proyecto, riesgo):
 		p_h_r = ProyectoHasRiesgoDao()
@@ -97,7 +121,7 @@ class RiesgoController():
 		for riesgo in riesgos:
 			riesgo_aux = model_to_dict(riesgo)
 			#print("RRRRR", riesgo_aux)
-			riesgo_aux['fecha_manifestacion'] = riesgo.fecha_manifestacion.strftime("%Y-%m-%d")
+			#riesgo_aux['fecha_manifestacion'] = riesgo.fecha_manifestacion.strftime("%Y-%m-%d")
 			aa.append(riesgo_aux)
 			#riesgo['fecha_manifestacion'] = riesgo['fecha_manifestacion'].strftime("%Y-%m-%d")
 		return aa
@@ -126,7 +150,14 @@ class RiesgoController():
 
 	def listar_responsables_riesgo(self, proyecto_id):
 		p_h_r = ProyectoHasRiesgoDao()
-		return p_h_r.listar_responsables_riesgo(proyecto_id)
+		responsables = p_h_r.listar_responsables_riesgo(proyecto_id)
+		aux = []
+		for responsable in responsables:
+			aa = model_to_dict(responsable)
+			aa['riesgo_id'] = responsable.riesgo_id
+			aux.append(aa)
+		return aux
+
 
 	def get_riesgos_sugeridos(self, sector, gerente_id):
 		""" Busca todos los riesgos dentro de todos los proyectos
@@ -156,7 +187,7 @@ class RiesgoController():
 			aux[row.riesgo_nombre] = row
 		return aux
 
-	def editar_riesgo_proyecto(self, proyecto_id, riesgo_id, nombre, causa, evento, efecto, tipo, fecha):
+	def editar_riesgo_proyecto(self, proyecto_id, riesgo_id, nombre, causa, evento, efecto, tipo ):
 
 		riesgo_dao = RiesgoDao()
 		proyecto_dao = ProyectoDao()
@@ -168,11 +199,9 @@ class RiesgoController():
 		proyecto_has_riesgo = proyecto_has_riesgo_dao.get_by_riesgo_and_proyecto_2(riesgo, proyecto)
 		#print("MI OBJETO", proyecto_has_riesgo)
 		if proyecto_has_riesgo.is_editado == 1:
-			proyecto_has_riesgo_dao.actualizar_fecha(proyecto_has_riesgo, fecha)
-
+			#proyecto_has_riesgo_dao.actualizar_fecha(proyecto_has_riesgo, fecha)
 			return riesgo_dao.editar_riesgo(riesgo, nombre, causa, evento, efecto, tipo, riesgo.sub_categoria)
 		else:
-			
 			proyecto_has_riesgo.delete()
 			riesgo_nuevo = riesgo_dao.registrar_riesgo_2(nombre, causa, evento, efecto, tipo, riesgo.sub_categoria)
 			proyecto_has_riesgo_dao.registrar_proyecto_riesgo_editado(proyecto, riesgo_nuevo)
@@ -205,7 +234,7 @@ class RiesgoController():
 			aux['riesgo_' + str(aa.riesgo_id)] = dict(
 				impacto_id=proyecto_has_riesgo.impacto_id,
 				propabilidad_id=proyecto_has_riesgo.propabilidad_id,
-				fecha_manifestacion=riesgo['fecha_manifestacion']
+				#fecha_manifestacion=riesgo['fecha_manifestacion']
 			)
 		return aux
 

@@ -1,20 +1,14 @@
 from Risk_project_ufps.core_risk.dto.models import *
 
 
-class RespuestaDao():
+class RespuestaDao:
 
-    def registrar_respuesta(self, nombre, descripcion):
-
-        try:
-            respuesta = Respuesta(
-                respuesta_nombre=nombre,
-                respuesta_descripcion=descripcion)
-            respuesta.save()
-        except Exception as e:
-            print(e)
-
-        finally:
-            return respuesta
+    def registrar_respuesta(self, nombre, descripcion, tipo):
+        return Respuesta.objects.create(
+            respuesta_nombre=nombre,
+            respuesta_descripcion=descripcion,
+            respuesta_tipo=tipo
+        )
 
     def obtener_respuesta(self, id):
         """

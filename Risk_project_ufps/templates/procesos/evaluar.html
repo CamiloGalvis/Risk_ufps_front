@@ -259,7 +259,7 @@
 <!-- DataTables -->
 <script src="{% static 'risk_project/bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
 <script src="{% static 'risk_project/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
-
+<script src="{% static 'risk_project/plugins/sweetalert/sweetalert.js' %}"></script>
 <script type="text/javascript">
   //////////////////////////////////////////
   //  Variables globales
@@ -666,17 +666,30 @@
   }
 
   function actualizar_valores() {
-    console.log(JSON.stringify(cambios_riesgos));
+    //console.log(JSON.stringify(cambios_riesgos));
     $.ajax({
       url: '/mi_proyecto/{{proyecto.proyecto_id}}/evaluar/actualizar_valores/',
       type: 'POST',
       headers: {'X-CSRFToken': csrftoken},
       data: {valores:JSON.stringify(cambios_riesgos)},
       success: function(data) {
-          alert("Cambios actualizados exitosamente");
+          //alert("Cambios actualizados exitosamente");          
+          Swal.fire(
+            '¡ Registro exitoso !',
+            'La evaluacion se ha guardado',
+            'success'
+          ).then(function () {
+            location.reload();
+          }); 
       }, error: function (jqXhr, textStatus, errorMessage) {
         console.log(errorMessage);
-        alert("No se pudieron actualizar los cambios");        
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: '¡ No se pudo guardar la evaluacion !',             
+        }).then(function () {
+          location.reload();
+        });        
       }
     });
   }

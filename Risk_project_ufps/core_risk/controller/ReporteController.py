@@ -43,14 +43,10 @@ class ReporteController:
        registros y el nombre del archivo xlsx (EXCEL)."""
         propietario = proyecto.gerente.gerente_nombre
         titulo = "REPORTE PROYECTO " + proyecto.proyecto_nombre
-        cabecera = ("RESPONSABLE", "DESCRIPCION")
+        cabecera = ("RESPONSABLE", "DESCRIPCION", "ROL")
         responsable_dao = ResponsableDao()
         responsables = responsable_dao.listar_responsables(proyecto.proyecto_id)
         registros = self.tamizar_responsables(responsables)
-        """registros = [(1110800310, "Andres", "Niño", "06/06/2019", "we", 43),
-             (1110800311, "Andres", "Niño", "06/06/2019",  "we", 43),
-             (1110800312, "Andres", "Niño", "06/06/2019",  "we", 43),
-             ]"""
         nombreEXCEL = "reporte_" + self.get_datetime()
         reporte = reporteEXCEL(titulo, cabecera, registros, nombreEXCEL, propietario).Exportar_planificar(
             proyecto.proyecto_objetivo, proyecto.proyecto_alcance)
@@ -185,7 +181,8 @@ class ReporteController:
             responsable = model_to_dict(row)
             aux.append([
                 responsable['responsble_nombre'],
-                responsable['responsble_descripcion']
+                responsable['responsble_descripcion'],
+                row.rol.rol_nombre
             ])
         return aux
 
