@@ -94,7 +94,7 @@
               {% if proyecto.proyecto_fin_status %}
               <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default" disabled="true"><i class="fa fa-plus"></i> Nuevo Riesgo</button>
               {% else %}
-              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-default"><i class="fa fa-plus"></i> Nuevo Riesgo</button>
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#nuevo-riesgo"><i class="fa fa-plus"></i> Nuevo Riesgo</button>
               {% endif %}        
 
 
@@ -322,7 +322,7 @@
 </section>
 </div>
 </div>
-<div class="modal fade" id="modal-default" style="display: none;">
+<div class="modal fade" id="nuevo-riesgo" style="display: none;">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -350,10 +350,7 @@
                   <label>Causa</label>
                   <textarea class="form-control" rows="3" placeholder="Descripción de la causa..." name="riesgo_causa" maxlength="200" required></textarea>
                 </div> 
-                <div class="form-group">
-                  <label>Evento</label>
-                  <textarea class="form-control" rows="3" placeholder="Descripción del evento..." name="riesgo_evento" maxlength="200" required></textarea>
-                </div>
+                
               </div>
             </div>
             <!-- /.col -->
@@ -370,11 +367,16 @@
                 <label>Efecto</label>
                 <textarea class="form-control" rows="3" placeholder="Descripción del efecto..." name="riesgo_efecto" maxlength="200" required></textarea>
               </div>
+              <div class="form-group">
+                  <label>Evento</label>
+                  <textarea class="form-control" rows="3" placeholder="Descripción del evento..." name="riesgo_evento" maxlength="200" required></textarea>
+                </div>
               {% if proyecto %}
                 <input type="text" name="proyecto_id" value="{{ proyecto.proyecto_id }}" hidden>
               {% endif %}
               <div class="box-footer">
                 <button type="submit" class="btn btn-danger pull-right">Registrar</button>
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cerrar</button>
               </div>
             </div>
             <!-- /.col -->
@@ -382,11 +384,7 @@
           <!-- /.row -->
         </form>        
       </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cerrar</button>
-        <!--<button type="submit" class="btn btn-primary">Registrar</button>-->
-      </div>
+      </div>    
     </div>
     <!-- /.modal-content -->
   </div>

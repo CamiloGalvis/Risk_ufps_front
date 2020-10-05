@@ -9,9 +9,9 @@ from datetime import datetime
 
 class RespuestaController:
 
-    def registrar_respuesta(self, nombre, descripcion,tipo):
+    def registrar_respuesta(self, nombre, descripcion, tipo_respuesta):
         respuesta_dao = RespuestaDao()
-        return respuesta_dao.registrar_respuesta(nombre, descripcion, tipo)
+        return respuesta_dao.registrar_respuesta(nombre, descripcion, tipo_respuesta)
 
     def validar_respuesta(self, nombre, proyecto_id):
         respuesta_dao = RespuestaDao()

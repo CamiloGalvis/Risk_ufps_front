@@ -153,7 +153,7 @@ class RbsController():
                             e = riesgo_dao.riesgo_is_proyecto(Riesgo(riesgo_id=riesgo["riesgo_id"]), proyecto)                            
                             if(e != None):
                                 riesgo['is_assigned'] = True
-                                riesgo['fecha_manifestacion'] = e.fecha_manifestacion.strftime("%Y-%m-%d")
+                               # riesgo['fecha_manifestacion'] = e.fecha_manifestacion.strftime("%Y-%m-%d")
                             else:
                                 riesgo['is_assigned'] = False                              
                     aux.append({
