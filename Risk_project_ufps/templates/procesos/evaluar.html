@@ -329,11 +329,13 @@
             let key = 'p_'+p+'_ii_'+ii;
             if(riesgos_clasificados.hasOwnProperty(key)){
               //columnas[j].appendChild(document.createTextNode(riesgos[r]["riesgo_nombre"]));
-              let x = riesgos_clasificados[key].length;
-              var y = x > 1 ? "riesgos" : "riesgo";              
-              let icon = $.parseHTML('&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;<i class="fa fa-fw fa-info-circle" style="color: white;" onclick="mostrar_riesgos();" title="Hay '+x+' '+y+' en este cuadrante" data-toggle="tooltip" data-placement="top"></i>') 
-              $(columnas[j]).append(icon);
-              $('[data-toggle="tooltip"]').tooltip();
+              if(!columnas[j].hasChildNodes()){
+                let x = riesgos_clasificados[key].length;
+                var y = x > 1 ? "riesgos" : "riesgo";              
+                let icon = $.parseHTML('&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;<i class="fa fa-fw fa-info-circle" style="color: white;" onclick="mostrar_riesgos();" title="Hay '+x+' '+y+' en este cuadrante" data-toggle="tooltip" data-placement="top"></i>') 
+                $(columnas[j]).append(icon);
+                $('[data-toggle="tooltip"]').tooltip();
+              }
             }          
           }        
         }            
@@ -417,22 +419,26 @@
               let key = 'p_'+p+'_ii_'+ii;
               if(riesgos_clasificados.hasOwnProperty(key)){
                 //columnas[j].appendChild(document.createTextNode(riesgos[r]["riesgo_nombre"]));
-                let x = riesgos_clasificados[key].length;
-                var y = x > 1 ? "riesgos" : "riesgo";              
-                let icon = $.parseHTML('&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;<i class="fa fa-fw fa-info-circle" onclick="mostrar_riesgos();" title="Hay '+x+' '+y+' en este cuadrante" data-toggle="tooltip" data-placement="top"></i>') 
-                $(columnas[j]).append(icon);
-                $('[data-toggle="tooltip"]').tooltip();
+                if(!columnas[j].hasChildNodes()){
+                  let x = riesgos_clasificados[key].length;
+                  var y = x > 1 ? "riesgos" : "riesgo";              
+                  let icon = $.parseHTML('&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;<i class="fa fa-fw fa-info-circle" onclick="mostrar_riesgos();" title="Hay '+x+' '+y+' en este cuadrante" data-toggle="tooltip" data-placement="top"></i>') 
+                  $(columnas[j]).append(icon);
+                  $('[data-toggle="tooltip"]').tooltip();
+                }
               }          
             }else if(v==evaluacion){                            
               //columnas[j].appendChild(document.createTextNode(riesgos[r]["riesgo_nombre"]));
               let key = 'p_'+p+'_ii_'+ii;
               if(riesgos_clasificados.hasOwnProperty(key)){
                 //columnas[j].appendChild(document.createTextNode(riesgos[r]["riesgo_nombre"]));
-                let x = riesgos_clasificados[key].length;
-                var y = x > 1 ? "riesgos" : "riesgo";              
-                let icon = $.parseHTML('&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;<i class="fa fa-fw fa-info-circle" style="color: white;" onclick="mostrar_riesgos();" title="Hay '+x+' '+y+' en este cuadrante" data-toggle="tooltip" data-placement="top"></i>') 
-                $(columnas[j]).append(icon);
-                $('[data-toggle="tooltip"]').tooltip();
+                if(!columnas[j].hasChildNodes()){
+                  let x = riesgos_clasificados[key].length;
+                  var y = x > 1 ? "riesgos" : "riesgo";              
+                  let icon = $.parseHTML('&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;<i class="fa fa-fw fa-info-circle" style="color: white;" onclick="mostrar_riesgos();" title="Hay '+x+' '+y+' en este cuadrante" data-toggle="tooltip" data-placement="top"></i>') 
+                  $(columnas[j]).append(icon);
+                  $('[data-toggle="tooltip"]').tooltip();
+                }
               }   
             } 
 
