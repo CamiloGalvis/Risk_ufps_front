@@ -1322,7 +1322,7 @@ def nueva_respuesta_identificar(request, proyecto_id):
             respuesta = respuesta_controller.registrar_respuesta(
                 request.POST["respuesta_nombre"],
                 request.POST["respuesta_descripcion"],
-                request.POST["tipo_respuesta"]
+                request.POST["tipo_respuesta"]                
             )
             riesgo = riesgo_controller.obtener_riesgo(request.POST["riesgo_id"])
             mensaje_no = respuesta_controller.registrar_respuesta_riesgo(respuesta, riesgo)
@@ -1515,6 +1515,8 @@ def nueva_respuesta_planificar(request, proyecto_id):
 
             respuestas_riesgo = dumps(respuesta_controller.listar_riesgos_respuesta(proyecto_id))
             data['mensaje']=mensaje
+            respuestas_riesgo = dumps(respuesta_controller.listar_riesgos_respuesta(proyecto_id))
+            data['respuestas_riesgo']=respuestas_riesgo
             return render(
                 request,
                 "procesos/planificar_respuestas.html",
@@ -1649,6 +1651,9 @@ def eliminar_tarea(request, proyecto_id):
     rangos = dumps(proyecto_controller.obtener_rangos_parseados_by_proyecto_id(proyecto_id))
     valores = dumps(get_valores_by_proyecto(proyecto_id))
     lista_tareas = dumps(tarea_controller.listar_tareas_group_by_riesgo(proyecto))
+    actividad_controller = ActividadController()
+    actividades_by_riesgos = dumps(actividad_controller.listar_actividades_riesgo(proyecto_id))
+    linea_base = crear_arreglo_linea_base(proyecto.proyecto_linea_base)
     if request.method == 'POST':
         tarea = tarea_controller.get_tarea_by_id(request.POST["tarea_id"])
         mensaje_eliminar = tarea_controller.eliminar_tarea(tarea)
@@ -1666,7 +1671,10 @@ def eliminar_tarea(request, proyecto_id):
                 riesgos_evaluados=riesgos_evaluados,
                 rangos=rangos,
                 valores=valores,
-                mensaje_eliminar=mensaje_eliminar
+                mensaje_eliminar=mensaje_eliminar,
+                linea_base=linea_base,
+                actividades_by_riesgos=actividades_by_riesgos
+
             )
         )
 
@@ -1682,7 +1690,10 @@ def eliminar_tarea(request, proyecto_id):
             respuestas_sugeridas=respuestas_sugeridas,
             riesgos_evaluados=riesgos_evaluados,
             rangos=rangos,
-            valores=valores
+            valores=valores,
+            linea_base=linea_base,
+            actividades_by_riesgos=actividades_by_riesgos
+
         )
     )
 
@@ -1701,7 +1712,10 @@ def editar_tarea(request, proyecto_id):
     respuestas_sugeridas = dumps(respuesta_controller.obtener_respuestas_sugeridas(proyecto_id))
     riesgos_evaluados = dumps(riesgo_controller.evaluar_riesgos_by_proyecto_id(lista_riesgos, proyecto_id))
     rangos = dumps(proyecto_controller.obtener_rangos_parseados_by_proyecto_id(proyecto_id))
-    valores = dumps(get_valores_by_proyecto(proyecto_id))
+    valores = dumps(get_valores_by_proyecto(proyecto_id))   
+    actividad_controller = ActividadController() 
+    actividades_by_riesgos = dumps(actividad_controller.listar_actividades_riesgo(proyecto_id))
+    linea_base = crear_arreglo_linea_base(proyecto.proyecto_linea_base)
 
     if request.method == 'POST':
         tarea = tarea_controller.get_tarea_by_id(request.POST["tarea_id"])
@@ -1731,7 +1745,9 @@ def editar_tarea(request, proyecto_id):
                 riesgos_evaluados=riesgos_evaluados,
                 rangos=rangos,
                 valores=valores,
-                mensaje_editar=mensaje_editar
+                linea_base=linea_base,
+                mensaje_editar=mensaje_editar,
+                actividades_by_riesgos=actividades_by_riesgos
             )
         )
 
@@ -1746,8 +1762,10 @@ def editar_tarea(request, proyecto_id):
             lista_tareas=lista_tareas,
             respuestas_sugeridas=respuestas_sugeridas,
             riesgos_evaluados=riesgos_evaluados,
+            linea_base=linea_base,
             rangos=rangos,
-            valores=valores
+            valores=valores,
+            actividades_by_riesgos=actividades_by_riesgos
         )
     )
 

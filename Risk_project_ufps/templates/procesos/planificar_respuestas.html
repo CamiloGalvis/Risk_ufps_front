@@ -510,7 +510,7 @@
                 <div class="form-group">
                   <div class="form-group">
                     <label >Nombre</label>
-                    <input type="text" class="form-control" id="respuesta_nombre" placeholder="Nombre respuesta" name="respuesta_nombre">
+                    <input type="text" class="form-control" id="respuesta_nombre" placeholder="Nombre respuesta" maxlength="44" name="respuesta_nombre">
                   </div>
                 </div>
                 <div class="form-group">
@@ -552,7 +552,7 @@
               <div class="col-md-6">
                 <div class="form-group">
                   <label>Descripción</label>
-                  <textarea class="form-control" rows="5" placeholder="Descripción de la accion" name="respuesta_descripcion"></textarea>
+                  <textarea class="form-control" rows="5" maxlength="254" placeholder="Descripción de la accion" name="respuesta_descripcion"></textarea>
                 </div>
                 <div class="box-footer">
                   {% if proyecto.proyecto_fin_status %}
@@ -1066,7 +1066,7 @@
 
   function abrir_modal_eliminar_respuesta(riesgo_id, respuesta_id, nombre) {        
     $("#modal_eliminar_respuesta").modal('show');
-    document.getElementById("contenido_modal_respuesta").innerHTML = "Estas seguro que desea eliminar este rec.";
+    document.getElementById("contenido_modal_respuesta").innerHTML = "Estas seguro que desea eliminar este la acción de respuesta:";
     document.getElementById("nombre_modal_respuesta").innerHTML = " "+nombre;
     $("#respuesta_id_eliminar").val(respuesta_id);
     $("#riesgo_id_eliminar").val(riesgo_id);    

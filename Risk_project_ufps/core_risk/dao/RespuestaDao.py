@@ -3,11 +3,11 @@ from Risk_project_ufps.core_risk.dto.models import *
 
 class RespuestaDao:
 
-    def registrar_respuesta(self, nombre, descripcion, tipo):
+    def registrar_respuesta(self, nombre, descripcion, tipo_respuesta):
         return Respuesta.objects.create(
             respuesta_nombre=nombre,
             respuesta_descripcion=descripcion,
-            respuesta_tipo=tipo
+            respuesta_tipo = tipo_respuesta            
         )
 
     def obtener_respuesta(self, id):
