@@ -2,6 +2,8 @@ from Risk_project_ufps.core_risk.dao.ProyectoHasRiesgoDao import *
 
 from Risk_project_ufps.core_risk.dto.models import *
 
+from Risk_project_ufps.core_risk.util.cadena import limpiar_descripcion
+
 class RiesgoDao():
 
 	def registrar_riesgo(self, nombre, causa, evento, efecto, tipo, subcategoria):
@@ -9,9 +11,9 @@ class RiesgoDao():
 		try:
 			riesgo = Riesgo(
 				riesgo_nombre = nombre,
-				riesgo_causa = causa,
-				riesgo_evento = evento,
-				riesgo_efecto = efecto,
+				riesgo_causa = limpiar_descripcion(causa),
+				riesgo_evento = limpiar_descripcion(evento),
+				riesgo_efecto = limpiar_descripcion(efecto),
 				riesgo_tipo = tipo,             
 				sub_categoria = subcategoria)
 			riesgo.save()       
@@ -25,9 +27,9 @@ class RiesgoDao():
 		try:
 			riesgo = Riesgo.objects.create(
 				riesgo_nombre = nombre,
-				riesgo_causa = causa,
-				riesgo_evento = evento,
-				riesgo_efecto = efecto,
+				riesgo_causa = limpiar_descripcion(causa),
+				riesgo_evento = limpiar_descripcion(evento),
+				riesgo_efecto = limpiar_descripcion(efecto),
 				riesgo_tipo = tipo,             
 				sub_categoria = subcategoria)            
 		except Error as e:

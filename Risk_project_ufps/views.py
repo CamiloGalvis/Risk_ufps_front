@@ -1928,7 +1928,7 @@ def cerrar_proyecto(request, proyecto_id):
     proyecto_controller = ProyectoController()
     proyecto = proyecto_controller.obtener_proyecto(proyecto_id)
     tarea_controller = TareaController()
-    tareas = tarea_controller.listar_tareas_no_iniciadas(proyecto)
+    tareas = tarea_controller.listar_tareas_no_iniciadas(proyecto)    
     leccion_controller = LeccionController()
     lista_lecciones = leccion_controller.listar_lecciones(proyecto)
     data = dict(

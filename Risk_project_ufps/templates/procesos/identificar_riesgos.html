@@ -322,6 +322,7 @@
 </section>
 </div>
 </div>
+
 <div class="modal fade" id="nuevo-riesgo" style="display: none;">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -1306,11 +1307,11 @@ function asosiar_riesgos(proyecto_id){
             console.log(errorMessage);
           }
   });
-    });
+});
 
   construir_listado_actividades();
   trasnformar_tabla("tabla_riesgos"); 
-
+  
   if(data.length == 0 || contar_subcategorias() == 0){
     body_nuevo_riesgo = document.getElementById('body_nuevo_riesgo');
     body_nuevo_riesgo.innerHTML = '';
@@ -1319,6 +1320,8 @@ function asosiar_riesgos(proyecto_id){
       $(body_nuevo_riesgo).append(html);
   }
 });
+
+
 
 function contar_subcategorias() {
   let cont = 0;
@@ -1349,7 +1352,7 @@ function construir_listado_actividades() {
     }
     div_actividades.appendChild(select_actividades);
   }else{
-    body_nuevo_riesgo.innerHTML = '';
+    div_actividades.innerHTML = '';
     let str = '<div class="alert alert-info alert-dismissible"><h4><i class="icon fa fa-info"></i>  Atencion</h4> Hasta el momento este proyecto no cuenta con actividades del cronograma<br/> Si usted lo desea, puede subir las actividades dando clic <a href="/mi_proyecto/{{proyecto.proyecto_id}}/">aqui</a></div>';
       let html = $.parseHTML(str);
       $(div_actividades).append(html); 

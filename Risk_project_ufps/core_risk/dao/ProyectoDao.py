@@ -1,4 +1,5 @@
 from Risk_project_ufps.core_risk.dto.models import *
+from Risk_project_ufps.core_risk.util.cadena import limpiar_descripcion
 from contextlib import closing
 from django.db import connections
 
@@ -9,9 +10,9 @@ class ProyectoDao:
 		try:
 			proyecto = Proyecto.objects.create(
 				proyecto_nombre=nombre,
-				proyecto_objetivo=objetivo,
-				proyecto_alcance=alcance,
-				proyecto_descripcion=descripcion,
+				proyecto_objetivo=limpiar_descripcion(objetivo),
+				proyecto_alcance=limpiar_descripcion(alcance),
+				proyecto_descripcion=limpiar_descripcion(descripcion),
 				proyecto_presupuesto=presupuesto,
 				proyecto_fecha_inicio=fecha_inicio,
 				gerente=gerente,
@@ -47,9 +48,9 @@ class ProyectoDao:
 		proyecto = proyecto
 		try:
 			proyecto.proyecto_nombre = nombre
-			proyecto.proyecto_objetivo = objetivo
-			proyecto.proyecto_alcance = alcance
-			proyecto.proyecto_descripcion = descripcion
+			proyecto.proyecto_objetivo = limpiar_descripcion(objetivo)
+			proyecto.proyecto_alcance = limpiar_descripcion(alcance)
+			proyecto.proyecto_descripcion = limpiar_descripcion(descripcion)
 			proyecto.proyecto_presupuesto = presupuesto
 			proyecto.proyecto_fecha_inicio = fecha_inicio
 			proyecto.sector = sector

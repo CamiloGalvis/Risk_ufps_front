@@ -236,32 +236,55 @@
 
 <!-- /.modal-cerrar proyecto -->
 
-<div class="modal modal-danger fade" id="modal-cerrar" >
+<div class="modal fade" id="modal-cerrar" >
   <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
+    <div class="modal-content" >
+      <div class="modal-header" >
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title"> Finalizar Proyecto {{ proyecto.proyecto_nombre }} </h4>
+          <h4 class="modal-title"><i class="fa fa-warning"></i> Finalizar Proyecto {{ proyecto.proyecto_nombre }} </h4>
         </div>
         <form  action="/mi_proyecto/{{ proyecto.proyecto_id }}/cerrar_proyecto/" method="post">
           {% csrf_token %}
-          <div class="modal-body">
+          <div class="modal-body" style="overflow-y: scroll; width:100%; height:50vh;">
 
-            <p id="contenido_modal">Esta seguro que desea finalizar la gestión de riesgos de este proyecto? Esta acción no se podra reversar, y deshailitara por completo la administración de riesgos del proyecto  {{ proyecto.proyecto_nombre }}.</p>
+            <p id="contenido_modal"><strong>Esta seguro que desea finalizar la gestión de riesgos de este proyecto? Esta acción no se podra reversar, y deshailitara por completo la administración de riesgos del proyecto  {{ proyecto.proyecto_nombre }}. </strong></p>
 
             {% if tareas_no_iniciadas %}
-            <p>Atención: Aun no se han marcado como completadas las siguientes tareas: <br>
-                (
+            <p><strong>Atención: Aun no se han marcado como completadas las siguientes tareas:</strong></p><br>
+            <table id="example1" class="table table-bordered table-striped">
+              <thead>
+                <tr>                    
+                  <th>Nombre Tarea</th>                  
+                  <th>Estado</th>                                       
+                </tr>
+              </thead>
+              <tbody>          
                 {% for tarea in tareas_no_iniciadas %}
-                {{ tarea.tarea_nombre }},&nbsp
-                {% endfor %} )
-            </p>
+                <tr>                  
+                  <td>{{ tarea.tarea_nombre }}</td>
+                  {% if tarea.tarea_estado == 1 %}             
+                  <td>No iniciado</td>
+                  {% elif tarea.tarea_estado == 2 %}
+                  <td>Iniciado</td>
+                  {% elif tarea.tarea_estado == 4 %}
+                  <td>Retrasado</td>   
+                  {% endif %}
+                </tr>
+                {% endfor %}
+              </tbody>
+              <tfoot>
+                <tr>                 
+                  <th>Nombre Tarea</th>                  
+                  <th>Estado</th>    
+                </tr>
+              </tfoot>
+            </table>                         
             {% endif %}
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Cerrar</button>
-            <button type="submit" class="btn btn-outline">Finalizar Proyecto</button>
+            <button type="button" class="btn btn-primary pull-left" data-dismiss="modal">Cerrar</button>
+            <button type="submit" class="btn btn-primary">Finalizar Proyecto</button>
           </div>
         </form>
       </div>

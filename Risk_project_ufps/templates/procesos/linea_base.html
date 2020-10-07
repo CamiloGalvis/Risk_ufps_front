@@ -507,6 +507,7 @@
 
 
 	$(document).ready(function() {
+     pintar_rangos_riesgos();
 	    var t = $("#tabla_riesgos").DataTable({
 			 
 			"order": [[ 1, 'asc' ]],
@@ -547,7 +548,7 @@
       Este segmento permite activar los subtitulos para todos los elementos del documento
     */    
     $('[data-toggle="tooltip"]').tooltip();
-    pintar_rangos_riesgos();
+   
 	});
 
 ////////////////////////////////////////////
