@@ -171,10 +171,10 @@
         <div class="modal-body">
           <form>
             <div class="form-group has-feedback">
-              <input type="text" class="form-control" placeholder="Nombre Categoría" name="caegoria_gerente_editar" id="categoria_nombre_editar">
+              <input type="text" class="form-control" maxlength="44" placeholder="Nombre Categoría" name="caegoria_gerente_editar" id="categoria_nombre_editar">
             </div>
             <div class="form-group has-feedback">
-              <textarea class="form-control" rows="3" placeholder="Descripción" name="categoria_descripcion_editar" id="categoria_descripcion_editar"></textarea>
+              <textarea class="form-control" rows="3" maxlength="3000" placeholder="Descripción" name="categoria_descripcion_editar" id="categoria_descripcion_editar"></textarea>
             </div>
             <input type="text" name="caegoria_id" id="categoria_id_editar" hidden="true" />
 
@@ -201,10 +201,10 @@
         <div class="modal-body">
           <form>
             <div class="form-group has-feedback">
-              <input type="text" class="form-control" placeholder="Nombre Subcategoría" name="sub_categoria_gerente" id="sub_categoria_nombre_editar">
+              <input type="text" class="form-control" maxlength="44" placeholder="Nombre Subcategoría" name="sub_categoria_gerente" id="sub_categoria_nombre_editar">
             </div>
             <div class="form-group has-feedback">
-              <textarea class="form-control" rows="3" placeholder="Descripción" name="sub_categoria_descripcion" id="sub_categoria_descripcion_editar"></textarea>
+              <textarea class="form-control" rows="3" maxlength="3000" placeholder="Descripción" name="sub_categoria_descripcion" id="sub_categoria_descripcion_editar"></textarea>
             </div>
             <input type="text" name="sub_categoria_id" id="sub_categoria_id_editar" hidden="true" />
           </form>
@@ -263,7 +263,7 @@
             <input type="text" class="form-control" id="nombre_agregar" maxlength="44" />
           </div>
           <div class="form-group has-feedback">
-            <textarea class="form-control" rows="3" id="descripcion_agregar" maxlength="200"></textarea>
+            <textarea class="form-control" rows="3" id="descripcion_agregar" maxlength="3000"></textarea>
           </div>
           <input type="text" name="sub_categoria_id" id="id_agregar" hidden="true" />
         </form>

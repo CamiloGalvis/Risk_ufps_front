@@ -1432,7 +1432,7 @@ def get_data_planificar_respuesta(proyecto_id: int):
     riesgos_evaluados = dumps(riesgo_controller.evaluar_riesgos_by_proyecto_id(lista_riesgos, proyecto_id))
     rangos = dumps(proyecto_controller.obtener_rangos_parseados_by_proyecto_id(proyecto_id))
     valores = dumps(get_valores_by_proyecto(proyecto_id))
-    linea_base = crear_arreglo_linea_base(proyecto.proyecto_linea_base)
+    linea_base = crear_arreglo_linea_base(proyecto_id)
 
     actividad_controller = ActividadController()
     lista_actividades = dumps(actividad_controller.listar_actividades_proyecto(proyecto_id))
@@ -1452,12 +1452,16 @@ def get_data_planificar_respuesta(proyecto_id: int):
     )
 
 
-def crear_arreglo_linea_base(numero):
-    aux = []
-    for i in range(numero):
-        aux.append(i + 1)
-
-    return aux
+def crear_arreglo_linea_base(proyecto_id):
+    proyecto_controller = ProyectoController()
+    arreglo = proyecto_controller.get_lineas_base(proyecto_id)
+    for proyecto in arreglo:
+        aux = proyecto.proyecto_fecha_linea_base
+        formato = "%d-%m-%Y"
+        nueva_fecha = aux.strftime(formato)
+        proyecto.proyecto_fecha_linea_base = nueva_fecha      
+    
+    return arreglo
 
 
 def planificar_respuestas(request, proyecto_id):
@@ -1653,7 +1657,7 @@ def eliminar_tarea(request, proyecto_id):
     lista_tareas = dumps(tarea_controller.listar_tareas_group_by_riesgo(proyecto))
     actividad_controller = ActividadController()
     actividades_by_riesgos = dumps(actividad_controller.listar_actividades_riesgo(proyecto_id))
-    linea_base = crear_arreglo_linea_base(proyecto.proyecto_linea_base)
+    linea_base = crear_arreglo_linea_base(proyecto.proyecto_id)
     if request.method == 'POST':
         tarea = tarea_controller.get_tarea_by_id(request.POST["tarea_id"])
         mensaje_eliminar = tarea_controller.eliminar_tarea(tarea)
@@ -1715,7 +1719,7 @@ def editar_tarea(request, proyecto_id):
     valores = dumps(get_valores_by_proyecto(proyecto_id))   
     actividad_controller = ActividadController() 
     actividades_by_riesgos = dumps(actividad_controller.listar_actividades_riesgo(proyecto_id))
-    linea_base = crear_arreglo_linea_base(proyecto.proyecto_linea_base)
+    linea_base = crear_arreglo_linea_base(proyecto.proyecto_id)
 
     if request.method == 'POST':
         tarea = tarea_controller.get_tarea_by_id(request.POST["tarea_id"])
@@ -1824,15 +1828,15 @@ def desvincular_recurso_tarea(request, proyecto_id):
     )
 
 
-def linea_base(request, proyecto_id, numero_linea):
+def linea_base(request, proyecto_id, numero_linea, fecha_linea):
     proyecto_controller = ProyectoController()
     riesgo_controller = RiesgoController()
     respuesta_controller = RespuestaController()
-    proyecto = proyecto_controller.obtener_proyecto(proyecto_id)
+    proyecto = proyecto_controller.obtener_proyecto(proyecto_id)   
     lista_riesgos = riesgo_controller.get_riesgos_by_proyecto_linea(proyecto, numero_linea)  # En teoria ya
     # Listado de respuestas por riesgo, reutilizado de identificar
     respuestas_riesgo = dumps(
-        respuesta_controller.listar_riesgos_respuesta_linea(proyecto_id, numero_linea))  # En teoria ya
+    respuesta_controller.listar_riesgos_respuesta_linea(proyecto_id, numero_linea))  # En teoria ya
     recurso_controller = RecursoController()
     # Recursos generales del proyecto
     lista_recursos = recurso_controller.listar_recursos_linea(proyecto_id, numero_linea)  # En teoria ya
@@ -1846,7 +1850,7 @@ def linea_base(request, proyecto_id, numero_linea):
     rangos = dumps(
         proyecto_controller.obtener_rangos_parseados_by_proyecto_id_linea(proyecto_id, numero_linea))  # En teoria ya
     valores = dumps(get_valores_by_proyecto_linea(proyecto_id, numero_linea))  # Este
-    linea_base = crear_arreglo_linea_base(proyecto.proyecto_linea_base)
+    linea_base = crear_arreglo_linea_base(proyecto.proyecto_id)
     data = dict(
         proyecto=proyecto,
         lista_riesgos=lista_riesgos,
@@ -1857,7 +1861,9 @@ def linea_base(request, proyecto_id, numero_linea):
         rangos=rangos,
         valores=valores,
         linea_base=linea_base,
-        numero_linea=numero_linea
+        numero_linea=numero_linea,
+        fecha_linea = fecha_linea
+
     )
 
     return render(

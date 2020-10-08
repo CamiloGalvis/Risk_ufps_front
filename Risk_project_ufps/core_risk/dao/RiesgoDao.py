@@ -53,9 +53,9 @@ class RiesgoDao():
 		riesgo = riesgo
 		try:
 			riesgo.riesgo_nombre = nombre
-			riesgo.riesgo_causa = causa
-			riesgo.riesgo_evento = evento
-			riesgo.riesgo_efecto = efecto
+			riesgo.riesgo_causa = limpiar_descripcion(causa)
+			riesgo.riesgo_evento = limpiar_descripcion(evento)
+			riesgo.riesgo_efecto = limpiar_descripcion(efecto)
 			riesgo.riesgo_tipo = tipo               
 			riesgo.sub_categoria = subcategoria
 			riesgo.save()       
@@ -99,9 +99,9 @@ class RiesgoDao():
 	def registrar_riesgo_proyecto(self, nombre, causa, evento, efecto, tipo, subcategoria, proyecto):
 		riesgo = Riesgo(
 			riesgo_nombre=nombre,
-			riesgo_causa=causa,
-			riesgo_evento=evento,
-			riesgo_efecto=efecto,
+			riesgo_causa = limpiar_descripcion(causa),
+			riesgo_evento = limpiar_descripcion(evento),
+			riesgo_efecto = limpiar_descripcion(efecto),
 			riesgo_tipo=tipo,
 			sub_categoria=subcategoria
 		)

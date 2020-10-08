@@ -107,7 +107,7 @@ urlpatterns = [
     path('mi_proyecto/<int:proyecto_id>/nuevo_recurso_tarea/', nuevo_recurso_tarea, name='nuevo_recurso_tarea'),
     path('mi_proyecto/<int:proyecto_id>/desvincular_recurso_tarea/', desvincular_recurso_tarea, name='desvincular_recurso_tarea'),
     path('mi_proyecto/<int:proyecto_id>/planificar_respuestas/informe/', generar_informe_planificar_respuesta, name='generar_informe_planificar_respuesta'),
-    path('mi_proyecto/<int:proyecto_id>/linea_base/<int:numero_linea>/', linea_base, name='linea_base'),
+    path('mi_proyecto/<int:proyecto_id>/linea_base/<int:numero_linea>/<str:fecha_linea>/', linea_base, name='linea_base'),
 
     #####################################################
     # Controlar riesgos

@@ -86,8 +86,8 @@
               <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Histórico Lineas Base<span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">
-                {% for linea in linea_base %}
-                <li><a href="/mi_proyecto/{{ proyecto.proyecto_id }}/linea_base/{{ linea }}/">Linea Base de la Gestión de Riesgos {{ linea }}</a></li>
+                {% for linea in linea_base %}                
+                <li><a href="/mi_proyecto/{{ proyecto.proyecto_id }}/linea_base/{{ linea.proyecto_linea_base }}/{{ linea.proyecto_fecha_linea_base }}/">Linea Base de la Gestión de Riesgos {{ linea.proyecto_linea_base }} ({{ linea.proyecto_fecha_linea_base }})</a></li>
                 <li class="divider"></li>
                 {% endfor %}
               </ul>

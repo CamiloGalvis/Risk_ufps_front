@@ -2,7 +2,7 @@ from Risk_project_ufps.core_risk.dto.models import *
 from datetime import date
 from datetime import datetime
 from contextlib import closing
-
+from Risk_project_ufps.core_risk.util.cadena import limpiar_descripcion
 from django.db import connections
 
 
@@ -13,7 +13,7 @@ class TareaDao():
         proyecto_has_riesgo_id=proyecto_riesgo_respuesta.proyecto_has_id,
         riesgo_has_respuesta_id=proyecto_riesgo_respuesta.respuesta_has_id,
         tarea_nombre=nombre,
-        tarea_descripcion=descripcion,
+        tarea_descripcion=limpiar_descripcion(descripcion),
         fecha_inicio=fecha_inicio,
         fecha_fin=fecha_fin,
         fecha_inicio_real=fecha_inicio_real,
@@ -87,7 +87,7 @@ class TareaDao():
     tareas = {}
     try:
       sql = "SELECT * FROM tarea t " \
-            "WHERE t.proyecto_id = %s AND t.proyecto_linea_base = %s AND NOT t.tarea_estado = %s "
+            "WHERE t.proyecto_id = %s AND t.proyecto_linea_base = %s AND t.tarea_estado <> %s "
 
       tareas = Tarea.objects.using('base').raw(sql, [proyecto.proyecto_id, proyecto.proyecto_linea_base, 3])
       
@@ -159,7 +159,7 @@ class TareaDao():
   def editar_tarea(self, tarea, nombre, descripcion, fecha_inicio, fecha_fin):
       tarea_editar = tarea
       tarea_editar.tarea_nombre = nombre
-      tarea_editar.tarea_descripcion = descripcion
+      tarea_editar.tarea_descripcion = limpiar_descripcion(descripcion)
       tarea_editar.fecha_inicio = fecha_inicio
       tarea_editar.fecha_fin = fecha_fin
       try:

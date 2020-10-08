@@ -24,6 +24,8 @@ class ProyectoController:
         proyecto_dao = ProyectoDao()
         return proyecto_dao.obtener_proyecto(id)
 
+    
+
     def validar_proyecto(self, nombre, gerente_id):
         proyecto_dao = ProyectoDao()
         return proyecto_dao.validar_proyecto(nombre, gerente_id)
@@ -197,9 +199,13 @@ class ProyectoController:
         #print("date and time:",date_time)
         return date_time
 
+    def get_lineas_base(self, proyecto_id):        
+        proyecto_dao = ProyectoDao()        
+        return proyecto_dao.get_lineas_base(proyecto_id)
+
     def cerrar_proyecto(self, proyecto, fecha):        
         proyecto_dao = ProyectoDao()        
-        return proyecto_dao. cerrar_proyecto(proyecto, fecha)
+        return proyecto_dao.cerrar_proyecto(proyecto, fecha)
 
 
 
