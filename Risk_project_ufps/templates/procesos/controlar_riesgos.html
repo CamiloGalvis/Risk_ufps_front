@@ -5,7 +5,7 @@
 {% load static %}
 
 {% block organigrama_up %}
-  
+
 {% endblock %}
 
 {% block content %}
@@ -81,7 +81,8 @@
             </div>
             <div class="box-body">
               <!--<button onclick="obtener_mi_json()">obtener json</button>-->
-              <ul class="chart-legend clearfix">               
+              <ul class="chart-legend clearfix">    
+                <span class="label pull-left" style="background-color:#967769; ">Proyecto</span>            
                 <span class="label pull-left" style="background-color:#E75A10; ">Riesgo</span>       
                 <span class="label pull-left" style="background-color:#65B225;">Acciones</span>
                 <span class="label pull-left"style="background-color:#2585B2;">Tareas</span>
@@ -116,7 +117,7 @@
 
 <!-- /.modal costos -->
 
-<div class="modal fade" id="modal-resumen"> 
+<div class="modal fade" id="modal-resumen" > 
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -175,6 +176,12 @@
 <link rel="stylesheet" href="{% static 'risk_project/plugins/gantt/dhtmlxgantt.css' %}" type="text/css">
 
 <script type="text/javascript">
+  /*
+   *  Corresponde a todos los riesgos del proyecto
+   *
+   */
+  var lista_riesgos = JSON.parse("{{lista_riesgos|escapejs}}");  
+  console.log(lista_riesgos)
 
   /*
    *  Corresponde a todo el conjunto de riesgos del proyecto 
@@ -205,10 +212,26 @@
         progress: 0, 
         open: true,  
         is_tarea:false,   
-        color:"#E75A10",     
+        color:"#967769",     
       }
     ];
     Object.keys(respuestas_riesgo).forEach(function(key) {
+      let riesgo_id = key.split("_")[1];
+      let riesgo = get_riesgo_by_id(riesgo_id);      
+      cont = cont + 1;
+      cont_riesgo = cont;      
+      cod_padres.push(cont_riesgo);
+      data.push({
+        id: cont, 
+        text: riesgo['riesgo_nombre'], 
+        start_date: null, 
+        duration: null, 
+        parent:1, 
+        progress: 0, 
+        open: true,
+        is_tarea:false,
+        color:"#E75A10",
+      });
       let respuestas = respuestas_riesgo[key]
       for(i in respuestas){
         cont = cont + 1;
@@ -219,7 +242,7 @@
           text: respuestas[i]['respuesta_nombre'], 
           start_date: null, 
           duration: null, 
-          parent:1, 
+          parent:cont_riesgo, 
           progress: 0, 
           open: true,
           is_tarea:false,
@@ -236,8 +259,8 @@
           data.push({
             id: cont, 
             text: tareas[j]['tarea_nombre'], 
-            start_date:tareas[j]['fecha_inicio'], 
-            duration: tareas[j]['duracion'], 
+            start_date:tareas[j]['fecha_inicio_real'], 
+            duration: tareas[j]['duracion_real'], 
             parent:padre, 
             progress: 0, 
             color:"#2585B2", 
@@ -245,6 +268,7 @@
             fecha_inicio:tareas[j]['fecha_inicio'],
             fecha_fin:tareas[j]['fecha_fin'],
             fecha_inicio_real:tareas[j]['fecha_inicio_real'],
+            duracion_real:tareas[j]['duracion_real'],
             fecha_fin_real:tareas[j]['fecha_fin_real'],
             tarea_estado:tareas[j]['tarea_estado'],   
             tarea_estado_old:tareas[j]['tarea_estado'],     
@@ -252,8 +276,7 @@
             tipos:[
               {name:'No iniciado', value:1},
               {name:'Iniciado', value:2},
-              {name:'Completado', value:3},
-              {name:'Retrasado', value:4}
+              {name:'Completado', value:3}              
             ],
             is_tarea:true,
           });
@@ -275,48 +298,162 @@
     return aux;
   }
 
+  function activar_cont_fechas_reales(select){
+    if(select > 1){
+      document.getElementById('cont_fechas_reales').removeAttribute('hidden');  
+      if(select == 3){
+        document.getElementById('cont_duracion_real').removeAttribute('hidden');          
+      }else{
+        document.getElementById('cont_duracion_real').setAttribute('hidden', true);          
+      }
+    }else{
+      document.getElementById('cont_fechas_reales').setAttribute('hidden', true);
+    }    
+  }
+
+  function ocultar_cont_fechas_reales(select){
+    document.getElementById('cont_duracion_real').setAttribute('hidden', true);          
+    document.getElementById('cont_fechas_reales').setAttribute('hidden', true); 
+  }
+
   {% if proyecto.proyecto_linea_base != 0 %}  
   $(document).ready(function(){
     //console.log(formatear_datos());
     gantt.form_blocks["my_editor"] = {
-      render: function (sns) {
-          return "<div class='dhx_cal_ltext' style='height:130px; margin-top: 5px'>"+
-                    "&nbsp &nbspNombre &nbsp&nbsp;<input class='editor_description' type='text' readonly> <br/><br/>"+
-                "&nbsp &nbspFecha inicio &nbsp &nbsp&nbsp&nbsp;<input class='editor_fecha_inicio' type='date' readonly>  &nbsp &nbsp&nbsp&nbsp; fecha fin &nbsp &nbsp;<input class='editor_fecha_fin' type='date' readonly><br/><br/>"+
-              "&nbsp&nbsp Estado&nbsp &nbsp&nbsp;<select id='j' class='editor_selects'></select><br/><br/>"+
-              "&nbsp &nbspFecha inicio real &nbsp&nbsp&nbsp;<input class='editor_fecha_inicio_real' type='date'>&nbsp &nbsp&nbsp&nbsp&nbsp;<input class='editor_fecha_fin_real' hidden='true' type='date'>&nbsp &nbsp</br></br>&nbsp&nbsp;Observación &nbsp&nbsp&nbsp;<br/>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;<textarea placeholder='Observaciones sobre la tarea' style='width: 300px; height: 50px;' class='editor_observacion' maxlength='200' rows='3'></textarea><br/><br/><br/><br/>"+
-              "</div><br/><br/>"+
-             "<br/><br/>";
+      render: function (sns) {        
+        var myvar = '<div class="dhx_cal_ltext"  style="height:200px; margin-top: 5px; overflow-y:scroll;" >'+
+        ' <div class="container">'+
+        '   <div class="row">'+
+        '     <div class="col-md-3">'+
+        '       <div class="form-group">'+
+        '         <label for="input_descripcion" class="col-sm-4 control-label">'+
+        '           Nombre'+
+        '         </label>'+
+        '         <div class="col-sm-8">'+
+        '             <input class=\'editor_description\' type=\'text\' readonly/>'+
+        '         </div>'+
+        '       </div>'+
+        '     </div>'+
+        '   </div>'+
+        '   <br>'+
+        '     <div class="row">'+
+        '       <div class="col-md-3">'+
+        '         <div class="form-group">'+
+        '            <label for="inputEmail3" class="col-sm-4 control-label" >'+
+        '               Fecha inicio planificada'+
+        '             </label>            '+
+        '            <div class="col-sm-8">'+
+        '             <input class=\'editor_fecha_inicio\' id="inputEmail3" type=\'date\' readonly/>'+
+        '            </div>'+
+        '         </div>'+
+        '       </div>'+
+        '       <div class="col-md-2">'+
+        '         <div class="form-group">'+
+        '             <label for="input_editor_fecha_fin" class="col-sm-4 control-label" >'+
+        '               fecha fin planificada'+
+        '             </label>            '+
+        '             <div class="col-sm-8">'+
+        '               <input class=\'editor_fecha_fin\' id="input_editor_fecha_fin" type=\'date\' readonly/>  '+
+        '             </div>'+
+        '         </div>                '+
+        '       </div>'+
+        '   </div>'+
+        '   <br>  '+
+        '   <div class="row">'+
+        '     <div class="col-md-3">'+
+        '       <div class="form-group">'+
+        '         <label for="j" class="col-sm-4 control-label">'+
+        '           Estado'+
+        '         </label>'+
+        '         <div class="col-sm-8">'+
+        '             <select id=\'j\' class=\'editor_selects\' onchange="activar_cont_fechas_reales(this.value);">                '+
+        '             </select>'+
+        '         </div>'+
+        '       </div>'+
+        '     </div>'+
+        '   </div>'+
+        '   <br>'+
+        '   <div class="row" id="cont_fechas_reales" hidden="true">'+
+        '       <div class="col-md-3">'+
+        '         <div class="form-group">'+
+        '             <label for="input_fecha_inicio_real" class="col-sm-4 control-label" >'+
+        '               Fecha inicio real'+
+        '             </label>            '+
+        '             <div class="col-sm-8">'+
+        '               <input class=\'editor_fecha_inicio_real\' id="input_fecha_inicio_real" type=\'date\' />'+
+        '             </div>'+
+        '         </div>'+
+        '       </div>'+
+        '       <div class="col-md-2" id="cont_duracion_real">'+
+        '         <div class="form-group">'+
+        '             <label for="input_editor_duracion_real" class="col-sm-4 control-label" >'+
+        '               Duracion días'+
+        '             </label>'+
+        '             <div class="col-sm-8">'+
+        '               <input class=\'editor_duracion_real\' id="input_editor_duracion_real" type=\'number\' value="1" min="1" style="width:50px;" /> '+
+        '               <input hidden="true" class=\'editor_fecha_fin_real\' id="input_editor_fecha_fin_real" type=\'date\'/> '+
+        '             </div>'+
+        '         </div>                '+
+        '       </div>'+
+        '   </div>    '+
+        '   <br>'+
+        '<div class="row">'+
+        ' <div class="col-md-3">'+
+        '   <div class="form-group">'+
+        '     <label for="input_editor_observacion" class="col-sm-4 control-label">'+
+        '       Observación'+
+        '     </label>'+
+        '     <div class="col-sm-8">'+
+        '       <textarea placeholder="Observaciones sobre la tarea" style="width: 300px; height: 50px;" class="editor_observacion" id="input_editor_observacion" maxlength="200" rows="3">'+
+        '     </div>'+
+        '   </div>'+
+        ' </div>'+
+        '</div>'+
+        '<br>'
+        ' </div>'+
+        '</div>';
+             return myvar;
       },
       set_value: function (node, value, task) {
           node.querySelector(".editor_description").value = value || "";
-          //console.log(parsear_fecha(new Date(task.fecha_inicio)));
+          
           node.querySelector(".editor_fecha_inicio").value = parsear_fecha(new Date(task.fecha_inicio)) || "";
           node.querySelector(".editor_fecha_fin").value = parsear_fecha(new Date(task.fecha_fin)) || "";
           node.querySelector(".editor_observacion").value = task.tarea_observacion || "";
 
-          
-          //$('.editor_fecha_real').val(task.fecha_inicio_real);
-          //console.log(node.querySelector(".editor_selects"));
           $("#j").html('');
+
+          let mi_estado = parseInt(task.tarea_estado);
+
           for (var i = 0; i < task.tipos.length; i++) {
-            var o1 = new Option(task.tipos[i]['name'], task.tipos[i]['value']);                 
-            if(parseInt(task.tarea_estado) == task.tipos[i]['value']){
-              o1.setAttribute("selected","true");
-            }
-            node.querySelector(".editor_selects").append(o1);                     
-          }          
-          console.log(parsear_fecha(new Date(task.fecha_inicio_real)));
-          node.querySelector(".editor_fecha_inicio_real").value = parsear_fecha(new Date(task.fecha_inicio_real)) || "";
+            if(task.tipos[i]['value'] >= mi_estado && task.tipos[i]['value'] <= mi_estado+1){
+              var o1 = new Option(task.tipos[i]['name'], task.tipos[i]['value']);                 
+              if(mi_estado == task.tipos[i]['value']){
+                o1.setAttribute("selected","true");
+              }
+              node.querySelector(".editor_selects").append(o1);
+            }                                
+          }         
+          activar_cont_fechas_reales(mi_estado); 
+          let mi_fecha_inicio_real = task.fecha_inicio_real;
+          node.querySelector(".editor_fecha_inicio_real").value = mi_fecha_inicio_real || "";
+          node.querySelector(".editor_duracion_real").value = task.duracion_real;
           node.querySelector(".editor_fecha_fin_real").value = parsear_fecha(new Date(task.fecha_fin_real)) || "";
       },
       get_value: function (node, task) {          
           task.tarea_estado = node.querySelector(".editor_selects").value;   
           task.fecha_inicio = node.querySelector(".editor_fecha_inicio").value;
-          task.fecha_fin = node.querySelector(".editor_fecha_fin").value;
+          task.fecha_fin = node.querySelector(".editor_fecha_fin").value;    
           task.fecha_inicio_real = node.querySelector(".editor_fecha_inicio_real").value;
           task.fecha_fin_real = node.querySelector(".editor_fecha_fin_real").value;
+          task.duracion_real = node.querySelector(".editor_duracion_real").value;
+          let d_real = parseInt(task.duracion_real);
+          console.log('diracion', d_real);
+          task.start_date = gantt.date.add(task.fecha_inicio_real, 0, 'day');
+          task.end_date = gantt.date.add(task.fecha_inicio_real, d_real, 'day');
+
           task.tarea_observacion =   node.querySelector(".editor_observacion").value;
+         
           return node.querySelector(".editor_description").value;
       },
       focus: function (node) {
@@ -326,9 +463,11 @@
       }
     };  
     gantt.config.lightbox.sections = [
-        { name:"description", height:200, map_to:"text", type:"my_editor", focus:true},
+        { name:"description", height:400, map_to:"text", type:"my_editor", focus:true},
         //{ name:"agua", height:72, type:"duration", map_to:"auto"}
     ];
+    gantt.config.buttons_left = ["dhx_cancel_btn"];
+  gantt.config.buttons_right = ["dhx_save_btn"];
     gantt.attachEvent("onBeforeLightbox", function(id) {
       //console.log(id, cod_padres);      
       if(cod_padres.includes(parseInt(id))){
@@ -337,11 +476,17 @@
         return true;
     });
     gantt.i18n.setLocale("es");
-    gantt.config.date_format = "%Y-%m-%d %H:%i";
+    gantt.config.date_format = "%Y-%m-%d";
     gantt.config.readonly_property = "start_date";
-
+    gantt.config.columns = [
+      {name:"text",       label:"Tarea", min_width: 150, max_width:300, tree:true},
+      {name:"start_date", label:"Fecha inicio", align:"center",  width:150},
+      {name:"end_date",   label:"Fecha fin",   align:"center",  width:150 }, 
+    ];
+    gantt.config.autosize = "y";
     gantt.init("gantt_here");    
     mis_datos = formatear_datos();
+    console.log(mis_datos);
     gantt.parse({data:mis_datos});
     /*gantt.parse({
       data: [
@@ -363,8 +508,14 @@
   }
 
   function parsear_fecha(now){    
-    var day = ("0" + now.getDate()).slice(-2);
-    var month = ("0" + (now.getMonth() + 1)).slice(-2);
+    var day = now.getDate();
+    if(day <= 9){
+      day = '0' + day;
+    } 
+    var month = now.getMonth() + 1;
+    if(month <= 9){
+      month = '0' + month;
+    }
     var today = now.getFullYear()+"-"+(month)+"-"+(day) ;
     return today;
   }
@@ -377,6 +528,17 @@
     var diff_in_days = diff_in_millisenconds / day_as_milliseconds;
 
     return diff_in_days;
+  }
+
+  function get_riesgo_by_id(riesgo_id){
+    let riesgo = {};
+    for (var i = 0; i < lista_riesgos.length; i++) {
+      if(lista_riesgos[i]['riesgo_id'] == riesgo_id){
+        riesgo = lista_riesgos[i];
+        break;
+      }
+    }
+    return riesgo;
   }
 
   function registrar_observaciones(){
@@ -445,10 +607,12 @@
       headers: {'X-CSRFToken': csrftoken},
       data: {'gantt':JSON.stringify(gantt.serialize())},      
       success: function(data) {
-        alert("Registro exitoso "+data);
-        //window.location.href = "/mi_proyecto/{{proyecto.proyecto_id}}/controlar_riesgos/";
+        //alert("Registro exitoso "+data);
+        location.reload();
+        //mi_proyecto/{{proyecto.proyecto_id}}/controlar_riesgos/";
       }, error: function (jqXhr, textStatus, errorMessage) {
-        alert("Fallo Registro " + textStatus + errorMessage);
+        console.log("Fallo Registro " + textStatus + errorMessage);
+        location.reload();
         //window.location.href = "/mi_proyecto/{{proyecto.proyecto_id}}/controlar_riesgos/";
       }
   });

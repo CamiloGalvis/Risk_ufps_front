@@ -1625,6 +1625,7 @@ def nueva_tarea(request, proyecto_id):
             semanas = abs((fecha_ini - fecha_final).days) / 7
             dias = abs((fecha_ini - fecha_final).days) #perdoname niñita
             tarea.duracion = dias
+            tarea.duracion_real = dias
             tarea.save()
             lista_tareas = dumps(tarea_controller.listar_tareas_group_by_riesgo(proyecto))
             if tarea == None:
@@ -1726,8 +1727,10 @@ def editar_tarea(request, proyecto_id):
 
         fecha_ini = datetime.datetime.strptime(request.POST["tarea_fecha_inicio"], '%Y-%m-%d')
         fecha_final = datetime.datetime.strptime(request.POST["tarea_fecha_fin"], '%Y-%m-%d')
-        semanas = abs((fecha_ini - fecha_final).days) / 7
-        tarea_editada.duracion = semanas
+        #semanas = abs((fecha_ini - fecha_final).days) / 7
+        dias = abs((fecha_ini - fecha_final).days)
+        tarea_editada.duracion = dias
+        tarea_editada.duracion_real = dias
         tarea_editada.save()
         mensaje_editar = "Se actualizó la tarea exitosamente."
         lista_tareas = dumps(tarea_controller.listar_tareas_group_by_riesgo(proyecto))
@@ -1874,7 +1877,7 @@ def linea_base(request, proyecto_id, numero_linea):
 """
 
 
-@login_required(login_url='/accounts/login/')
+#@login_required(login_url='/accounts/login/')
 def controlar_riesgos(request, proyecto_id):
     proyecto_controller = ProyectoController()
     riesgo_controller = RiesgoController()
@@ -1882,6 +1885,7 @@ def controlar_riesgos(request, proyecto_id):
     tarea_controller = TareaController()
 
     proyecto = proyecto_controller.obtener_proyecto(proyecto_id)
+    lista_riesgos = dumps(riesgo_controller.get_riesgos_by_proyecto_2(proyecto))
     respuestas_riesgo = dumps(respuesta_controller.listar_riesgos_respuesta_base(proyecto_id))
     lista_tareas = dumps(tarea_controller.listar_tareas_group_by_riesgo_base(proyecto))
 
@@ -1891,6 +1895,7 @@ def controlar_riesgos(request, proyecto_id):
         "procesos/controlar_riesgos.html",
         dict(
             proyecto=proyecto,
+            lista_riesgos=lista_riesgos,
             respuestas_riesgo=respuestas_riesgo,
             lista_tareas=lista_tareas
         )
