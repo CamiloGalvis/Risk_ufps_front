@@ -84,7 +84,8 @@
     <div class="box-body">
       <table id="example1" class="table table-bordered table-striped">
         <thead>
-          <tr>                    
+          <tr>
+            <th></th>                
             <th>Lección Aprendida</th>                  
             <th>Acciones</th>                                       
           </tr>
@@ -92,7 +93,8 @@
         <tbody>
           {% if lista_lecciones %}
           {% for leccion in lista_lecciones %}
-          <tr>                  
+          <tr> 
+            <td></td>                 
             <td>{{ leccion.leccion_descripcion }}</td>                  
             <td>
               {% if proyecto.proyecto_fin_status %}
@@ -110,21 +112,23 @@
               <button type="button" class="btn btn-danger" data-toggle="#modal_eliminar" onclick="abrir_modal_eliminar('{{ leccion.leccion_id }}')" data-target="#modal_eliminar"><i class="fa fa-trash-o danger"></i>
               </button>
               {% endif %}  
-
+              &nbsp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
               
             </td>
           </tr>
           {% endfor %}
           {% else %}
           <tr>
-            <td>Aun no cuentas con lecciones aprendidas asociadas al proyecto.</td>
+
             <td></td>
+            <td>Aun no cuentas con lecciones aprendidas asociadas al proyecto.</td>
             <td></td>                  
           </tr>
           {% endif %} 
         </tbody>
         <tfoot>
-          <tr>                 
+          <tr> 
+          <th></th>                
             <th>Lección Aprendida</th>                  
             <th>Acciones</th>    
           </tr>
@@ -371,12 +375,12 @@ function abrir_modal_editar(leccion_id, descripcion) {
     };
 
 function trasnformar_tabla(id_tabla) {
-  $("#"+id_tabla).DataTable({
+   t = $("#"+id_tabla).DataTable({    
      "language": {
          "sProcessing":    "Procesando...",
          "sLengthMenu":    "Mostrar _MENU_ registros",
          "sZeroRecords":   "No se encontraron resultados",
-         "sEmptyTable":    "Ningún dato disponible en esta tabla",
+         "sEmptyTable":    "No cuentas con riesgos asociados a esta subcategoría.",
          "sInfo":          "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
          "sInfoEmpty":     "Mostrando registros del 0 al 0 de un total de 0 registros",
          "sInfoFiltered":  "(filtrado de un total de _MAX_ registros)",
@@ -397,6 +401,11 @@ function trasnformar_tabla(id_tabla) {
          }
      }
     }); 
+  t.on( 'order.dt search.dt', function () {
+          t.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+              cell.innerHTML = i+1;
+          } );
+      } ).draw();
 }
 
 </script>
