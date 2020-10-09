@@ -193,7 +193,9 @@ class ProyectoController:
                     tarea_estado=tarea['tarea_estado'],
                     tarea_observacion=tarea['tarea_observacion']
                 )
+                flag = tarea_dao.actualizar_tarea_bd(tarea_aux)
                 flag = tarea_dao.actualizar_tarea_base(tarea_aux, proyecto)
+
         return flag
 
     def get_datetime(self):

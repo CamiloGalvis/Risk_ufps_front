@@ -6,7 +6,6 @@ from Risk_project_ufps.core_risk.util.cadena import limpiar_descripcion
 from django.db import connections
 
 
-
 class TareaDao:
 
     def registrar_tarea(self, proyecto_riesgo_respuesta, nombre, descripcion, fecha_inicio, fecha_fin,
@@ -204,3 +203,30 @@ class TareaDao:
             raise e
         finally:
             return flag
+
+    def actualizar_tarea_bd(self, tarea):
+        """
+        Actualiza los campos de fechas usados en controlar
+
+        :param tarea: Tarea
+        :rtype: Tarea
+        """
+        try:
+            tarea_editar = Tarea.objects.get(tarea_id=tarea.tarea_id)
+            tarea_editar.fecha_inicio_real = tarea.fecha_inicio_real
+            tarea_editar.fecha_fin_real = tarea.fecha_fin_real
+            tarea_editar.duracion_real = tarea.duracion_real
+            tarea_editar.tarea_estado = tarea.tarea_estado
+            tarea_editar.tarea_descripcion = tarea.tarea_descripcion
+            tarea_editar.save()
+        except Tarea.DoesNotExist:
+            tarea_editar = None
+        finally:
+            return tarea_editar
+
+
+
+
+
+
+
