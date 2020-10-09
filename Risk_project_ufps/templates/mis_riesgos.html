@@ -54,18 +54,18 @@
                 <thead>
                   <tr>    
                     <th></th>                
-                    <th>Nombre &nbsp<i class="fa fa-long-arrow-down"><i class="fa fa-long-arrow-up"></th>
-                    <th>Causa &nbsp<i class="fa fa-long-arrow-down"><i class="fa fa-long-arrow-up"></th>
-                    <th>Evento &nbsp<i class="fa fa-long-arrow-down"><i class="fa fa-long-arrow-up"></th>
-                    <th>Efecto &nbsp<i class="fa fa-long-arrow-down"><i class="fa fa-long-arrow-up"></th>
-                    <th>Tipo &nbsp<i class="fa fa-long-arrow-down"><i class="fa fa-long-arrow-up"></th>
-                    <th>Acciones</th>
+                    <th>Nombre <i class="fa fa-long-arrow-down"><i class="fa fa-long-arrow-up"> </th>
+                    <th>Causa <i class="fa fa-long-arrow-down"><i class="fa fa-long-arrow-up"> </th>
+                    <th>Evento<i class="fa fa-long-arrow-down"><i class="fa fa-long-arrow-up"> </th>
+                    <th>Efecto<i class="fa fa-long-arrow-down"><i class="fa fa-long-arrow-up"> </th>
+                    <th>Tipo <i class="fa fa-long-arrow-down"><i class="fa fa-long-arrow-up"></th>
+                    <th>Opciones  </th>
                   </tr>
                 </thead>
                 <tbody id="body_riesgos">                 
                 <tr>
                   <td></td>
-                  <td>No cuentas con riesgos asociados a esta subcategoría.</td>
+                  <td></td>
                   <td></td>
                   <td></td>
                   <td></td>
@@ -81,7 +81,7 @@
                   <th>Evento</th>
                   <th>Efecto</th>
                   <th>Tipo</th>
-                  <th>Acciones</th>
+                  <th>Opciones</th>
                 </tr>
               </tfoot>
             </table>
@@ -221,6 +221,7 @@
 <!-- AdminLTE for demo purposes -->
 <script src="{% static 'risk_project/dist/js/demo.js' %}"></script>
 
+
  <script>
 function abrir_modal_eliminar(id, nombre) {
 
@@ -323,6 +324,7 @@ function set_riesgo(subcategoria){
     }       
   }
   trasnformar_tabla("example1");
+
   }
 
 function construir_btn_editar(riesgo_id, riesgo_nombre, riesgo_causa, riesgo_evento, riesgo_efecto){
@@ -396,8 +398,9 @@ function trasnformar_tabla(id_tabla) {
 }
  
  $(function() {
-   trasnformar_tabla("example1");  
+   trasnformar_tabla("example1");    
  })
 </script>
+
  
 {% endblock %}

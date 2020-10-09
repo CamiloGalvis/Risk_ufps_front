@@ -191,7 +191,7 @@
                     <tbody>
                       <tr>
                         <td></td>
-                        <td>No existen riesgos para sugerir</td>              
+                        <td>No existen riesgos sugeridos actualmente.</td>              
                         <td></td>
                         <td></td>
                         <td></td>
@@ -244,17 +244,19 @@
           <table id="tabla_riesgos" class="table table-bordered table-striped">
             <thead>
               <tr>
+                <th></th>
                 <th>Riesgo &nbsp<i class="fa fa-long-arrow-down"><i class="fa fa-long-arrow-up"></th>
                 <th><label data-toggle="tooltip" data-placement="top" title="Actividades del cronograma del proyecto afectadas por el riesgo.">Actividades</label></th>
                 <th><label data-toggle="tooltip" data-placement="top" title="Responsable asignado al riesgo.">Responsable</label></th>
                 <th><label data-toggle="tooltip" data-placement="top" title="Acciones de respuesta preliminares asociadas al riesgo.">Acciones de respuesta</label></th>
-                <th><label data-toggle="tooltip" data-placement="top" title="Acciones e información relacionada al riesgo.">Acciones del Riesgo</label></th>                    
+                <th><label data-toggle="tooltip" data-placement="top" title="Acciones e información relacionada al riesgo.">Opciones</label></th>                    
               </tr>
             </thead>
             <tbody>
              {% if lista_riesgos %}
              {% for riesgo in lista_riesgos %}
              <tr>
+              <td></td>
               <td>{{ riesgo.riesgo_nombre }}</td>
 
               <td>
@@ -296,7 +298,8 @@
             {% else %}
             <tr>
               <td></td>
-              <td>No cuentas con riesgos registrados.</td> 
+              <td>No cuentas con riesgos registrados.</td>
+              <td></td> 
               <td></td>
               <td></td>
               <td></td>
@@ -305,11 +308,12 @@
           </tbody>
           <tfoot>
             <tr>
+              <th></th>
               <th>Riesgo</th>                
               <th>Actividades</th>
               <th>Responsables</th>
               <th>Acciones de Respuesta</th>
-              <th>Acciones del Riesgo</th>    
+              <th>Opciones</th>    
             </tr>
           </tfoot>
         </table>
@@ -1402,12 +1406,12 @@ function construir_listado_actividades_riesgos(riesgo_id) {
   
 }
 function trasnformar_tabla(id_tabla) {
-  $("#"+id_tabla).DataTable({
+  t = $("#"+id_tabla).DataTable({    
      "language": {
          "sProcessing":    "Procesando...",
          "sLengthMenu":    "Mostrar _MENU_ registros",
          "sZeroRecords":   "No se encontraron resultados",
-         "sEmptyTable":    "Ningún dato disponible en esta tabla",
+         "sEmptyTable":    "No cuentas con riesgos asociados a esta subcategoría.",
          "sInfo":          "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
          "sInfoEmpty":     "Mostrando registros del 0 al 0 de un total de 0 registros",
          "sInfoFiltered":  "(filtrado de un total de _MAX_ registros)",
@@ -1428,6 +1432,11 @@ function trasnformar_tabla(id_tabla) {
          }
      }
     }); 
+    t.on( 'order.dt search.dt', function () {
+          t.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+              cell.innerHTML = i+1;
+          } );
+      } ).draw(); 
 }
 
   function parsear_fecha(now){    
