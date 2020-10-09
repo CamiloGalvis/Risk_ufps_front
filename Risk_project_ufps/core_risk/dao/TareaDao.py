@@ -2,8 +2,9 @@ from Risk_project_ufps.core_risk.dto.models import *
 from datetime import date
 from datetime import datetime
 from contextlib import closing
-
+from Risk_project_ufps.core_risk.util.cadena import limpiar_descripcion
 from django.db import connections
+
 
 
 class TareaDao:

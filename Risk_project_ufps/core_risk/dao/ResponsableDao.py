@@ -1,5 +1,5 @@
 from Risk_project_ufps.core_risk.dao.ProyectoHasRiesgoDao import *
-
+from Risk_project_ufps.core_risk.util.cadena import limpiar_descripcion
 from Risk_project_ufps.core_risk.dto.models import *
 
 
@@ -8,7 +8,7 @@ class ResponsableDao:
     def registrar_responsable(self, nombre, descripcion, proyecto, rol):
         responsable = Responsble(
             responsble_nombre=nombre,
-            responsble_descripcion=descripcion,
+            responsble_descripcion=limpiar_descripcion(descripcion),
             proyecto_id=proyecto,
             rol_id=rol.rol_id)
         try:
@@ -40,7 +40,7 @@ class ResponsableDao:
         responsable = responsable
         try:
             responsable.responsble_nombre = nombre
-            responsable.responsble_descripcion = descripcion
+            responsable.responsble_descripcion = limpiar_descripcion(descripcion)
             responsable.rol_id = rol.rol_id
             responsable.save()
         except Exception as e:

@@ -1,7 +1,8 @@
 from contextlib import closing
-
 from django.db import connections
 from Risk_project_ufps.core_risk.dto.models import *
+from Risk_project_ufps.core_risk.util.cadena import limpiar_descripcion
+
 
 class LeccionDao():
 
@@ -40,7 +41,7 @@ class LeccionDao():
 				  'WHERE `leccion`.`leccion_id` = %s '
 			cursor.execute(
 				sql,
-				[descripcion, leccion.leccion_id],
+				[limpiar_descripcion(descripcion), leccion.leccion_id],
 			) 
 		return "Se actualizó la lección de forma exitosa"
 	
@@ -56,7 +57,7 @@ class LeccionDao():
 				cursor.execute(
 				'INSERT INTO `leccion`(`leccion_descripcion`, `proyecto_id`, `proyecto_linea_base` )'
 				'VALUES (%s, %s, %s)',
-				(descripcion, proyecto.proyecto_id , proyecto.proyecto_linea_base))
+				(limpiar_descripcion(descripcion), proyecto.proyecto_id , proyecto.proyecto_linea_base))
 				flag = True
 		except Exception as e:
 			raise e

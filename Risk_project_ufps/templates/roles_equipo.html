@@ -74,7 +74,7 @@
           <div class="col-md-6">
             <div class="form-group">
               <label>Descripción</label>
-              <textarea id="descripcion_nuevo" class="form-control" rows="3" maxlength="254" placeholder="Descripción del rol a registrar..." name="rol_descripcion" required></textarea>
+              <textarea id="descripcion_nuevo" class="form-control" rows="3" maxlength="3000" placeholder="Descripción del rol a registrar..." name="rol_descripcion" required></textarea>
             </div>
             <div class="box-footer">             
               <button type="submit" class="btn btn-primary pull-right">Registrar</button>
@@ -175,14 +175,14 @@
               <div class="col-md-6">
                 <div class="form-group">
                 <label >Nombre </label>
-                <input type="text" class="form-control" id="rol_nombre" name="rol_nombre">
+                <input type="text" class="form-control" id="rol_nombre" maxlength="59" name="rol_nombre">
                 </div>               
               </div>
               <!-- /.col -->
               <div class="col-md-6">             
                 <div class="form-group">
                   <label>Descripción</label>
-                  <textarea class="form-control" rows="3" maxlength="254" id="rol_descripcion" name="rol_descripcion"></textarea>
+                  <textarea class="form-control" rows="3" maxlength="3000" id="rol_descripcion" name="rol_descripcion"></textarea>
                 </div>
                 <input type="text" class="form-control" id="rol_id" name="rol_id" style="visibility:hidden" >
               </div>

@@ -294,7 +294,7 @@
                 {% for impacto in impactos %}
                 <div class="form-group">
                   <div class="col-xs-5">
-                    <input type="text" class="form-control" name="impacto_nombre_{{ forloop.counter }}" value="{{impacto.impacto_categoria}}" maxlength="70" required />
+                    <input type="text" class="form-control" name="impacto_nombre_{{ forloop.counter }}" value="{{impacto.impacto_categoria}}" maxlength="69" required />
                   </div>
                   <div class="col-xs-3">
                     <input type="number" class="form-control" name="impacto_valor_{{ forloop.counter }}" value="{{impacto.impacto_valor}}" min="1" required />
@@ -315,7 +315,7 @@
                 {% for propabilidad in probabilidades %}
                 <div class="form-group">
                   <div class="col-xs-5">
-                    <input type="text" class="form-control" name="propabilida_nombre_{{ forloop.counter }}" value="{{propabilidad.propabilidad_categoria}}" maxlength="70"  required />
+                    <input type="text" class="form-control" name="propabilida_nombre_{{ forloop.counter }}" value="{{propabilidad.propabilidad_categoria}}" maxlength="69"  required />
                   </div>
                   <div class="col-xs-3">
                     <input type="number" class="form-control" name="propabilida_valor_{{ forloop.counter }}" value="{{propabilidad.propabilidad_valor}}" min="1" required />
@@ -356,7 +356,7 @@
           {% for clasificacion in clasificacion_riesgo %}
           <div class="row" >
             <div class="col-md-3">
-              <input type="text" class="form-control" name="clasificacion_nombre_{{ forloop.counter }}" value="{{clasificacion.clasificacion_riesgo_nombre}}" maxlength="70" required />
+              <input type="text" class="form-control" name="clasificacion_nombre_{{ forloop.counter }}" value="{{clasificacion.clasificacion_riesgo_nombre}}" maxlength="69" required />
             </div>   
             <div class="col-md-4">
               <div class="input-group my-colorpicker2 colorpicker-element">
@@ -419,7 +419,7 @@
               <div class="col-md-6">
                 <div class="form-group"> 
                   <label >Nombre </label>
-                  <input type="text" class="form-control" id="nombre_responsable" name="nombre_responsable" required>
+                  <input type="text" class="form-control" maxlength="99" id="nombre_responsable" name="nombre_responsable" required>
                 </div>
                  <div class="form-group">
                   <label >Rol </label>
@@ -438,7 +438,7 @@
             <div class="col-md-6">             
               <div class="form-group">
                 <label>Descripción</label>
-               <textarea class="form-control" rows="4"  id="descripcion_responsable" name="descripcion_responsable"></textarea>
+               <textarea class="form-control" rows="4" maxlength="3000" id="descripcion_responsable" name="descripcion_responsable"></textarea>
                 </div>
                 <input type="text" class="form-control" id="proyecto_id" name="proyecto_id" value="{{ proyecto.proyecto_id }}" style="visibility:hidden">                
               </div>            
@@ -477,7 +477,7 @@
             <div class="col-md-6">
               <div class="form-group">
                 <label >Nombre </label>
-                <input type="text" class="form-control" id="responsable_nombre" name="responsable_nombre" required>
+                <input type="text" class="form-control" maxlength="99" id="responsable_nombre" name="responsable_nombre" required>
               </div>
                <div class="form-group">
                 <label >Rol </label>
@@ -496,7 +496,7 @@
             <div class="col-md-6">             
               <div class="form-group">
                 <label>Descripción</label>
-                <textarea class="form-control" rows="4"  id="responsable_descripcion" name="responsable_descripcion"></textarea>
+                <textarea class="form-control" rows="4" maxlength="3000" id="responsable_descripcion" name="responsable_descripcion"></textarea>
               </div>
               <input type="text" class="form-control" id="responsable_id" name="responsable_id" style="visibility:hidden">                
               <input type="text" class="form-control" id="proyecto_id_editar" name="proyecto_id_editar" value="{{ proyecto.proyecto_id }}" style="visibility:hidden">                

@@ -1,4 +1,5 @@
 from Risk_project_ufps.core_risk.dto.models import *
+from Risk_project_ufps.core_risk.util.cadena import limpiar_descripcion
 
 
 class RespuestaDao:
@@ -6,7 +7,7 @@ class RespuestaDao:
     def registrar_respuesta(self, nombre, descripcion, tipo_respuesta):
         return Respuesta.objects.create(
             respuesta_nombre=nombre,
-            respuesta_descripcion=descripcion,
+            respuesta_descripcion=limpiar_descripcion(descripcion),
             respuesta_tipo = tipo_respuesta            
         )
 
@@ -48,7 +49,7 @@ class RespuestaDao:
     def editar_respuesta(self, respuesta, nombre, descripcion):
         respuesta = respuesta
         try:
-            respuesta.respuesta_descripcion = descripcion
+            respuesta.respuesta_descripcion = limpiar_descripcion(descripcion)
             respuesta.respuesta_nombre = nombre
             respuesta.save()
         except Exception as e:
