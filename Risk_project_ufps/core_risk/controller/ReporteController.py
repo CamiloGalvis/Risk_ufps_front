@@ -189,27 +189,28 @@ class ReporteController:
     def mezclar_respuestas_with_tareas(self, riesgos, respuestas_riesgo, lista_tareas):
         riesgo_aux = {}
         for riesgo in riesgos:
-            llave = 'riesgo_'+str(riesgo.riesgo_id)
-            riesgo_aux[llave] = dict(
-                riesgo_id=riesgo.riesgo_id,
-                riesgo_nombre=riesgo.riesgo_nombre
-            )
-            respuestas = respuestas_riesgo[llave]
-            for respuesta in respuestas:
-                riesgo_has_respuesta = respuesta['riesgo_has_respuesta']
-                tareas = lista_tareas[llave]
-                for tarea in tareas:
-                    if tarea['riesgo_has_respuesta'] == riesgo_has_respuesta:
-                        if respuesta.get('tareas'):
-                            respuesta['tareas'].append(tarea)
-                        else:
-                            respuesta['tareas'] = []
-                            respuesta['tareas'].append(tarea)
-                if riesgo_aux[llave].get('respuestas'):
-                    riesgo_aux[llave]['respuestas'].append(respuesta)
-                else:
-                    riesgo_aux[llave]['respuestas'] = []
-                    riesgo_aux[llave]['respuestas'].append(respuesta)
+            llave = 'riesgo_' + str(riesgo.riesgo_id)
+            respuestas = respuestas_riesgo.get(llave)
+            if respuestas:
+                riesgo_aux[llave] = dict(
+                    riesgo_id=riesgo.riesgo_id,
+                    riesgo_nombre=riesgo.riesgo_nombre
+                )
+                for respuesta in respuestas:
+                    riesgo_has_respuesta = respuesta['riesgo_has_respuesta']
+                    tareas = lista_tareas[llave]
+                    for tarea in tareas:
+                        if tarea['riesgo_has_respuesta'] == riesgo_has_respuesta:
+                            if respuesta.get('tareas'):
+                                respuesta['tareas'].append(tarea)
+                            else:
+                                respuesta['tareas'] = []
+                                respuesta['tareas'].append(tarea)
+                    if riesgo_aux[llave].get('respuestas'):
+                        riesgo_aux[llave]['respuestas'].append(respuesta)
+                    else:
+                        riesgo_aux[llave]['respuestas'] = []
+                        riesgo_aux[llave]['respuestas'].append(respuesta)
         return riesgo_aux
 
     def convertir_array(self, mezcla):

@@ -7,7 +7,9 @@ from Risk_project_ufps.core_risk.dao.TareaDao import *
 
 from Risk_project_ufps.core_risk.dto.models import *
 
-from datetime import datetime
+import datetime
+
+
 
 class ProyectoController:
 
@@ -96,7 +98,6 @@ class ProyectoController:
         impactos = impacto_dao.listar_impactos_by_proyecto(proyecto)
         return self.parsear_impactos(impactos)
 
-
     def obtener_impactos_parseados_by_proyecto_id_linea(self, proyecto_id, linea_base):
         impacto_dao = ImpactoDao()
         proyecto = Proyecto.objects.using('base').get(proyecto_id=proyecto_id, proyecto_linea_base=linea_base)
@@ -151,7 +152,7 @@ class ProyectoController:
             aux_2.append(probabilidad.propabilidad_valor)
         return {"probabilidades": aux, "probabilidades_valores": aux_2}
 
-    def parsear_rangos(self, rangos:"List of ClasificacionRiesgo"):
+    def parsear_rangos(self, rangos: "List of ClasificacionRiesgo"):
         x = 0
         aux = []
         for rango in rangos:
@@ -166,7 +167,8 @@ class ProyectoController:
     def actualizar_valores_riesgo_proyecto(self, valores, proyecto_id):
         p_h_r = ProyectoHasRiesgoDao()
         for key in valores:
-            p_h_r_aux = p_h_r.get_by_riesgo_and_proyecto(Proyecto(proyecto_id=proyecto_id), Riesgo(riesgo_id=valores[key]['riesgo']))
+            p_h_r_aux = p_h_r.get_by_riesgo_and_proyecto(Proyecto(proyecto_id=proyecto_id),
+                                                         Riesgo(riesgo_id=valores[key]['riesgo']))
             if 'impacto' in key:
                 p_h_r_aux.impacto_id = valores[key]['id']
             elif 'probabilidad' in key:
@@ -185,23 +187,27 @@ class ProyectoController:
         flag = False
         for tarea in gantt['data']:
             if tarea['is_tarea']:
-                if tarea['tarea_estado'] == '3' and tarea['tarea_estado_old'] != '3':
-                    tarea['fecha_fin_real'] = self.get_datetime()
+                fecha_inicio_real = datetime.datetime.strptime(tarea['fecha_inicio_real'], '%Y-%m-%d')
+                fecha_fin_real = fecha_inicio_real + datetime.timedelta(days=int(tarea['duracion_real']))
                 tarea_aux = Tarea(
                     tarea_id=tarea['tarea_id'],
                     fecha_inicio_real=tarea['fecha_inicio_real'],
-                    fecha_fin_real=tarea['fecha_fin_real'],
+                    fecha_fin_real=fecha_fin_real,
+                    duracion_real=tarea['duracion_real'],
                     tarea_estado=tarea['tarea_estado'],
                     tarea_observacion=tarea['tarea_observacion']
                 )
+                flag = tarea_dao.actualizar_tarea_bd(tarea_aux)
                 flag = tarea_dao.actualizar_tarea_base(tarea_aux, proyecto)
+
         return flag
 
     def get_datetime(self):
         now = datetime.now()
         date_time = now.strftime("%Y-%m-%d")
-        #print("date and time:",date_time)
+        # print("date and time:",date_time)
         return date_time
+
 
     def get_lineas_base(self, proyecto_id):        
         proyecto_dao = ProyectoDao()        
@@ -210,6 +216,3 @@ class ProyectoController:
     def cerrar_proyecto(self, proyecto, fecha):        
         proyecto_dao = ProyectoDao()        
         return proyecto_dao.cerrar_proyecto(proyecto, fecha)
-
-
-

@@ -308,6 +308,7 @@ class Tarea(models.Model):
     duracion = models.IntegerField(blank=True, null=True)
     fecha_fin = models.DateTimeField(blank=True, null=True)
     fecha_inicio_real = models.DateTimeField(blank=True, null=True)
+    duracion_real = models.IntegerField()
     fecha_fin_real = models.DateTimeField(blank=True, null=True)
     tarea_observacion = models.TextField(blank=True, null=True)
     tarea_estado = models.IntegerField(blank=True, null=True)
