@@ -39,7 +39,8 @@ urlpatterns = [
     path('eliminar_rol/', eliminar_rol, name='eliminar_rol'),
 
     #urls mi proyecto
-    path('mi_proyecto/<int:id>/', mi_proyecto, name='mi_proyecto'),     
+    path('mi_proyecto/<int:id>/', mi_proyecto, name='mi_proyecto'),
+    path('mi_proyecto/eliminar_proyecto/', eliminar_proyecto, name='eliminar_proyecto'),      
 
     path('mi_proyecto/<int:proyecto_id>/planificar/', planificar_proyecto, name='mi_proyecto'),
     path('mi_proyecto/<int:proyecto_id>/planificar/<str:mensaje>/', planificar_proyecto_2, name='planificar_proyecto_2'),
@@ -62,9 +63,6 @@ urlpatterns = [
 
     path('mi_proyecto/<int:proyecto_id>/identificar/asociar_riesgo/', asociar_riesgo, name='asociar_riesgo'),
     path('mi_proyecto/<int:proyecto_id>/generar_informe/', generar_informe_identificar, name='generar_informe_identificar'),
-
-
-
 
 
     #url de recursos

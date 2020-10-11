@@ -145,6 +145,10 @@
     </div>      
     <!-- /.box-header -->
     <div class="box-body">
+      <div class="callout callout-danger">
+        <h4><i class="fa fa-exclamation-triangle"></i> Atención</h4>
+        En esta sección tendrá la opción de finalizar la gestión de riesgos del presente proyecto, esta opción no se podra reversar.     
+      </div>
       {% if proyecto.proyecto_fin_status %}
       <button type="button" class="btn btn-danger pull-right" data-toggle="modal"  data-target="#modal-cerrar" disabled="true">Finalizar Proyecto</i>
       </button>

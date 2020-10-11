@@ -69,6 +69,8 @@
             <li class="active"><a href="#perfil" data-toggle="tab">Información</a></li>
 
             <li><a href="#editar_perfil" data-toggle="tab">Editar</a></li>
+
+             <li><a href="#eliminar_perfil" data-toggle="tab">Eliminar</a></li>
           </ul>
           <div class="tab-content">
             <div class="active tab-pane" id="perfil">
@@ -225,6 +227,29 @@
           </form>
         </div>
         <!-- /.tab-pane -->
+         <div class="tab-pane" id="eliminar_perfil">
+            <form class="form-horizontal">
+              <div class="form-group">
+                <div class="col-sm-12">
+                  <div class="callout callout-danger">
+                    <h4><i class="fa fa-exclamation-triangle"></i> Atención</h4>
+                    En esta sección tendrá la opción de eliminar el presente proyecto de su lista personal, esta opción no se podra reversar.     
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+               <div class="col-sm-offset-2 col-sm-10">
+              {% if proyecto.proyecto_fin_status %}
+              <button type="submit" class="btn btn-danger pull-right" disabled="true">Eliminar</button>
+              {% else %}
+              <button type="button" class="btn btn-danger pull-right" data-toggle="#modal_eliminar" onclick="abrir_modal_eliminar('{{ proyecto.proyecto_nombre }}', '{{ proyecto.proyecto_id }}')" data-target="#modal_eliminar">Eliminar
+                    </button>
+              {% endif %}
+              </div>
+              </div>
+            </form>
+          </div>
+        <!-- /.tab-pane -->
       </div>
       <!-- /.tab-content -->
     </div>
@@ -233,6 +258,35 @@
    </div>
   <!-- /.col -->
 </div>
+ <!-- /.modal-eliminar -->
+
+  <div class="modal modal-danger fade" id="modal_eliminar" >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title"> Eliminar Proyeto </h4>
+          </div>
+          <form  action="/mi_proyecto/eliminar_proyecto/" method="post">
+            {% csrf_token %}
+          <div class="modal-body">
+            <p id="contenido_modal">Estas seguro que deseas eliminar el proyecto:</p>
+            <h2 id="proyecto_nombre_e"></h2>
+            <input type="text" class="form-control" id="proyecto_id" name="proyecto_id" style="visibility: hidden;">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Cerrar</button>
+            <button type="submit" class="btn btn-outline">Eliminar</button>
+          </div>
+          </form>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+    </div>
+
+  </div>
 
 </div>
 </div>
@@ -305,6 +359,12 @@ function actualizar_proyecto_normal(actionurl){
       });                            
     }
   });
+}
+
+function abrir_modal_eliminar(nombre, id){
+  $("#modal_eliminar").modal('show');
+  document.getElementById("proyecto_nombre_e").innerHTML = nombre;
+  document.getElementById("proyecto_id").value = id;
 }
 
 

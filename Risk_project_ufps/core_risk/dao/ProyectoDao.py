@@ -44,6 +44,17 @@ class ProyectoDao:
         finally:
             return proyecto
 
+    def eliminar_proyecto(self, proyecto):
+        proyecto = proyecto
+
+        try:
+            proyecto.gerente_id = None
+            proyecto.save()            
+        except Error as e:
+            print(e)
+        finally:
+            return True
+
     def editar_proyecto(self, proyecto, nombre, objetivo, alcance, descripcion, presupuesto, fecha_inicio, sector):
         proyecto = proyecto
         try:

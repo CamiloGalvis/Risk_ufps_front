@@ -675,6 +675,20 @@ def mi_proyecto(request, id):
 
     return render(request, "procesos/proyecto.html", data)
 
+def eliminar_proyecto(request):
+    proyecto_controller = ProyectoController()
+    lista_proyectos = proyecto_controller.listar_proyectos(request.user.id)
+    if request.method == 'POST':        
+        proyecto = proyecto_controller.obtener_proyecto(request.POST["proyecto_id"])
+        
+        aux = proyecto_controller.eliminar_proyecto(proyecto)
+        if aux is True:
+            lista_proyectos = proyecto_controller.listar_proyectos(request.user.id)
+            return render(request, "inicio.html", {"lista_proyectos": lista_proyectos})
+        return mi_proyecto(request.POST["proyecto_id"])
+    return render(request, "inicio.html", {"lista_proyectos": lista_proyectos})
+
+
 
 def eliminar_riesgo_proyecto(request, proyecto_id):
     if request.method == 'POST':

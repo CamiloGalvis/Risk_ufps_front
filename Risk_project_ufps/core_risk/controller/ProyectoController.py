@@ -24,6 +24,10 @@ class ProyectoController:
         proyecto_dao = ProyectoDao()
         return proyecto_dao.obtener_proyecto(id)
 
+    def eliminar_proyecto(self, proyecto):
+        proyecto_dao = ProyectoDao()
+        return proyecto_dao.eliminar_proyecto(proyecto)
+
     
 
     def validar_proyecto(self, nombre, gerente_id):
