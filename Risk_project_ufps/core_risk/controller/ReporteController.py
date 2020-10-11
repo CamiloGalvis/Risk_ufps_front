@@ -99,7 +99,7 @@ class ReporteController:
                 """
         propietario = proyecto.gerente.gerente_nombre
         titulo = "REPORTE PROYECTO " + proyecto.proyecto_nombre
-        cabecera = ("RIESGO", "ACCION", "TIPO ACCION", "TAREA", "FECHAS PLANEADAS", "FECHAS REALES", "ESTADO", "OBSERVACIONES")
+        cabecera = ("RIESGO", "ACCION", "TIPO ACCION", "TAREA", "FECHAS PLANEADAS", "FECHAS REALES", "DURACION REAL", "% AVANCE ESPERADO", "% ATRASO", "ESTADO", "OBSERVACIONES")
 
         riesgo_controller = RiesgoController()
         respuesta_controller = RespuestaController()
@@ -230,6 +230,9 @@ class ReporteController:
                                 aux_3['tarea_nombre'],
                                 aux_3['fecha_inicio'] + ' - ' + aux_3['fecha_fin'],
                                 aux_3['fecha_inicio_real'] + ' - ' + aux_3['fecha_fin_real'],
+                                aux_3['duracion_real'],
+                                str(self.calcular_porcentaje_avance(int(aux_3["tarea_estado"]), aux_3['fecha_inicio'], aux_3['fecha_fin'], int(aux_3["duracion"]))) + '%',
+                                str(self.calcular_porcentaje_atraso(int(aux_3['duracion']), int(aux_3['duracion_real'])))+ '%',
                                 self.get_estado(aux_3['tarea_estado']),
                                 aux_3['tarea_observacion'],
                             ])
@@ -243,11 +246,17 @@ class ReporteController:
                             '',
                             '',
                             '',
+                            '',
+                            '',
+                            '',
                         ])
             else:
                 array_final.append([
                     aux['riesgo_nombre'],
                     'riesgo no posee acciones',
+                    '',
+                    '',
+                    '',
                     '',
                     '',
                     '',
@@ -299,3 +308,26 @@ class ReporteController:
             return 'Completado'
         else:
             return 'Retrasado'
+
+    def calcular_porcentaje_atraso(self, duracion_planeada:int, duracion_real:int):
+        dife = duracion_real-duracion_planeada
+        porc = (dife * 100) / duracion_planeada
+        if porc < 0:
+            porc = 0.0
+        return porc
+
+    def calcular_porcentaje_avance(self, estado:int, fecha_inicio_planeada:str, fecha_fin_planeada:str, duracion_planeada:int):
+        fecha_inicio = datetime.strptime(fecha_inicio_planeada, '%Y-%m-%d')
+        fecha_fin = datetime.strptime(fecha_fin_planeada, '%Y-%m-%d')
+        if estado == 1:
+            return 0.0
+        elif estado == 3:
+            return 100
+        fecha_actual = datetime.now()
+        dife = (fecha_actual - fecha_inicio).days
+        return round((dife*100)/duracion_planeada,2)
+
+
+
+
+

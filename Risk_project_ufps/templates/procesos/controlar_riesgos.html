@@ -134,7 +134,7 @@
               <tr>
                 <th>Tarea</th>
                 <th>Fechas planeadas</th>
-                <th>Fechas reales</th>
+                <th>Fechas reales</th>                
                 <th>Estado</th>
                 <th>Observaciones</th>
                 <th>Recursos</th>
@@ -148,7 +148,7 @@
                 <th>Tarea</th>
                 <th>Fechas planeadas</th>
                 <th>Fechas reales</th>
-                <th>Estado</th>
+                <th>Estado</th>            
                 <th>Observaciones</th>
                 <th>Recursos</th>
               </tr>
@@ -488,6 +488,7 @@
       {name:"text",       label:"Tarea", min_width: 150, max_width:300, tree:true},
       {name:"start_date", label:"Fecha inicio", align:"center",  width:150},
       {name:"end_date",   label:"Fecha fin",   align:"center",  width:150 }, 
+      //{name:"duration",   label:"Días",   align:"center",  width:80 }, 
     ];
     gantt.config.autosize = "y";
     gantt.init("gantt_here");    
@@ -591,9 +592,10 @@
 
         tr.append(td_nombre);
         tr.append(td_fecha_planeada);
-        tr.append(td_fecha_real);
-        //tr.append(td_avance);
+        tr.append(td_fecha_real);       
         tr.append(td_estado);
+        //tr.append(td_avance);
+        //tr.append(td_avance);
         tr.append(td_observacion);
         tr.append(td_recursos);
         resumen.append(tr);         
