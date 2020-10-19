@@ -134,8 +134,10 @@
               <tr>
                 <th>Tarea</th>
                 <th>Fechas planeadas</th>
-                <th>Fechas reales</th>
+                <th>Fechas reales</th>                
                 <th>Estado</th>
+                <th>Avance</th> 
+                <th>Atraso</th> 
                 <th>Observaciones</th>
                 <th>Recursos</th>
               </tr>
@@ -148,7 +150,9 @@
                 <th>Tarea</th>
                 <th>Fechas planeadas</th>
                 <th>Fechas reales</th>
-                <th>Estado</th>
+                <th>Estado</th> 
+                <th>Avance</th>
+                <th>Atraso</th>           
                 <th>Observaciones</th>
                 <th>Recursos</th>
               </tr>
@@ -488,6 +492,7 @@
       {name:"text",       label:"Tarea", min_width: 150, max_width:300, tree:true},
       {name:"start_date", label:"Fecha inicio", align:"center",  width:150},
       {name:"end_date",   label:"Fecha fin",   align:"center",  width:150 }, 
+      //{name:"duration",   label:"Días",   align:"center",  width:80 }, 
     ];
     gantt.config.autosize = "y";
     gantt.init("gantt_here");    
@@ -551,6 +556,8 @@
         let td_fecha_planeada = document.createElement("td");
         let td_fecha_real = document.createElement("td");
         let td_estado = document.createElement("td");
+        let td_avance = document.createElement("td");
+        let td_atraso = document.createElement("td");
         let td_observacion = document.createElement("td");
         let td_recursos = document.createElement("td");
 
@@ -574,11 +581,12 @@
         td_fecha_real.append(document.createElement("br"));
         td_fecha_real.append(document.createTextNode(duracion_real_var));
 
-        duracion = diferencia_fechas(new Date(tarea.fecha_fin), new Date(tarea.fecha_inicio)); 
-        actual = diferencia_fechas(new Date(), new Date(tarea.fecha_inicio));
-        porc = (actual * 100)/duracion;
-        let td_avance = document.createElement("td");
-        td_avance.append(document.createTextNode(porc+"% "));
+        let porc_avance = calcular_porcentaje_avance(tarea.tarea_estado, tarea.fecha_inicio_real,tarea.fecha_fin_real, tarea.duracion_planeada);        
+        td_avance.append(document.createTextNode(porc_avance+" % "));
+
+        let por_atraso = calcular_porcentaje_atraso(tarea.duracion_planeada, tarea.duracion_real);
+        
+        td_atraso.append(document.createTextNode(por_atraso+" % "));        
                
         td_estado.append(document.createTextNode(get_estado(tarea.tarea_estado)));
 
@@ -591,9 +599,10 @@
 
         tr.append(td_nombre);
         tr.append(td_fecha_planeada);
-        tr.append(td_fecha_real);
-        //tr.append(td_avance);
+        tr.append(td_fecha_real);       
         tr.append(td_estado);
+        tr.append(td_avance);
+        tr.append(td_atraso);
         tr.append(td_observacion);
         tr.append(td_recursos);
         resumen.append(tr);         
@@ -601,6 +610,35 @@
     }
     trasnformar_tabla("tareas_tabla");
     $("#modal-resumen").modal('show');
+  }
+
+  function calcular_porcentaje_atraso(duracion_planeada, duracion_real) {
+    console.log(duracion_planeada, duracion_real);
+    dife = duracion_real-duracion_planeada;
+    porc = (dife * 100) / duracion_planeada;
+    if (porc < 0){
+      porc = 0.0;
+    }
+    return porc;
+  } 
+        
+  function calcular_porcentaje_avance(estado, fecha_inicio_planeada, fecha_fin_planeada, duracion_planeada){
+    fecha_inicio = new Date(fecha_inicio_planeada);
+    fecha_fin = new Date(fecha_fin_planeada);
+    if (estado == 1){
+      return 0.0;
+    }else if (estado == 3){
+      return 100;
+    }
+    fecha_actual = new Date();
+    dife = diferencia_dias(fecha_actual,fecha_inicio);
+    avance = (dife*100)/duracion_planeada;
+    return avance.toFixed(2); 
+  }
+
+  function diferencia_dias(fecha1, fecha2){
+    let resta = fecha2.getTime() - fecha1.getTime();
+    return Math.round(resta/(1000*60*60*24));
   }
 
   function get_recursos_by_tarea_id_and_riesgo_id(tarea_id, riesgo_id){

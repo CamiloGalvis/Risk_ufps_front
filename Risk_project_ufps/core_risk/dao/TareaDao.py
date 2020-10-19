@@ -129,7 +129,7 @@ class TareaDao:
                                                            proyecto.proyecto_linea_base,
                                                            proyecto.proyecto_linea_base,
                                                            proyecto.proyecto_linea_base, ])
-        except Exception as e:
+        except Tarea.DoesNotExist as e:
             print(e)
         finally:
             return tareas
