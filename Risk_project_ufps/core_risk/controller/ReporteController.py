@@ -74,7 +74,7 @@ class ReporteController:
         """
         propietario = proyecto.gerente.gerente_nombre
         titulo = "REPORTE PROYECTO " + proyecto.proyecto_nombre
-        cabecera = ("CÓDIGO", "RIESGO", "ACCIONES", "TAREAS", "RECURSOS")
+        cabecera = ("CÓDIGO", "RIESGO", "ACCIONES","TIPO DE ACCIÓN", "TAREAS", "RECURSOS")
 
         riesgo_controller = RiesgoController()
         respuesta_controller = RespuestaController()
@@ -99,7 +99,7 @@ class ReporteController:
                 """
         propietario = proyecto.gerente.gerente_nombre
         titulo = "REPORTE PROYECTO " + proyecto.proyecto_nombre
-        cabecera = ("RIESGO", "ACCION", "TIPO ACCION", "TAREA", "FECHAS PLANEADAS", "FECHAS REALES", "DURACION REAL", "% AVANCE ESPERADO", "% ATRASO", "ESTADO", "OBSERVACIONES")
+        cabecera = ("ID", "TAREA", "FECHA INICIO PLANEADA", "FECHA FIN PLANEADA","DURACIÓN PLANEADA","FECHA INICIO REAL", "FECHA FIN REAL", "DURACION REAL", "% AVANCE ESPERADO", "% ATRASO", "ESTADO", "OBSERVACIONES")
 
         riesgo_controller = RiesgoController()
         respuesta_controller = RespuestaController()
@@ -217,6 +217,7 @@ class ReporteController:
 
     def convertir_array(self, mezcla):
         array_final = []
+        contador = 1;
         for key, aux in mezcla.items():
             respuestas = aux.get('respuestas')
             if respuestas and len(respuestas) > 0:
@@ -225,13 +226,14 @@ class ReporteController:
                     tareas = aux_2.get('tareas')
                     if tareas and len(tareas) > 0:
                         for aux_3 in tareas:
-                            array_final.append([
-                                aux['riesgo_nombre'],
-                                aux_2['respuesta_nombre'],
-                                aux_2['tipo_respuesta'],
+                            array_final.append([ 
+                                contador,                               
                                 aux_3['tarea_nombre'],
-                                aux_3['fecha_inicio'] + ' - ' + aux_3['fecha_fin'],
-                                aux_3['fecha_inicio_real'] + ' - ' + aux_3['fecha_fin_real'],
+                                aux_3['fecha_inicio'],
+                                aux_3['fecha_fin'],
+                                aux_3['duracion'],
+                                aux_3['fecha_inicio_real'],
+                                aux_3['fecha_fin_real'],
                                 aux_3['duracion_real'],
                                 str(self.calcular_porcentaje_avance(int(aux_3["tarea_estado"]), aux_3['fecha_inicio'], aux_3['fecha_fin'], int(aux_3["duracion"]))) + '%',
                                 str(self.calcular_porcentaje_atraso(int(aux_3['duracion']), int(aux_3['duracion_real'])))+ '%',
@@ -252,6 +254,7 @@ class ReporteController:
                             '',
                             '',
                         ])
+                contador = contador+1
             else:
                 array_final.append([
                     aux['riesgo_nombre'],

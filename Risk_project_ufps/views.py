@@ -458,7 +458,7 @@ def nueva_respuesta(request):
         respuesta_controller = RespuestaController()
 
         respuesta = respuesta_controller.registrar_respuesta(request.POST["respuesta_nombre"],
-                                                             request.POST["respuesta_descripcion"])
+                                                             request.POST["respuesta_descripcion"], request.POST["tipo_respuesta"])
 
         riesgo = riesgo_controller.obtener_riesgo(request.POST["riesgo_id"])
 
