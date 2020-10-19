@@ -25,7 +25,7 @@ class ReporteController:
        registros y el nombre del archivo xlsx (EXCEL)."""
         propietario = proyecto.gerente.gerente_nombre
         titulo = "REPORTE PROYECTO " + proyecto.proyecto_nombre
-        cabecera = ("CODIGO", "RIESGO", "CAUSAS", "EVENTO", "EFECTOS")
+        cabecera = ("CODIGO", "RIESGO", "CAUSAS", "EVENTO", "EFECTOS", "RESPONSABLE")
         riesgo_dao = RiesgoDao()
         riesgos = riesgo_dao.get_riesgos_by_proyecto(proyecto)
         registros = self.raw_queryset_as_values_list(riesgos)
@@ -135,6 +135,7 @@ class ReporteController:
 
     def raw_queryset_as_values_list(self, raw_qs):
         aux = []
+        responsable_dao = ResponsableDao()
         for row in raw_qs:
             riesgo = model_to_dict(row)
             aux.append([
@@ -142,7 +143,8 @@ class ReporteController:
                 riesgo['riesgo_nombre'],
                 riesgo['riesgo_causa'],
                 riesgo['riesgo_evento'],
-                riesgo['riesgo_efecto']
+                riesgo['riesgo_efecto'],
+                responsable_dao.obtener_responsable(row.responsable_id).responsble_nombre                 
             ])
         return aux
 

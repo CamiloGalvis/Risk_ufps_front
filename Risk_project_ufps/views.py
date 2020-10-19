@@ -46,6 +46,14 @@ from Risk_project_ufps.core_risk.controller.LeccionController import *
 """
 
 
+def index(request):  
+    visita = Visitas(fecha_visita=datetime.datetime.now())
+    visita.save()
+    nro_visitas = Visitas.objects.count()
+    nro_proyectos = Proyecto.objects.count() 
+    nro_usuarios = Gerente.objects.count()  
+    return render(request, "index.html", {"nro_visitas":nro_visitas, "nro_proyectos":nro_proyectos, "nro_usuarios":nro_usuarios})
+
 # Autentica usuario y carga la vista de inicio
 def autenticar(request):
     if request.user.is_authenticated:
@@ -386,9 +394,9 @@ def editar_riesgo(request):
 
     subcategoria = subcategoria_controller.obtener_subcategoria(request.POST["sub_categoria_id"])
 
-    mensaje_editar = riesgo_controller.editar_riesgo(riesgo, request.POST["riesgo_nombre"],
+    mensaje_editar = riesgo_controller.editar_riesgo(riesgo, request.POST["riesgo_nombre"],request.POST["riesgo_causa"],
                                                      request.POST["riesgo_evento"], request.POST["riesgo_efecto"],
-                                                     request.POST["riesgo_causa"], request.POST["riesgo_tipo"],
+                                                      request.POST["riesgo_tipo"],
                                                      subcategoria)
 
     rbs_controller = RbsController()

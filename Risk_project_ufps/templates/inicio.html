@@ -1,6 +1,6 @@
 {% extends "plantilla.html" %}
 
-{% block title %} RiskProject UFPS | Mis Proyectos {% endblock %}
+{% block title %} RISKO | Mis Proyectos {% endblock %}
 
 {% block content %}
 
@@ -44,11 +44,12 @@
         <div class="small-box bg-aqua">
         {% endif %}  
           <div class="inner">
-            <h2>{{ proyecto.proyecto_nombre}}</h2>
+            <h2 class="info-box-text">{{ proyecto.proyecto_nombre}}</h2>
           </div>
           <div class="icon">
             <i class="ion ion-document"></i>
           </div>
+          <br>
             {% if proyecto.proyecto_fin_status %}
             <button type="button"  class="btn btn-block btn-info btn-xs bg-red" style="border-color: #BE4C4C;">
             {% else %}

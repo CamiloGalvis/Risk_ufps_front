@@ -1,6 +1,6 @@
 {% extends "procesos/plantilla_procesos.html" %}
 
-{% block title %} Proyecto {% endblock %}
+{% block title %} RISKO | {{ proyecto.proyecto_nombre }} {% endblock %}
 
 
 {% block content %}
@@ -109,6 +109,8 @@
                         <th>Causa</th>
                         <th>Evento</th>
                         <th>Efecto</th>
+                        
+                        
                       </tr>
                     </thead>
                     <tbody id="body_riesgos">
@@ -127,6 +129,8 @@
                         <th>Causa</th>
                         <th>Evento</th>
                         <th>Efecto</th>
+                        
+                        
                       </tr>
                     </tfoot>
                   </table>
@@ -185,7 +189,8 @@
                         <th>Nombre</th>
                         <th>Causa</th>
                         <th>Evento</th>
-                        <th>Efecto</th>
+                        <th>Efecto</th>         
+                        
                       </tr>
                     </thead>
                     <tbody>
@@ -201,9 +206,10 @@
                       <tr>
                         <th></th>
                         <th>Nombre</th>
-                        <th>Causa</th>
+                        <th>Causa</th> 
                         <th>Evento</th>
                         <th>Efecto</th>
+                                               
                       </tr>
                     </tfoot>
                   </table>
@@ -1209,12 +1215,7 @@ function asosiar_riesgos(proyecto_id){
      $("#modal_responsables").modal('show');
   };
 
-  function abrir_modal_editar() {        
 
-        $("#modal_editar").modal('show');
-        
-        return false;
-    };
 
   function abrir_modal_informacion_riesgo(nombre, causa, evento, efecto, tipo, fecha) {        
 

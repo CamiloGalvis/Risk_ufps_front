@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 03-10-2020 a las 19:42:37
--- Versión del servidor: 10.4.13-MariaDB
--- Versión de PHP: 7.2.32
+-- Tiempo de generación: 12-10-2020 a las 00:48:35
+-- Versión del servidor: 10.4.14-MariaDB
+-- Versión de PHP: 7.2.33
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -574,7 +574,7 @@ INSERT INTO `actividad` (`actividad_id`, `actividad_orden`, `actividad_uuid`, `a
 CREATE TABLE `categoria` (
   `categoria_id` int(11) NOT NULL,
   `categoria_nombre` varchar(45) DEFAULT NULL,
-  `categoria_descripcion` tinytext DEFAULT NULL,
+  `categoria_descripcion` text DEFAULT NULL,
   `categoria_default` tinyint(4) NOT NULL DEFAULT 1,
   `categoria_uid` bigint(20) UNSIGNED DEFAULT NULL,
   `rbs_id` int(11) NOT NULL,
@@ -588,7 +588,14 @@ CREATE TABLE `categoria` (
 
 INSERT INTO `categoria` (`categoria_id`, `categoria_nombre`, `categoria_descripcion`, `categoria_default`, `categoria_uid`, `rbs_id`, `proyecto_linea_base`, `proyecto_id`) VALUES
 (1, 'Riesgo técnico', '', 0, 98928837663916032, 2, 1, 2),
-(8, 'los hombres lobo', 'caminan sobre paris', 2, 98929314438840333, 2, 1, 2);
+(6, 'los hombres lobo', 'caminan sobre paris', 1, 98928837663916061, 1, 1, 1),
+(6, 'los hombres lobo', 'caminan sobre paris', 1, 98928837663916061, 1, 2, 1),
+(6, 'los hombres lobo', 'caminan sobre paris', 1, 98928837663916061, 1, 3, 1),
+(6, 'los hombres lobo', 'caminan sobre paris', 1, 98928837663916061, 1, 4, 1),
+(6, 'los hombres lobo', 'caminan sobre paris', 1, 98928837663916061, 1, 5, 1),
+(8, 'los hombres lobo', 'caminan sobre paris', 2, 98929314438840333, 2, 1, 2),
+(13, 'Riesgo técnico', '', 2, 98942256752361472, 1, 1, 6),
+(13, 'Riesgo técnico', '', 2, 98942256752361472, 1, 2, 6);
 
 -- --------------------------------------------------------
 
@@ -611,9 +618,30 @@ CREATE TABLE `clasificacion_riesgo` (
 --
 
 INSERT INTO `clasificacion_riesgo` (`clasificacion_riesgo_id`, `clasificacion_riesgo_nombre`, `clasificacion_riesgo_min`, `clasificacion_riesgo_max`, `clasificacion_color`, `proyecto_id`, `proyecto_linea_base`) VALUES
+(1, 'Bajo', 1, 4, '#138D75', 1, 1),
+(1, 'Bajo', 1, 4, '#138D75', 1, 2),
+(1, 'Bajo', 1, 4, '#138D75', 1, 3),
+(1, 'Bajo', 1, 4, '#138D75', 1, 4),
+(1, 'Bajo', 1, 4, '#138D75', 1, 5),
+(2, 'Moderado', 5, 11, '#D68910', 1, 1),
+(2, 'Moderado', 5, 11, '#D68910', 1, 2),
+(2, 'Moderado', 5, 11, '#D68910', 1, 3),
+(2, 'Moderado', 5, 11, '#D68910', 1, 4),
+(2, 'Moderado', 5, 11, '#D68910', 1, 5),
+(3, 'Alto', 12, 25, '#CD5C5C', 1, 1),
+(3, 'Alto', 12, 25, '#CD5C5C', 1, 2),
+(3, 'Alto', 12, 25, '#CD5C5C', 1, 3),
+(3, 'Alto', 12, 25, '#CD5C5C', 1, 4),
+(3, 'Alto', 12, 25, '#CD5C5C', 1, 5),
 (4, 'Bajo', 1, 4, '#138D75', 2, 1),
 (5, 'Moderado', 5, 11, '#D68910', 2, 1),
-(6, 'Alto', 12, 25, '#CD5C5C', 2, 1);
+(6, 'Alto', 12, 25, '#CD5C5C', 2, 1),
+(16, 'Bajo', 1, 4, '#138D75', 6, 1),
+(16, 'Bajo', 1, 4, '#138D75', 6, 2),
+(17, 'Moderado', 5, 11, '#D68910', 6, 1),
+(17, 'Moderado', 5, 11, '#D68910', 6, 2),
+(18, 'Alto', 12, 25, '#CD5C5C', 6, 1),
+(18, 'Alto', 12, 25, '#CD5C5C', 6, 2);
 
 -- --------------------------------------------------------
 
@@ -642,6 +670,13 @@ CREATE TABLE `gerente` (
 --
 
 INSERT INTO `gerente` (`gerente_id`, `proyecto_linea_base`, `gerente_nombre`, `gerente_usuario`, `gerente_correo`, `gerente_fecha_creacion`, `gerente_profesion`, `gerente_empresa`, `gerente_metodologias`, `gerente_certificaciones`, `sector_id`, `pais_id`, `proyecto_id`) VALUES
+(50, 1, 'Diego Alirio Carrascal', 'DiegoCVf', 'skdiegomxtr@gmail.com', '2020-10-01 00:00:00', 'ingeniero', 'nortcoding', 'Ninguna', 'PMP', 9, 44, 1),
+(50, 1, 'Diego Alirio Carrascal', 'DiegoCVf', 'skdiegomxtr@gmail.com', '2020-10-01 00:00:00', 'ingeniero', 'nortcoding', 'Ninguna', 'PMP', 9, 44, 6),
+(50, 2, 'Diego Alirio Carrascal', 'DiegoCVf', 'skdiegomxtr@gmail.com', '2020-10-01 00:00:00', 'ingeniero', 'nortcoding', 'Ninguna', 'PMP', 9, 44, 1),
+(50, 2, 'Diego Alirio Carrascal', 'DiegoCVf', 'skdiegomxtr@gmail.com', '2020-10-01 00:00:00', 'ingeniero', 'nortcoding', 'Ninguna', 'PMP', 9, 44, 6),
+(50, 3, 'Diego Alirio Carrascal', 'DiegoCVf', 'skdiegomxtr@gmail.com', '2020-10-01 00:00:00', 'ingeniero', 'nortcoding', 'Ninguna', 'PMP', 9, 44, 1),
+(50, 4, 'Diego Alirio Carrascal', 'DiegoCVf', 'skdiegomxtr@gmail.com', '2020-10-01 00:00:00', 'ingeniero', 'nortcoding', 'Ninguna', 'PMP', 9, 44, 1),
+(50, 5, 'Diego Alirio Carrascal', 'DiegoCVf', 'skdiegomxtr@gmail.com', '2020-10-01 00:00:00', 'ingeniero', 'nortcoding', 'Ninguna', 'PMP', 9, 44, 1),
 (51, 1, 'a', 'a', 'a@a', '2020-10-02 00:00:00', 'a', 'a', 'Ninguna', 'Ninguna', 10, 11, 2);
 
 -- --------------------------------------------------------
@@ -663,11 +698,46 @@ CREATE TABLE `impacto` (
 --
 
 INSERT INTO `impacto` (`impacto_id`, `impacto_categoria`, `impacto_valor`, `proyecto_id`, `proyecto_linea_base`) VALUES
+(1, 'Catastrófico', 5, 1, 1),
+(1, 'Catastrófico', 5, 1, 2),
+(1, 'Catastrófico', 5, 1, 3),
+(1, 'Catastrófico', 5, 1, 4),
+(1, 'Catastrófico', 5, 1, 5),
+(2, 'Mayor', 4, 1, 1),
+(2, 'Mayor', 4, 1, 2),
+(2, 'Mayor', 4, 1, 3),
+(2, 'Mayor', 4, 1, 4),
+(2, 'Mayor', 4, 1, 5),
+(3, 'Moderado', 3, 1, 1),
+(3, 'Moderado', 3, 1, 2),
+(3, 'Moderado', 3, 1, 3),
+(3, 'Moderado', 3, 1, 4),
+(3, 'Moderado', 3, 1, 5),
+(4, 'Menor', 2, 1, 1),
+(4, 'Menor', 2, 1, 2),
+(4, 'Menor', 2, 1, 3),
+(4, 'Menor', 2, 1, 4),
+(4, 'Menor', 2, 1, 5),
+(5, 'Insignificante', 1, 1, 1),
+(5, 'Insignificante', 1, 1, 2),
+(5, 'Insignificante', 1, 1, 3),
+(5, 'Insignificante', 1, 1, 4),
+(5, 'Insignificante', 1, 1, 5),
 (6, 'Catastrófico', 5, 2, 1),
 (7, 'Mayor', 4, 2, 1),
 (8, 'Moderado', 3, 2, 1),
 (9, 'Menor', 2, 2, 1),
-(10, 'Insignificante', 1, 2, 1);
+(10, 'Insignificante', 1, 2, 1),
+(26, 'Catastrófico', 5, 6, 1),
+(26, 'Catastrófico', 5, 6, 2),
+(27, 'Mayor', 4, 6, 1),
+(27, 'Mayor', 4, 6, 2),
+(28, 'Moderado', 3, 6, 1),
+(28, 'Moderado', 3, 6, 2),
+(29, 'Menor', 2, 6, 1),
+(29, 'Menor', 2, 6, 2),
+(30, 'Insignificante', 1, 6, 1),
+(30, 'Insignificante', 1, 6, 2);
 
 -- --------------------------------------------------------
 
@@ -677,7 +747,7 @@ INSERT INTO `impacto` (`impacto_id`, `impacto_categoria`, `impacto_valor`, `proy
 
 CREATE TABLE `leccion` (
   `leccion_id` int(11) NOT NULL,
-  `leccion_descripcion` tinytext NOT NULL,
+  `leccion_descripcion` text NOT NULL,
   `proyecto_id` int(11) NOT NULL,
   `proyecto_linea_base` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -979,11 +1049,46 @@ CREATE TABLE `propabilidad` (
 --
 
 INSERT INTO `propabilidad` (`propabilidad_id`, `propabilidad_categoria`, `propabilidad_valor`, `proyecto_id`, `proyecto_linea_base`) VALUES
+(1, 'Certeza', 5, 1, 1),
+(1, 'Certeza', 5, 1, 2),
+(1, 'Certeza', 5, 1, 3),
+(1, 'Certeza', 5, 1, 4),
+(1, 'Certeza', 5, 1, 5),
+(2, 'Probable', 4, 1, 1),
+(2, 'Probable', 4, 1, 2),
+(2, 'Probable', 4, 1, 3),
+(2, 'Probable', 4, 1, 4),
+(2, 'Probable', 4, 1, 5),
+(3, 'Moderada', 3, 1, 1),
+(3, 'Moderada', 3, 1, 2),
+(3, 'Moderada', 3, 1, 3),
+(3, 'Moderada', 3, 1, 4),
+(3, 'Moderada', 3, 1, 5),
+(4, 'improbable', 2, 1, 1),
+(4, 'improbable', 2, 1, 2),
+(4, 'improbable', 2, 1, 3),
+(4, 'improbable', 2, 1, 4),
+(4, 'improbable', 2, 1, 5),
+(5, 'raro', 1, 1, 1),
+(5, 'raro', 1, 1, 2),
+(5, 'raro', 1, 1, 3),
+(5, 'raro', 1, 1, 4),
+(5, 'raro', 1, 1, 5),
 (6, 'Certeza', 5, 2, 1),
 (7, 'Probable', 4, 2, 1),
 (8, 'Moderada', 3, 2, 1),
 (9, 'improbable', 2, 2, 1),
-(10, 'raro', 1, 2, 1);
+(10, 'raro', 1, 2, 1),
+(26, 'Certeza', 5, 6, 1),
+(26, 'Certeza', 5, 6, 2),
+(27, 'Probable', 4, 6, 1),
+(27, 'Probable', 4, 6, 2),
+(28, 'Moderada', 3, 6, 1),
+(28, 'Moderada', 3, 6, 2),
+(29, 'improbable', 2, 6, 1),
+(29, 'improbable', 2, 6, 2),
+(30, 'raro', 1, 6, 1),
+(30, 'raro', 1, 6, 2);
 
 -- --------------------------------------------------------
 
@@ -994,16 +1099,17 @@ INSERT INTO `propabilidad` (`propabilidad_id`, `propabilidad_categoria`, `propab
 CREATE TABLE `proyecto` (
   `proyecto_id` int(11) NOT NULL,
   `proyecto_nombre` varchar(100) NOT NULL,
-  `proyecto_objetivo` tinytext DEFAULT NULL,
-  `proyecto_alcance` tinytext DEFAULT NULL,
-  `proyecto_descripcion` tinytext DEFAULT NULL,
+  `proyecto_objetivo` text DEFAULT NULL,
+  `proyecto_alcance` text DEFAULT NULL,
+  `proyecto_descripcion` text DEFAULT NULL,
   `proyecto_presupuesto` float DEFAULT NULL,
   `proyecto_fecha_inicio` date DEFAULT current_timestamp(),
   `proyecto_fecha_finl` date DEFAULT NULL,
-  `proyecto_evaluacion_general` tinytext DEFAULT NULL,
+  `proyecto_evaluacion_general` text DEFAULT NULL,
   `proyecto_evaluacion` int(11) DEFAULT NULL,
   `proyecto_rbs_status` tinyint(4) NOT NULL DEFAULT 0,
   `proyecto_fin_status` tinyint(4) NOT NULL DEFAULT 0,
+  `proyecto_fecha_linea_base` datetime DEFAULT current_timestamp(),
   `gerente_id` int(11) NOT NULL,
   `sector_id` int(11) NOT NULL,
   `proyecto_linea_base` int(11) NOT NULL DEFAULT 0
@@ -1013,8 +1119,15 @@ CREATE TABLE `proyecto` (
 -- Volcado de datos para la tabla `proyecto`
 --
 
-INSERT INTO `proyecto` (`proyecto_id`, `proyecto_nombre`, `proyecto_objetivo`, `proyecto_alcance`, `proyecto_descripcion`, `proyecto_presupuesto`, `proyecto_fecha_inicio`, `proyecto_fecha_finl`, `proyecto_evaluacion_general`, `proyecto_evaluacion`, `proyecto_rbs_status`, `proyecto_fin_status`, `gerente_id`, `sector_id`, `proyecto_linea_base`) VALUES
-(2, 'a', 'a', 'a', 'a', 0, '2020-10-14', NULL, NULL, NULL, 0, 0, 51, 10, 1);
+INSERT INTO `proyecto` (`proyecto_id`, `proyecto_nombre`, `proyecto_objetivo`, `proyecto_alcance`, `proyecto_descripcion`, `proyecto_presupuesto`, `proyecto_fecha_inicio`, `proyecto_fecha_finl`, `proyecto_evaluacion_general`, `proyecto_evaluacion`, `proyecto_rbs_status`, `proyecto_fin_status`, `proyecto_fecha_linea_base`, `gerente_id`, `sector_id`, `proyecto_linea_base`) VALUES
+(1, 'EduVirtual', 'Concluir la meta ', 'sdsdds', 'sdfsdfsdfsdf', 5000000, '2020-10-09', NULL, NULL, NULL, 0, 0, '2020-10-08 09:58:49', 50, 10, 1),
+(1, 'EduVirtual', 'Concluir la meta ', 'sdsdds', 'sdfsdfsdfsdf', 5000000, '2020-10-09', NULL, NULL, NULL, 0, 0, '2020-10-08 10:14:12', 50, 10, 2),
+(1, 'EduVirtual', 'Concluir la meta ', 'sdsdds', 'sdfsdfsdfsdf', 5000000, '2020-10-09', NULL, NULL, NULL, 0, 0, '2020-10-08 19:35:28', 50, 10, 3),
+(1, 'EduVirtual', 'Concluir la meta ', 'sdsdds', 'sdfsdfsdfsdf', 5000000, '2020-10-09', NULL, NULL, NULL, 0, 0, '2020-10-08 19:41:25', 50, 10, 4),
+(1, 'EduVirtual', 'Concluir la meta ', 'sdsdds', 'sdfsdfsdfsdf', 5000000, '2020-10-09', NULL, NULL, NULL, 0, 0, '2020-10-09 10:49:58', 50, 10, 5),
+(2, 'a', 'a', 'a', 'a', 0, '2020-10-14', NULL, NULL, NULL, 0, 0, '2020-10-07 17:09:41', 51, 10, 1),
+(6, 'Sumar', 'sdafsd', 'dsfsdf', 'dsafsadf', 5456, '2020-10-13', NULL, NULL, NULL, 0, 0, '2020-10-11 16:42:20', 50, 9, 1),
+(6, 'Sumar', 'sdafsd', 'dsfsdf', 'dsafsadf', 5456, '2020-10-13', NULL, NULL, NULL, 0, 0, '2020-10-11 16:44:47', 50, 9, 2);
 
 -- --------------------------------------------------------
 
@@ -1039,8 +1152,24 @@ CREATE TABLE `proyecto_has_riesgo` (
 --
 
 INSERT INTO `proyecto_has_riesgo` (`proyecto_has_riesgo_id`, `riesgo_id`, `is_editado`, `impacto_id`, `propabilidad_id`, `fecha_manifestacion`, `proyecto_id`, `responsable_id`, `proyecto_linea_base`) VALUES
+(9, 7, 0, 5, 5, '2020-10-02 17:15:31', 1, NULL, 1),
+(9, 7, 0, 5, 5, '2020-10-02 17:15:31', 1, NULL, 2),
+(9, 7, 0, 5, 5, '2020-10-02 17:15:31', 1, NULL, 3),
+(9, 7, 0, 5, 5, '2020-10-02 17:15:31', 1, NULL, 4),
+(9, 7, 0, 5, 5, '2020-10-02 17:15:31', 1, NULL, 5),
 (11, 10, 1, 10, 7, '2020-10-02 19:51:26', 2, 9, 1),
-(12, 9, 0, 8, 6, '2020-10-03 08:44:30', 2, 9, 1);
+(12, 9, 0, 8, 6, '2020-10-03 08:44:30', 2, 9, 1),
+(30, 28, 0, 5, 5, '2020-10-08 09:08:47', 1, NULL, 1),
+(30, 28, 0, 5, 5, '2020-10-08 09:08:47', 1, NULL, 2),
+(30, 28, 0, 5, 5, '2020-10-08 09:08:47', 1, NULL, 3),
+(30, 28, 0, 5, 5, '2020-10-08 09:08:47', 1, NULL, 4),
+(30, 28, 0, 5, 5, '2020-10-08 09:08:47', 1, NULL, 5),
+(31, 29, 0, 5, 5, '2020-10-08 10:13:49', 1, NULL, 2),
+(31, 29, 0, 5, 5, '2020-10-08 10:13:49', 1, NULL, 3),
+(31, 29, 0, 5, 5, '2020-10-08 10:13:49', 1, NULL, 4),
+(31, 29, 0, 5, 5, '2020-10-08 10:13:49', 1, NULL, 5),
+(32, 30, 1, 30, 30, '2020-10-11 16:39:05', 6, NULL, 1),
+(32, 30, 1, 30, 30, '2020-10-11 16:39:05', 6, NULL, 2);
 
 -- --------------------------------------------------------
 
@@ -1083,11 +1212,28 @@ CREATE TABLE `proyecto_has_riesgo_respuesta` (
 --
 
 INSERT INTO `proyecto_has_riesgo_respuesta` (`proyecto_has_id`, `respuesta_has_id`, `tipo_respuesta`, `proyecto_linea_base`, `proyecto_id`) VALUES
+(9, 8, 'Mitigar', 1, 1),
+(9, 8, 'Mitigar', 2, 1),
+(9, 8, 'Mitigar', 3, 1),
+(9, 8, 'Mitigar', 4, 1),
+(9, 8, 'Mitigar', 5, 1),
+(9, 9, 'Mitigar', 1, 1),
+(9, 9, 'Mitigar', 2, 1),
+(9, 9, 'Mitigar', 3, 1),
+(9, 9, 'Mitigar', 4, 1),
+(9, 9, 'Mitigar', 5, 1),
 (11, 5, 'Mitigar', 1, 2),
 (11, 6, 'Mitigar', 1, 2),
 (11, 7, 'Mitigar', 1, 2),
 (12, 3, 'Mitigar', 1, 2),
-(12, 4, 'Aceptar', 1, 2);
+(12, 4, 'Aceptar', 1, 2),
+(30, 10, 'Mitigar', 1, 1),
+(30, 10, 'Mitigar', 2, 1),
+(30, 10, 'Mitigar', 3, 1),
+(30, 10, 'Mitigar', 4, 1),
+(30, 10, 'Mitigar', 5, 1),
+(32, 11, 'Mitigar', 1, 6),
+(32, 11, 'Mitigar', 2, 6);
 
 -- --------------------------------------------------------
 
@@ -1108,6 +1254,13 @@ CREATE TABLE `rbs` (
 --
 
 INSERT INTO `rbs` (`rbs_id`, `rbs_default`, `gerente_id`, `proyecto_linea_base`, `proyecto_id`) VALUES
+(1, 1, 50, 1, 1),
+(1, 1, 50, 1, 6),
+(1, 1, 50, 2, 1),
+(1, 1, 50, 2, 6),
+(1, 1, 50, 3, 1),
+(1, 1, 50, 4, 1),
+(1, 1, 50, 5, 1),
 (2, 0, 51, 1, 2);
 
 -- --------------------------------------------------------
@@ -1130,7 +1283,24 @@ CREATE TABLE `recurso` (
 --
 
 INSERT INTO `recurso` (`recurso_id`, `recurso_nombre`, `recurso_costo`, `tipo_recurso_id`, `proyecto_id`, `proyecto_linea_base`) VALUES
-(1, 'grupitos', 4500, 6, 2, 1);
+(1, 'grupitos', 4500, 6, 2, 1),
+(2, 'H.H', 5000, 2, 1, 1),
+(2, 'H.H', 5000, 2, 1, 2),
+(2, 'H.H', 5000, 2, 1, 3),
+(2, 'H.H', 5000, 2, 1, 4),
+(2, 'H.H', 5000, 2, 1, 5),
+(3, 'kkuu', 6665, 1, 1, 1),
+(3, 'kkuu', 6665, 1, 1, 2),
+(3, 'kkuu', 6665, 1, 1, 3),
+(3, 'kkuu', 6665, 1, 1, 4),
+(3, 'kkuu', 6665, 1, 1, 5),
+(4, 'ju', 5454, 3, 1, 1),
+(4, 'ju', 5454, 3, 1, 2),
+(4, 'ju', 5454, 3, 1, 3),
+(4, 'ju', 5454, 3, 1, 4),
+(4, 'ju', 5454, 3, 1, 5),
+(6, 'Zapatos', 500000, 1, 6, 2),
+(7, 'Pateador', 15000, 2, 6, 2);
 
 -- --------------------------------------------------------
 
@@ -1141,7 +1311,7 @@ INSERT INTO `recurso` (`recurso_id`, `recurso_nombre`, `recurso_costo`, `tipo_re
 CREATE TABLE `responsble` (
   `responsable_id` int(11) NOT NULL,
   `responsble_nombre` varchar(100) NOT NULL,
-  `responsble_descripcion` tinytext DEFAULT NULL,
+  `responsble_descripcion` text DEFAULT NULL,
   `rol_id` int(11) NOT NULL,
   `proyecto_id` int(11) NOT NULL,
   `proyecto_linea_base` int(11) NOT NULL
@@ -1152,6 +1322,16 @@ CREATE TABLE `responsble` (
 --
 
 INSERT INTO `responsble` (`responsable_id`, `responsble_nombre`, `responsble_descripcion`, `rol_id`, `proyecto_id`, `proyecto_linea_base`) VALUES
+(5, 'shruek', 'ogro dueño del pantano', 2, 1, 1),
+(5, 'shruek', 'ogro dueño del pantano', 2, 1, 2),
+(5, 'shruek', 'ogro dueño del pantano', 2, 1, 3),
+(5, 'shruek', 'ogro dueño del pantano', 2, 1, 4),
+(5, 'shruek', 'ogro dueño del pantano', 2, 1, 5),
+(6, 'burro', 'amigo de shruek', 1, 1, 1),
+(6, 'burro', 'amigo de shruek', 1, 1, 2),
+(6, 'burro', 'amigo de shruek', 1, 1, 3),
+(6, 'burro', 'amigo de shruek', 1, 1, 4),
+(6, 'burro', 'amigo de shruek', 1, 1, 5),
 (9, 'Diego franco', 'Pilotear pinguinos rosados', 4, 2, 1),
 (10, 'Homero Thompson', 'Personje de la temida banda panameña los roling stones', 4, 2, 1);
 
@@ -1165,7 +1345,7 @@ CREATE TABLE `respuesta` (
   `respuesta_id` int(11) NOT NULL,
   `respuesta_nombre` varchar(45) DEFAULT NULL,
   `respuesta_tipo` varchar(30) NOT NULL,
-  `respuesta_descripcion` tinytext DEFAULT NULL,
+  `respuesta_descripcion` text DEFAULT NULL,
   `respuesta_costo` float DEFAULT 0,
   `proyecto_linea_base` int(11) NOT NULL,
   `proyecto_id` int(11) NOT NULL
@@ -1182,7 +1362,24 @@ INSERT INTO `respuesta` (`respuesta_id`, `respuesta_nombre`, `respuesta_tipo`, `
 (5, 'Semilla de caña brava', 'Aceptar', 'ghjhgj', NULL, 1, 2),
 (6, 'huir', 'Mitigar', 'sdfsdfsdfdsf', NULL, 1, 2),
 (7, 'ewr', 'Mitigar', 'erewre', NULL, 1, 2),
-(8, 'rtyrt', 'Mitigar', 'yrtyrty', NULL, 1, 2);
+(8, 'rtyrt', 'Mitigar', 'yrtyrty', NULL, 1, 2),
+(9, 'fdgdfgdf', 'Mitigar', 'dfgdfg', NULL, 1, 1),
+(9, 'fdgdfgdf', 'Mitigar', 'dfgdfg', NULL, 2, 1),
+(9, 'fdgdfgdf', 'Mitigar', 'dfgdfg', NULL, 3, 1),
+(9, 'fdgdfgdf', 'Mitigar', 'dfgdfg', NULL, 4, 1),
+(9, 'fdgdfgdf', 'Mitigar', 'dfgdfg', NULL, 5, 1),
+(10, 'sdfg', 'Mitigar', 'fdgdf', NULL, 1, 1),
+(10, 'sdfg', 'Mitigar', 'fdgdf', NULL, 2, 1),
+(10, 'sdfg', 'Mitigar', 'fdgdf', NULL, 3, 1),
+(10, 'sdfg', 'Mitigar', 'fdgdf', NULL, 4, 1),
+(10, 'sdfg', 'Mitigar', 'fdgdf', NULL, 5, 1),
+(11, 'dgsd', 'Mitigar', 'gsdfgsdg', NULL, 1, 1),
+(11, 'dgsd', 'Mitigar', 'gsdfgsdg', NULL, 2, 1),
+(11, 'dgsd', 'Mitigar', 'gsdfgsdg', NULL, 3, 1),
+(11, 'dgsd', 'Mitigar', 'gsdfgsdg', NULL, 4, 1),
+(11, 'dgsd', 'Mitigar', 'gsdfgsdg', NULL, 5, 1),
+(12, 'Patear niños', 'Mitigar', 'con fuerza', NULL, 1, 6),
+(12, 'Patear niños', 'Mitigar', 'con fuerza', NULL, 2, 6);
 
 -- --------------------------------------------------------
 
@@ -1209,8 +1406,24 @@ CREATE TABLE `riesgo` (
 --
 
 INSERT INTO `riesgo` (`riesgo_id`, `proyecto_linea_base`, `riesgo_nombre`, `riesgo_causa`, `riesgo_evento`, `riesgo_efecto`, `riesgo_tipo`, `riesgo_prom_evaluacion`, `riesgo_uid`, `sub_categoria_id`, `proyecto_id`) VALUES
+(7, 1, 'riesgo_1', 'PILAR ROJAS dfgdfg', 'dfgdfgfdgdfgf', 'dfgdfg', 0, NULL, 98928837663916069, 25, 1),
+(7, 2, 'riesgo_1', 'PILAR ROJAS dfgdfg', 'dfgdfgfdgdfgf', 'dfgdfg', 0, NULL, 98928837663916069, 25, 1),
+(7, 3, 'riesgo_1', 'PILAR ROJAS dfgdfg', 'dfgdfgfdgdfgf', 'dfgdfg', 0, NULL, 98928837663916069, 25, 1),
+(7, 4, 'riesgo_1', 'PILAR ROJAS dfgdfg', 'dfgdfgfdgdfgf', 'dfgdfg', 0, NULL, 98928837663916069, 25, 1),
+(7, 5, 'riesgo_1', 'PILAR ROJAS dfgdfg', 'dfgdfgfdgdfgf', 'dfgdfg', 0, NULL, 98928837663916069, 25, 1),
 (9, 1, 'Politocas', 'gravem', 'sdfsd', 'dfdsf', 0, NULL, 98929314438840322, 1, 2),
-(10, 1, 'riesgo_1', 'ME LO COPIE DE OTRO LADO', 'Sin Evento definido', 'Sin efecto definido', 0, NULL, 98929314438840337, 26, 2);
+(10, 1, 'riesgo_1', 'ME LO COPIE DE OTRO LADO', 'Sin Evento definido', 'Sin efecto definido', 0, NULL, 98929314438840337, 26, 2),
+(28, 1, 'jjjj', 'fghg', 'fghgfh', 'gfh', 0, NULL, 98937471303155712, 25, 1),
+(28, 2, 'jjjj', 'fghg', 'fghgfh', 'gfh', 0, NULL, 98937471303155712, 25, 1),
+(28, 3, 'riesgo_2', 'fghg', 'fghgfh', 'gfh', 0, NULL, 98937471303155712, 25, 1),
+(28, 4, 'riesgo_2', 'fghg', 'fghgfh', 'gfh', 0, NULL, 98937471303155712, 25, 1),
+(28, 5, 'riesgo_2', 'fghg', 'fghgfh', 'gfh', 0, NULL, 98937471303155712, 25, 1),
+(29, 2, 'vacio', '{{ñ}', '{ñ}{}', 'ñ{}{ñ}', 0, NULL, 98937471303155713, 25, 1),
+(29, 3, 'vacio', '{{ñ}', '{ñ}{}', 'ñ{}{ñ}', 0, NULL, 98937471303155713, 25, 1),
+(29, 4, 'vacio', '{{ñ}', '{ñ}{}', 'ñ{}{ñ}', 0, NULL, 98937471303155713, 25, 1),
+(29, 5, 'vacio', '{{ñ}', '{ñ}{}', 'ñ{}{ñ}', 0, NULL, 98937471303155713, 25, 1),
+(30, 1, 'dfhdf', 'Sin Causa definida', 'Sin Evento definido', 'Sin efecto definido', 0, NULL, 98942256752361474, 51, 6),
+(30, 2, 'dfhdf', 'Sin Causa definida', 'Sin Evento definido', 'Sin efecto definido', 0, NULL, 98942256752361474, 51, 6);
 
 -- --------------------------------------------------------
 
@@ -1237,7 +1450,24 @@ INSERT INTO `riesgo_has_respuesta` (`riesgo_has_respuesta_id`, `riesgo_id`, `res
 (4, 9, 5, 1, 2),
 (5, 10, 6, 1, 2),
 (6, 10, 7, 1, 2),
-(7, 10, 8, 1, 2);
+(7, 10, 8, 1, 2),
+(8, 7, 9, 1, 1),
+(8, 7, 9, 2, 1),
+(8, 7, 9, 3, 1),
+(8, 7, 9, 4, 1),
+(8, 7, 9, 5, 1),
+(9, 7, 10, 1, 1),
+(9, 7, 10, 2, 1),
+(9, 7, 10, 3, 1),
+(9, 7, 10, 4, 1),
+(9, 7, 10, 5, 1),
+(10, 28, 11, 1, 1),
+(10, 28, 11, 2, 1),
+(10, 28, 11, 3, 1),
+(10, 28, 11, 4, 1),
+(10, 28, 11, 5, 1),
+(11, 30, 12, 1, 6),
+(11, 30, 12, 2, 6);
 
 -- --------------------------------------------------------
 
@@ -1248,7 +1478,7 @@ INSERT INTO `riesgo_has_respuesta` (`riesgo_has_respuesta_id`, `riesgo_id`, `res
 CREATE TABLE `rol` (
   `rol_id` int(11) NOT NULL,
   `rol_nombre` varchar(60) NOT NULL,
-  `rol_descripcion` tinytext DEFAULT NULL,
+  `rol_descripcion` text DEFAULT NULL,
   `gerente_id` int(11) NOT NULL,
   `proyecto_linea_base` int(11) NOT NULL,
   `proyecto_id` int(11) NOT NULL
@@ -1259,6 +1489,20 @@ CREATE TABLE `rol` (
 --
 
 INSERT INTO `rol` (`rol_id`, `rol_nombre`, `rol_descripcion`, `gerente_id`, `proyecto_linea_base`, `proyecto_id`) VALUES
+(1, 'Antropologo', 'Estudiar a las personas', 50, 1, 1),
+(1, 'Antropologo', 'Estudiar a las personas', 50, 1, 6),
+(1, 'Antropologo', 'Estudiar a las personas', 50, 2, 1),
+(1, 'Antropologo', 'Estudiar a las personas', 50, 2, 6),
+(1, 'Antropologo', 'Estudiar a las personas', 50, 3, 1),
+(1, 'Antropologo', 'Estudiar a las personas', 50, 4, 1),
+(1, 'Antropologo', 'Estudiar a las personas', 50, 5, 1),
+(2, 'Comediante', 'Matarnos de la risa', 50, 1, 1),
+(2, 'Comediante', 'Matarnos de la risa', 50, 1, 6),
+(2, 'Comediante', 'Matarnos de la risa', 50, 2, 1),
+(2, 'Comediante', 'Matarnos de la risa', 50, 2, 6),
+(2, 'Comediante', 'Matarnos de la risa', 50, 3, 1),
+(2, 'Comediante', 'Matarnos de la risa', 50, 4, 1),
+(2, 'Comediante', 'Matarnos de la risa', 50, 5, 1),
 (4, 'Doctor en politica', 'Solo sabe hacer nada', 51, 1, 2);
 
 -- --------------------------------------------------------
@@ -1295,7 +1539,7 @@ INSERT INTO `sector` (`sector_id`, `sector_nombre`) VALUES
 CREATE TABLE `sub_categoria` (
   `sub_categoria_id` int(11) NOT NULL,
   `sub_categoria_nombre` varchar(45) DEFAULT NULL,
-  `sub_categoria_descripcion` tinytext DEFAULT NULL,
+  `sub_categoria_descripcion` text DEFAULT NULL,
   `sub_categoria_default` tinyint(4) NOT NULL DEFAULT 1,
   `sub_categoria_uid` bigint(20) UNSIGNED DEFAULT NULL,
   `sub_categoria_linea_base` int(11) DEFAULT 0,
@@ -1310,7 +1554,14 @@ CREATE TABLE `sub_categoria` (
 
 INSERT INTO `sub_categoria` (`sub_categoria_id`, `sub_categoria_nombre`, `sub_categoria_descripcion`, `sub_categoria_default`, `sub_categoria_uid`, `sub_categoria_linea_base`, `categoria_id`, `proyecto_linea_base`, `proyecto_id`) VALUES
 (1, 'Definición del alcance', '', 0, 98928837663916033, 0, 1, 1, 2),
-(26, 'tambi', 'por os basres delñ bulevar', 2, 98929314438840336, 0, 8, 1, 2);
+(25, 'tambi', 'por os basres delñ bulevar', 1, 98928837663916062, 0, 6, 1, 1),
+(25, 'tambi', 'por os basres delñ bulevar', 1, 98928837663916062, 0, 6, 2, 1),
+(25, 'tambi', 'por os basres delñ bulevar', 1, 98928837663916062, 0, 6, 3, 1),
+(25, 'tambi', 'por os basres delñ bulevar', 1, 98928837663916062, 0, 6, 4, 1),
+(25, 'tambi', 'por os basres delñ bulevar', 1, 98928837663916062, 0, 6, 5, 1),
+(26, 'tambi', 'por os basres delñ bulevar', 2, 98929314438840336, 0, 8, 1, 2),
+(51, 'Definición del alcance', '', 2, 98942256752361473, 0, 13, 1, 6),
+(51, 'Definición del alcance', '', 2, 98942256752361473, 0, 13, 2, 6);
 
 -- --------------------------------------------------------
 
@@ -1322,13 +1573,14 @@ CREATE TABLE `tarea` (
   `tarea_id` int(11) NOT NULL,
   `proyecto_linea_base` int(11) NOT NULL,
   `tarea_nombre` varchar(77) NOT NULL,
-  `tarea_descripcion` tinytext NOT NULL,
+  `tarea_descripcion` text NOT NULL,
   `proyecto_has_riesgo_id` int(11) NOT NULL,
   `riesgo_has_respuesta_id` int(11) NOT NULL,
   `fecha_inicio` datetime DEFAULT NULL,
   `duracion` int(11) DEFAULT NULL,
   `fecha_fin` datetime DEFAULT NULL,
   `fecha_inicio_real` datetime DEFAULT NULL,
+  `duracion_real` int(11) DEFAULT NULL,
   `fecha_fin_real` datetime DEFAULT NULL,
   `tarea_observacion` text DEFAULT '" "',
   `tarea_estado` tinyint(4) DEFAULT NULL COMMENT '1) No inciado (cuando se registra y nunca le pone fecha de inicio real)\n2) Iniciado (Registra una fecha de inicio real)\n3) Completado (Cuando usted registra una fecha de fin real)\n4) Retrasado (Cuando esta iniciada y la fecha de fin planeada se paso)',
@@ -1339,9 +1591,35 @@ CREATE TABLE `tarea` (
 -- Volcado de datos para la tabla `tarea`
 --
 
-INSERT INTO `tarea` (`tarea_id`, `proyecto_linea_base`, `tarea_nombre`, `tarea_descripcion`, `proyecto_has_riesgo_id`, `riesgo_has_respuesta_id`, `fecha_inicio`, `duracion`, `fecha_fin`, `fecha_inicio_real`, `fecha_fin_real`, `tarea_observacion`, `tarea_estado`, `proyecto_id`) VALUES
-(1, 1, 'sdfsdfsdfsdf', 'fdgdf', 12, 3, '2020-10-03 00:00:00', 9, '2020-10-12 00:00:00', '2020-10-03 00:00:00', '2020-10-12 00:00:00', 'sdfsdfsdf', 1, 2),
-(2, 1, 'ggrr', 'fdgdfg', 11, 5, '2020-10-03 00:00:00', 10, '2020-10-13 00:00:00', '2020-10-03 00:00:00', '2020-10-13 00:00:00', '', 1, 2);
+INSERT INTO `tarea` (`tarea_id`, `proyecto_linea_base`, `tarea_nombre`, `tarea_descripcion`, `proyecto_has_riesgo_id`, `riesgo_has_respuesta_id`, `fecha_inicio`, `duracion`, `fecha_fin`, `fecha_inicio_real`, `duracion_real`, `fecha_fin_real`, `tarea_observacion`, `tarea_estado`, `proyecto_id`) VALUES
+(1, 1, 'sdfsdfsdfsdf', 'fdgdf', 12, 3, '2020-10-03 00:00:00', 9, '2020-10-12 00:00:00', '2020-10-03 00:00:00', NULL, '2020-10-12 00:00:00', 'sdfsdfsdf', 1, 2),
+(2, 1, 'ggrr', 'fdgdfg', 11, 5, '2020-10-03 00:00:00', 10, '2020-10-13 00:00:00', '2020-10-03 00:00:00', NULL, '2020-10-13 00:00:00', '', 1, 2),
+(3, 1, 'sdfgdfsg', 'dfsgsdfg', 30, 10, '2020-10-08 00:00:00', 4, '2020-10-12 00:00:00', '2020-10-08 00:00:00', NULL, '2020-10-12 00:00:00', '', 1, 1),
+(3, 2, 'sdfgdfsg', 'dfsgsdfg', 30, 10, '2020-10-08 00:00:00', 4, '2020-10-12 00:00:00', '2020-10-10 00:00:00', 4, '2020-10-14 00:00:00', '', 2, 1),
+(3, 3, 'sdfgdfsg', 'dfsgsdfg', 30, 10, '2020-10-08 00:00:00', 4, '2020-10-12 00:00:00', '2020-10-08 00:00:00', 0, '2020-10-12 00:00:00', '', 1, 1),
+(3, 4, 'sdfgdfsg', 'dfsgsdfg', 30, 10, '2020-10-08 00:00:00', 4, '2020-10-12 00:00:00', '2020-10-10 00:00:00', 4, '2020-10-14 00:00:00', '', 2, 1),
+(3, 5, 'sdfgdfsg', '', 30, 10, '2020-10-08 00:00:00', 4, '2020-10-12 00:00:00', '2020-10-10 00:00:00', 17, '2020-10-27 00:00:00', '', 3, 1),
+(4, 1, 'fresa', '   dgdgdhhhh', 30, 10, '2020-10-13 00:00:00', 0, '2020-10-17 00:00:00', '2020-10-14 00:00:00', NULL, '2020-10-16 00:00:00', '', 1, 1),
+(4, 2, 'fresa', '   dgdgdhhhh', 30, 10, '2020-10-13 00:00:00', 4, '2020-10-17 00:00:00', '2020-10-14 00:00:00', 2, '2020-10-16 00:00:00', '', 1, 1),
+(4, 3, 'fresa', '   dgdgdhhhh', 30, 10, '2020-10-13 00:00:00', 0, '2020-10-17 00:00:00', '2020-10-14 00:00:00', 0, '2020-10-16 00:00:00', '', 1, 1),
+(4, 4, 'fresa', '   dgdgdhhhh', 30, 10, '2020-10-13 00:00:00', 4, '2020-10-17 00:00:00', '2020-10-15 00:00:00', 4, '2020-10-19 00:00:00', '', 3, 1),
+(5, 1, 'sdfgfd', 'dsfgdf', 9, 8, '2020-10-12 00:00:00', 2, '2020-10-14 00:00:00', '2020-10-12 00:00:00', NULL, '2020-10-14 00:00:00', '', 1, 1),
+(5, 2, 'sdfgfd', 'dsfgdf', 9, 8, '2020-10-12 00:00:00', 2, '2020-10-14 00:00:00', '2020-10-15 00:00:00', 4, '2020-10-19 00:00:00', '', 3, 1),
+(5, 3, 'sdfgfd', 'dsfgdf', 9, 8, '2020-10-12 00:00:00', 2, '2020-10-14 00:00:00', '2020-10-12 00:00:00', 0, '2020-10-14 00:00:00', '', 1, 1),
+(5, 4, 'sdfgfd', 'dsfgdf', 9, 8, '2020-10-12 00:00:00', 2, '2020-10-14 00:00:00', '2020-10-15 00:00:00', 2, '2020-10-17 00:00:00', '', 3, 1),
+(5, 5, 'sdfgfd', '', 9, 8, '2020-10-12 00:00:00', 2, '2020-10-14 00:00:00', '2020-10-15 00:00:00', 2, '2020-10-17 00:00:00', 'frutas prohibidas', 3, 1),
+(6, 1, 'sdfg', 'dsgdfg', 9, 9, '2020-10-16 00:00:00', 3, '2020-10-19 00:00:00', '2020-10-16 00:00:00', NULL, '2020-10-19 00:00:00', '', 1, 1),
+(6, 2, 'sdfg', 'dsgdfg', 9, 9, '2020-10-16 00:00:00', 3, '2020-10-19 00:00:00', '2020-10-16 00:00:00', 3, '2020-10-19 00:00:00', '', 1, 1),
+(6, 3, 'sdfg', 'dsgdfg', 9, 9, '2020-10-16 00:00:00', 3, '2020-10-19 00:00:00', '2020-10-16 00:00:00', 0, '2020-10-19 00:00:00', '', 1, 1),
+(6, 4, 'sdfg', 'dsgdfg', 9, 9, '2020-10-16 00:00:00', 3, '2020-10-19 00:00:00', '2020-10-16 00:00:00', 3, '2020-10-19 00:00:00', '', 1, 1),
+(6, 5, 'sdfg', '', 9, 9, '2020-10-05 00:00:00', 22, '2020-10-27 00:00:00', '2020-10-05 00:00:00', 22, '2020-10-19 00:00:00', 'uwu', 1, 1),
+(7, 1, 'sdgfd', 'dfgdfg', 9, 9, '2020-10-19 00:00:00', 2, '2020-10-21 00:00:00', '2020-10-19 00:00:00', NULL, '2020-10-21 00:00:00', '', 1, 1),
+(7, 2, 'sdgfd', 'dfgdfg', 9, 9, '2020-10-19 00:00:00', 2, '2020-10-21 00:00:00', '2020-10-19 00:00:00', 2, '2020-10-21 00:00:00', '', 1, 1),
+(7, 3, 'sdgfd', 'dfgdfg', 9, 9, '2020-10-19 00:00:00', 2, '2020-10-21 00:00:00', '2020-10-19 00:00:00', 0, '2020-10-21 00:00:00', '', 1, 1),
+(7, 4, 'sdgfd', 'dfgdfg', 9, 9, '2020-10-19 00:00:00', 2, '2020-10-21 00:00:00', '2020-10-18 00:00:00', 2, '2020-10-20 00:00:00', '', 2, 1),
+(7, 5, 'sdgfd', '', 9, 9, '2020-10-19 00:00:00', 2, '2020-10-21 00:00:00', '2020-10-18 00:00:00', 1, '2020-10-19 00:00:00', '', 3, 1),
+(8, 1, 'Con botas ', 'de punta metalica', 32, 11, '2020-10-11 00:00:00', 10, '2020-10-21 00:00:00', '2020-10-11 00:00:00', 10, '2020-10-21 00:00:00', '', 1, 6),
+(8, 2, 'Con botas ', 'de punta metalica', 32, 11, '2020-10-11 00:00:00', 10, '2020-10-21 00:00:00', '2020-10-11 00:00:00', 10, '2020-10-21 00:00:00', '', 1, 6);
 
 -- --------------------------------------------------------
 
@@ -1363,7 +1641,28 @@ CREATE TABLE `tarea_has_recurso` (
 
 INSERT INTO `tarea_has_recurso` (`tarea_id`, `recurso_id`, `proyecto_linea_base`, `cantidad`, `proyecto_id`) VALUES
 (1, 1, 1, 5, 2),
-(2, 1, 1, 45, 2);
+(2, 1, 1, 45, 2),
+(3, 2, 1, 1, 1),
+(3, 2, 2, 1, 1),
+(3, 2, 3, 1, 1),
+(3, 2, 4, 1, 1),
+(3, 2, 5, 1, 1),
+(4, 3, 1, 33, 1),
+(4, 3, 2, 33, 1),
+(4, 3, 3, 33, 1),
+(4, 3, 4, 33, 1),
+(5, 2, 1, 3, 1),
+(5, 2, 2, 3, 1),
+(5, 2, 3, 3, 1),
+(5, 2, 4, 3, 1),
+(5, 2, 5, 3, 1),
+(6, 4, 1, 7, 1),
+(6, 4, 2, 7, 1),
+(6, 4, 3, 7, 1),
+(6, 4, 4, 7, 1),
+(6, 4, 5, 7, 1),
+(8, 6, 2, 2, 6),
+(8, 7, 2, 1, 6);
 
 -- --------------------------------------------------------
 
@@ -1375,7 +1674,7 @@ CREATE TABLE `tipo_recurso` (
   `tipo_recurso_id` int(11) NOT NULL,
   `proyecto_linea_base` int(11) NOT NULL,
   `tipo_recurso_nombre` varchar(45) NOT NULL,
-  `tipo_recurso_descripcion` tinytext DEFAULT NULL,
+  `tipo_recurso_descripcion` text DEFAULT NULL,
   `gerente_id` int(11) NOT NULL,
   `proyecto_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -1385,6 +1684,27 @@ CREATE TABLE `tipo_recurso` (
 --
 
 INSERT INTO `tipo_recurso` (`tipo_recurso_id`, `proyecto_linea_base`, `tipo_recurso_nombre`, `tipo_recurso_descripcion`, `gerente_id`, `proyecto_id`) VALUES
+(1, 1, 'Material', 'Este tipo de recurso se refiere a los suministros, materiales y cualquier otro consumible necesario para completar las tareas.', 50, 1),
+(1, 1, 'Material', 'Este tipo de recurso se refiere a los suministros, materiales y cualquier otro consumible necesario para completar las tareas.', 50, 6),
+(1, 2, 'Material', 'Este tipo de recurso se refiere a los suministros, materiales y cualquier otro consumible necesario para completar las tareas.', 50, 1),
+(1, 2, 'Material', 'Este tipo de recurso se refiere a los suministros, materiales y cualquier otro consumible necesario para completar las tareas.', 50, 6),
+(1, 3, 'Material', 'Este tipo de recurso se refiere a los suministros, materiales y cualquier otro consumible necesario para completar las tareas.', 50, 1),
+(1, 4, 'Material', 'Este tipo de recurso se refiere a los suministros, materiales y cualquier otro consumible necesario para completar las tareas.', 50, 1),
+(1, 5, 'Material', 'Este tipo de recurso se refiere a los suministros, materiales y cualquier otro consumible necesario para completar las tareas.', 50, 1),
+(2, 1, 'Trabajo', 'Se trata de los miembros de tu equipo de trabajo. La dedicación de cada individuo se mide en horas de trabajo.', 50, 1),
+(2, 1, 'Trabajo', 'Se trata de los miembros de tu equipo de trabajo. La dedicación de cada individuo se mide en horas de trabajo.', 50, 6),
+(2, 2, 'Trabajo', 'Se trata de los miembros de tu equipo de trabajo. La dedicación de cada individuo se mide en horas de trabajo.', 50, 1),
+(2, 2, 'Trabajo', 'Se trata de los miembros de tu equipo de trabajo. La dedicación de cada individuo se mide en horas de trabajo.', 50, 6),
+(2, 3, 'Trabajo', 'Se trata de los miembros de tu equipo de trabajo. La dedicación de cada individuo se mide en horas de trabajo.', 50, 1),
+(2, 4, 'Trabajo', 'Se trata de los miembros de tu equipo de trabajo. La dedicación de cada individuo se mide en horas de trabajo.', 50, 1),
+(2, 5, 'Trabajo', 'Se trata de los miembros de tu equipo de trabajo. La dedicación de cada individuo se mide en horas de trabajo.', 50, 1),
+(3, 1, 'Costo', 'Este tipo de recurso implica un gasto para el proyecto, pero no dependen del trabajo o la duración de una tarea. Pueden tratarse de gastos de representación (comidas, viajes…).', 50, 1),
+(3, 1, 'Costo', 'Este tipo de recurso implica un gasto para el proyecto, pero no dependen del trabajo o la duración de una tarea. Pueden tratarse de gastos de representación (comidas, viajes…).', 50, 6),
+(3, 2, 'Costo', 'Este tipo de recurso implica un gasto para el proyecto, pero no dependen del trabajo o la duración de una tarea. Pueden tratarse de gastos de representación (comidas, viajes…).', 50, 1),
+(3, 2, 'Costo', 'Este tipo de recurso implica un gasto para el proyecto, pero no dependen del trabajo o la duración de una tarea. Pueden tratarse de gastos de representación (comidas, viajes…).', 50, 6),
+(3, 3, 'Costo', 'Este tipo de recurso implica un gasto para el proyecto, pero no dependen del trabajo o la duración de una tarea. Pueden tratarse de gastos de representación (comidas, viajes…).', 50, 1),
+(3, 4, 'Costo', 'Este tipo de recurso implica un gasto para el proyecto, pero no dependen del trabajo o la duración de una tarea. Pueden tratarse de gastos de representación (comidas, viajes…).', 50, 1),
+(3, 5, 'Costo', 'Este tipo de recurso implica un gasto para el proyecto, pero no dependen del trabajo o la duración de una tarea. Pueden tratarse de gastos de representación (comidas, viajes…).', 50, 1),
 (4, 1, 'Material', 'Este tipo de recurso se refiere a los suministros, materiales y cualquier otro consumible necesario para completar las tareas.', 51, 2),
 (5, 1, 'Trabajo', 'Se trata de los miembros de tu equipo de trabajo. La dedicación de cada individuo se mide en horas de trabajo.', 51, 2),
 (6, 1, 'Costo', 'Este tipo de recurso implica un gasto para el proyecto, pero no dependen del trabajo o la duración de una tarea. Pueden tratarse de gastos de representación (comidas, viajes…).', 51, 2);
@@ -1578,13 +1898,13 @@ ALTER TABLE `tipo_recurso`
 -- AUTO_INCREMENT de la tabla `categoria`
 --
 ALTER TABLE `categoria`
-  MODIFY `categoria_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `categoria_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de la tabla `clasificacion_riesgo`
 --
 ALTER TABLE `clasificacion_riesgo`
-  MODIFY `clasificacion_riesgo_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `clasificacion_riesgo_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT de la tabla `gerente`
@@ -1596,7 +1916,7 @@ ALTER TABLE `gerente`
 -- AUTO_INCREMENT de la tabla `impacto`
 --
 ALTER TABLE `impacto`
-  MODIFY `impacto_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `impacto_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT de la tabla `leccion`
@@ -1614,19 +1934,19 @@ ALTER TABLE `pais`
 -- AUTO_INCREMENT de la tabla `propabilidad`
 --
 ALTER TABLE `propabilidad`
-  MODIFY `propabilidad_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `propabilidad_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT de la tabla `proyecto`
 --
 ALTER TABLE `proyecto`
-  MODIFY `proyecto_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `proyecto_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `proyecto_has_riesgo`
 --
 ALTER TABLE `proyecto_has_riesgo`
-  MODIFY `proyecto_has_riesgo_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `proyecto_has_riesgo_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT de la tabla `proyecto_has_riesgo_actividad`
@@ -1644,7 +1964,7 @@ ALTER TABLE `rbs`
 -- AUTO_INCREMENT de la tabla `recurso`
 --
 ALTER TABLE `recurso`
-  MODIFY `recurso_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `recurso_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `responsble`
@@ -1656,19 +1976,19 @@ ALTER TABLE `responsble`
 -- AUTO_INCREMENT de la tabla `respuesta`
 --
 ALTER TABLE `respuesta`
-  MODIFY `respuesta_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `respuesta_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `riesgo`
 --
 ALTER TABLE `riesgo`
-  MODIFY `riesgo_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `riesgo_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT de la tabla `riesgo_has_respuesta`
 --
 ALTER TABLE `riesgo_has_respuesta`
-  MODIFY `riesgo_has_respuesta_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `riesgo_has_respuesta_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `rol`
@@ -1686,13 +2006,13 @@ ALTER TABLE `sector`
 -- AUTO_INCREMENT de la tabla `sub_categoria`
 --
 ALTER TABLE `sub_categoria`
-  MODIFY `sub_categoria_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `sub_categoria_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
 
 --
 -- AUTO_INCREMENT de la tabla `tarea`
 --
 ALTER TABLE `tarea`
-  MODIFY `tarea_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `tarea_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_recurso`
