@@ -7,8 +7,6 @@ from Risk_project_ufps.core_risk.util.cadena import limpiar_descripcion
 
 class RiesgoDao():
 
-
-<<<<<<< HEAD
     def registrar_riesgo(self, nombre, causa, evento, efecto, tipo, subcategoria):
         """ Yo no se porque devuelve una cadena, lo mejor que se me ocurrio fue hacer otro metodo"""
         try:
