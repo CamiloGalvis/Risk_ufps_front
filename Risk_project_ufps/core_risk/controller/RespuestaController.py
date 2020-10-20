@@ -222,7 +222,7 @@ class RespuestaController:
             # Consulto la respuesta
             respuesta_aux = respuesta_dao.obtener_respuesta(respuesta_id)
             # Duplico la respuesta
-            respuesta = respuesta_dao.registrar_respuesta(respuesta_aux.respuesta_nombre, respuesta_aux.respuesta_descripcion)
+            respuesta = respuesta_dao.registrar_respuesta(respuesta_aux.respuesta_nombre, respuesta_aux.respuesta_descripcion, respuesta_aux.respuesta_tipo)
             # Inserto el muchos a muchos entre respuesta y riesgos
             self.registrar_respuesta_riesgo(respuesta, riesgo) #LineaA
             # Consulto el muchos a muchos entre riesgo y proyecto
@@ -230,7 +230,7 @@ class RespuestaController:
             # Consulto el muchos a muchos entre riesgo y respuesta, el que se acabo de agregar en la linea A
             riesgo_respuesta = respuesta_riesgo_dao.obtener_respuesta_riesgo(riesgo, respuesta) #LineaC
             # Insertar el muchos a muchos entre linea B y linea C
-            self.registrar_respuesta_proyecto(proyecto_riesgo, riesgo_respuesta, None)
+            self.registrar_respuesta_proyecto(proyecto_riesgo, riesgo_respuesta, respuesta_aux.respuesta_tipo)
 
 
 

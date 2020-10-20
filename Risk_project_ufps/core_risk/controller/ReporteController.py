@@ -232,8 +232,8 @@ class ReporteController:
                                 aux_3['fecha_inicio'],
                                 aux_3['fecha_fin'],
                                 aux_3['duracion'],
-                                aux_3['fecha_inicio_real'],
-                                aux_3['fecha_fin_real'],
+                                self.split_fecha(aux_3['fecha_inicio_real']) ,
+                                self.split_fecha(aux_3['fecha_fin_real']),
                                 aux_3['duracion_real'],
                                 str(self.calcular_porcentaje_avance(int(aux_3["tarea_estado"]), aux_3['fecha_inicio'], aux_3['fecha_fin'], int(aux_3["duracion"]))) + '%',
                                 str(self.calcular_porcentaje_atraso(int(aux_3['duracion']), int(aux_3['duracion_real'])))+ '%',
@@ -333,6 +333,10 @@ class ReporteController:
         return round((dife*100)/duracion_planeada,2)
 
 
+    def split_fecha(self, fecha):
+
+        var = fecha.split("T")
+        return var[0]
 
 
 
