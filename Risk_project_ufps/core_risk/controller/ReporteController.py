@@ -206,7 +206,7 @@ class ReporteController:
                 for respuesta in respuestas:
                     riesgo_has_respuesta = respuesta['riesgo_has_respuesta']
                     tareas = lista_tareas[llave]
-                    for tarea in tareas:
+                    for tarea in tareas:                        
                         if tarea['riesgo_has_respuesta'] == riesgo_has_respuesta:
                             if respuesta.get('tareas'):
                                 respuesta['tareas'].append(tarea)
@@ -291,7 +291,8 @@ class ReporteController:
                                 aux['riesgo_nombre'],
                                 aux_2['respuesta_nombre'],
                                 aux_2['tipo_respuesta'],
-                                aux_3['tarea_nombre'],
+                                aux_3['tarea_nombre'],                            
+                                self.parsear_recursos(aux_3['recursos'])
                             ])
                     else:
                         array_final.append([
@@ -343,5 +344,10 @@ class ReporteController:
         var = fecha.split("T")
         return var[0]
 
-
-
+    def parsear_recursos(self, recursos):
+        aux = ""
+        for recurso in recursos:            
+            aux += "- "+recurso['recurso_nombre']
+            aux += " -- costo: $"+str(recurso['recurso_costo'])
+            aux += " -- cant: "+str(recurso['cantidad'])+"\n"
+        return aux
