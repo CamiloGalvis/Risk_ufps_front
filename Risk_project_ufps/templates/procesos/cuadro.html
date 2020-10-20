@@ -186,8 +186,8 @@
                 let tarea_aux = {        
                     "id":cont, 
                     "text":tareas[j]['tarea_nombre'], 
-                    "start_date":tareas[j]['fecha_inicio'] ,
-                    "end_date":tareas[j]['fecha_fin'],
+                    "start_date":tareas[j]['fecha_inicio']+'T00:00:00.000000' ,
+                    "end_date":tareas[j]['fecha_fin']+'T00:00:00.000000',
                     "duration":tareas[j]['duracion'],
                     "start_date_real":tareas[j]['fecha_inicio_real'], 
                     "end_date_real":tareas[j]['fecha_fin_real'], 
@@ -411,8 +411,8 @@
         dataFields: [
             { name: 'id', type: 'number' },
             { name: 'text', type: 'string' },
-            { name: 'start_date', type: 'string' },
-            { name: 'end_date', type: 'string' },
+            { name: 'start_date', type: 'date' },
+            { name: 'end_date', type: 'date' },
             { name: 'duration', type: 'number' },
             { name: 'start_date_real', type: 'date' },
             { name: 'end_date_real', type: 'date' },
@@ -492,7 +492,8 @@
           dataField:'start_date', 
           width:110, 
           align:'center',
-          cellsalign:'right', 
+          cellsalign:'right',
+          cellsformat:'dd-MM-yyyy', 
           //cellclassname: cellclass
         },
         {
@@ -501,7 +502,7 @@
           width:110,
           align:'center',
           cellsalign:'right', 
-          //cellsformat:'dd/MM/yyyy',
+          cellsformat:'dd-MM-yyyy',
           //cellclassname: cellclass
         },
         {
@@ -519,7 +520,7 @@
           width:110, 
           align:'center',
           cellsalign:'right', 
-          cellsformat:'dd/MM/yyyy',
+          cellsformat:'dd-MM-yyyy',
           //cellclassname: cellclass,
           createEditor: function (row, cellvalue, editor, celltext, width, height) {             
             var div = $("<div class='datetimeinput'></div>").appendTo(editor);
@@ -528,7 +529,7 @@
               datum = cellvalue;
             div.jqxDateTimeInput({
               value:datum, 
-              formatString:'dd/MM/yyyy', 
+              formatString:'dd-MM-yyyy', 
               width:width, 
               height:height 
             });
@@ -550,7 +551,7 @@
           width:110, 
           align:'center',
           cellsalign:'right', 
-          cellsformat:'dd/MM/yyyy',
+          cellsformat:'dd-MM-yyyy',
           //cellclassname: cellclass,
           createEditor: function (row, cellvalue, editor, celltext, width, height) {             
             var div = $("<div class='datetimeinput'></div>").appendTo(editor);
@@ -559,7 +560,7 @@
               datum = cellvalue;
             div.jqxDateTimeInput({
               value:datum, 
-              formatString:'dd/MM/yyyy', 
+              formatString:'dd-MM-yyyy', 
               width:width, 
               height:height 
             });

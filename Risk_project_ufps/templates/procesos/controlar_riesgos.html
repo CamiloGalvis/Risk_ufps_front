@@ -121,7 +121,7 @@
 {% endblock %}
 {% block organigrama_down %}
 
-
+<script src="{% static 'risk_project/plugins/sweetalert/sweetalert.js' %}"></script>
 <script type="text/javascript">
   
   
@@ -146,13 +146,22 @@
       headers: {'X-CSRFToken': csrftoken},
       data: {'gantt':JSON.stringify(parse)},      
       success: function(data) {
-        alert("Registro exitoso "+data);
-        //location.reload();
-        //mi_proyecto/{{proyecto.proyecto_id}}/controlar_riesgos/";
+        Swal.fire(
+        '¡ Registro exitoso !',
+        'Las tareas se han actualizado',
+        'success'
+        ).then(function () {
+          location.reload();
+        });           
       }, error: function (jqXhr, textStatus, errorMessage) {
         console.log("Fallo Registro " + textStatus + errorMessage);
-        //location.reload();
-        //window.location.href = "/mi_proyecto/{{proyecto.proyecto_id}}/controlar_riesgos/";
+        Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: '¡ No se pudo actualizar las tareas !',             
+        }).then(function () {
+          location.reload();
+        });   
       }
   });
 }

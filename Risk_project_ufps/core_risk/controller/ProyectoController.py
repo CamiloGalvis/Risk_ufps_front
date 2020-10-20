@@ -191,8 +191,7 @@ class ProyectoController:
             for actividad in actividades:
                 tareas = actividad['children']
                 for tarea in tareas:
-                    fecha_inicio_real = datetime.datetime.strptime(tarea['start_date_real'], '%Y-%m-%d')
-                    print("t",fecha_inicio_real)
+                    fecha_inicio_real = datetime.datetime.strptime(tarea['start_date_real'], '%Y-%m-%d')                    
                     fecha_fin_real = fecha_inicio_real + datetime.timedelta(days=int(tarea['duration_real']))
                     tarea_aux = Tarea(
                         tarea_id=tarea['tarea_id'],

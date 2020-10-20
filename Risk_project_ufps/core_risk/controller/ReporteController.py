@@ -2,6 +2,7 @@ from Risk_project_ufps.core_risk.dao.RiesgoDao import *
 from Risk_project_ufps.core_risk.dao.ResponsableDao import *
 from Risk_project_ufps.core_risk.dao.ImpactoDao import *
 from Risk_project_ufps.core_risk.dao.ProbabilidadDao import *
+from Risk_project_ufps.core_risk.dao.ClasificacionRiesgoDao import *
 
 from Risk_project_ufps.core_risk.controller.RiesgoController import *
 from Risk_project_ufps.core_risk.controller.RespuestaController import *
@@ -59,13 +60,17 @@ class ReporteController:
         propietario = proyecto.gerente.gerente_nombre
         titulo = "REPORTE PROYECTO " + proyecto.proyecto_nombre
         cabecera = ("CÓDIGO", "RIESGO", "IMPACTO", "PROBABILIDAD", "TOTAL")
-
+ 
         riesgo_dao = RiesgoDao()
+        clasificacion_dao = ClasificacionRiesgoDao()
+
         riesgos = riesgo_dao.get_riesgos_by_proyecto(proyecto)
+        clasificaciones = clasificacion_dao.listar_clasificaciones_by_proyecto(proyecto) 
+
         registros = self.raw_queryset_as_values_list_evaluar(riesgos, proyecto)
         nombreEXCEL = "reporte_" + self.get_datetime()
         reporte = reporteEXCEL(titulo, cabecera, registros, nombreEXCEL, propietario).exportar_evaluar(
-            proyecto.proyecto_objetivo, proyecto.proyecto_alcance)
+            proyecto.proyecto_objetivo, proyecto.proyecto_alcance, clasificaciones)
         return nombreEXCEL + ".xlsx"
 
     def generar_reporte_planificar_respuesta(self, proyecto):

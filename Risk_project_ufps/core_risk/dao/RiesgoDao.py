@@ -127,17 +127,17 @@ class RiesgoDao():
             return riesgos
 
     def get_riesgos_by_sector_distinct_gerente(self, sector, gerente):
-		"""Consulta todos los riesgos de la base de datos los cuales
-		esten asignados a proyectos de determinado sector, diferentes al proyecto actual.
+        """Consulta todos los riesgos de la base de datos los cuales
+        esten asignados a proyectos de determinado sector, diferentes al proyecto actual.
 
-		Son riesgos obtenidos 
-		
-		Parámetros:
-		sector -- Model Sector de la base de datos
-		
-		Excepciones:
-		ValueError -- Si sector no existe      
-		"""
+        Son riesgos obtenidos 
+        
+        Parámetros:
+        sector -- Model Sector de la base de datos
+        
+        Excepciones:
+        ValueError -- Si sector no existe      
+        """
         riesgos = []
         try:
             sql = "SELECT DISTINCT r.`riesgo_id`, r.`riesgo_nombre`, r.`riesgo_causa`, r.`riesgo_evento`, r.`riesgo_efecto`,r.`riesgo_tipo`,r.`riesgo_prom_evaluacion`, r.`riesgo_uid`,r.`sub_categoria_id` FROM `riesgo` r INNER JOIN proyecto_has_riesgo p_h_r ON r.`riesgo_id` = p_h_r.riesgo_id INNER JOIN proyecto p ON p_h_r.proyecto_id = p.proyecto_id WHERE p.sector_id = %s AND p.gerente_id <> %s GROUP BY r.`riesgo_nombre`"

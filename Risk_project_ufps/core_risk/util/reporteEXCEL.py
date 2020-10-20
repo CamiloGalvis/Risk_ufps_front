@@ -307,7 +307,7 @@ class reporteEXCEL(object):
             return retornar
 
 
-    def exportar_evaluar(self, objetivo, alcance):
+    def exportar_evaluar(self, objetivo, alcance, clasificaciones):
         # Workbook es el contenedor para todas las demás partes del documento.
         libroTrabajo = Workbook()
 
@@ -412,7 +412,9 @@ class reporteEXCEL(object):
                 hoja.cell(row=filaIndice, column=columnaIndice).border = border
                 hoja.cell(row=filaIndice, column=columnaIndice).alignment = Alignment(horizontal="left", vertical="center")
                 hoja.cell(row=filaIndice, column=columnaIndice).font = Font(color="FF000000", size=10, bold=False)
-
+                if(columnaIndice == 6):
+                    hoja.cell(row=filaIndice, column=columnaIndice).fill = self.get_color_evaluacion(registro, clasificaciones)
+ 
       # ============== AJUSTAR ANCHO (CELDAS - TABLA) ==============
 
         for col in hoja.columns:
@@ -448,6 +450,22 @@ class reporteEXCEL(object):
             libroTrabajo.close()
 
             return retornar
+
+    def get_color_evaluacion(self, evaluacion, clasificaciones):
+        valor = int(evaluacion)
+        color = 0
+        ultimo = None
+        for clasificacion in clasificaciones:
+            ultimo = clasificacion
+            min_valor = clasificacion.clasificacion_riesgo_min
+            max_valor = clasificacion.clasificacion_riesgo_max
+            if valor >= min_valor and valor <= max_valor:
+                color = clasificacion.clasificacion_color
+                break                
+        if color == 0:
+          color = ultimo.clasificacion_color
+        t = color[1:]
+        return PatternFill("solid", fgColor=t)
 
     def exportar_planificar_respuesta(self, objetivo, alcance):
         # Workbook es el contenedor para todas las demás partes del documento.
