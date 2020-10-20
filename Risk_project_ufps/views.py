@@ -1898,17 +1898,16 @@ def linea_base(request, proyecto_id, numero_linea, fecha_linea):
 
 
 #@login_required(login_url='/accounts/login/')
-def controlar_riesgos(request, proyecto_id):
+"""def controlar_riesgos(request, proyecto_id):
     proyecto_controller = ProyectoController()
     riesgo_controller = RiesgoController()
     respuesta_controller = RespuestaController()
     tarea_controller = TareaController()
 
     proyecto = proyecto_controller.obtener_proyecto(proyecto_id)
-    lista_riesgos = dumps(riesgo_controller.get_riesgos_by_proyecto_2(proyecto))
+    lista_riesgos = dumps(riesgo_controller.get_riesgos_by_proyecto_base(proyecto))
     respuestas_riesgo = dumps(respuesta_controller.listar_riesgos_respuesta_base(proyecto_id))
     lista_tareas = dumps(tarea_controller.listar_tareas_group_by_riesgo_base(proyecto))
-
 
     return render(
         request,
@@ -1921,6 +1920,19 @@ def controlar_riesgos(request, proyecto_id):
         )
     )
 
+"""
+def controlar_riesgos(request, proyecto_id): 
+    proyecto_controller = ProyectoController()
+
+    proyecto = proyecto_controller.obtener_proyecto(proyecto_id)
+
+    return render(
+        request,
+        "procesos/controlar_riesgos.html",
+        dict(
+            proyecto=proyecto,
+        )
+    )
 
 def crear_linea_base(request, proyecto_id):
     proyecto_controller = ProyectoController()
@@ -1941,7 +1953,30 @@ def actualizar_gantt(request, proyecto_id):
     else:
         return HttpResponse({'rta': rta}, status=500)
 
+def obtener_tree_grid(request, proyecto_id): 
+    proyecto_controller = ProyectoController()
+    riesgo_controller = RiesgoController()
+    respuesta_controller = RespuestaController()
+    tarea_controller = TareaController()
 
+    proyecto = proyecto_controller.obtener_proyecto(proyecto_id)
+    lista_riesgos = dumps(riesgo_controller.get_riesgos_by_proyecto_base(proyecto))
+    respuestas_riesgo = dumps(respuesta_controller.listar_riesgos_respuesta_base(proyecto_id))
+    lista_tareas = dumps(tarea_controller.listar_tareas_group_by_riesgo_base(proyecto))
+
+    return render(
+        request,
+        "procesos/cuadro.html",
+        dict(
+            proyecto=proyecto,
+            lista_riesgos=lista_riesgos,
+            respuestas_riesgo=respuestas_riesgo,
+            lista_tareas=lista_tareas
+        )
+    )
+
+def cuadro(request):
+    return render(request, "procesos/cuadro.html")
 """
 ////////////////////////////////////////////////////////////////////////////
     METODOS CERRAR PROYECTO

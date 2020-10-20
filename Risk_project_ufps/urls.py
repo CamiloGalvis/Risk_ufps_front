@@ -13,7 +13,7 @@ urlpatterns = [
     path('registrargerente/', registrar_gerente, name='registrargerente'),
     path('gerente/registrar/', nuevo_gerente, name='nuevo_gerente'),
     path('mi_perfil/', mi_perfil, name='mi_perfil'),
-
+    path('cuadro/', cuadro, name='cuadro'),
     # urls de proyectos
     path('inicio/', inicio,  name='inicio'),
     path('nuevoproyecto/', nuevo_proyecto, name='nuevo_proyecto'),
@@ -114,6 +114,7 @@ urlpatterns = [
     path('mi_proyecto/<int:proyecto_id>/crear_linea_base/', crear_linea_base, name='crear_linea_base'),
     path('mi_proyecto/<int:proyecto_id>/actualizar_gantt/', actualizar_gantt, name='actualizar_gantt'),
     path('mi_proyecto/<int:proyecto_id>/controlar_riesgos/informe/', generar_informe_controlar, name='generar_informe_controlar'),
+    path('mi_proyecto/<int:proyecto_id>/controlar_riesgos/tree_grid/', obtener_tree_grid, name='obtener_tree_grid'),
     #####################################################
     # Cierre del Proyecto
     #####################################################

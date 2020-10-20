@@ -27,7 +27,6 @@ class Actividad(models.Model):
         managed = False
         db_table = 'actividad'
 
-
 class Categoria(models.Model):
     categoria_id = models.AutoField(primary_key=True)
     categoria_nombre = models.CharField(max_length=45, blank=True, null=True)

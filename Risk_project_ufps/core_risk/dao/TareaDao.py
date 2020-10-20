@@ -198,6 +198,7 @@ class TareaDao:
                      proyecto.proyecto_linea_base,
                      ],
                 )
+                #print("WWWWWWw",cursor._last_executed)
                 flag = True
         except Exception as e:
             raise e

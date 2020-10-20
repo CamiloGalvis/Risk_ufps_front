@@ -185,21 +185,25 @@ class ProyectoController:
         proyecto_dao = ProyectoDao()
         proyecto = proyecto_dao.obtener_proyecto(proyecto_id)
         flag = False
-        for tarea in gantt['data']:
-            if tarea['is_tarea']:
-                fecha_inicio_real = datetime.datetime.strptime(tarea['fecha_inicio_real'], '%Y-%m-%d')
-                fecha_fin_real = fecha_inicio_real + datetime.timedelta(days=int(tarea['duracion_real']))
-                tarea_aux = Tarea(
-                    tarea_id=tarea['tarea_id'],
-                    fecha_inicio_real=tarea['fecha_inicio_real'],
-                    fecha_fin_real=fecha_fin_real,
-                    duracion_real=tarea['duracion_real'],
-                    tarea_estado=tarea['tarea_estado'],
-                    tarea_observacion=tarea['tarea_observacion']
-                )
-                flag = tarea_dao.actualizar_tarea_bd(tarea_aux)
-                flag = tarea_dao.actualizar_tarea_base(tarea_aux, proyecto)
-
+        riesgos = gantt['children']
+        for riesgo in riesgos:
+            actividades = riesgo['children']
+            for actividad in actividades:
+                tareas = actividad['children']
+                for tarea in tareas:
+                    fecha_inicio_real = datetime.datetime.strptime(tarea['start_date_real'], '%Y-%m-%d')
+                    print("t",fecha_inicio_real)
+                    fecha_fin_real = fecha_inicio_real + datetime.timedelta(days=int(tarea['duration_real']))
+                    tarea_aux = Tarea(
+                        tarea_id=tarea['tarea_id'],
+                        fecha_inicio_real=fecha_inicio_real,
+                        fecha_fin_real=fecha_fin_real,
+                        duracion_real=tarea['duration_real'],
+                        tarea_estado=self.get_id_estado_text(tarea['estado_text']),
+                        tarea_observacion=tarea['observacion']
+                    )
+                    flag = tarea_dao.actualizar_tarea_bd(tarea_aux)
+                    flag = tarea_dao.actualizar_tarea_base(tarea_aux, proyecto)
         return flag
 
     def get_datetime(self):
@@ -216,3 +220,17 @@ class ProyectoController:
     def cerrar_proyecto(self, proyecto, fecha):        
         proyecto_dao = ProyectoDao()        
         return proyecto_dao.cerrar_proyecto(proyecto, fecha)
+
+    def get_id_estado_text(self, estado):
+        aux = '';
+        if estado == 'No iniciado':
+            aux = 1
+        elif estado == 'Iniciado':
+            aux = 2
+        elif estado == 'Completado':
+            aux = 3
+        return aux;
+
+
+
+

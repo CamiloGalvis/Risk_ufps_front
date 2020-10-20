@@ -18,6 +18,8 @@ from django.urls import path, re_path, include
 from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
 from django.urls import reverse_lazy
 
+from Risk_project_ufps.core_risk.dto.models import Actividad
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include("Risk_project_ufps.urls")),
