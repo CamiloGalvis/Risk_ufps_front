@@ -219,6 +219,7 @@ class TareaDao:
             tarea_editar.duracion_real = tarea.duracion_real
             tarea_editar.tarea_estado = tarea.tarea_estado
             tarea_editar.tarea_descripcion = tarea.tarea_descripcion
+            tarea_editar.tarea_observacion = tarea.tarea_observacion
             tarea_editar.save()
         except Tarea.DoesNotExist:
             tarea_editar = None
