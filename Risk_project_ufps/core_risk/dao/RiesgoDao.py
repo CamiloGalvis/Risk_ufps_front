@@ -7,6 +7,7 @@ from Risk_project_ufps.core_risk.util.cadena import limpiar_descripcion
 
 class RiesgoDao():
 
+
     def registrar_riesgo(self, nombre, causa, evento, efecto, tipo, subcategoria):
         """ Yo no se porque devuelve una cadena, lo mejor que se me ocurrio fue hacer otro metodo"""
         try:
@@ -126,7 +127,7 @@ class RiesgoDao():
             return riesgos
 
     def get_riesgos_by_sector_distinct_gerente(self, sector, gerente):
-        """Consulta todos los riesgos de la base de datos los cuales
+		"""Consulta todos los riesgos de la base de datos los cuales
 		esten asignados a proyectos de determinado sector, diferentes al proyecto actual.
 
 		Son riesgos obtenidos 

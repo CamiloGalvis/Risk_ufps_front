@@ -28,11 +28,11 @@ class ResponsableDao:
             return responsables
 
     def obtener_responsable(self, id):
-
+        responsable = None
         try:
             responsable = Responsble.objects.get(responsable_id=id)
-        except Exception as e:
-            print(e)
+        except Responsble.DoesNotExist as e:
+            responsable = Responsble()
         finally:
             return responsable
 

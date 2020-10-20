@@ -25,7 +25,7 @@ class ReporteController:
        registros y el nombre del archivo xlsx (EXCEL)."""
         propietario = proyecto.gerente.gerente_nombre
         titulo = "REPORTE PROYECTO " + proyecto.proyecto_nombre
-        cabecera = ("CODIGO", "RIESGO", "CAUSAS", "EVENTO", "EFECTOS")
+        cabecera = ("CODIGO", "RIESGO", "CAUSAS", "EVENTO", "EFECTOS", "RESPONSABLE")
         riesgo_dao = RiesgoDao()
         riesgos = riesgo_dao.get_riesgos_by_proyecto(proyecto)
         registros = self.raw_queryset_as_values_list(riesgos)
@@ -74,7 +74,7 @@ class ReporteController:
         """
         propietario = proyecto.gerente.gerente_nombre
         titulo = "REPORTE PROYECTO " + proyecto.proyecto_nombre
-        cabecera = ("CÓDIGO", "RIESGO", "ACCIONES", "TAREAS", "RECURSOS")
+        cabecera = ("CÓDIGO", "RIESGO", "ACCIONES","TIPO DE ACCIÓN", "TAREAS", "RECURSOS")
 
         riesgo_controller = RiesgoController()
         respuesta_controller = RespuestaController()
@@ -99,7 +99,7 @@ class ReporteController:
                 """
         propietario = proyecto.gerente.gerente_nombre
         titulo = "REPORTE PROYECTO " + proyecto.proyecto_nombre
-        cabecera = ("RIESGO", "ACCION", "TIPO ACCION", "TAREA", "FECHAS PLANEADAS", "FECHAS REALES", "DURACION REAL", "% AVANCE ESPERADO", "% ATRASO", "ESTADO", "OBSERVACIONES")
+        cabecera = ("ID", "TAREA", "FECHA INICIO PLANEADA", "FECHA FIN PLANEADA","DURACIÓN PLANEADA","FECHA INICIO REAL", "FECHA FIN REAL", "DURACION REAL", "% AVANCE ESPERADO", "% ATRASO", "ESTADO", "OBSERVACIONES")
 
         riesgo_controller = RiesgoController()
         respuesta_controller = RespuestaController()
@@ -135,6 +135,7 @@ class ReporteController:
 
     def raw_queryset_as_values_list(self, raw_qs):
         aux = []
+        responsable_dao = ResponsableDao()
         for row in raw_qs:
             riesgo = model_to_dict(row)
             aux.append([
@@ -142,7 +143,8 @@ class ReporteController:
                 riesgo['riesgo_nombre'],
                 riesgo['riesgo_causa'],
                 riesgo['riesgo_evento'],
-                riesgo['riesgo_efecto']
+                riesgo['riesgo_efecto'],
+                responsable_dao.obtener_responsable(row.responsable_id).responsble_nombre                 
             ])
         return aux
 
@@ -215,6 +217,7 @@ class ReporteController:
 
     def convertir_array(self, mezcla):
         array_final = []
+        contador = 1;
         for key, aux in mezcla.items():
             respuestas = aux.get('respuestas')
             if respuestas and len(respuestas) > 0:
@@ -223,13 +226,14 @@ class ReporteController:
                     tareas = aux_2.get('tareas')
                     if tareas and len(tareas) > 0:
                         for aux_3 in tareas:
-                            array_final.append([
-                                aux['riesgo_nombre'],
-                                aux_2['respuesta_nombre'],
-                                aux_2['tipo_respuesta'],
+                            array_final.append([ 
+                                contador,                               
                                 aux_3['tarea_nombre'],
-                                aux_3['fecha_inicio'] + ' - ' + aux_3['fecha_fin'],
-                                aux_3['fecha_inicio_real'] + ' - ' + aux_3['fecha_fin_real'],
+                                aux_3['fecha_inicio'],
+                                aux_3['fecha_fin'],
+                                aux_3['duracion'],
+                                aux_3['fecha_inicio_real'],
+                                aux_3['fecha_fin_real'],
                                 aux_3['duracion_real'],
                                 str(self.calcular_porcentaje_avance(int(aux_3["tarea_estado"]), aux_3['fecha_inicio'], aux_3['fecha_fin'], int(aux_3["duracion"]))) + '%',
                                 str(self.calcular_porcentaje_atraso(int(aux_3['duracion']), int(aux_3['duracion_real'])))+ '%',
@@ -250,6 +254,7 @@ class ReporteController:
                             '',
                             '',
                         ])
+                contador = contador+1
             else:
                 array_final.append([
                     aux['riesgo_nombre'],

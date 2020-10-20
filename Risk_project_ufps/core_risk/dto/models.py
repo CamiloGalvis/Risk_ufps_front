@@ -250,6 +250,7 @@ class Riesgo(models.Model):
     riesgo_is_proyecto = int()
     impacto_id = int()
     propabilidad_id = int()
+    responsable_id = int()
     #fecha_manifestacion = str
     proyecto_linea_base = models.IntegerField(blank=True, null=True)
 
@@ -353,3 +354,11 @@ class Rol(models.Model):
     class Meta:
         managed = False
         db_table = 'rol'
+
+class Visitas(models.Model):
+    fecha_visita = models.DateTimeField(blank=True, null=True)   
+
+    class Meta:
+        managed = False
+        db_table = 'visitas'
+

@@ -5,7 +5,7 @@ from Risk_project_ufps.views import *
 urlpatterns = [
 
     # urls metodos generales de usuario 
-
+    path('index/', index, name='index'),
     # urls para el manejo de sesiones
     path('accounts/', include('django.contrib.auth.urls')),
     path('mi_kilo/', mi_pass),
