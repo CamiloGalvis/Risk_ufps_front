@@ -14,6 +14,7 @@ from Risk_project_ufps.core_risk.dto.models import Proyecto
 from Risk_project_ufps.core_risk.util.reporteEXCEL import *
 
 from datetime import datetime
+from operator import itemgetter, attrgetter
 
 from django.forms.models import model_to_dict
 
@@ -68,8 +69,9 @@ class ReporteController:
         clasificaciones = clasificacion_dao.listar_clasificaciones_by_proyecto(proyecto) 
 
         registros = self.raw_queryset_as_values_list_evaluar(riesgos, proyecto)
+        aux = sorted(registros, key=itemgetter(4), reverse=True)
         nombreEXCEL = "reporte_" + self.get_datetime()
-        reporte = reporteEXCEL(titulo, cabecera, registros, nombreEXCEL, propietario).exportar_evaluar(
+        reporte = reporteEXCEL(titulo, cabecera, aux, nombreEXCEL, propietario).exportar_evaluar(
             proyecto.proyecto_objetivo, proyecto.proyecto_alcance, clasificaciones)
         return nombreEXCEL + ".xlsx"
 
