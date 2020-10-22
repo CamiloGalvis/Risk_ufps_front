@@ -151,7 +151,13 @@ class ProyectoHasRiesgoDao():
             except Exception as e:
                 print(e)
 
-
+    def get_all_by_proyecto_id(self, proyecto_id):
+        try:
+            proyecto_riesgo = ProyectoHasRiesgo.objects.filter(proyecto_id=proyecto_id)
+        except ProyectoHasRiesgo.DoesNotExist:
+            proyecto_riesgo = {}
+        finally:
+            return proyecto_riesgo
 
 
 

@@ -80,6 +80,7 @@ class Impacto(models.Model):
     impacto_valor = models.IntegerField()
     proyecto = models.ForeignKey('Proyecto', models.DO_NOTHING)
     proyecto_linea_base = models.IntegerField(blank=True, null=True)
+    has_riesgo = int()
 
     class Meta:
         managed = False
@@ -116,6 +117,7 @@ class Propabilidad(models.Model):
     propabilidad_valor = models.IntegerField()
     proyecto = models.ForeignKey('Proyecto', models.DO_NOTHING)
     proyecto_linea_base = models.IntegerField(blank=True, null=True)
+    has_riesgo = int()
 
     class Meta:
         managed = False

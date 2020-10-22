@@ -1236,13 +1236,15 @@ def filtrar_definiciones(request):
             x = key.split("_")[2]
             impactos.append({
                 "nombre": value,
-                "valor": request.POST.get('impacto_valor_' + str(x))
+                "valor": request.POST.get('impacto_valor_' + str(x)),
+                "id":request.POST.get('impacto_id_' + str(x))
             })
         elif ('propabilida_nombre_' in key):
             x = key.split("_")[2]
             probabilidades.append({
                 "nombre": value,
-                "valor": request.POST.get('propabilida_valor_' + str(x))
+                "valor": request.POST.get('propabilida_valor_' + str(x)),
+                "id": request.POST.get('propabilidad_id_' + str(x))
             })
     return {"impactos": impactos, "probabilidades": probabilidades}
 

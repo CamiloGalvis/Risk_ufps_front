@@ -297,12 +297,14 @@
                 {% for impacto in impactos %}
                 <div class="form-group">
                   <div class="col-xs-5">
+                    <input type="text" id="impacto_has_riesgo_{{ forloop.counter }}" value="{{impacto.has_riesgo}}" hidden />
+                    <input type="text" name="impacto_id_{{ forloop.counter }}" value="{{impacto.impacto_id}}" hidden />
                     <input type="text" class="form-control" name="impacto_nombre_{{ forloop.counter }}" value="{{impacto.impacto_categoria}}" maxlength="69" required />
                   </div>
                   <div class="col-xs-3">
                     <input type="number" class="form-control" name="impacto_valor_{{ forloop.counter }}" value="{{impacto.impacto_valor}}" min="1" required />
                   </div>
-                  <a href="#" class="remove_field">Eliminar</a>
+                  <a href="#" name="impacto_remove_{{ forloop.counter }}" class="remove_field">Eliminar</a>
                 </div>
                 {% endfor%}
               {% endif %}
@@ -318,12 +320,14 @@
                 {% for propabilidad in probabilidades %}
                 <div class="form-group">
                   <div class="col-xs-5">
+                     <input type="text" id="propabilidad_has_riesgo_{{ forloop.counter }}" value="{{propabilidad.has_riesgo}}" hidden />
+                    <input type="text" name="propabilidad_id_{{ forloop.counter }}" value="{{propabilidad.propabilidad_id}}" hidden />                                       
                     <input type="text" class="form-control" name="propabilida_nombre_{{ forloop.counter }}" value="{{propabilidad.propabilidad_categoria}}" maxlength="69"  required />
                   </div>
                   <div class="col-xs-3">
                     <input type="number" class="form-control" name="propabilida_valor_{{ forloop.counter }}" value="{{propabilidad.propabilidad_valor}}" min="1" required />
                   </div>
-                  <a href="#" class="remove_field">Eliminar</a>
+                  <a href="#" name="propabilidad_remove_{{ forloop.counter }}" class="remove_field">Eliminar</a>
                 </div>
                 {% endfor%}
               {% endif %}
@@ -799,20 +803,34 @@ function pintar_edr_sugerida() {
 
     $(div_impactos).on("click",".remove_field", function(e){
       e.preventDefault();
-      if(cant_impactos > 3){
-        $(this).parent('div').remove(); cant_impactos--;  
+      let contador = e.currentTarget.name.split('_')[2];
+      let has_riesgos = document.getElementById('impacto_has_riesgo_'+contador);
+      let cant_rr = parseInt(has_riesgos.value);
+      if(cant_rr == 0){
+        if(cant_impactos > 3){
+          $(this).parent('div').remove(); cant_impactos--;  
+        }else{
+          alert("No pueden existir menos de tres(3) impactos.");
+        }  
       }else{
-        alert("No pueden existir menos de tres(3) impactos.");
-      } 
+        alert("No puede eliminar esta categoría porque ya esta asignada a un riesgo.");
+      }
     });
         
     
     $(div_probabilidades).on("click",".remove_field", function(e){
       e.preventDefault();
-      if(cant_probabilidades > 3){
-        $(this).parent('div').remove(); cant_probabilidades--;
+      let contador = e.currentTarget.name.split('_')[2];
+      let has_riesgos = document.getElementById('propabilidad_has_riesgo_'+contador);
+      let cant_rr = parseInt(has_riesgos.value);
+      if(cant_rr == 0){
+        if(cant_probabilidades > 3){
+          $(this).parent('div').remove(); cant_probabilidades--;
+        }else{
+          alert("No pueden existir menos de tres(3) probabilidades.");
+        }
       }else{
-        alert("No pueden existir menos de tres(3) probabilidades.");
+        alert("No puede eliminar esta probabilidad porque ya esta asignada a un riesgo.");
       }
     });
 
