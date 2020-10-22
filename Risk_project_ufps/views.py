@@ -2148,8 +2148,8 @@ def generar_informe_identificar(request, proyecto_id):
     t = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     response = HttpResponse(zip_file, content_type=t)
     response['Content-Disposition'] = 'attachment; filename="%s"' % reporte
-    if os.path.exists("demofile.txt"):
-        os.remove("demofile.txt")
+    if os.path.exists(reporte):
+        os.remove(reporte)
     else:
         print("The file does not exist")
     return response
@@ -2166,8 +2166,8 @@ def generar_informe_planificar(request, proyecto_id):
     t = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     response = HttpResponse(zip_file, content_type=t)
     response['Content-Disposition'] = 'attachment; filename="%s"' % reporte
-    if os.path.exists("demofile.txt"):
-        os.remove("demofile.txt")
+    if os.path.exists(reporte):
+        os.remove(reporte)
     else:
         print("The file does not exist")
     return response
@@ -2184,8 +2184,8 @@ def generar_informe_evaluar(request, proyecto_id):
     t = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     response = HttpResponse(zip_file, content_type=t)
     response['Content-Disposition'] = 'attachment; filename="%s"' % reporte
-    if os.path.exists("demofile.txt"):
-        os.remove("demofile.txt")
+    if os.path.exists(reporte):
+        os.remove(reporte)
     else:
         print("The file does not exist")
     return response
