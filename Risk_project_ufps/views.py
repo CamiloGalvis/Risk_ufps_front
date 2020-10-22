@@ -1926,9 +1926,7 @@ def linea_base(request, proyecto_id, numero_linea, fecha_linea):
             respuestas_riesgo=respuestas_riesgo,
             lista_tareas=lista_tareas
         )
-    )
-
-"""
+    )"""
 def controlar_riesgos(request, proyecto_id): 
     proyecto_controller = ProyectoController()
 
