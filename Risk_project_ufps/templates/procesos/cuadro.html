@@ -56,7 +56,7 @@
             -->
         </div>
         <div style='margin-left: 10px; float: left;'>
-            <input type="button" value="Export to XML" id='xmlExport' />
+            <input type="button" value="Exportar a Project XML" id='xmlExport' />
             <br/>
             <br/>
             <!--<input type="button" value="Export to CSV" id='csvExport' />
@@ -460,15 +460,9 @@
        
         for (let i = 0; i < no_tareas_id.length; i++) {
           $("#treeGrid").jqxTreeGrid('lockRow', no_tareas_id[i]);
-<<<<<<< HEAD
           $("#treeGrid").jqxTreeGrid('expandRow', no_tareas_id[i]);      
         }
         $("#treeGrid").jqxTreeGrid('setColumnProperty', 'end_date_real', 'editable', false);             
-=======
-          $("#treeGrid").jqxTreeGrid('expandRow', no_tareas_id[i]);
-        } 
-        $("#treeGrid").jqxTreeGrid('setColumnProperty', 'end_date_real', 'editable', false);          
->>>>>>> 50ce65677115a7fa9bbf0aa0e7d98480564c0611
       },
       columns: [            
         {
