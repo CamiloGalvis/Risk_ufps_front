@@ -358,6 +358,7 @@ class Rol(models.Model):
         db_table = 'rol'
 
 class Visitas(models.Model):
+    visita_id = models.AutoField(primary_key=True)
     fecha_visita = models.DateTimeField(blank=True, null=True)   
 
     class Meta:
@@ -365,6 +366,7 @@ class Visitas(models.Model):
         db_table = 'visitas'
 
 class Comentario(models.Model):
+    comentario_id = models.AutoField(primary_key=True)
     comentario_fecha = models.DateTimeField(blank=True, null=True)
     comentario_nombre = models.CharField(max_length=150)  
     comentario_correo = models.CharField(max_length=150)
