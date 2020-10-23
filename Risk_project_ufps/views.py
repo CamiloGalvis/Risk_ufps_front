@@ -1243,13 +1243,15 @@ def filtrar_definiciones(request):
             x = key.split("_")[2]
             impactos.append({
                 "nombre": value,
-                "valor": request.POST.get('impacto_valor_' + str(x))
+                "valor": request.POST.get('impacto_valor_' + str(x)),
+                "id":request.POST.get('impacto_id_' + str(x))
             })
         elif ('propabilida_nombre_' in key):
             x = key.split("_")[2]
             probabilidades.append({
                 "nombre": value,
-                "valor": request.POST.get('propabilida_valor_' + str(x))
+                "valor": request.POST.get('propabilida_valor_' + str(x)),
+                "id": request.POST.get('propabilidad_id_' + str(x))
             })
     return {"impactos": impactos, "probabilidades": probabilidades}
 
@@ -1933,9 +1935,7 @@ def linea_base(request, proyecto_id, numero_linea, fecha_linea):
             respuestas_riesgo=respuestas_riesgo,
             lista_tareas=lista_tareas
         )
-    )
-
-"""
+    )"""
 def controlar_riesgos(request, proyecto_id): 
     proyecto_controller = ProyectoController()
 
@@ -2155,8 +2155,8 @@ def generar_informe_identificar(request, proyecto_id):
     t = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     response = HttpResponse(zip_file, content_type=t)
     response['Content-Disposition'] = 'attachment; filename="%s"' % reporte
-    if os.path.exists("demofile.txt"):
-        os.remove("demofile.txt")
+    if os.path.exists(reporte):
+        os.remove(reporte)
     else:
         print("The file does not exist")
     return response
@@ -2173,8 +2173,8 @@ def generar_informe_planificar(request, proyecto_id):
     t = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     response = HttpResponse(zip_file, content_type=t)
     response['Content-Disposition'] = 'attachment; filename="%s"' % reporte
-    if os.path.exists("demofile.txt"):
-        os.remove("demofile.txt")
+    if os.path.exists(reporte):
+        os.remove(reporte)
     else:
         print("The file does not exist")
     return response
@@ -2191,8 +2191,8 @@ def generar_informe_evaluar(request, proyecto_id):
     t = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     response = HttpResponse(zip_file, content_type=t)
     response['Content-Disposition'] = 'attachment; filename="%s"' % reporte
-    if os.path.exists("demofile.txt"):
-        os.remove("demofile.txt")
+    if os.path.exists(reporte):
+        os.remove(reporte)
     else:
         print("The file does not exist")
     return response

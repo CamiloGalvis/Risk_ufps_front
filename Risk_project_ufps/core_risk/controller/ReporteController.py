@@ -144,6 +144,7 @@ class ReporteController:
         aux = []
         responsable_dao = ResponsableDao()
         for row in raw_qs:
+            print("ROW", row)
             riesgo = model_to_dict(row)
             aux.append([
                 "R_" + str(riesgo['riesgo_id']),

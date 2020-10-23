@@ -119,6 +119,7 @@ class RiesgoDao():
         riesgos = []
         try:
             sql = "SELECT r.`riesgo_id`, r.`riesgo_nombre`, r.`riesgo_causa`, r.`riesgo_evento`, r.`riesgo_efecto`,r.`riesgo_tipo`,r.`riesgo_prom_evaluacion`, r.`riesgo_uid`,r.`sub_categoria_id`, p_h_r.impacto_id, p_h_r.propabilidad_id, p_h_r.responsable_id  FROM `riesgo` r INNER JOIN proyecto_has_riesgo p_h_r ON r.`riesgo_id` = p_h_r.riesgo_id WHERE p_h_r.proyecto_id = %s"
+
             riesgos = Riesgo.objects.raw(sql, [proyecto.proyecto_id, ])
         except Exception as e:
             print(e)

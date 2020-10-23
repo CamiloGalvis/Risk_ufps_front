@@ -48,14 +48,24 @@ class ProyectoController:
 
     def obtener_impactos_by_proyecto_id(self, proyecto_id):
         impacto_dao = ImpactoDao()
+        proyecto_has_riesgo_dao = ProyectoHasRiesgoDao()
+
+        p_h_r = proyecto_has_riesgo_dao.get_all_by_proyecto_id(proyecto_id)
         proyecto = Proyecto(proyecto_id=proyecto_id)
-        return impacto_dao.listar_impactos_by_proyecto(proyecto)
+
+        impactos = impacto_dao.listar_impactos_by_proyecto(proyecto)
+        return self.set_has_riesgo_impactos(p_h_r, impactos)
+
 
     def obtener_probabilidades_by_proyecto_id(self, proyecto_id):
         probabilidad_dao = ProbabilidadDao()
+        proyecto_has_riesgo_dao = ProyectoHasRiesgoDao()
+
+        p_h_r = proyecto_has_riesgo_dao.get_all_by_proyecto_id(proyecto_id)
         proyecto = Proyecto(proyecto_id=proyecto_id)
-        r = probabilidad_dao.listar_probabilidades_by_proyecto(proyecto)
-        return r
+
+        probabilidades = probabilidad_dao.listar_probabilidades_by_proyecto(proyecto)
+        return self.set_has_riesgo_probabilidades(p_h_r, probabilidades)
 
     def obtener_clasificaciones_riesgo_by_proyecto_id(self, proyecto_id):
         clasificacion_riesgo_dao = ClasificacionRiesgoDao()
@@ -65,17 +75,39 @@ class ProyectoController:
     def actualizar_impactos_by_proyecto_id(self, impactos, proyecto_id):
         impacto_dao = ImpactoDao()
         proyecto = Proyecto(proyecto_id=proyecto_id)
-        result = impacto_dao.eliminar_impactos_by_proyecto(proyecto)
-        if result:
-            for impact in impactos:
-                impacto_dao.crear_impacto(impact["nombre"], impact["valor"], proyecto)
+        impactos_aux = impacto_dao.listar_impactos_by_proyecto(proyecto)
+        for impacto_aux in impactos_aux:
+            flag = False
+            for impacto in impactos:
+                if impacto['id'] is not None and impacto_aux.impacto_id == int(impacto['id']):
+                    impacto_aux.impacto_categoria = impacto['nombre']
+                    impacto_aux.impacto_valor = int(impacto['valor'])
+                    impacto_aux.save()
+                    flag = True
+                    break
+            if not flag:
+                impacto_aux.delete()
+        for impacto in impactos:
+            if impacto['id'] is None:
+                impacto_dao.crear_impacto(impacto["nombre"], impacto["valor"], proyecto)
 
     def actualizar_probabilidades_by_proyecto_id(self, probabilidades, proyecto_id):
         probabilidad_dao = ProbabilidadDao()
         proyecto = Proyecto(proyecto_id=proyecto_id)
-        result = probabilidad_dao.eliminar_probabilidades_by_proyecto(proyecto)
-        if result:
+        probabilidades_aux = probabilidad_dao.listar_probabilidades_by_proyecto(proyecto)
+        for probabilidad_aux in probabilidades_aux:
+            flag = False
             for probabilidad in probabilidades:
+                if probabilidad['id'] is not None and probabilidad_aux.propabilidad_id == int(probabilidad['id']):
+                    probabilidad_aux.propabilidad_categoria = probabilidad['nombre']
+                    probabilidad_aux.propabilidad_valor = int(probabilidad['valor'])
+                    probabilidad_aux.save()
+                    flag = True
+                    break
+            if not flag:
+                probabilidad_aux.delete()
+        for probabilidad in probabilidades:
+            if probabilidad['id'] is None:
                 probabilidad_dao.crear_probabilidad(probabilidad["nombre"], probabilidad["valor"], proyecto)
 
     def actualizar_clasificacion_riesgo_by_proyecto_id(self, clasificaciones, proyecto_id):
@@ -221,14 +253,28 @@ class ProyectoController:
         return proyecto_dao.cerrar_proyecto(proyecto, fecha)
 
     def get_id_estado_text(self, estado):
-        aux = '';
+        aux = ''
         if estado == 'No iniciado':
             aux = 1
         elif estado == 'Iniciado':
             aux = 2
         elif estado == 'Completado':
             aux = 3
-        return aux;
+        return aux
+
+    def set_has_riesgo_impactos(self, p_h_r, impactos):
+        for impacto in impactos:
+            for aux in p_h_r:
+                if aux.impacto.impacto_id == impacto.impacto_id:
+                    impacto.has_riesgo += 1
+        return impactos
+
+    def set_has_riesgo_probabilidades(self, p_h_r, probabilidades):
+        for probabilidad in probabilidades:
+            for aux in p_h_r:
+                if aux.propabilidad.propabilidad_id == probabilidad.propabilidad_id:
+                    probabilidad.has_riesgo += 1
+        return probabilidades
 
 
 
