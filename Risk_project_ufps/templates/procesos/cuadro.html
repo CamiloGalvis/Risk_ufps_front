@@ -18,6 +18,7 @@
         <script type="text/javascript" src="{% static 'risk_project/plugins/jqwidgets/jqxinput.js' %}"></script>
          <script type="text/javascript" src="{% static 'risk_project/plugins/jqwidgets/jqxcalendar.js' %}"></script>
         <script type="text/javascript" src="{% static 'risk_project/plugins/jqwidgets/jqxdatetimeinput.js' %}"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous"></script>
     </head>
 <body>
     <style>     
@@ -55,8 +56,10 @@
             -->
         </div>
         <div style='margin-left: 10px; float: left;'>
-            <!--<input type="button" value="Export to XML" id='xmlExport' />
-            <input type="button" value="Export to CSV" id='csvExport' />
+            <input type="button" value="Export to XML" id='xmlExport' />
+            <br/>
+            <br/>
+            <!--<input type="button" value="Export to CSV" id='csvExport' />
             <br />
             <br />
             <input type="button" value="Export to TSV" id='tsvExport' />-->
@@ -74,6 +77,8 @@
     
     <div id="treeGrid"></div>
 </body>
+<script type="text/javascript" src="{% static 'risk_project/dist/js/risk_ufps/convert_xml.js' %}"></script>
+<script type="text/javascript" src="{% static 'risk_project/dist/js/risk_ufps/actividades/json2xml.js' %}"></script>
 <script type="text/javascript">
 
     /*
@@ -104,15 +109,6 @@
      * Es el conjunto de datos utilizados para pintar.
      */
     var data_riesgo = [];
-
-
-
-   
-
-
-
-
-
 
     function formatear_datos(){
         let cont = 1;
@@ -666,19 +662,27 @@
 
 
 
-        $("#excelExport").jqxButton();
-        $("#xmlExport").jqxButton();
+        //$("#excelExport").jqxButton();
+        //$("#xmlExport").jqxButton();
         //$("#csvExport").jqxButton();
         //$("#tsvExport").jqxButton();
         //$("#htmlExport").jqxButton();
         //$("#jsonExport").jqxButton();
-        $("#pdfExport").jqxButton();
+        //$("#pdfExport").jqxButton();
 
-        $("#excelExport").click(function () {
+        /*$("#excelExport").click(function () {
             $("#treeGrid").jqxTreeGrid('exportData', 'xls');
-        });
+        });*/
         $("#xmlExport").click(function () {
-            $("#treeGrid").jqxTreeGrid('exportData', 'xml');
+          //$("#treeGrid").jqxTreeGrid('exportData', 'xml');
+          let mi_data = get_data_json()[0];
+          //console.log(parsear_data_json(mi_data));
+          let dd = parsear_data_json(mi_data);
+          console.log(dd);
+          let xml2 = json2xml(eval(dd));
+          xml2 = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+xml2;
+          var blob = new Blob([xml2], {type: "text/xml;charset=utf-8"});
+          saveAs(blob, mi_data.text+".xml");
         });
         /*$("#csvExport").click(function () {
             $("#treeGrid").jqxTreeGrid('exportData', 'csv');
@@ -692,14 +696,19 @@
         $("#jsonExport").click(function () {
             $("#treeGrid").jqxTreeGrid('exportData', 'json');
         });*/
-        $("#pdfExport").click(function () {
+        /*$("#pdfExport").click(function () {
             $("#treeGrid").jqxTreeGrid('exportData', 'pdf');
-        });
+        });*/
     });
-
-
-
 
 
     </script>
 </html>
+
+
+
+
+
+
+
+

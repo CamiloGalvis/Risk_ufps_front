@@ -805,15 +805,23 @@ function pintar_edr_sugerida() {
       e.preventDefault();
       let contador = e.currentTarget.name.split('_')[2];
       let has_riesgos = document.getElementById('impacto_has_riesgo_'+contador);
-      let cant_rr = parseInt(has_riesgos.value);
-      if(cant_rr == 0){
+      if(has_riesgos == null){
         if(cant_impactos > 3){
           $(this).parent('div').remove(); cant_impactos--;  
         }else{
           alert("No pueden existir menos de tres(3) impactos.");
         }  
-      }else{
-        alert("No puede eliminar esta categoría porque ya esta asignada a un riesgo.");
+      }else{    
+        let cant_rr = parseInt(has_riesgos.value);
+        if(cant_rr == 0){
+          if(cant_impactos > 3){
+            $(this).parent('div').remove(); cant_impactos--;  
+          }else{
+            alert("No pueden existir menos de tres(3) impactos.");
+          }  
+        }else{
+          alert("No puede eliminar esta categoría porque ya esta asignada a un riesgo.");
+        }
       }
     });
         
@@ -822,15 +830,23 @@ function pintar_edr_sugerida() {
       e.preventDefault();
       let contador = e.currentTarget.name.split('_')[2];
       let has_riesgos = document.getElementById('propabilidad_has_riesgo_'+contador);
-      let cant_rr = parseInt(has_riesgos.value);
-      if(cant_rr == 0){
+      if(has_riesgos == null){
         if(cant_probabilidades > 3){
           $(this).parent('div').remove(); cant_probabilidades--;
         }else{
           alert("No pueden existir menos de tres(3) probabilidades.");
         }
       }else{
-        alert("No puede eliminar esta probabilidad porque ya esta asignada a un riesgo.");
+        let cant_rr = parseInt(has_riesgos.value);
+        if(cant_rr == 0){
+          if(cant_probabilidades > 3){
+            $(this).parent('div').remove(); cant_probabilidades--;
+          }else{
+            alert("No pueden existir menos de tres(3) probabilidades.");
+          }
+        }else{
+          alert("No puede eliminar esta probabilidad porque ya esta asignada a un riesgo.");
+        }
       }
     });
 
