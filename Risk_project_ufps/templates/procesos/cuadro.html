@@ -457,11 +457,18 @@
         editOnF2: true
       },
       ready: function(){
+       
         for (let i = 0; i < no_tareas_id.length; i++) {
           $("#treeGrid").jqxTreeGrid('lockRow', no_tareas_id[i]);
+<<<<<<< HEAD
+          $("#treeGrid").jqxTreeGrid('expandRow', no_tareas_id[i]);      
+        }
+        $("#treeGrid").jqxTreeGrid('setColumnProperty', 'end_date_real', 'editable', false);             
+=======
           $("#treeGrid").jqxTreeGrid('expandRow', no_tareas_id[i]);
         } 
         $("#treeGrid").jqxTreeGrid('setColumnProperty', 'end_date_real', 'editable', false);          
+>>>>>>> 50ce65677115a7fa9bbf0aa0e7d98480564c0611
       },
       columns: [            
         {

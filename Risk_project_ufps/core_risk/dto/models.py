@@ -364,3 +364,14 @@ class Visitas(models.Model):
         managed = False
         db_table = 'visitas'
 
+class Comentario(models.Model):
+    comentario_fecha = models.DateTimeField(blank=True, null=True)
+    comentario_nombre = models.CharField(max_length=150)  
+    comentario_correo = models.CharField(max_length=150)
+    comentario_mensaje = models.TextField(max_length=2000)
+
+    class Meta:
+        managed = False
+        db_table = 'comentario'
+
+
