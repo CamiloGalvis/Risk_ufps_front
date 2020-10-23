@@ -51,7 +51,14 @@ def index(request):
     visita.save()
     nro_visitas = Visitas.objects.count()
     nro_proyectos = Proyecto.objects.count() 
-    nro_usuarios = Gerente.objects.count()  
+    nro_usuarios = Gerente.objects.count()
+
+    if request.method == "POST":
+        comentario = Comentario(comentario_fecha = datetime.datetime.now() ,comentario_nombre = request.POST["name"] , comentario_correo = request.POST["email"] , comentario_mensaje = request.POST["message"] )
+        comentario.save()
+
+
+
     return render(request, "index.html", {"nro_visitas":nro_visitas, "nro_proyectos":nro_proyectos, "nro_usuarios":nro_usuarios})
 
 # Autentica usuario y carga la vista de inicio

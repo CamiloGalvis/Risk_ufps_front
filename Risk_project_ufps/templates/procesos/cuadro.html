@@ -452,7 +452,7 @@
       editable: true,
       altRows: true,
       columnsResize: true,
-      pageable: true,
+      pageable: false,
       icons:true,
       editSettings: {
         saveOnPageChange: true,
@@ -465,10 +465,12 @@
         editOnF2: true
       },
       ready: function(){
+       
         for (let i = 0; i < no_tareas_id.length; i++) {
           $("#treeGrid").jqxTreeGrid('lockRow', no_tareas_id[i]);
           $("#treeGrid").jqxTreeGrid('expandRow', no_tareas_id[i]);      
-        }           
+        }
+        $("#treeGrid").jqxTreeGrid('setColumnProperty', 'end_date_real', 'editable', false);             
       },
       columns: [            
         {
