@@ -3,7 +3,7 @@ from Risk_project_ufps.views import *
 
 
 urlpatterns = [
-
+    
     # urls metodos generales de usuario 
     path('', index, name='index'),
     # urls para el manejo de sesiones
